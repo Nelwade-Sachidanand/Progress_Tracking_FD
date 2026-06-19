@@ -5,7 +5,9 @@ import {
   getAuthRequests,
   approveRequest as approveRequestApi,
   rejectRequest as rejectRequestApi,
-  getAllAuthRequests as allAuthRequests
+  getAllAuthRequests as allAuthRequests,
+  approveSelectedRequests as approveSelectedRequestsApi,
+  rejectSelectedRequests as rejectSelectedRequestsApi
 } from "../services/authService";
 
 export const useAuthRequests = () => {
@@ -23,18 +25,18 @@ export const useAuthRequests = () => {
         setAuths(response.details || []);
       }
     } catch (error) {
-      toast.error(error.response?.data?.statusDesc ||"Failed to load authorization requests");
+      toast.error(error.response?.data?.statusDesc || "Failed to load authorization requests");
     } finally {
       setLoading(false);
     }
   };
 
-  const approveRequest = async (projectId) => {
+  const approveRequest = async (requestId) => {
     try {
       setLoading(true);
 
       const response =
-        await approveRequestApi(projectId);
+        await approveRequestApi(requestId);
 
       if (response?.statusType === "S") {
         toast.success(response.statusDesc);
@@ -45,19 +47,19 @@ export const useAuthRequests = () => {
 
       return response;
     } catch (error) {
-      toast.error(error.response?.data?.statusDesc ||"Failed to approve request");
+      toast.error(error.response?.data?.statusDesc || "Failed to approve request");
       throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  const rejectRequest = async (requestId,reason) => {
+  const rejectRequest = async (requestId, reason) => {
     console.log(reason);
     try {
       setLoading(true);
 
-      const response = await rejectRequestApi(requestId,reason);
+      const response = await rejectRequestApi(requestId, reason);
 
       if (response?.statusType === "S") {
         toast.success(response.statusDesc);
@@ -68,7 +70,7 @@ export const useAuthRequests = () => {
 
       return response;
     } catch (error) {
-      toast.error(error.response?.data?.statusDesc ||"Failed to reject request");
+      toast.error(error.response?.data?.statusDesc || "Failed to reject request");
       throw error;
     } finally {
       setLoading(false);
@@ -76,17 +78,73 @@ export const useAuthRequests = () => {
   };
 
   const getAllAuthRequests = async () => {
-    try{
+    try {
       setLoading(true);
 
       const response = await allAuthRequests();
       console.log(response);
       setAllAuths(response.details || []);
       // return response;
-    }catch(error){
+    } catch (error) {
       toast.error(error.response?.data?.statusDesc ||
-          "Failed to get All Auth Requests"
+        "Failed to get All Auth Requests"
       );
+    }
+  };
+
+  const approveSelectedRequests = async (requestIds) => {
+    try {
+      setLoading(true);
+
+      const response =
+        await approveSelectedRequestsApi(requestIds);
+
+      if (response?.statusType === "S") {
+        toast.success(response.statusDesc);
+
+        await fetchAuthRequests();
+        await getAllAuthRequests();
+      }
+
+      return response;
+    } catch (error) {
+      toast.error(
+        error.response?.data?.statusDesc ||
+        "Failed to approve requests"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const rejectSelectedRequests = async (
+    requestIds,
+    reason
+  ) => {
+    try {
+      setLoading(true);
+
+      const response =
+        await rejectSelectedRequestsApi(
+          requestIds,
+          reason
+        );
+
+      if (response?.statusType === "S") {
+        toast.success(response.statusDesc);
+
+        await fetchAuthRequests();
+        await getAllAuthRequests();
+      }
+
+      return response;
+    } catch (error) {
+      toast.error(
+        error.response?.data?.statusDesc ||
+        "Failed to reject requests"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -101,6 +159,10 @@ export const useAuthRequests = () => {
     fetchAuthRequests,
     approveRequest,
     rejectRequest,
+
+    approveSelectedRequests,
+    rejectSelectedRequests,
+
     getAllAuthRequests,
     allAuths
   };

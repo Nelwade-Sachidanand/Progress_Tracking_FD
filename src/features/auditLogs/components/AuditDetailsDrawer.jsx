@@ -7,43 +7,101 @@ export default function AuditDetailsDrawer({ log, onClose }) {
 
   const newData = log.newData ? JSON.parse(log.newData) : null;
 
-  const renderJsonDiff = (current, compare, isOld = false) => {
-    return Object.entries(current || {}).map(([key, value]) => {
-      const changed = JSON.stringify(value) !== JSON.stringify(compare?.[key]);
+  const renderJsonDiff = (
+    current,
+    compare,
+    isOld = false
+  ) => {
 
-      return (
+    if (Array.isArray(current)) {
+      return current.map((item, index) => (
         <div
-          key={key}
-          className={`
-          px-2 py-1 rounded mb-1
-          ${
-            changed
-              ? isOld
-                ? "bg-red-500/20 border-l-4 border-red-400"
-                : "bg-green-500/20 border-l-4 border-green-400"
-              : ""
-          }
-        `}
+          key={index}
+          className="
+          mb-4
+          border-b
+          border-slate-700
+          pb-3
+        "
         >
-          <span className="text-slate-400 2xl:text-lg">"</span>
-          <span
-            className={
-              changed
-                ? "text-yellow-300 font-semibold 2xl:text-lg"
-                : "text-white 2xl:text-lg"
-            }
-          >
-            {key}
-          </span>
-          <span className="text-slate-400 2xl:text-lg">"</span>
-          <span className="text-slate-400 2xl:text-lg">: </span>
+          <div className="text-cyan-300 mb-2">
+            Object {index + 1}
+          </div>
 
-          <span className="text-white break-all 2xl:text-lg">
-            {typeof value === "string" ? `"${value}"` : JSON.stringify(value)}
-          </span>
+          {Object.entries(item).map(([key, value]) => {
+
+            const changed =
+              JSON.stringify(value) !==
+              JSON.stringify(compare?.[index]?.[key]);
+
+            return (
+              <div
+                key={key}
+                className={`
+                px-2 py-1 rounded mb-1
+                ${changed
+                    ? isOld
+                      ? "bg-red-500/20 border-l-4 border-red-400"
+                      : "bg-green-500/20 border-l-4 border-green-400"
+                    : ""
+                  }
+              `}
+              >
+                <span className="text-yellow-300">
+                  {key}
+                </span>
+                <span className="text-slate-400">
+                  :{" "}
+                </span>
+
+                <span className="text-white">
+                  {typeof value === "string"
+                    ? `"${value}"`
+                    : JSON.stringify(value)}
+                </span>
+              </div>
+            );
+          })}
         </div>
-      );
-    });
+      ));
+    }
+
+    return Object.entries(current || {}).map(
+      ([key, value]) => {
+        const changed =
+          JSON.stringify(value) !==
+          JSON.stringify(compare?.[key]);
+
+        return (
+          <div
+            key={key}
+            className={`
+            px-2 py-1 rounded mb-1
+            ${changed
+                ? isOld
+                  ? "bg-red-500/20 border-l-4 border-red-400"
+                  : "bg-green-500/20 border-l-4 border-green-400"
+                : ""
+              }
+          `}
+          >
+            <span className="text-yellow-300">
+              {key}
+            </span>
+
+            <span className="text-slate-400">
+              :{" "}
+            </span>
+
+            <span className="text-white">
+              {typeof value === "string"
+                ? `"${value}"`
+                : JSON.stringify(value)}
+            </span>
+          </div>
+        );
+      }
+    );
   };
 
   return (

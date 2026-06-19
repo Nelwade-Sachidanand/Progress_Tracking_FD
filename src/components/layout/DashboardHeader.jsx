@@ -13,7 +13,17 @@ import {
 } from "lucide-react";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
+import {
+  AlertTriangle,
+  FolderOpen,
+  CheckCircle2,
+  Shield,
+  UserRound,
+  ArrowRight,
+} from "lucide-react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { getNotifications, getUnreadCount } from "../../services/notificationService";
 
 const DashboardHeader = ({
   title,
@@ -25,6 +35,12 @@ const DashboardHeader = ({
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
+
+  const [notifications, setNotifications] = useState([]);
+
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -46,6 +62,104 @@ const DashboardHeader = ({
 
     navigate("/");
   };
+
+  useEffect(() => {
+    loadNotifications();
+  }, []);
+
+  const loadNotifications = async () => {
+    try {
+      const notificationsRes = await getNotifications();
+
+      console.log(notificationsRes);
+
+      const countRes = await getUnreadCount();
+
+      setNotifications(notificationsRes.details);
+
+      setUnreadCount(countRes.details);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getNotificationIcon = (type) => {
+    switch (type) {
+      case "RISK":
+        return (
+          <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center">
+            <AlertTriangle
+              size={24}
+              className="text-red-500"
+            />
+          </div>
+        );
+
+      case "PROJECT":
+        return (
+          <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center">
+            <FolderOpen
+              size={24}
+              className="text-orange-500"
+            />
+          </div>
+        );
+
+      case "MILESTONE":
+        return (
+          <div className="w-12 h-12 rounded-2xl bg-green-50 flex items-center justify-center">
+            <CheckCircle2
+              size={24}
+              className="text-green-500"
+            />
+          </div>
+        );
+
+      case "ACTIVITY_UPDATE":
+        return (
+          <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center">
+            <UserRound
+              size={24}
+              className="text-blue-500"
+            />
+          </div>
+        );
+
+      default:
+        return (
+          <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center">
+            <Shield
+              size={24}
+              className="text-purple-500"
+            />
+          </div>
+        );
+    }
+  };
+
+  const formatTimeAgo = (date) => {
+    const diff =
+      (new Date() - new Date(date)) /
+      1000;
+
+    if (diff < 60)
+      return `${Math.floor(diff)} sec ago`;
+
+    if (diff < 3600)
+      return `${Math.floor(
+        diff / 60
+      )} mins ago`;
+
+    if (diff < 86400)
+      return `${Math.floor(
+        diff / 3600
+      )} hrs ago`;
+
+    return `${Math.floor(
+      diff / 86400
+    )} days ago`;
+  };
+
   const pageConfig = {
     "/dashboard": {
       title: "Implementation Command Center",
@@ -137,13 +251,13 @@ const DashboardHeader = ({
     },
 
     "/project-details": {
-    title: "Implementation Readiness Dashboard",
-    subtitle: "Track Overall Project health and Go-live Readiness",
-    icon: <Plus size={24} />,
+      title: "Implementation Readiness Dashboard",
+      subtitle: "Track Overall Project health and Go-live Readiness",
+      icon: <Plus size={24} />,
 
-    titleClass: "text-[26px]",
-    subtitleClass: "text-[12px]",
-  },
+      titleClass: "text-[26px]",
+      subtitleClass: "text-[12px]",
+    },
   };
 
   const location = useLocation();
@@ -295,57 +409,240 @@ const DashboardHeader = ({
             )}
 
             {/* Notification */}
-            <button
-              className="
-            relative
-            w-9 h-9
-            sm:w-10 sm:h-10
-            flex
-            items-center
-            justify-center
-            2xl:w-12 2xl:h-12
-          "
-            >
-              <Bell size={20} className="text-[#0B1F59] 2xl:w-6 2xl:h-6" />
-
-              <span
+            <div className="relative">
+              <button
+                onClick={() =>
+                  setShowNotifications(
+                    !showNotifications
+                  )
+                }
                 className="
-              absolute
-              -top-1
-              -right-1
-              w-4 h-4
-              sm:w-5 sm:h-5
-              rounded-full
-              bg-red-500
-              text-white
-              text-[8px]
-              sm:text-[10px]
-              font-bold
-              flex
-              items-center
-              justify-center
-              2xl:w-5 2xl:h-5
-              2xl:text-[10px]
-              2xl:font-bold
-            "
+                relative
+                w-10
+                h-10
+                flex
+                items-center
+                justify-center
+                "
               >
-                5
-              </span>
-            </button>
+                <Bell
+                  size={20}
+                  className="text-[#0B1F59] cursor-pointer"
+                />
 
-            {/* Help */}
-            <button
-              className="
-            hidden sm:flex
-            w-10 h-10
-            rounded-full
-            border border-[#E2E8F0]
-            items-center
-            justify-center
-          "
-            >
-              <HelpCircle size={18} className="text-[#0B1F59]" />
-            </button>
+                {unreadCount > 0 && (
+                  <span
+                    className="
+                    absolute
+                    -top-1
+                    -right-1
+                    w-5
+                    h-5
+                    rounded-full
+                    bg-red-500
+                    text-white
+                    text-[10px]
+                    font-bold
+                    flex
+                    items-center
+                    justify-center
+                  "
+                  >
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {showNotifications && (
+                <div
+                  className="
+                  absolute
+                  right-[-250px]
+                  top-14
+                  w-[400px]
+                  bg-white
+                  rounded-3xl
+                  border
+                  border-slate-200
+                  shadow-2xl
+                  overflow-hidden
+                  z-[9999]
+                "
+                >
+                  {/* Header */}
+                  <div
+                    className="
+                    flex
+                    items-center
+                    justify-between
+                    px-6
+                    py-5
+                    border-b
+                  "
+                  >
+                    <h3
+                      className="
+                      text-[18px]
+                      font-bold
+                      text-[#0B1F59]
+                      "
+                    >
+                      Notifications ({unreadCount})
+                    </h3>
+
+                    <button
+                      onClick={async () => {
+                        await markAllRead();
+
+                        loadNotifications();
+                      }}
+                      className="
+                      text-[#2563EB]
+                      font-medium
+                      hover:underline
+                      text-[15px]
+                    "
+                    >
+                      Mark all as read
+                    </button>
+                  </div>
+
+                  {/* Body */}
+                  <div className="max-h-[600px] overflow-y-auto">
+                    {!notifications ||
+                      notifications.length === 0 ? (
+                      <div className="p-10 text-center text-slate-500">
+                        No Notifications
+                      </div>
+                    ) : (
+                      notifications.map(
+                        (notification) => (
+                          <div
+                            key={notification.id}
+                            onClick={async () => {
+                              if (
+                                !notification.read
+                              ) {
+                                await markAsRead(
+                                  notification.id
+                                );
+
+                                loadNotifications();
+                              }
+
+                              if (
+                                notification.redirectUrl
+                              ) {
+                                navigate(
+                                  notification.redirectUrl
+                                );
+                              }
+
+                              setShowNotifications(
+                                false
+                              );
+                            }}
+                            className="
+                flex
+                gap-4
+                p-5
+                border-b
+                cursor-pointer
+                hover:bg-slate-50
+                transition
+              "
+                          >
+                            {getNotificationIcon(
+                              notification.type
+                            )}
+
+                            <div className="flex-1">
+                              <div className="flex justify-between">
+                                <h4
+                                  className="
+                      font-bold
+                      text-[18px]
+                      text-[#0B1F59]
+                    "
+                                >
+                                  {notification.title}
+                                </h4>
+
+                                {!notification.read && (
+                                  <div
+                                    className="
+                        w-4
+                        h-4
+                        rounded-full
+                        bg-red-500
+                        mt-1
+                      "
+                                  />
+                                )}
+                              </div>
+
+                              <p
+                                className="
+                    text-[#475569]
+                    text-[15px]
+                    mt-1
+                    leading-6
+                  "
+                              >
+                                {notification.message}
+                              </p>
+
+                              <p
+                                className="
+                    text-[#94A3B8]
+                    text-sm
+                    mt-2
+                  "
+                              >
+                                {formatTimeAgo(
+                                  notification.createdAt
+                                )}
+                              </p>
+                            </div>
+                          </div>
+                        )
+                      )
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  <div className="p-1 flex items-center justify-center">
+                    <button
+                      onClick={() => {
+                        navigate("/notifications");
+
+                        setShowNotifications(
+                          false
+                        );
+                      }}
+                      className="
+                      w-[120px]
+                      py-2
+                      rounded-2xl
+                      bg-[#F8FAFC]
+                      hover:bg-[#EEF2FF]
+                      text-[#2563EB]
+                      font-semibold
+                      flex
+                      items-center
+                      justify-center
+                      gap-2
+                      cursor-pointer
+                      "
+                    >
+                      View All
+                      <ArrowRight size={18} />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
 
             {/* User */}
             <div className="relative">
