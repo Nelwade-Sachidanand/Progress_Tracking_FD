@@ -467,11 +467,11 @@ export default function AddTaskForm() {
     }, []);
 
     return (
-        <div className="space-y-6 max-w-7xl mx-auto">
+        <div className="space-y-6  mx-auto w-full">
             {/* Basic Information */}
 
             <div
-                className="
+                className=" w-full
   bg-white
   rounded-3xl
   p-6

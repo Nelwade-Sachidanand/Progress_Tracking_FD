@@ -11,7 +11,7 @@ import CreateProjectPage from "../../features/projects/pages/CreateProjectPage";
 import AllTasksPage from "../../features/tasks/pages/AllTasksPage";
 import AddTaskPage from "../../features/add-task/pages/AddTaskPage";
 import ProjectDetailPage from "../../features/project-details/pages/ProjectDetailPage";
-
+import EditTaskPage from"../../features/add-task/pages/EditTaskPage";
 
 const AppRoutes = () => {
   return (
@@ -33,7 +33,7 @@ const AppRoutes = () => {
         />
         <Route path="/tasks" element={<AllTasksPage />} />
         <Route path="/tasks/add-task" element={<AddTaskPage />} />
-
+        <Route path="/edit-task" element={<EditTaskPage />}/>
         {/* <Route
           path="/add-task"
           element={<AddTaskPage />}

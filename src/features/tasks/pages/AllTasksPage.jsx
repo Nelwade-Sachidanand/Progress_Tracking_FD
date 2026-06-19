@@ -186,48 +186,73 @@ useEffect(() => {
       milestone.tasks?.forEach((task) => {
         task.subTasks?.forEach((subTask) => {
           subTask.activities?.forEach((activity) => {
-            allActivities.push({
-              id: activity.id,
+           allActivities.push({
+  id: activity.id,
 
-              projectId:
-                selectedProject.id,
+  projectId: selectedProject.id,
+  projectName: selectedProject.projectName,
 
-              projectName:
-                selectedProject.projectName,
+  phaseName: phase.phaseName,
+  milestoneName: milestone.milestoneName,
+  taskName: task.taskName,
+  subTaskName: subTask.subTaskName,
 
-              phase:
-                phase.phaseName,
+  activityName: activity.activityName,
 
-              milestone:
-                milestone.milestoneName,
+  owner: activity.owner,
 
-              task:
-                task.taskName,
+  estimatedPeriodWeek:
+    activity.estimatedPeriodWeek,
 
-              subTask:
-                subTask.subTaskName,
+  plannedStartDate:
+    activity.plannedStartDate,
 
-              activity:
-                activity.activityName,
+  plannedEndDate:
+    activity.plannedEndDate,
 
-              owner:
-                activity.owner,
+  actualStartDate:
+    activity.actualStartDate,
 
-              progress:
-                activity.progress,
+  actualEndDate:
+    activity.actualEndDate,
 
-              status:
-                activity.executionStatus,
+  progress:
+    activity.progress,
 
-              startDate:
-                activity.actualStartDate,
+  executionStatus:
+    activity.executionStatus,
 
-              endDate:
-                activity.actualEndDate,
+  scheduleHealth:
+    activity.scheduleHealth,
 
-              remark:
-                activity.remark || "",
-            });
+  remark:
+    activity.remark || "",
+
+  // For TaskTable display
+  phase:
+    phase.phaseName,
+
+  milestone:
+    milestone.milestoneName,
+
+  task:
+    task.taskName,
+
+  subTask:
+    subTask.subTaskName,
+
+  activity:
+    activity.activityName,
+
+  status:
+    activity.executionStatus,
+
+  startDate:
+    activity.actualStartDate,
+
+  endDate:
+    activity.actualEndDate,
+});
           });
         });
       });
@@ -253,8 +278,15 @@ useEffect(() => {
 </div>
        {/* <TaskHeader />  */}
 
-      <TaskActions />
-
+      {/* <TaskActions /> */}
+<TaskActions
+  selectedPhase={selectedPhase}
+  selectedMilestone={selectedMilestone}
+  selectedTask={selectedTask}
+  selectedSubTask={selectedSubTask}
+  selectedActivity={selectedActivity}
+  selectedStatus={selectedStatus}
+/>
   <TaskFilters
   phases={phases}
   milestones={filteredMilestones}
@@ -320,6 +352,7 @@ useEffect(() => {
     setShowRemarkModal(true);
   }}
 />
+
  <Pagination
   currentPage={currentPage}
   totalPages={totalPages}

@@ -11,6 +11,7 @@ import {
   Plus,
   Search,
 } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -65,14 +66,21 @@ const DashboardHeader = ({
       subtitleClass: "text-[18px]",
     },
 
-    "/add-task": {
+    "/tasks/add-task": {
       title: "Add New Task",
       subtitle: "Create and manage project task",
       icon: <Plus size={24} />,
 
-      titleClass: "text-[42px]",
-      subtitleClass: "text-[16px]",
+      titleClass: "text-[30px]",
+      subtitleClass: "text-[12px]",
     },
+"/edit-task": {
+  title: "Edit Task",
+  subtitle: "Edit and Update Project Task",
+  icon: <Pencil size={24} />,
+  titleClass: "text-[30px]",
+  subtitleClass: "text-[12px]",
+},
 
     "/users": {
       title: "Users",
