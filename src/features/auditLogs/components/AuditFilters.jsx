@@ -78,6 +78,8 @@ export default function AuditFilters({
           rounded-xl
           border
           border-slate-300
+          outline-none
+          focus:border-blue-500
           cursor-pointer
           2xl:text-[17px]
           2xl:font-medium
@@ -106,6 +108,8 @@ export default function AuditFilters({
           rounded-xl
           border
           border-slate-300
+          outline-none
+          focus:border-blue-500
           cursor-pointer
           2xl:text-[17px]
           2xl:font-medium

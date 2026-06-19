@@ -18,14 +18,41 @@ export const getProjectNames = async (projectIds) => {
   return response.data;
 }
 
-export const approveRequest = async (projectId) => {
-  const response = await apiClient.post(`/activity-request/approve/${projectId}`);
+export const approveRequest = async (requestId) => {
+  console.log("request ID :", requestId);
+  const response = await apiClient.post(`/activity-request/approve/${requestId}`);
 
   return response.data;
 };
 
-export const rejectRequest = async (requestId,reason) => {
+export const rejectRequest = async (requestId, reason) => {
   const response = await apiClient.post(`/activity-request/reject/${requestId}?reason=${encodeURIComponent(reason)}`);
+
+  return response.data;
+};
+
+export const approveSelectedRequests = async (
+  requestIds
+) => {
+  const response = await apiClient.post(
+    "/activity-request/approve-selected",
+    requestIds
+  );
+
+  return response.data;
+};
+
+export const rejectSelectedRequests = async (
+  requestIds,
+  reason
+) => {
+  const response = await apiClient.post(
+    "/activity-request/reject-selected",
+    {
+      requestIds,
+      reason,
+    }
+  );
 
   return response.data;
 };

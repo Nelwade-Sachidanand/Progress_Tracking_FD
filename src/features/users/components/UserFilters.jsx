@@ -34,6 +34,7 @@ const UserFilters = ({
           flex-1
           ml-3
           outline-none
+          focus:border-blue-500
           bg-transparent
           text-[14px]
           2xl:text-[17px]
@@ -81,6 +82,8 @@ const UserFilters = ({
           pr-10
           bg-white
           border
+          outline-none
+          focus:border-blue-500
           border-[#E8EDF5]
           rounded-xl
           shadow-sm

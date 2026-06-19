@@ -97,13 +97,13 @@ export default function AuthorizationFilters({
           border
           border-slate-300
           text-sm
-          outline-none
+          outline-none 
           focus:border-blue-500
           cursor-pointer
           sm:text-sm
           2xl:text-[17px]
-                  2xl:font-medium
-                  2xl:tracking-wide
+          2xl:font-medium
+          2xl:tracking-wide
           "
         >
           <option value="">All Request Types</option>

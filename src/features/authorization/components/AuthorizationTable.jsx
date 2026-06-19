@@ -41,10 +41,17 @@ const getStatusStyle = (status) => {
   }
 };
 
-export default function AuthorizationTable({ logs = [], loading, onView }) {
+export default function AuthorizationTable({ logs = [], loading, onView, approveSelectedRequests, rejectSelectedRequests }) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [selectedRows, setSelectedRows] = useState([]);
+  const [showRejectModal, setShowRejectModal] = useState(false);
+
+  const [showApproveModal, setShowApproveModal] = useState(false);
+
+  const [showRejectConfirm, setShowRejectConfirm] = useState(false);
+
+  const [rejectReason, setRejectReason] = useState("");
 
   if (loading) {
     return (
@@ -68,19 +75,56 @@ export default function AuthorizationTable({ logs = [], loading, onView }) {
 
   const paginatedLogs = logs.slice(startIndex, endIndex);
 
-  const handleRowSelect = (srNo) => {
-    if (selectedRows.includes(srNo)) {
-      setSelectedRows(selectedRows.filter((id) => id !== srNo));
+  const handleRowSelect = (id) => {
+    if (selectedRows.includes(id)) {
+      setSelectedRows(
+        selectedRows.filter(
+          (selectedId) => selectedId !== id
+        )
+      );
     } else {
-      setSelectedRows([...selectedRows, srNo]);
+      setSelectedRows([
+        ...selectedRows,
+        id,
+      ]);
     }
   };
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedRows(paginatedLogs.map((_, index) => startIndex + index + 1));
+      setSelectedRows(
+        paginatedLogs.map((log) => log.id)
+      );
     } else {
       setSelectedRows([]);
+    }
+  };
+
+  const handleApprove = async () => {
+    try {
+      await approveSelectedRequests(
+        selectedRows
+      );
+
+      setSelectedRows([]);
+      setShowApproveModal(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleReject = async () => {
+    try {
+      await rejectSelectedRequests(
+        selectedRows,
+        rejectReason
+      );
+
+      setSelectedRows([]);
+      setRejectReason("");
+      setShowRejectConfirm(false);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -139,6 +183,8 @@ export default function AuthorizationTable({ logs = [], loading, onView }) {
           </span>
 
           <button
+            disabled={selectedRows.length === 0}
+            onClick={() => setShowApproveModal(true)}
             className="
           h-9
           xl:h-10
@@ -161,6 +207,8 @@ export default function AuthorizationTable({ logs = [], loading, onView }) {
           </button>
 
           <button
+            disabled={selectedRows.length === 0}
+            onClick={() => setShowRejectModal(true)}
             className="
           h-9
           xl:h-10
@@ -206,6 +254,13 @@ export default function AuthorizationTable({ logs = [], loading, onView }) {
                 <input
                   className="cursor-pointer 2xl:w-5 2xl:h-5"
                   type="checkbox"
+                  checked={
+                    paginatedLogs.length > 0 &&
+                    paginatedLogs.every((log) =>
+                      selectedRows.includes(log.id)
+                    )
+                  }
+
                   onChange={handleSelectAll}
                 />
               </th>
@@ -275,8 +330,8 @@ export default function AuthorizationTable({ logs = [], loading, onView }) {
                       <input
                         className="cursor-pointer 2xl:w-5 2xl:h-5"
                         type="checkbox"
-                        checked={selectedRows.includes(srNo)}
-                        onChange={() => handleRowSelect(srNo)}
+                        checked={selectedRows.includes(log.id)}
+                        onChange={() => handleRowSelect(log.id)}
                       />
                     </td>
 
@@ -470,6 +525,133 @@ export default function AuthorizationTable({ logs = [], loading, onView }) {
           </button>
         </div>
       </div>
+
+      {
+        showApproveModal && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            <div className="bg-white rounded-2xl p-6 w-[420px]">
+              <h2 className="text-lg font-semibold mb-2">
+                Approve Requests
+              </h2>
+
+              <p className="text-slate-600">
+                Are you sure you want to approve{" "}
+                <b>{selectedRows.length}</b> request(s)?
+              </p>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  onClick={() => setShowApproveModal(false)}
+                  className="px-4 py-2 border rounded-lg cursor-pointer"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={handleApprove}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg cursor-pointer"
+                >
+                  Approve
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      {
+        showRejectModal && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            <div className="bg-white rounded-2xl p-6 w-[500px]">
+              <h2 className="text-lg font-semibold mb-4">
+                Reject Requests
+              </h2>
+
+              <textarea
+                value={rejectReason}
+                onChange={(e) =>
+                  setRejectReason(e.target.value)
+                }
+                rows={4}
+                placeholder="Enter rejection reason..."
+                className="
+            w-full
+            border
+            rounded-lg
+            p-3
+            outline-none
+            focus:border-blue-500
+          "
+              />
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  onClick={() => setShowRejectModal(false)}
+                  className="px-4 py-2 border rounded-lg cursor-pointer"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  disabled={!rejectReason.trim()}
+                  onClick={() => {
+                    setShowRejectModal(false);
+                    setShowRejectConfirm(true);
+                  }}
+                  className="
+              px-4
+              py-2
+              bg-red-600
+              text-white
+              rounded-lg
+              disabled:opacity-50
+              cursor-pointer
+            "
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      {
+        showRejectConfirm && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            <div className="bg-white rounded-2xl p-6 w-[450px]">
+              <h2 className="text-lg font-semibold text-red-600">
+                Confirm Rejection
+              </h2>
+
+              <p className="mt-3 text-slate-600">
+                Are you sure you want to reject{" "}
+                <b>{selectedRows.length}</b> request(s)?
+              </p>
+
+              <div className="mt-2 p-3 bg-red-50 rounded-lg text-sm">
+                <b>Reason:</b> {rejectReason}
+              </div>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  onClick={() => setShowRejectConfirm(false)}
+                  className="px-4 py-2 border rounded-lg"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={handleReject}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg"
+                >
+                  Confirm Reject
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      }
     </div>
   );
 }

@@ -7,8 +7,7 @@ import { useAuthRequests } from "../hooks/useAuthRequests ";
 const AuthorizationRequestsPage = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
 
-  const { auths, loading, approveRequest, rejectRequest, allAuths } = useAuthRequests();
-  // const {getAllAuthRequests,allAuths} = useAuthRequests();
+  const { auths, loading, approveRequest, rejectRequest, allAuths, approveSelectedRequests, rejectSelectedRequests } = useAuthRequests();
 
   
   const [search, setSearch] = useState("");
@@ -17,8 +16,8 @@ const AuthorizationRequestsPage = () => {
   const [requestedBy, setRequestedBy] = useState("");
 
 
-  const handleApprove = async (requestId, reason) => {
-    await approveRequest(requestId, reason);
+  const handleApprove = async (requestId) => {
+    await approveRequest(requestId);
     setSelectedRequest(null);
   };
 
@@ -90,6 +89,8 @@ const AuthorizationRequestsPage = () => {
         logs={filteredLogs}
         loading={loading}
         onView={setSelectedRequest}
+        approveSelectedRequests={approveSelectedRequests}
+        rejectSelectedRequests={rejectSelectedRequests}
       />
 
       {selectedRequest && (
