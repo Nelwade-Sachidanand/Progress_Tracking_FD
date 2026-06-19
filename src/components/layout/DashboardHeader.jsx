@@ -418,7 +418,7 @@ const DashboardHeader = ({
               >
                 <Bell
                   size={20}
-                  className="text-[#0B1F59]"
+                  className="text-[#0B1F59] cursor-pointer"
                 />
 
                 {unreadCount > 0 && (
@@ -447,36 +447,36 @@ const DashboardHeader = ({
               {showNotifications && (
                 <div
                   className="
-      absolute
-      right-0
-      top-14
-      w-[420px]
-      bg-white
-      rounded-3xl
-      border
-      border-slate-200
-      shadow-2xl
-      overflow-hidden
-      z-[9999]
-    "
+                  absolute
+                  right-[-250px]
+                  top-14
+                  w-[400px]
+                  bg-white
+                  rounded-3xl
+                  border
+                  border-slate-200
+                  shadow-2xl
+                  overflow-hidden
+                  z-[9999]
+                "
                 >
                   {/* Header */}
                   <div
                     className="
-        flex
-        items-center
-        justify-between
-        px-6
-        py-5
-        border-b
-      "
+                    flex
+                    items-center
+                    justify-between
+                    px-6
+                    py-5
+                    border-b
+                  "
                   >
                     <h3
                       className="
-          text-[24px]
-          font-bold
-          text-[#0B1F59]
-        "
+                      text-[18px]
+                      font-bold
+                      text-[#0B1F59]
+                      "
                     >
                       Notifications ({unreadCount})
                     </h3>
@@ -488,10 +488,11 @@ const DashboardHeader = ({
                         loadNotifications();
                       }}
                       className="
-          text-[#2563EB]
-          font-medium
-          hover:underline
-        "
+                      text-[#2563EB]
+                      font-medium
+                      hover:underline
+                      text-[15px]
+                    "
                     >
                       Mark all as read
                     </button>
@@ -601,7 +602,7 @@ const DashboardHeader = ({
                   </div>
 
                   {/* Footer */}
-                  <div className="p-5">
+                  <div className="p-1 flex items-center justify-center">
                     <button
                       onClick={() => {
                         navigate("/notifications");
@@ -611,20 +612,21 @@ const DashboardHeader = ({
                         );
                       }}
                       className="
-          w-full
-          py-4
-          rounded-2xl
-          bg-[#F8FAFC]
-          hover:bg-[#EEF2FF]
-          text-[#2563EB]
-          font-semibold
-          flex
-          items-center
-          justify-center
-          gap-2
-        "
+                      w-[120px]
+                      py-2
+                      rounded-2xl
+                      bg-[#F8FAFC]
+                      hover:bg-[#EEF2FF]
+                      text-[#2563EB]
+                      font-semibold
+                      flex
+                      items-center
+                      justify-center
+                      gap-2
+                      cursor-pointer
+                      "
                     >
-                      View All Notifications
+                      View All
                       <ArrowRight size={18} />
                     </button>
                   </div>
