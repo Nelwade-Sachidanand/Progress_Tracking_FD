@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import DashboardHeader from "../components/layout/DashboardHeader";
 import Sidebar from "../components/layout/Sidebar";
+import useIdleLogout from "../services/useIdleLogout";
 
 export default function MainLayout() {
+  useIdleLogout();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (

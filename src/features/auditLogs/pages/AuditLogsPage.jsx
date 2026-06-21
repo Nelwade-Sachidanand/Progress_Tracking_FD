@@ -84,7 +84,7 @@ const AuditLogsPage = () => {
           className="
           hidden
           xl:block
-          w-[28%]
+          w-[30%]
           h-full
           overflow-hidden
           shrink-0

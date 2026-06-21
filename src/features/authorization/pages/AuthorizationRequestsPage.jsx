@@ -1,20 +1,26 @@
 import { useState } from "react";
-import AuthorizationSummaryCards from "../components/AuthorizationSummaryCards";
 import AuthorizationFilters from "../components/AuthorizationFilters";
-import AuthorizationTable from "../components/AuthorizationTable";
 import AuthorizationRequestModal from "../components/AuthorizationRequestModal";
-import { useAuthRequests } from "../hooks/useAuthRequests ";
+import AuthorizationSummaryCards from "../components/AuthorizationSummaryCards";
+import AuthorizationTable from "../components/AuthorizationTable";
+import { useAuthRequests } from "../hooks/useAuthRequests";
 const AuthorizationRequestsPage = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
 
-  const { auths, loading, approveRequest, rejectRequest, allAuths, approveSelectedRequests, rejectSelectedRequests } = useAuthRequests();
+  const {
+    auths,
+    loading,
+    approveRequest,
+    rejectRequest,
+    allAuths,
+    approveSelectedRequests,
+    rejectSelectedRequests,
+  } = useAuthRequests();
 
-  
   const [search, setSearch] = useState("");
   const [requestType, setRequestType] = useState("");
   const [status, setStatus] = useState("");
   const [requestedBy, setRequestedBy] = useState("");
-
 
   const handleApprove = async (requestId) => {
     await approveRequest(requestId);
@@ -26,36 +32,21 @@ const AuthorizationRequestsPage = () => {
     setSelectedRequest(null);
   };
 
-  const filteredLogs = auths.filter(log => {
+  const filteredLogs = auths.filter((log) => {
     const matchesSearch =
       !search ||
-      log.activityName
-        ?.toLowerCase()
-        .includes(search.toLowerCase()) ||
-      log.requestedBy
-        ?.toLowerCase()
-        .includes(search.toLowerCase());
+      log.activityName?.toLowerCase().includes(search.toLowerCase()) ||
+      log.requestedBy?.toLowerCase().includes(search.toLowerCase());
 
     const matchesRequestType =
-      !requestType ||
-      log.requestSource === requestType;
+      !requestType || log.requestSource === requestType;
 
-    const matchesStatus =
-      !status ||
-      log.status === status;
+    const matchesStatus = !status || log.status === status;
 
-    const matchesUser =
-      !requestedBy ||
-      log.requestedBy === requestedBy;
+    const matchesUser = !requestedBy || log.requestedBy === requestedBy;
 
-    return (
-      matchesSearch &&
-      matchesRequestType &&
-      matchesStatus &&
-      matchesUser
-    );
+    return matchesSearch && matchesRequestType && matchesStatus && matchesUser;
   });
-
 
   return (
     <div
@@ -69,9 +60,7 @@ const AuthorizationRequestsPage = () => {
       space-y-5
       "
     >
-      <AuthorizationSummaryCards
-        auths={allAuths}
-      />
+      <AuthorizationSummaryCards auths={allAuths} />
 
       <AuthorizationFilters
         logs={auths}
@@ -96,9 +85,7 @@ const AuthorizationRequestsPage = () => {
       {selectedRequest && (
         <AuthorizationRequestModal
           request={selectedRequest}
-          onClose={() =>
-            setSelectedRequest(null)
-          }
+          onClose={() => setSelectedRequest(null)}
           onApprove={handleApprove}
           onReject={handleReject}
         />

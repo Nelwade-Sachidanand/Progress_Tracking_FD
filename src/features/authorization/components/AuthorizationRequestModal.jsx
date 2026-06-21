@@ -1,100 +1,84 @@
-import { useEffect, useState } from "react";
-import { getProjectNames } from "../services/authService";
 import {
-    X,
-    Check,
-    XCircle,
-    ShieldCheck,
-    FileText,
-    ArrowLeft,
+  ArrowLeft,
+  Check,
+  FileText,
+  ShieldCheck,
+  X,
+  XCircle,
 } from "lucide-react";
 
-const formatDate = (date) => {
-    if (!date) return "-";
+import { useEffect, useState } from "react";
 
-    return new Date(date).toLocaleString("en-IN", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-    });
+import { toast } from "react-toastify";
+
+import { getProjectNames } from "../services/authService";
+
+const formatDate = (date) => {
+  if (!date) return "-";
+
+  return new Date(date).toLocaleString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
 };
 
 export default function AuthorizationRequestModal({
-    request,
-    onClose,
-    onApprove,
-    onReject,
+  request,
+  onClose,
+  onApprove,
+  onReject,
 }) {
-    if (!request) return null;
+  if (!request) return null;
 
-    const [projectName, setProjectName] = useState("");
-    const [showRejectModal, setShowRejectModal] = useState(false);
-    const [rejectReason, setRejectReason] = useState("");
+  const [projectName, setProjectName] = useState("");
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
 
-    useEffect(() => {
-        const fetchProjectName = async () => {
-            try {
-                if (!request?.projectId) return;
+  useEffect(() => {
+    const fetchProjectName = async () => {
+      try {
+        if (!request?.projectId) return;
 
-                const response = await getProjectNames([request.projectId,]);
+        const response = await getProjectNames([request.projectId]);
 
-                console.log(response);
-
-                if (response?.statusType === "S") {
-                    const projectMap = response.details;
-                    console.log(projectMap);
-                    setProjectName(projectMap[request.projectId]);
-                }
-            } catch (error) {
-                console.error("Failed to fetch project name", error);
-            }
-        };
-
-        fetchProjectName();
-    }, [request]);
-
-    const oldActivity =
-        request.oldActivity || {};
-
-    const newActivity =
-        request.newActivity || {};
-
-    const changes = Object.keys(
-        newActivity
-    ).filter(
-        (key) =>
-            JSON.stringify(
-                oldActivity[key]
-            ) !==
-            JSON.stringify(
-                newActivity[key]
-            )
-    );
-
-    const formatValue = (value) => {
-        if (value === null || value === undefined)
-            return "null";
-
-        if (typeof value === "object") return JSON.stringify(value, null, 2);
-
-        return String(value);
-    };
-
-    const handleApprove = async (e) => {
-        e.preventDefault();
-
-        const response = await login(username, password);
+        console.log(response);
 
         if (response?.statusType === "S") {
-            navigate("/authorization");
+          const projectMap = response.details;
+          console.log(projectMap);
+          setProjectName(projectMap[request.projectId]);
         }
+      } catch (error) {
+        console.error("Failed to fetch project name", error);
+      }
     };
 
-    return (
-        <div
-            className="
+    fetchProjectName();
+  }, [request]);
+
+  const oldActivity = request.oldActivity || {};
+
+  const newActivity = request.newActivity || {};
+
+  const changes = Object.keys(newActivity).filter(
+    (key) =>
+      JSON.stringify(oldActivity[key]) !== JSON.stringify(newActivity[key]),
+  );
+
+  const formatValue = (value) => {
+    if (value === null || value === undefined) return "null";
+
+    if (typeof value === "object") return JSON.stringify(value, null, 2);
+
+    return String(value);
+  };
+
+  return (
+    <div
+      className="
       fixed
       inset-0
       z-[9999]
@@ -107,9 +91,9 @@ export default function AuthorizationRequestModal({
       sm:p-4
       xl:p-6
       "
-        >
-            <div
-                className="
+    >
+      <div
+        className="
         bg-white
         rounded-[24px]
         xl:rounded-[32px]
@@ -124,11 +108,11 @@ export default function AuthorizationRequestModal({
 
         overflow-hidden
         "
-            >
-                {/* Header */}
+      >
+        {/* Header */}
 
-                <div
-                    className="
+        <div
+          className="
           relative
 
           px-5
@@ -143,10 +127,10 @@ export default function AuthorizationRequestModal({
           border-b
           border-slate-100
           "
-                >
-                    <button
-                        onClick={onClose}
-                        className="
+        >
+          <button
+            onClick={onClose}
+            className="
             absolute
             top-5
             right-5
@@ -165,12 +149,12 @@ export default function AuthorizationRequestModal({
             transition
             cursor-pointer
             "
-                    >
-                        <X size={24} />
-                    </button>
+          >
+            <X size={24} />
+          </button>
 
-                    <div
-                        className="
+          <div
+            className="
             2xl:h-20
             2xl:w-20
 
@@ -187,15 +171,12 @@ export default function AuthorizationRequestModal({
             items-center
             justify-center
             "
-                    >
-                        <ShieldCheck
-                            size={36}
-                            className="text-blue-600"
-                        />
-                    </div>
+          >
+            <ShieldCheck size={36} className="text-blue-600" />
+          </div>
 
-                    <h2
-                        className="
+          <h2
+            className="
             mt-1
 
             text-xl
@@ -206,12 +187,12 @@ export default function AuthorizationRequestModal({
 
             text-[#142850]
             "
-                    >
-                        Activity Approval Request
-                    </h2>
+          >
+            Activity Approval Request
+          </h2>
 
-                    <p
-                        className="
+          <p
+            className="
             mt-1
             mb-3
 
@@ -220,25 +201,23 @@ export default function AuthorizationRequestModal({
 
             text-slate-500
             "
-                    >
-                        Review the requested
-                        modifications before taking
-                        action
-                    </p>
-                </div>
+          >
+            Review the requested modifications before taking action
+          </p>
+        </div>
 
-                {/* Scrollable Body */}
+        {/* Scrollable Body */}
 
-                <div
-                    className="
+        <div
+          className="
           flex-1
           overflow-y-auto
           "
-                >
-                    {/* Request Details */}
+        >
+          {/* Request Details */}
 
-                    <div
-                        className="
+          <div
+            className="
             px-5
             md:px-8
             xl:px-12
@@ -246,9 +225,9 @@ export default function AuthorizationRequestModal({
             mt-3
             xl:mt-3
             "
-                    >
-                        <div
-                            className="
+          >
+            <div
+              className="
               bg-slate-50
 
               border
@@ -259,9 +238,9 @@ export default function AuthorizationRequestModal({
               p-5
               xl:p-4
               "
-                        >
-                            <div
-                                className="
+            >
+              <div
+                className="
                 grid
 
                 grid-cols-1
@@ -270,19 +249,19 @@ export default function AuthorizationRequestModal({
 
                 gap-5
                 "
-                            >
-                                <div>
-                                    <p
-                                        className="
+              >
+                <div>
+                  <p
+                    className="
                     text-slate-500
                     text-sm
                     "
-                                    >
-                                        Project
-                                    </p>
+                  >
+                    Project
+                  </p>
 
-                                    <p
-                                        className="
+                  <p
+                    className="
                     font-semibold
 
                     break-all
@@ -290,93 +269,85 @@ export default function AuthorizationRequestModal({
                     text-sm
                     xl:text-base
                     "
-                                    >
-                                        {projectName}
-                                    </p>
-                                </div>
+                  >
+                    {projectName}
+                  </p>
+                </div>
 
-                                <div>
-                                    <p
-                                        className="
+                <div>
+                  <p
+                    className="
                     text-slate-500
                     text-sm
                     "
-                                    >
-                                        Activity
-                                    </p>
+                  >
+                    Activity
+                  </p>
 
-                                    <p
-                                        className="
+                  <p
+                    className="
                     font-semibold
                     break-words
                     "
-                                    >
-                                        {
-                                            request.activityName
-                                        }
-                                    </p>
-                                </div>
+                  >
+                    {request.activityName}
+                  </p>
+                </div>
 
-                                <div>
-                                    <p
-                                        className="
+                <div>
+                  <p
+                    className="
                     text-slate-500
                     text-sm
                     "
-                                    >
-                                        Requested By
-                                    </p>
+                  >
+                    Requested By
+                  </p>
 
-                                    <p className="font-semibold">
-                                        {
-                                            request.requestedBy
-                                        }
-                                    </p>
-                                </div>
+                  <p className="font-semibold">{request.requestedBy}</p>
+                </div>
 
-                                <div>
-                                    <p
-                                        className="
+                <div>
+                  <p
+                    className="
                     text-slate-500
                     text-sm
                     "
-                                    >
-                                        Requested At
-                                    </p>
+                  >
+                    Requested At
+                  </p>
 
-                                    <p className="font-semibold">
-                                        {formatDate(
-                                            request.requestedAt
-                                        )}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                  <p className="font-semibold">
+                    {formatDate(request.requestedAt)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
 
-                    {/* Changes Header */}
+          {/* Changes Header */}
 
-                    <div
-                        className="
+          <div
+            className="
             px-5
             md:px-8
             xl:px-12
 
             mt-4
             "
-                    >
-                        <div
-                            className="
+          >
+            <div
+              className="
               flex
               items-center
               justify-between
               flex-wrap
               gap-2
               "
-                        >
-                            <div className="flex items-center gap-4">
-                                <div
-                                    className="
+            >
+              <div className="flex items-center gap-4">
+                <div
+                  className="
                   h-12
                   w-12
 
@@ -388,15 +359,12 @@ export default function AuthorizationRequestModal({
                   items-center
                   justify-center
                   "
-                                >
-                                    <FileText
-                                        size={18}
-                                        className="text-blue-600"
-                                    />
-                                </div>
+                >
+                  <FileText size={18} className="text-blue-600" />
+                </div>
 
-                                <h3
-                                    className="
+                <h3
+                  className="
                   text-xl
                   xl:text-lg
 
@@ -404,13 +372,13 @@ export default function AuthorizationRequestModal({
 
                   text-[#142850]
                   "
-                                >
-                                    Changes Summary
-                                </h3>
-                            </div>
+                >
+                  Changes Summary
+                </h3>
+              </div>
 
-                            <span
-                                className="
+              <span
+                className="
                 px-4
                 py-2
 
@@ -422,16 +390,16 @@ export default function AuthorizationRequestModal({
                 text-sm
                 font-semibold
                 "
-                            >
-                                {changes.length} Change(s)
-                            </span>
-                        </div>
-                    </div>
+              >
+                {changes.length} Change(s)
+              </span>
+            </div>
+          </div>
 
-                    {/* Changes Table */}
+          {/* Changes Table */}
 
-                    <div
-                        className="
+          <div
+            className="
             px-5
             md:px-8
             xl:px-12
@@ -439,11 +407,10 @@ export default function AuthorizationRequestModal({
             mt-3
             pb-8
             "
-                    >
-                        {changes.length ===
-                            0 ? (
-                            <div
-                                className="
+          >
+            {changes.length === 0 ? (
+              <div
+                className="
                 border
                 border-slate-200
 
@@ -454,9 +421,9 @@ export default function AuthorizationRequestModal({
 
                 text-center
                 "
-                            >
-                                <div
-                                    className="
+              >
+                <div
+                  className="
                   h-16
                   w-16
 
@@ -470,15 +437,12 @@ export default function AuthorizationRequestModal({
                   items-center
                   justify-center
                   "
-                                >
-                                    <FileText
-                                        size={28}
-                                        className="text-blue-600"
-                                    />
-                                </div>
+                >
+                  <FileText size={28} className="text-blue-600" />
+                </div>
 
-                                <h4
-                                    className="
+                <h4
+                  className="
                   mt-5
 
                   text-lg
@@ -486,26 +450,23 @@ export default function AuthorizationRequestModal({
 
                   text-slate-700
                   "
-                                >
-                                    No changes have been
-                                    made
-                                </h4>
+                >
+                  No changes have been made
+                </h4>
 
-                                <p
-                                    className="
+                <p
+                  className="
                   mt-2
 
                   text-slate-500
                   "
-                                >
-                                    There are no
-                                    modifications to
-                                    display.
-                                </p>
-                            </div>
-                        ) : (
-                            <div
-                                className="
+                >
+                  There are no modifications to display.
+                </p>
+              </div>
+            ) : (
+              <div
+                className="
                 border
                 border-slate-200
 
@@ -513,77 +474,76 @@ export default function AuthorizationRequestModal({
 
                 overflow-hidden
                 "
-                            >
-                                <div className="overflow-x-auto">
-                                    <table className="w-full min-w-[700px]">
-                                        <thead>
-                                            <tr
-                                                className="
+              >
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[700px]">
+                    <thead>
+                      <tr
+                        className="
                         bg-slate-50
                         "
-                                            >
-                                                <th
-                                                    className="
+                      >
+                        <th
+                          className="
                           px-5
                           xl:py-2
                           2xl:py-5
                           text-left
                           font-semibold
                           "
-                                                >
-                                                    Field
-                                                </th>
+                        >
+                          Field
+                        </th>
 
-                                                <th
-                                                    className="
+                        <th
+                          className="
                           px-5
                           py-2
                           2xl:py-5
                           text-left
                           font-semibold
                           "
-                                                >
-                                                    Old Value
-                                                </th>
+                        >
+                          Old Value
+                        </th>
 
-                                                <th
-                                                    className="
+                        <th
+                          className="
                           px-5
                           py-2
                           2xl:py-5
                           text-left
                           font-semibold
                           "
-                                                >
-                                                    New Value
-                                                </th>
-                                            </tr>
-                                        </thead>
+                        >
+                          New Value
+                        </th>
+                      </tr>
+                    </thead>
 
-                                        <tbody>
-                                            {changes.map(
-                                                (field) => (
-                                                    <tr
-                                                        key={field}
-                                                        className="
+                    <tbody>
+                      {changes.map((field) => (
+                        <tr
+                          key={field}
+                          className="
                             border-t
                             border-slate-200
                             "
-                                                    >
-                                                        <td
-                                                            className="
+                        >
+                          <td
+                            className="
                               px-5
                               py-2
                               2xl:py-5
                               font-medium
                               text-slate-700
                               "
-                                                        >
-                                                            {field}
-                                                        </td>
+                          >
+                            {field}
+                          </td>
 
-                                                        <td
-                                                            className="
+                          <td
+                            className="
                                                             px-5
                                                             py-2
                                                             2xl:py-5
@@ -591,16 +551,12 @@ export default function AuthorizationRequestModal({
 
                                                             break-words
                                                             "
-                                                        >
-                                                            {formatValue(
-                                                                oldActivity[
-                                                                field
-                                                                ]
-                                                            )}
-                                                        </td>
+                          >
+                            {formatValue(oldActivity[field])}
+                          </td>
 
-                                                        <td
-                                                            className="
+                          <td
+                            className="
                                                             px-5
                                                             py-2
                                                             2xl:py-5
@@ -608,28 +564,23 @@ export default function AuthorizationRequestModal({
 
                                                             break-words
                                                             "
-                                                        >
-                                                            {formatValue(
-                                                                newActivity[
-                                                                field
-                                                                ]
-                                                            )}
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        )}
-                    </div>
+                          >
+                            {formatValue(newActivity[field])}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
+              </div>
+            )}
+          </div>
+        </div>
 
-                {/* Footer */}
+        {/* Footer */}
 
-                <div
-                    className="
+        <div
+          className="
                     sticky
                     bottom-0
 
@@ -644,9 +595,9 @@ export default function AuthorizationRequestModal({
 
                     py-5
                     "
-                >
-                    <div
-                        className="
+        >
+          <div
+            className="
                         flex
 
                         flex-col
@@ -656,12 +607,10 @@ export default function AuthorizationRequestModal({
 
                         gap-4
                         "
-                    >
-                        <button
-                            onClick={() =>
-                                onApprove?.(request.id)
-                            }
-                            className="
+          >
+            <button
+              onClick={() => onApprove?.(request.id)}
+              className="
                             w-full
                             md:w-auto
 
@@ -686,16 +635,14 @@ export default function AuthorizationRequestModal({
                             transition
                             cursor-pointer
                             "
-                        >
-                            <Check size={20} />
-                            Approve Request
-                        </button>
+            >
+              <Check size={20} />
+              Approve Request
+            </button>
 
-                        <button
-                            onClick={() =>
-                                setShowRejectModal(true)
-                            }
-                            className="
+            <button
+              onClick={() => setShowRejectModal(true)}
+              className="
                             w-full
                             md:w-auto
 
@@ -720,14 +667,14 @@ export default function AuthorizationRequestModal({
                             transition
                             cursor-pointer
                             "
-                        >
-                            <XCircle size={20} />
-                            Reject Request
-                        </button>
+            >
+              <XCircle size={20} />
+              Reject Request
+            </button>
 
-                        <button
-                            onClick={onClose}
-                            className="
+            <button
+              onClick={onClose}
+              className="
                             w-full
                             md:w-auto
 
@@ -749,14 +696,14 @@ export default function AuthorizationRequestModal({
                             gap-2
                             cursor-pointer
                             "
-                        >
-                            <ArrowLeft size={18} />
-                            Go Back
-                        </button>
-                    </div>
+            >
+              <ArrowLeft size={18} />
+              Go Back
+            </button>
+          </div>
 
-                    <div
-                        className="
+          <div
+            className="
                         mt-5
                         pt-4
 
@@ -769,17 +716,16 @@ export default function AuthorizationRequestModal({
 
                         text-slate-500
                         "
-                    >
-                        All authorization actions
-                        are logged and audited for
-                        security compliance.
-                    </div>
-                </div>
-            </div>
+          >
+            All authorization actions are logged and audited for security
+            compliance.
+          </div>
+        </div>
+      </div>
 
-            {showRejectModal && (
-                <div
-                    className="
+      {showRejectModal && (
+        <div
+          className="
                     fixed
                     inset-0
                     bg-black/40
@@ -788,9 +734,9 @@ export default function AuthorizationRequestModal({
                     justify-center
                     z-[10000]
                     "
-                >
-                    <div
-                        className="
+        >
+          <div
+            className="
                         bg-white
                         rounded-2xl
                         p-6
@@ -798,25 +744,23 @@ export default function AuthorizationRequestModal({
                         max-w-md
                         shadow-xl
                         "
-                    >
-                        <h3
-                            className="
+          >
+            <h3
+              className="
                             text-lg
                             font-semibold
                             mb-4
                             "
-                        >
-                            Reject Request
-                        </h3>
+            >
+              Reject Request
+            </h3>
 
-                        <textarea
-                            value={rejectReason}
-                            onChange={(e) =>
-                                setRejectReason(e.target.value)
-                            }
-                            placeholder="Enter rejection reason..."
-                            rows={4}
-                            className="
+            <textarea
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              placeholder="Enter rejection reason..."
+              rows={4}
+              className="
                             w-full
                             border
                             border-slate-100
@@ -827,45 +771,45 @@ export default function AuthorizationRequestModal({
                             focus:ring-2
                             focus:ring-red-300
                             "
-                        />
+            />
 
-                        <div
-                            className="
+            <div
+              className="
                             flex
                             justify-end
                             gap-3
                             mt-4
                             "
-                        >
-                            <button
-                                onClick={() => {
-                                    setShowRejectModal(false);
-                                    setRejectReason("");
-                                }}
-                                className="
+            >
+              <button
+                onClick={() => {
+                  setShowRejectModal(false);
+                  setRejectReason("");
+                }}
+                className="
                                     px-4
                                     py-2
                                     border
                                     rounded-lg
                                     cursor-pointer
                                 "
-                            >
-                                Cancel
-                            </button>
+              >
+                Cancel
+              </button>
 
-                            <button
-                                onClick={() => {
-                                    if (!rejectReason.trim()) {
-                                        toast.error("Please enter rejection reason");
-                                        return;
-                                    }
-                                    
-                                    onReject?.(request.id,rejectReason);
+              <button
+                onClick={() => {
+                  if (!rejectReason.trim()) {
+                    toast.error("Please enter rejection reason");
+                    return;
+                  }
 
-                                    setShowRejectModal(false);
-                                    setRejectReason("");
-                                }}
-                                className="
+                  onReject?.(request.id, rejectReason);
+
+                  setShowRejectModal(false);
+                  setRejectReason("");
+                }}
+                className="
                                     px-4
                                     py-2
                                     bg-red-600
@@ -873,13 +817,13 @@ export default function AuthorizationRequestModal({
                                     rounded-lg
                                     cursor-pointer
                                 "
-                            >
-                                Submit
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
         </div>
-    );
+      )}
+    </div>
+  );
 }

@@ -1,29 +1,33 @@
 import {
+  AlertTriangle,
+  ArrowRight,
   Bell,
   Building2,
+  CheckCircle2,
   ChevronDown,
   ClipboardList,
-  HelpCircle,
+  FolderOpen,
   LayoutDashboard,
   List,
   LogOut,
   Menu,
+  Pencil,
   Plus,
   Search,
-} from "lucide-react";
-import { Pencil } from "lucide-react";
-import { useState } from "react";
-import {
-  AlertTriangle,
-  FolderOpen,
-  CheckCircle2,
   Shield,
+  ShieldCheck,
+  User,
   UserRound,
-  ArrowRight,
+  Users,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { getNotifications, getUnreadCount } from "../../services/notificationService";
+import {
+  getNotifications,
+  getUnreadCount,
+  markAllRead,
+  markAsRead,
+} from "../../services/notificationService";
 
 const DashboardHeader = ({
   title,
@@ -71,7 +75,7 @@ const DashboardHeader = ({
     try {
       const notificationsRes = await getNotifications();
 
-      console.log(notificationsRes);
+      // console.log(notificationsRes);
 
       const countRes = await getUnreadCount();
 
@@ -88,76 +92,50 @@ const DashboardHeader = ({
       case "RISK":
         return (
           <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center">
-            <AlertTriangle
-              size={24}
-              className="text-red-500"
-            />
+            <AlertTriangle size={24} className="text-red-500" />
           </div>
         );
 
       case "PROJECT":
         return (
           <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center">
-            <FolderOpen
-              size={24}
-              className="text-orange-500"
-            />
+            <FolderOpen size={24} className="text-orange-500" />
           </div>
         );
 
       case "MILESTONE":
         return (
           <div className="w-12 h-12 rounded-2xl bg-green-50 flex items-center justify-center">
-            <CheckCircle2
-              size={24}
-              className="text-green-500"
-            />
+            <CheckCircle2 size={24} className="text-green-500" />
           </div>
         );
 
       case "ACTIVITY_UPDATE":
         return (
           <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center">
-            <UserRound
-              size={24}
-              className="text-blue-500"
-            />
+            <UserRound size={20} className="text-blue-500" />
           </div>
         );
 
       default:
         return (
           <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center">
-            <Shield
-              size={24}
-              className="text-purple-500"
-            />
+            <Shield size={24} className="text-purple-500" />
           </div>
         );
     }
   };
 
   const formatTimeAgo = (date) => {
-    const diff =
-      (new Date() - new Date(date)) /
-      1000;
+    const diff = (new Date() - new Date(date)) / 1000;
 
-    if (diff < 60)
-      return `${Math.floor(diff)} sec ago`;
+    if (diff < 60) return `${Math.floor(diff)} sec ago`;
 
-    if (diff < 3600)
-      return `${Math.floor(
-        diff / 60
-      )} mins ago`;
+    if (diff < 3600) return `${Math.floor(diff / 60)} mins ago`;
 
-    if (diff < 86400)
-      return `${Math.floor(
-        diff / 3600
-      )} hrs ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hrs ago`;
 
-    return `${Math.floor(
-      diff / 86400
-    )} days ago`;
+    return `${Math.floor(diff / 86400)} days ago`;
   };
 
   const pageConfig = {
@@ -188,18 +166,18 @@ const DashboardHeader = ({
       titleClass: "text-[30px]",
       subtitleClass: "text-[12px]",
     },
-"/edit-task": {
-  title: "Edit Task",
-  subtitle: "Edit and Update Project Task",
-  icon: <Pencil size={24} />,
-  titleClass: "text-[30px]",
-  subtitleClass: "text-[12px]",
-},
+    "/edit-task": {
+      title: "Edit Task",
+      subtitle: "Edit and Update Project Task",
+      icon: <Pencil size={24} />,
+      titleClass: "text-[30px]",
+      subtitleClass: "text-[12px]",
+    },
 
     "/users": {
       title: "Users",
       subtitle: "Create and manage Usera",
-      icon: <Plus size={22} />,
+      icon: <Users size={22} />,
 
       titleClass: "text-[32px]",
       subtitleClass: "text-[17px]",
@@ -208,7 +186,7 @@ const DashboardHeader = ({
     "/users/add": {
       title: "Users",
       subtitle: "Create and manage Usera",
-      icon: <Plus size={22} />,
+      icon: <User size={22} />,
 
       titleClass: "text-[32px]",
       subtitleClass: "text-[17px]",
@@ -217,7 +195,7 @@ const DashboardHeader = ({
     "/users/edit": {
       title: "Users",
       subtitle: "Create and manage Usera",
-      icon: <Plus size={22} />,
+      icon: <User size={22} />,
 
       titleClass: "text-[32px]",
       subtitleClass: "text-[17px]",
@@ -235,7 +213,7 @@ const DashboardHeader = ({
     "/authorization": {
       title: "Authorization",
       subtitle: "View and Authorize Requests",
-      icon: <ClipboardList size={22} />,
+      icon: <ShieldCheck size={22} />,
 
       titleClass: "text-[32px]",
       subtitleClass: "text-[17px]",
@@ -411,11 +389,8 @@ const DashboardHeader = ({
             {/* Notification */}
             <div className="relative">
               <button
-                onClick={() =>
-                  setShowNotifications(
-                    !showNotifications
-                  )
-                }
+                data-testid="notification-button"
+                onClick={() => setShowNotifications(!showNotifications)}
                 className="
                 relative
                 w-10
@@ -425,10 +400,7 @@ const DashboardHeader = ({
                 justify-center
                 "
               >
-                <Bell
-                  size={20}
-                  className="text-[#0B1F59] cursor-pointer"
-                />
+                <Bell size={20} className="text-[#0B1F59] cursor-pointer" />
 
                 {unreadCount > 0 && (
                   <span
@@ -482,7 +454,8 @@ const DashboardHeader = ({
                   >
                     <h3
                       className="
-                      text-[18px]
+                      xl:text-[16px]
+                      2xl:text-[18px]
                       font-bold
                       text-[#0B1F59]
                       "
@@ -500,7 +473,8 @@ const DashboardHeader = ({
                       text-[#2563EB]
                       font-medium
                       hover:underline
-                      text-[15px]
+                      xl:text-[15px]
+                      2xl:text-[17px]
                     "
                     >
                       Mark all as read
@@ -509,104 +483,88 @@ const DashboardHeader = ({
 
                   {/* Body */}
                   <div className="max-h-[600px] overflow-y-auto">
-                    {!notifications ||
-                      notifications.length === 0 ? (
+                    {!notifications || notifications.length === 0 ? (
                       <div className="p-10 text-center text-slate-500">
                         No Notifications
                       </div>
                     ) : (
-                      notifications.map(
-                        (notification) => (
-                          <div
-                            key={notification.id}
-                            onClick={async () => {
-                              if (
-                                !notification.read
-                              ) {
-                                await markAsRead(
-                                  notification.id
-                                );
+                      notifications.map((notification) => (
+                        <div
+                          key={notification.id}
+                          onClick={async () => {
+                            if (!notification.read) {
+                              await markAsRead(notification.id);
 
-                                loadNotifications();
-                              }
+                              loadNotifications();
+                            }
 
-                              if (
-                                notification.redirectUrl
-                              ) {
-                                navigate(
-                                  notification.redirectUrl
-                                );
-                              }
+                            if (notification.redirectUrl) {
+                              navigate(notification.redirectUrl);
+                            }
 
-                              setShowNotifications(
-                                false
-                              );
-                            }}
-                            className="
-                flex
-                gap-4
-                p-5
-                border-b
-                cursor-pointer
-                hover:bg-slate-50
-                transition
-              "
-                          >
-                            {getNotificationIcon(
-                              notification.type
-                            )}
+                            setShowNotifications(false);
+                          }}
+                          className="
+                          flex
+                          gap-4
+                          p-5
+                          border-b
+                          cursor-pointer
+                          hover:bg-slate-50
+                          transition
+                          "
+                        >
+                          {getNotificationIcon(notification.type)}
 
-                            <div className="flex-1">
-                              <div className="flex justify-between">
-                                <h4
+                          <div className="flex-1">
+                            <div className="flex justify-between">
+                              <h4
+                                className="
+                                font-bold
+                                text-[16px]
+                                text-[#0B1F59]
+                                "
+                              >
+                                {notification.title}
+                              </h4>
+
+                              {!notification.read && (
+                                <div
                                   className="
-                      font-bold
-                      text-[18px]
-                      text-[#0B1F59]
-                    "
-                                >
-                                  {notification.title}
-                                </h4>
-
-                                {!notification.read && (
-                                  <div
-                                    className="
-                        w-4
-                        h-4
-                        rounded-full
-                        bg-red-500
-                        mt-1
-                      "
-                                  />
-                                )}
-                              </div>
-
-                              <p
-                                className="
-                    text-[#475569]
-                    text-[15px]
-                    mt-1
-                    leading-6
-                  "
-                              >
-                                {notification.message}
-                              </p>
-
-                              <p
-                                className="
-                    text-[#94A3B8]
-                    text-sm
-                    mt-2
-                  "
-                              >
-                                {formatTimeAgo(
-                                  notification.createdAt
-                                )}
-                              </p>
+                                  w-4
+                                  h-4
+                                  rounded-full
+                                  bg-red-500
+                                  mt-1
+                                  "
+                                />
+                              )}
                             </div>
+
+                            <p
+                              className="
+                              text-[#475569]
+                              xl:text-[14px]
+                              2xl:text-[16px]
+                              mt-1
+                              leading-6
+                              "
+                            >
+                              {notification.message}
+                            </p>
+
+                            <p
+                              className="
+                              text-[#94A3B8]
+                              text-sm
+                              mt-2
+                              "
+                            >
+                              {formatTimeAgo(notification.createdAt)}
+                            </p>
                           </div>
-                        )
-                      )
+                        </div>
+                      ))
                     )}
                   </div>
 
@@ -616,9 +574,7 @@ const DashboardHeader = ({
                       onClick={() => {
                         navigate("/notifications");
 
-                        setShowNotifications(
-                          false
-                        );
+                        setShowNotifications(false);
                       }}
                       className="
                       w-[120px]
@@ -642,7 +598,6 @@ const DashboardHeader = ({
                 </div>
               )}
             </div>
-
 
             {/* User */}
             <div className="relative">

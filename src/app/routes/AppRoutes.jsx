@@ -1,17 +1,17 @@
 import { Route, Routes } from "react-router-dom";
+import AddTaskPage from "../../features/add-task/pages/AddTaskPage";
+import EditTaskPage from "../../features/add-task/pages/EditTaskPage";
 import AuditLogsPage from "../../features/auditLogs/pages/AuditLogsPage";
-import LoginPage from "../../features/auth/pages/LoginPage";
+import AuthorizationRequestsPage from "../../features/authorization/pages/AuthorizationRequestsPage";
+import CreateProjectPage from "../../features/create-project/pages/CreateProjectPage";
 import DashboardPage from "../../features/dashboard/pages/DashboardPage";
+import LoginPage from "../../features/login/pages/LoginPage";
+import ProjectDetailPage from "../../features/project-details/pages/ProjectDetailPage";
+import AllTasksPage from "../../features/tasks/pages/AllTasksPage";
 import AddUserPage from "../../features/users/pages/AddUserPage";
 import EditUserPage from "../../features/users/pages/EditUserPage";
 import UserManagementPage from "../../features/users/pages/UserManagementPage";
 import MainLayout from "../../layouts/MainLayout";
-import AuthorizationRequestsPage from "../../features/authorization/pages/AuthorizationRequestsPage";
-import CreateProjectPage from "../../features/projects/pages/CreateProjectPage";
-import AllTasksPage from "../../features/tasks/pages/AllTasksPage";
-import AddTaskPage from "../../features/add-task/pages/AddTaskPage";
-import ProjectDetailPage from "../../features/project-details/pages/ProjectDetailPage";
-import EditTaskPage from"../../features/add-task/pages/EditTaskPage";
 
 const AppRoutes = () => {
   return (
@@ -27,13 +27,10 @@ const AppRoutes = () => {
         <Route path="/audits" element={<AuditLogsPage />} />
         <Route path="/authorization" element={<AuthorizationRequestsPage />} />
         <Route path="/create-project" element={<CreateProjectPage />} />
-        <Route
-          path="/project-details"
-          element={<ProjectDetailPage />}
-        />
+        <Route path="/project-details" element={<ProjectDetailPage />} />
         <Route path="/tasks" element={<AllTasksPage />} />
         <Route path="/tasks/add-task" element={<AddTaskPage />} />
-        <Route path="/edit-task" element={<EditTaskPage />}/>
+        <Route path="/edit-task" element={<EditTaskPage />} />
         {/* <Route
           path="/add-task"
           element={<AddTaskPage />}

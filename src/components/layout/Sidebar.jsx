@@ -13,6 +13,7 @@ import {
   Package,
   Settings,
   ShieldAlert,
+  ShieldCheck,
   Users,
   X,
 } from "lucide-react";
@@ -48,7 +49,7 @@ const menuGroups = [
       { name: "Users", icon: Users, path: "/users" },
       { name: "Settings", icon: Settings, path: "/settings" },
       { name: "Audit Logs", icon: ClipboardList, path: "/audits" },
-      { name: "Authorization", icon: ClipboardList, path: "/authorization" },
+      { name: "Authorization", icon: ShieldCheck, path: "/authorization" },
     ],
   },
 ];
@@ -60,6 +61,7 @@ export default function Sidebar() {
     <>
       {/* Mobile Toggle */}
       <button
+        data-testid="menu-button"
         onClick={() => setOpen(true)}
         className="lg:hidden fixed top-4 left-4 z-50 bg-[#082D7A] text-white p-2 rounded-lg"
       >
@@ -69,8 +71,12 @@ export default function Sidebar() {
       {/* Overlay */}
       {open && (
         <div
+          data-testid="sidebar-overlay"
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setOpen(false)}
+          onClick={() => {
+            // console.log("Overlay clicked");
+            setOpen(false);
+          }}
         />
       )}
 
@@ -100,7 +106,14 @@ export default function Sidebar() {
             className="w-[156px] object-contain scale-160 2xl:w-[180px] 2xl:scale-170"
           />
 
-          <button onClick={() => setOpen(false)} className="lg:hidden">
+          <button
+            data-testid="close-sidebar"
+            onClick={() => {
+              // console.log("X clicked");
+              setOpen(false);
+            }}
+            className="lg:hidden z-50"
+          >
             <X size={22} />
           </button>
         </div>
