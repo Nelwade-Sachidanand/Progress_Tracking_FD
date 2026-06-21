@@ -1,9 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-
-import { fireEvent, render, screen } from "@testing-library/react";
-
 import "@testing-library/jest-dom";
-
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import AuditDetailsDrawer from "../components/AuditDetailsDrawer";
 
 describe("AuditDetailsDrawer", () => {
@@ -71,15 +68,15 @@ describe("AuditDetailsDrawer", () => {
 
     expect(screen.getByText("Previous Data")).toBeInTheDocument();
 
-    expect(screen.getAllByText("name").length).toBeGreaterThan(0);
-
-    expect(screen.getAllByText("progress").length).toBeGreaterThan(0);
+    expect(screen.getByText(/Old Activity/i)).toBeInTheDocument();
   });
 
   it("renders updated data section", () => {
     render(<AuditDetailsDrawer log={mockLog} onClose={onClose} />);
 
     expect(screen.getByText("Updated Data")).toBeInTheDocument();
+
+    expect(screen.getByText(/New Activity/i)).toBeInTheDocument();
   });
 
   it("calls onClose when close button clicked", () => {
@@ -141,10 +138,8 @@ describe("AuditDetailsDrawer", () => {
 
     render(<AuditDetailsDrawer log={log} onClose={onClose} />);
 
-    expect(screen.getAllByText("Object 1")).toHaveLength(2);
+    expect(screen.getByText(/Old Item/i)).toBeInTheDocument();
 
-    expect(screen.getAllByText("id").length).toBeGreaterThan(0);
-
-    expect(screen.getAllByText("name").length).toBeGreaterThan(0);
+    expect(screen.getByText(/New Item/i)).toBeInTheDocument();
   });
 });

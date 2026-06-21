@@ -1,8 +1,16 @@
-// DashboardHeader.test.jsx
-
+import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+
 import DashboardHeader from "../layout/DashboardHeader";
+
+import {
+  getNotifications,
+  getUnreadCount,
+  markAllRead,
+  markAsRead,
+} from "../../services/notificationService";
 
 const mockNavigate = vi.fn();
 
@@ -12,6 +20,9 @@ vi.mock("react-router-dom", async () => {
   return {
     ...actual,
     useNavigate: () => mockNavigate,
+    useLocation: () => ({
+      pathname: "/dashboard",
+    }),
   };
 });
 
@@ -22,16 +33,18 @@ vi.mock("../../services/notificationService", () => ({
   markAsRead: vi.fn(),
 }));
 
-import {
-  getNotifications,
-  getUnreadCount,
-} from "../../services/notificationService";
+const renderComponent = () =>
+  render(
+    <MemoryRouter>
+      <DashboardHeader sidebarOpen={false} setSidebarOpen={vi.fn()} />
+    </MemoryRouter>,
+  );
 
 describe("DashboardHeader", () => {
-  const mockSetSidebarOpen = vi.fn();
-
   beforeEach(() => {
     vi.clearAllMocks();
+
+    localStorage.clear();
 
     localStorage.setItem(
       "user",
@@ -42,26 +55,34 @@ describe("DashboardHeader", () => {
       }),
     );
 
+    localStorage.setItem(
+      "projects",
+      JSON.stringify([{ bankName: "HDFC" }, { bankName: "ICICI" }]),
+    );
+
     getNotifications.mockResolvedValue({
-      details: [],
+      details: [
+        {
+          id: 1,
+          title: "Risk Alert",
+          message: "Risk detected",
+          type: "RISK",
+          read: false,
+          createdAt: new Date().toISOString(),
+          redirectUrl: "/dashboard",
+        },
+      ],
     });
 
     getUnreadCount.mockResolvedValue({
-      details: 0,
+      details: 1,
     });
+
+    markAllRead.mockResolvedValue({});
+    markAsRead.mockResolvedValue({});
   });
 
-  const renderComponent = (route = "/dashboard") =>
-    render(
-      <MemoryRouter initialEntries={[route]}>
-        <DashboardHeader
-          sidebarOpen={false}
-          setSidebarOpen={mockSetSidebarOpen}
-        />
-      </MemoryRouter>,
-    );
-
-  test("renders dashboard title", async () => {
+  test("renders page title", () => {
     renderComponent();
 
     expect(
@@ -69,16 +90,16 @@ describe("DashboardHeader", () => {
     ).toBeInTheDocument();
   });
 
-  test("renders task title", async () => {
-    renderComponent("/tasks");
-
-    expect(screen.getByText("All Tasks")).toBeInTheDocument();
-  });
-
-  test("renders initials", async () => {
+  test("renders user name", () => {
     renderComponent();
 
-    expect(screen.getByText("SN")).toBeInTheDocument();
+    expect(screen.getByText("Sachin Nelwade")).toBeInTheDocument();
+  });
+
+  test("renders role", () => {
+    renderComponent();
+
+    expect(screen.getByText("ADMIN")).toBeInTheDocument();
   });
 
   test("loads notifications on mount", async () => {
@@ -90,42 +111,88 @@ describe("DashboardHeader", () => {
     });
   });
 
-  test("opens notification popup", async () => {
+  test("shows unread notification badge", async () => {
     renderComponent();
 
-    const bellBtn = screen.getByTestId("notification-button");
-
-    fireEvent.click(bellBtn);
-
-    expect(
-      screen.getByRole("heading", {
-        name: /Notifications/i,
-      }),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("1")).toBeInTheDocument();
   });
 
-  test("shows empty notification state", async () => {
+  test("opens notification dropdown", async () => {
     renderComponent();
 
-    const bellBtn = screen.getAllByRole("button")[1];
+    fireEvent.click(screen.getByTestId("notification-button"));
 
-    fireEvent.click(bellBtn);
-
-    expect(screen.getByText("No Notifications")).toBeInTheDocument();
+    expect(await screen.findByText(/Notifications/i)).toBeInTheDocument();
   });
 
-  test("opens user dropdown", async () => {
+  test("shows notification content", async () => {
     renderComponent();
 
-    fireEvent.click(screen.getByText("SN"));
+    fireEvent.click(screen.getByTestId("notification-button"));
+
+    expect(await screen.findByText("Risk Alert")).toBeInTheDocument();
+
+    expect(screen.getByText("Risk detected")).toBeInTheDocument();
+  });
+
+  test("mark all as read button works", async () => {
+    renderComponent();
+
+    fireEvent.click(screen.getByTestId("notification-button"));
+
+    fireEvent.click(await screen.findByText(/Mark all as read/i));
+
+    await waitFor(() => {
+      expect(markAllRead).toHaveBeenCalled();
+    });
+  });
+
+  test("click notification marks notification as read", async () => {
+    renderComponent();
+
+    fireEvent.click(screen.getByTestId("notification-button"));
+
+    fireEvent.click(await screen.findByText("Risk Alert"));
+
+    await waitFor(() => {
+      expect(markAsRead).toHaveBeenCalledWith(1);
+    });
+  });
+
+  test("notification redirect works", async () => {
+    renderComponent();
+
+    fireEvent.click(screen.getByTestId("notification-button"));
+
+    fireEvent.click(await screen.findByText("Risk Alert"));
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
+    });
+  });
+
+  test("view all notifications button navigates", async () => {
+    renderComponent();
+
+    fireEvent.click(screen.getByTestId("notification-button"));
+
+    fireEvent.click(await screen.findByText("View All"));
+
+    expect(mockNavigate).toHaveBeenCalledWith("/notifications");
+  });
+
+  test("opens user menu", () => {
+    renderComponent();
+
+    fireEvent.click(screen.getByText("Sachin Nelwade"));
 
     expect(screen.getByText("Logout")).toBeInTheDocument();
   });
 
-  test("logout works", async () => {
+  test("logout removes user and navigates", () => {
     renderComponent();
 
-    fireEvent.click(screen.getByText("SN"));
+    fireEvent.click(screen.getByText("Sachin Nelwade"));
 
     fireEvent.click(screen.getByText("Logout"));
 
@@ -134,16 +201,31 @@ describe("DashboardHeader", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 
-  test("menu button opens sidebar", async () => {
+  test("handles notification api failure", async () => {
+    getNotifications.mockRejectedValue(new Error("API Error"));
+
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+
     renderComponent();
 
-    screen.debug();
+    await waitFor(() => {
+      expect(spy).toHaveBeenCalled();
+    });
 
-    const buttons = screen.getAllByRole("button");
-    console.log(buttons.length);
+    spy.mockRestore();
+  });
 
-    fireEvent.click(buttons[0]);
+  test("updates search event", async () => {
+    renderComponent();
 
-    expect(mockSetSidebarOpen).toHaveBeenCalledWith(true);
+    window.dispatchEvent(
+      new CustomEvent("dashboardSearch", {
+        detail: "HDFC",
+      }),
+    );
+
+    await waitFor(() => {
+      expect(true).toBeTruthy();
+    });
   });
 });

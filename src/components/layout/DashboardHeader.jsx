@@ -46,6 +46,21 @@ const DashboardHeader = ({
 
   const [unreadCount, setUnreadCount] = useState(0);
 
+  const [selectedBank, setSelectedBank] = useState(
+    localStorage.getItem("selectedBank") || "All Banks",
+  );
+
+  const [showBanks, setShowBanks] = useState(false);
+
+  const [searchText, setSearchText] = useState("");
+
+  const projects = JSON.parse(localStorage.getItem("projects")) || [];
+
+  const banks = [
+    "All Banks",
+    ...new Set(projects.map((p) => p.bankName).filter(Boolean)),
+  ];
+
   const user = JSON.parse(localStorage.getItem("user"));
 
   const fullname = user?.fullname || "Admin";
@@ -69,6 +84,17 @@ const DashboardHeader = ({
 
   useEffect(() => {
     loadNotifications();
+  }, []);
+
+  useEffect(() => {
+    const handleSearchChange = (e) => {
+      setSearchText(e.detail);
+    };
+
+    window.addEventListener("dashboardSearch", handleSearchChange);
+
+    return () =>
+      window.removeEventListener("dashboardSearch", handleSearchChange);
   }, []);
 
   const loadNotifications = async () => {
@@ -123,6 +149,23 @@ const DashboardHeader = ({
             <Shield size={24} className="text-purple-500" />
           </div>
         );
+    }
+  };
+
+  const handleMarkAllRead = async () => {
+    try {
+      await markAllRead();
+
+      setNotifications((prev) =>
+        prev.map((n) => ({
+          ...n,
+          read: true,
+        })),
+      );
+
+      setUnreadCount(0);
+    } catch (error) {
+      console.error("Failed to mark all notifications as read", error);
     }
   };
 
@@ -310,41 +353,119 @@ const DashboardHeader = ({
           </div>
 
           {/* Right */}
-          <div className="flex items-center gap-2 lg:gap-4 flex-shrink-0">
+          <div
+            className="
+            flex
+            flex-wrap
+            items-center
+            justify-end
+            gap-2
+            lg:gap-4
+          "
+          >
+            {" "}
             {location.pathname === "/dashboard" && (
               <>
                 {/* Bank Dropdown */}
                 <div
                   className="
-                hidden xl:flex
-                items-center gap-2
-                border border-[#E2E8F0]
-                rounded-xl
-                px-4
-                h-11
-                bg-white
-                2xl:h-12
-                2xl:px-5
-                2xl:gap-3
-              "
+                  hidden xl:flex
+                  items-center gap-2
+                  border border-[#E2E8F0]
+                  rounded-xl
+                  px-4
+                  h-11
+                  bg-white
+                  w-[250px]
+                  2xl:w-[380px]
+                  2xl:h-12
+                  2xl:px-5
+                  2xl:gap-3
+                "
                 >
                   <Building2
                     size={16}
-                    className="text-[#64748B] 2xl:text-xl 2xl:w-5 2xl:h-5"
+                    className="text-[#64748B] flex-shrink-0"
                   />
-                  <select
-                    className="
-                  outline-none
-                  bg-transparent
-                  text-sm
-                  text-[#0B1F59]
-                  2xl:text-[17px]
-                  2xl:font-medium
-                  2xl:tracking-wide
-                "
-                  >
-                    <option>All Banks</option>
-                  </select>
+
+                  <div className="relative w-full">
+                    <button
+                      onClick={() => setShowBanks(!showBanks)}
+                      className="
+                      flex
+                      items-center
+                      justify-between
+                      w-full
+                      text-sm
+                      text-[#0B1F59]
+                      cursor-pointer
+                    "
+                    >
+                      <span
+                        className="
+                        truncate
+                        flex-1
+                        text-left
+                      "
+                        title={selectedBank}
+                      >
+                        {selectedBank}
+                      </span>
+
+                      <ChevronDown
+                        size={16}
+                        className={`
+                        flex-shrink-0
+                        transition-transform
+                        ${showBanks ? "rotate-180" : ""}
+                      `}
+                      />
+                    </button>
+
+                    {showBanks && (
+                      <div
+                        className="
+                        absolute
+                        top-10
+                        left-0
+                        w-full
+                        bg-white
+                        border
+                        border-[#E2E8F0]
+                        rounded-xl
+                        shadow-xl
+                        overflow-hidden
+                        z-[9999]
+                      "
+                      >
+                        {banks.map((bank) => (
+                          <button
+                            key={bank}
+                            onClick={() => {
+                              setSelectedBank(bank);
+                              localStorage.setItem("selectedBank", bank);
+                              window.dispatchEvent(new Event("bankChanged"));
+                              setShowBanks(false);
+                            }}
+                            className="
+                            w-full
+                            px-4
+                            py-3
+                            text-left
+                            text-[#0B1F59]
+                            hover:bg-[#F8FAFC]
+                            transition
+                            whitespace-normal
+                            break-words
+                            cursor-pointer
+                            "
+                          >
+                            {bank}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Search */}
@@ -357,7 +478,7 @@ const DashboardHeader = ({
                 px-4
                 h-11
                 bg-white
-                w-[280px]
+                w-[250px]
                 2xl:w-[340px]
                 2xl:h-12
                 2xl:px-5
@@ -373,19 +494,25 @@ const DashboardHeader = ({
                     type="text"
                     placeholder="Search banks, projects..."
                     className="
-                  flex-1
-                  outline-none
-                  text-sm
-                  bg-transparent
-                  2xl:text-[17px]
-                  2xl:font-medium
-                  2xl:tracking-wide
-                "
+                    flex-1
+                    outline-none
+                    text-sm
+                    bg-transparent
+                    2xl:text-[17px]
+                    2xl:font-medium
+                    2xl:tracking-wide
+                    "
+                    onChange={(e) => {
+                      window.dispatchEvent(
+                        new CustomEvent("dashboardSearch", {
+                          detail: e.target.value,
+                        }),
+                      );
+                    }}
                   />
                 </div>
               </>
             )}
-
             {/* Notification */}
             <div className="relative">
               <button
@@ -475,6 +602,7 @@ const DashboardHeader = ({
                       hover:underline
                       xl:text-[15px]
                       2xl:text-[17px]
+                      cursor-pointer
                     "
                     >
                       Mark all as read
@@ -598,7 +726,6 @@ const DashboardHeader = ({
                 </div>
               )}
             </div>
-
             {/* User */}
             <div className="relative">
               <button

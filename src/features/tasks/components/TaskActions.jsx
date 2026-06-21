@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { exportExcelReport } from "../../add-task/api/exportExcelApi";
 import { toast } from "react-toastify";
+import { exportExcelReport } from "../../add-task/api/exportExcelApi";
 
 export default function TaskActions({
   selectedPhase,
@@ -10,109 +10,72 @@ export default function TaskActions({
   selectedSubTask,
   selectedActivity,
   selectedStatus,
-})  {
-  
-  
+}) {
   const navigate = useNavigate();
 
   const handleExportExcel = async () => {
-  try {
-    const selectedProjectId =
-      localStorage.getItem("selectedProjectId");
+    try {
+      const selectedProjectId = localStorage.getItem("selectedProjectId");
 
-    const selectedProjectName =
-      localStorage.getItem("selectedProjectName");
+      const selectedProjectName = localStorage.getItem("selectedProjectName");
 
-    const payload = {
-  projectId:
-    selectedProjectId,
+      const payload = {
+        projectId: selectedProjectId,
 
-  projectName:
-    selectedProjectName,
+        projectName: selectedProjectName,
 
-  phaseName:
-    selectedPhase ===
-    "All Phases"
-      ? null
-      : selectedPhase,
+        phaseName: selectedPhase === "All Phases" ? null : selectedPhase,
 
- milestoneName:
-  selectedMilestone?.length > 0
-    ? selectedMilestone.join(",")
-    : null,
+        milestoneName:
+          selectedMilestone?.length > 0 ? selectedMilestone.join(",") : null,
 
-  taskName:
-    selectedTask ===
-    "All Tasks"
-      ? null
-      : selectedTask,
+        taskName: selectedTask === "All Tasks" ? null : selectedTask,
 
-  subtaskName:
-    selectedSubTask ===
-    "All Sub Tasks"
-      ? null
-      : selectedSubTask,
+        subtaskName:
+          selectedSubTask === "All Sub Tasks" ? null : selectedSubTask,
 
-  activityName:
-    selectedActivity ===
-    "All Activities"
-      ? null
-      : selectedActivity,
+        activityName:
+          selectedActivity === "All Activities" ? null : selectedActivity,
 
-  executionStatus:
-    selectedStatus ===
-    "All Status"
-      ? null
-      : selectedStatus,
+        executionStatus:
+          selectedStatus === "All Status" ? null : selectedStatus,
 
-  plannedStartDate: null,
-  plannedEndDate: null,
-};
+        plannedStartDate: null,
+        plannedEndDate: null,
+      };
 
-    console.log("Export Payload:", payload);
+      console.log("Export Payload:", payload);
 
-    const blob =
-      await exportExcelReport(payload);
+      const blob = await exportExcelReport(payload);
 
-    const url =
-      window.URL.createObjectURL(blob);
+      const url = window.URL.createObjectURL(blob);
 
-    const link =
-      document.createElement("a");
+      const link = document.createElement("a");
 
-    link.href = url;
-    link.download =
-      `${selectedProjectName}_Report.xlsx`;
+      link.href = url;
+      link.download = `${selectedProjectName}_Report.xlsx`;
 
-    document.body.appendChild(link);
+      document.body.appendChild(link);
 
-    link.click();
+      link.click();
 
-    document.body.removeChild(link);
+      document.body.removeChild(link);
 
-    window.URL.revokeObjectURL(url);
+      window.URL.revokeObjectURL(url);
 
-    toast.success(
-      "Excel downloaded successfully"
-    );
-  } catch (error) {
-    console.error(
-      "Export Error:",
-      error.response?.data || error
-    );
+      toast.success("Excel downloaded successfully");
+    } catch (error) {
+      console.error("Export Error:", error.response?.data || error);
 
-    toast.error(
-      error.response?.data?.statusDesc ||
-      "Failed to export report"
-    );
-  }
-};
+      toast.error(
+        error.response?.data?.statusDesc || "Failed to export report",
+      );
+    }
+  };
 
   return (
     <div className="flex items-center justify-between mb-6">
-
       <div className="flex gap-3">
-
         <button className="bg-[#6D4AFF] text-white px-4 py-2.5 rounded-xl text-sm font-medium">
           Generate Report
         </button>
@@ -136,13 +99,10 @@ export default function TaskActions({
         <button className="bg-[#2563EB] text-white px-4 py-2.5 rounded-xl text-sm font-medium">
           Print Report
         </button>
-
       </div>
 
       <button
-        onClick={() =>
-          navigate("add-task")
-        }
+        onClick={() => navigate("add-task")}
         className="
           bg-[#6D4AFF]
           hover:bg-[#5B3DF4]
@@ -161,7 +121,6 @@ export default function TaskActions({
         <Plus size={18} />
         Add Task
       </button>
-
     </div>
   );
 }
