@@ -4,6 +4,7 @@ export const getProjectMetrics = (project) => {
   let totalProgress = 0;
 
   let delayDays = 0;
+  let projectStartDate = null;
   let goLiveDate = null;
 
   let currentPhase = "Completed";
@@ -11,6 +12,8 @@ export const getProjectMetrics = (project) => {
 
   let phaseFound = false;
   let milestoneFound = false;
+
+  
 
   project?.phases?.forEach((phase) => {
     let phaseActivities = 0;
@@ -65,6 +68,15 @@ export const getProjectMetrics = (project) => {
             }
 
             if (
+              activity.plannedStartDate &&
+              (!projectStartDate ||
+                new Date(activity.plannedStartDate) <
+                new Date(projectStartDate))
+            ) {
+              projectStartDate = activity.plannedStartDate;
+            }
+
+            if (
               activity.plannedEndDate &&
               (!goLiveDate ||
                 new Date(activity.plannedEndDate) > new Date(goLiveDate))
@@ -106,9 +118,9 @@ export const getProjectMetrics = (project) => {
 
   const daysRemaining = goLiveDate
     ? Math.max(
-        0,
-        Math.ceil((new Date(goLiveDate) - new Date()) / (1000 * 60 * 60 * 24)),
-      )
+      0,
+      Math.ceil((new Date(goLiveDate) - new Date()) / (1000 * 60 * 60 * 24)),
+    )
     : 0;
 
   let status = "On Track";
@@ -142,6 +154,7 @@ export const getProjectMetrics = (project) => {
     scheduleVariance = Math.round(overallProgress - plannedProgress);
   }
 
+
   return {
     overallProgress,
     readiness,
@@ -149,6 +162,7 @@ export const getProjectMetrics = (project) => {
     currentPhase,
     currentMilestone,
 
+    projectStartDate,
     goLiveDate,
     daysRemaining,
 

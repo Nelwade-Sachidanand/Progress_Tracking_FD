@@ -22,6 +22,9 @@ export default function TaskTable({
     }
   };
 
+  const user = JSON.parse(sessionStorage.getItem("user"));
+
+
   return (
     <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
       <table className="w-full">
@@ -48,7 +51,7 @@ export default function TaskTable({
               START DATE
             </th>
 
-               <th className="px-4 py-3 text-left text-[14px] font-bold text-[#0F172A] min-w-[120px]">
+            <th className="px-4 py-3 text-left text-[14px] font-bold text-[#0F172A] min-w-[120px]">
               END DATE
             </th>
 
@@ -60,9 +63,11 @@ export default function TaskTable({
               STATUS
             </th>
 
-            <th className="px-4 py-3 text-left text-[14px] font-bold text-[#0F172A]">
-              ACTIONS
-            </th>
+            {["ADMIN", "MANAGEMENT USER", "IMPLEMENTATION USER"].includes(user?.role) &&
+              <th className="px-4 py-3 text-left text-[14px] font-bold text-[#0F172A]">
+                ACTIONS
+              </th>
+            }
 
             <th className="px-4 py-3 text-left text-[14px] font-bold text-[#0F172A]">
               REMARK
@@ -75,15 +80,15 @@ export default function TaskTable({
 
           {tasks.length > 0 ? (
             tasks.map((task, index) => (
-       
+
               <tr
                 key={`${task.activity}-${index}`}
-               // key={task.id}
+                // key={task.id}
                 className="
-    border-t
-    border-[#EAEFF5]
-    hover:bg-[#F8FAFC]
-  "
+                border-t
+                border-[#EAEFF5]
+                hover:bg-[#F8FAFC]
+                "
               >
                 <td className="p-4">
                   {index + 1}
@@ -155,41 +160,37 @@ export default function TaskTable({
                 <td className="p-4">
                   <span
                     className={`
-      inline-block
-      min-w-[95px]
-      text-center
-      px-3
-      py-1
-      rounded-full
-      text-xs
-      font-semibold
-      whitespace-nowrap
-      ${getStatusColor(task.status)}
-    `}
+                    inline-block
+                    min-w-[95px]
+                    text-center
+                    px-3
+                    py-1
+                    rounded-full
+                    text-xs
+                    font-semibold
+                    whitespace-nowrap
+                    ${getStatusColor(task.status)}
+                  `}
                   >
                     {task.status}
                   </span>
                 </td>
                 {/* Actions */}
-                <td className="p-4">
-
-                  <div className="flex justify-center gap-2">
-
-                    <button
-                      onClick={() => onEdit?.(task)}
-                      className="p-2 rounded-lg bg-blue-50 hover:bg-blue-100 cursor-pointer"
-                    >
-                      <Pencil
-                        size={16}
-                        className="text-blue-600"
-                      />
-                    </button>
-
-                 
-
-                  </div>
-
-                </td>
+                {["ADMIN", "MANAGEMENT USER", "IMPLEMENTATION USER"].includes(user?.role) && (
+                  <td className="p-4">
+                    <div className="flex justify-center gap-2">
+                      <button
+                        onClick={() => onEdit?.(task)}
+                        className="p-2 rounded-lg bg-blue-50 hover:bg-blue-100 cursor-pointer"
+                      >
+                        <Pencil
+                          size={16}
+                          className="text-blue-600"
+                        />
+                      </button>
+                    </div>
+                  </td>
+                )}
 
                 {/* Remark */}
                 <td className="p-4">

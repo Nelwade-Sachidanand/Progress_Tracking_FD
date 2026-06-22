@@ -5,6 +5,7 @@ import {
   CalendarDays,
   Clock3,
   Flag,
+  Calendar
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getProjectMetrics } from "../utils/projectMetrics";
@@ -107,10 +108,7 @@ export default function ProgressCard({ projects = [] }) {
               rounded-3xl
               border
               border-slate-200
-              hover:border-blue-200
               shadow-sm
-              hover:shadow-xl
-              transition-all
               duration-300
               p-5
               min-h-[390px]
@@ -171,13 +169,12 @@ export default function ProgressCard({ projects = [] }) {
                   2xl-text-sm
                   font-semibold
                   shrink-0
-                  ${
-                    metrics.status === "On Track"
+                  ${metrics.status === "On Track"
                       ? "bg-green-100 text-green-700"
                       : metrics.status === "At Risk"
                         ? "bg-yellow-100 text-yellow-700"
                         : "bg-red-100 text-red-700"
-                  }
+                    }
                 `}
                 >
                   {metrics.status}
@@ -246,6 +243,21 @@ export default function ProgressCard({ projects = [] }) {
 
                 <div className="flex-1 space-y-3">
                   <div className="flex items-center gap-2">
+                    <Calendar size={16} className="text-green-600" />
+
+                    <span className="text-sm text-slate-500 font-medium 2xl:text-base">
+                      Start Date
+                    </span>
+
+                    <span className="ml-auto font-semibold text-slate-700">
+                      {metrics.projectStartDate
+                        ? new Date(
+                          metrics.projectStartDate
+                        ).toLocaleDateString("en-GB")
+                        : "-"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
                     <CalendarDays size={16} className="text-blue-600" />
 
                     <span className="text-sm text-slate-500 font-medium 2xl:text-base">
@@ -255,8 +267,8 @@ export default function ProgressCard({ projects = [] }) {
                     <span className="ml-auto font-semibold text-slate-700">
                       {metrics.goLiveDate
                         ? new Date(metrics.goLiveDate).toLocaleDateString(
-                            "en-GB",
-                          )
+                          "en-GB",
+                        )
                         : "-"}
                     </span>
                   </div>
@@ -284,13 +296,12 @@ export default function ProgressCard({ projects = [] }) {
                       className={`
                       ml-auto
                       font-semibold
-                      ${
-                        metrics.delayDays > 15
+                      ${metrics.delayDays > 15
                           ? "text-red-600"
                           : metrics.delayDays > 5
                             ? "text-yellow-600"
                             : "text-green-600"
-                      }
+                        }
                     `}
                     >
                       {metrics.delayDays} Days

@@ -12,30 +12,32 @@ import AddUserPage from "../../features/users/pages/AddUserPage";
 import EditUserPage from "../../features/users/pages/EditUserPage";
 import UserManagementPage from "../../features/users/pages/UserManagementPage";
 import MainLayout from "../../layouts/MainLayout";
+import MilestoneManagement from "../../features/milestones/pages/MilestoneManagement";
+import ProtectedRoute from "./ProtectedRoute ";
 
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<LoginPage />} />
 
-      {/* Pages with Sidebar */}
-      <Route element={<MainLayout />}>
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/users" element={<UserManagementPage />} />
-        <Route path="/users/add" element={<AddUserPage />} />
-        <Route path="/users/edit" element={<EditUserPage />} />
-        <Route path="/audits" element={<AuditLogsPage />} />
-        <Route path="/authorization" element={<AuthorizationRequestsPage />} />
-        <Route path="/create-project" element={<CreateProjectPage />} />
-        <Route path="/project-details" element={<ProjectDetailPage />} />
-        <Route path="/tasks" element={<AllTasksPage />} />
-        <Route path="/tasks/add-task" element={<AddTaskPage />} />
-        <Route path="/edit-task" element={<EditTaskPage />} />
-        {/* <Route
-          path="/add-task"
-          element={<AddTaskPage />}
-        /> */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<MainLayout />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/users" element={<UserManagementPage />} />
+          <Route path="/users/add" element={<AddUserPage />} />
+          <Route path="/users/edit" element={<EditUserPage />} />
+          <Route path="/audits" element={<AuditLogsPage />} />
+          <Route path="/authorization" element={<AuthorizationRequestsPage />} />
+          <Route path="/create-project" element={<CreateProjectPage />} />
+          <Route path="/project-details" element={<ProjectDetailPage />} />
+          <Route path="/tasks" element={<AllTasksPage />} />
+          <Route path="/tasks/add-task" element={<AddTaskPage />} />
+          <Route path="/edit-task" element={<EditTaskPage />} />
+          <Route path="/milestones" element={<MilestoneManagement />} />
+        </Route>
       </Route>
+
+      {/* Pages with Sidebar */}
     </Routes>
   );
 };

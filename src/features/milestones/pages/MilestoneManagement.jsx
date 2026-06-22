@@ -1,0 +1,146 @@
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import { toast } from "react-toastify";
+
+import BankSelector from "../components/BankSelector";
+import MilestoneTable from "../components/MilestoneTable";
+
+import {
+  getBanks,
+  getMilestoneManagementData,
+} from "../utils/milestoneManagementUtils";
+
+import { useMilestone } from "../hooks/useMilestone";
+
+export default function MilestoneManagement() {
+  const [banks, setBanks] =
+    useState([]);
+
+  const [
+    selectedBank,
+    setSelectedBank,
+  ] = useState("");
+
+  const [
+    milestones,
+    setMilestones,
+  ] = useState([]);
+
+  const {
+    updateWeightages,
+    loading,
+  } = useMilestone();
+
+  useEffect(() => {
+    const bankList = getBanks();
+
+    setBanks(bankList);
+
+    if (bankList.length) {
+      setSelectedBank(
+        bankList[0]
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!selectedBank) return;
+
+    setMilestones(
+      getMilestoneManagementData(
+        selectedBank
+      )
+    );
+  }, [selectedBank]);
+
+  const handleWeightageChange =
+    (index, value) => {
+      const updated = [
+        ...milestones,
+      ];
+
+      updated[index].weightage =
+        Number(value);
+
+      setMilestones(updated);
+    };
+
+  const handleUpdate =
+    async () => {
+      try {
+        if (
+          milestones.reduce(
+            (sum, item) =>
+              sum + Number(item.weightage || 0),0
+          ) !== 100
+        ) {
+          toast.error("Total weightage must equal 100%");
+
+          return;
+        }
+
+        const payload = {
+          projectId:
+            milestones[0]
+              ?.projectId,
+
+          phaseName:
+            milestones[0]
+              ?.phaseName,
+
+          milestones:
+            milestones.map(
+              (item) => ({
+                milestoneName: item.milestoneName,
+                weightage: Number(item.weightage),
+              })
+            ),
+        };
+
+        // console.log("Update Payload",payload);
+
+        await updateWeightages(
+          payload
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+  return (
+    <div
+      className="
+        p-4
+        xl:p-6
+        2xl:p-8
+        space-y-6
+      "
+    >
+      <BankSelector
+        banks={banks}
+        selectedBank={
+          selectedBank
+        }
+        setSelectedBank={
+          setSelectedBank
+        }
+      />
+
+      <MilestoneTable
+        milestones={
+          milestones
+        }
+        loading={loading}
+        onUpdate={
+          handleUpdate
+        }
+        onWeightageChange={
+          handleWeightageChange
+        }
+      />
+    </div>
+  );
+}
