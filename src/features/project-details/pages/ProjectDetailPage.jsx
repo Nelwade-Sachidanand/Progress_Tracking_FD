@@ -20,13 +20,13 @@ export default function ProjectDetailPage() {
                   <div className="h-5"></div>
                   <ExecutiveSummary project={project} />
                   <div className="h-0"></div>
-                  <MilestoneJourney />
+                 <MilestoneJourney project={project}/>
                   <div className="h-5"></div>
-                  <ActivityStatusOverview />
+                  <ActivityStatusOverview project={project}/>
                   <div className="h-5"></div>
-                  <RiskAndIssues />
+                <RiskAndIssues project={project}/>
                   <div className="h-5"></div>
-                  <GoLiveReadiness />
+                  <GoLiveReadiness project={project} />
                   <div className="h-5"></div>
                   <ExecutiveHealth />
                   <Footer></Footer>

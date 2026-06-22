@@ -1,74 +1,198 @@
-import {
-  Cloud,
-  Database,
-  GraduationCap,
-  ClipboardCheck,
-  ShieldCheck,
-  CalendarDays,
-} from "lucide-react";
+// import {
+//   Cloud,
+//   Database,
+//   GraduationCap,
+//   ClipboardCheck,
+//   ShieldCheck,
+//   CalendarDays,
+// } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 
-export default function GoLiveReadiness() {
-  const readinessData = [
-    {
-      title: "Infrastructure Readiness",
-      value: 20,
-      color: "#2563EB",
-      icon: Cloud,
-      iconBg: "#EEF4FF",
-      iconColor: "#2563EB",
-    },
-    {
-      title: "Data Migration Readiness",
-      value: 0,
-      color: "#6366F1",
-      icon: Database,
-      iconBg: "#EEF2FF",
-      iconColor: "#6366F1",
-    },
-    {
-      title: "Training Readiness",
-      value: 0,
-      color: "#EF4444",
-      icon: GraduationCap,
-      iconBg: "#FEF2F2",
-      iconColor: "#EF4444",
-    },
-    {
-      title: "UAT Readiness",
-      value: 0,
-      color: "#16A34A",
-      icon: ClipboardCheck,
-      iconBg: "#F0FDF4",
-      iconColor: "#16A34A",
-    },
-    {
-      title: "Compliance & Audit Readiness",
-      value: 0,
-      color: "#2563EB",
-      icon: ShieldCheck,
-      iconBg: "#EFF6FF",
-      iconColor: "#2563EB",
-    },
-  ];
+export default function GoLiveReadiness({
+  project,
+}) {
+  const activities =
+    project?.phases?.flatMap((phase) =>
+      phase.milestones?.flatMap(
+        (milestone) =>
+          milestone.tasks?.flatMap(
+            (task) =>
+              task.subTasks?.flatMap(
+                (subTask) =>
+                  subTask.activities?.map(
+                    (activity) => ({
+                      ...activity,
+                      milestoneName:
+                        milestone.milestoneName,
+                    })
+                  ) || []
+              ) || []
+          ) || []
+      ) || []
+    ) || [];
+
+const today = new Date();
+
+const activeActivities =
+  activities.filter(
+    (activity) =>
+      activity.plannedStartDate &&
+      new Date(
+        activity.plannedStartDate
+      ) <= today
+  );
+
+const totalActivities =
+  activeActivities.length;
+
+const completedActivities =
+  activeActivities.filter(
+    (activity) =>
+      activity.executionStatus ===
+      "Completed"
+  ).length;
+
+const inProgressActivities =
+  activeActivities.filter(
+    (activity) =>
+      activity.executionStatus ===
+      "In Progress"
+  ).length;
+
+const delayedActivities =
+  activeActivities.filter(
+    (activity) =>
+      activity.scheduleHealth ===
+      "Delayed"
+  ).length;
+
+const notStartedActivities =
+  activeActivities.filter(
+    (activity) =>
+      activity.executionStatus ===
+        "Not Started" ||
+      !activity.executionStatus
+  ).length;
+
+const overallReadiness =
+  totalActivities > 0
+    ? Math.round(
+        (completedActivities /
+          totalActivities) *
+          100
+      )
+    : 0;
+ const pendingActivities =
+  activeActivities.filter(
+    (activity) =>
+      activity.executionStatus !==
+      "Completed"
+  );
+ const readinessStatus =
+  pendingActivities.length ===
+  0
+    ? "🟢 Ready For Go-Live"
+    : overallReadiness >= 70
+    ? "🟡 On Track"
+    : overallReadiness >= 50
+    ? "🟠 Attention Required"
+    : "🔴 Delayed";
+
+  const getMilestoneProgress = (
+    keyword
+  ) => {
+   const milestoneActivities =
+  activeActivities.filter(
+    (activity) =>
+      activity.milestoneName
+        ?.toLowerCase()
+        .includes(
+          keyword.toLowerCase()
+        )
+  );
+
+    if (
+      milestoneActivities.length === 0
+    )
+      return 0;
+
+    return Math.round(
+      milestoneActivities.reduce(
+        (sum, activity) =>
+          sum +
+          (activity.progress ||
+            0),
+        0
+      ) /
+        milestoneActivities.length
+    );
+  };
+
+ 
+ 
+
+const targetGoLive =
+  pendingActivities.length > 0
+    ? pendingActivities
+        .map(
+          (activity) =>
+            activity.plannedEndDate
+        )
+        .filter(Boolean)
+        .sort()
+        .at(-1)
+    : "Ready For Go-Live";
+
+const milestoneData =
+  project?.phases?.flatMap(
+    (phase) =>
+      phase.milestones?.map(
+        (milestone) => {
+
+          const milestoneActivities =
+            milestone.tasks?.flatMap(
+              (task) =>
+                task.subTasks?.flatMap(
+                  (subTask) =>
+                    subTask.activities || []
+                ) || []
+            ) || [];
+
+          const activeMilestoneActivities =
+            milestoneActivities.filter(
+              (activity) =>
+                activity.plannedStartDate &&
+                new Date(
+                  activity.plannedStartDate
+                ) <= today
+            );
+
+          const progress =
+            activeMilestoneActivities.length > 0
+              ? Math.round(
+                  activeMilestoneActivities.reduce(
+                    (sum, activity) =>
+                      sum +
+                      (activity.progress || 0),
+                    0
+                  ) /
+                    activeMilestoneActivities.length
+                )
+              : 0;
+
+          return {
+            title:
+              milestone.milestoneName,
+            value: progress,
+          };
+        }
+      ) || []
+  ) || [];
 
   return (
     <div className="bg-white rounded-2xl border border-[#E5EAF2] p-5">
-      {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div
-          className="
-          w-8
-          h-8
-          rounded-full
-          bg-[#2563EB]
-          text-white
-          flex
-          items-center
-          justify-center
-          text-sm
-          font-bold
-          "
-        >
+        <div className="w-8 h-8 rounded-full bg-[#2563EB] text-white flex items-center justify-center text-sm font-bold">
           6
         </div>
 
@@ -77,9 +201,10 @@ export default function GoLiveReadiness() {
         </h2>
       </div>
 
-      {/* Content */}
       <div className="grid grid-cols-[240px_1fr_280px] gap-6">
-        {/* Circular Readiness */}
+
+        {/* Overall Readiness */}
+
         <div className="flex justify-center items-center">
           <div className="relative w-[190px] h-[190px]">
             <svg
@@ -100,238 +225,200 @@ export default function GoLiveReadiness() {
                 cy="60"
                 r="52"
                 fill="none"
-                stroke="#EF4444"
+                stroke={
+                  overallReadiness >=
+                  80
+                    ? "#16A34A"
+                    : overallReadiness >=
+                      50
+                    ? "#F59E0B"
+                    : "#EF4444"
+                }
                 strokeWidth="10"
                 strokeLinecap="round"
-                strokeDasharray={`${2 * Math.PI * 52}`}
+                strokeDasharray={`${
+                  2 *
+                  Math.PI *
+                  52
+                }`}
                 strokeDashoffset={`${
-                  2 * Math.PI * 52 * (1 - 0.04)
+                  2 *
+                  Math.PI *
+                  52 *
+                  (1 -
+                    overallReadiness /
+                      100)
                 }`}
               />
             </svg>
 
-            <div
-              className="
-              absolute
-              inset-0
-              flex
-              flex-col
-              items-center
-              justify-center
-              "
-            >
-              <h3
-                className="
-                text-[40px]
-                font-bold
-                leading-none
-                text-[#0B1F59]
-                "
-              >
-                4%
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <h3 className="text-[40px] font-bold text-[#0B1F59]">
+                {
+                  overallReadiness
+                }
+                %
               </h3>
 
-              <p
-                className="
-                text-center
-                text-[11px]
-                font-medium
-                text-[#334155]
-                mt-2
-                "
-              >
+              <p className="text-center text-[11px] font-medium text-[#334155] mt-2">
                 Overall
                 <br />
                 Readiness
               </p>
 
-              <span
-                className="
-                mt-3
-                px-4
-                py-1
-                rounded-full
-                bg-[#FEE2E2]
-                text-[#EF4444]
-                text-[10px]
-                font-semibold
-                "
-              >
-                Critical
+              <span className="mt-3 px-4 py-1 rounded-full bg-[#FEE2E2] text-[#EF4444] text-[8.5px] font-semibold">
+                {
+                  readinessStatus
+                }
               </span>
             </div>
           </div>
         </div>
 
-        {/* Progress Items */}
-        <div className="space-y-6">
-          {readinessData.map((item) => {
-            const Icon = item.icon;
+        {/* Progress Bars */}
 
-            return (
-              <div key={item.title}>
-                <div className="flex items-center gap-4 mb-2">
-                  <div
-                    className="
-                    w-10
-                    h-10
-                    rounded-full
-                    flex
-                    items-center
-                    justify-center
-                    "
-                    style={{
-                      backgroundColor: item.iconBg,
-                    }}
-                  >
-                    <Icon
-                      size={18}
-                      color={item.iconColor}
-                    />
-                  </div>
+        <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+          {milestoneData.map((item) => {
 
-                  <div className="flex-1">
-                    <p
-                      className="
-                      text-[14px]
-                      font-semibold
-                      text-[#0B1F59]
-                      "
-                    >
-                      {item.title}
-                    </p>
+  const barColor =
+    item.value >= 80
+      ? "#16A34A"
+      : item.value >= 50
+      ? "#F59E0B"
+      : "#cc3c3c";
 
-                    <div className="flex items-center gap-4 mt-2">
-                      <div className="flex-1">
-                        <div
-                          className="
-                          h-[8px]
-                          rounded-full
-                          bg-[#EEF2F7]
-                          overflow-hidden
-                          "
-                        >
-                          <div
-                            className="h-full rounded-full"
-                            style={{
-                              width: `${item.value}%`,
-                              backgroundColor:
-                                item.color,
-                            }}
-                          />
-                        </div>
-                      </div>
+  return (
+    <div key={item.title}>
 
-                      <span
-                        className="
-                        text-[14px]
-                        font-bold
-                        text-[#0B1F59]
-                        min-w-[40px]
-                        text-right
-                        "
-                      >
-                        {item.value}%
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+      <div className="flex items-center gap-4 mb-2">
+
+        <div
+          className="
+          w-10
+          h-10
+          rounded-full
+          flex
+          items-center
+          justify-center
+          text-white
+          text-sm
+          font-bold
+          shrink-0
+          "
+          style={{
+            backgroundColor: barColor,
+          }}
+        >
+          M
         </div>
 
-        {/* Right Cards */}
-        <div className="space-y-4">
-          {/* Readiness Summary */}
-          <div
+        <div className="flex-1">
+
+          <p
             className="
-            bg-[#F8FAFF]
-            border
-            border-[#E8EDF5]
-            rounded-2xl
-            overflow-hidden
+            text-[13px]
+            font-semibold
+            text-[#0B1F59]
+            truncate
             "
+            title={item.title}
           >
+            {item.title}
+          </p>
+
+          <div className="flex items-center gap-4 mt-2">
+
+            <div className="flex-1">
+              <div className="h-[8px] rounded-full bg-[#EEF2F7] overflow-hidden">
+
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${item.value}%`,
+                    backgroundColor: barColor,
+                  }}
+                />
+
+              </div>
+            </div>
+
+            <span className="text-[12px] font-bold text-[#0B1F59] min-w-[40px] text-right">
+              {item.value}%
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+})}
+        </div>
+
+        {/* Summary */}
+
+        <div className="space-y-4">
+
+          <div className="bg-[#F8FAFF] border border-[#E8EDF5] rounded-2xl overflow-hidden">
             <div className="px-5 py-4 bg-[#F4F7FD]">
-              <h3
-                className="
-                text-[15px]
-                font-bold
-                text-[#0B1F59]
-                "
-              >
+              <h3 className="text-[15px] font-bold text-[#0B1F59]">
                 Readiness Summary
               </h3>
             </div>
 
             <div className="p-5 space-y-4">
-              <div className="flex justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="w-3 h-3 rounded-full bg-[#16A34A]" />
-                  <span className="text-sm">
-                    Completed
-                  </span>
-                </div>
 
+              <div className="flex justify-between">
+                <span>
+                  Completed
+                </span>
                 <span className="font-bold">
-                  7
+                  {
+                    completedActivities
+                  }
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="w-3 h-3 rounded-full bg-[#2563EB]" />
-                  <span className="text-sm">
-                    In Progress
-                  </span>
-                </div>
-
+                <span>
+                  In Progress
+                </span>
                 <span className="font-bold">
-                  1
+                  {
+                    inProgressActivities
+                  }
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="w-3 h-3 rounded-full bg-[#F59E0B]" />
-                  <span className="text-sm">
-                    Not Started
-                  </span>
-                </div>
-
+                <span>
+                  Not Started
+                </span>
                 <span className="font-bold">
-                  91
+                  {
+                    notStartedActivities
+                  }
                 </span>
               </div>
 
               <div className="border-t pt-4 flex justify-between">
-                <span
-                  className="
-                  font-semibold
-                  text-[#334155]
-                  "
-                >
+                <span className="font-semibold">
                   Total Activities
                 </span>
 
                 <span className="font-bold">
-                  99
+                  {
+                    totalActivities
+                  }
                 </span>
               </div>
+
             </div>
           </div>
 
-          {/* Target Go Live */}
-          <div
-            className="
-            bg-[#F8FAFF]
-            border
-            border-[#E8EDF5]
-            rounded-2xl
-            p-5
-            "
-          >
+          <div className="bg-[#F8FAFF] border border-[#E8EDF5] rounded-2xl p-5">
             <div className="flex gap-4">
               <CalendarDays
                 size={26}
@@ -339,41 +426,26 @@ export default function GoLiveReadiness() {
               />
 
               <div>
-                <p
-                  className="
-                  text-sm
-                  font-semibold
-                  text-[#334155]
-                  "
-                >
+                <p className="text-sm font-semibold text-[#334155]">
                   Target Go-Live
                 </p>
 
-                <h3
-                  className="
-                  text-[18px]
-                  font-bold
-                  text-[#0B1F59]
-                  mt-1
-                  "
-                >
-                  30 Sep 2026
+                <h3 className="text-[18px] font-bold text-[#0B1F59] mt-1">
+                  {
+                    targetGoLive
+                  }
                 </h3>
 
-                <p
-                  className="
-                  text-[#2563EB]
-                  text-sm
-                  font-semibold
-                  mt-1
-                  "
-                >
-                  77 days to go
-                </p>
+                {/* <p className="text-[#2563EB] text-sm font-semibold mt-1">
+                  {daysToGo} days
+                  to go
+                </p> */}
               </div>
             </div>
           </div>
+
         </div>
+
       </div>
     </div>
   );

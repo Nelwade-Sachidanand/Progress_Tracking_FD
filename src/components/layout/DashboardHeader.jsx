@@ -202,16 +202,17 @@ const DashboardHeader = ({
     },
 
     "/tasks/add-task": {
-      title: "Add New Task",
-      subtitle: "Create and manage project task",
+  title: "Activity Creation Form",
+  subtitle: "Define project execution activities",
+
       icon: <Plus size={24} />,
 
       titleClass: "text-[30px]",
       subtitleClass: "text-[12px]",
     },
     "/edit-task": {
-      title: "Edit Task",
-      subtitle: "Edit and Update Project Task",
+      title: "Activity Update Form",
+  subtitle: "Modify project activity details",
       icon: <Pencil size={24} />,
       titleClass: "text-[30px]",
       subtitleClass: "text-[12px]",
@@ -274,7 +275,8 @@ const DashboardHeader = ({
     "/project-details": {
       title: "Implementation Readiness Dashboard",
       subtitle: "Track Overall Project health and Go-live Readiness",
-      icon: <Plus size={24} />,
+      icon: <LayoutDashboard size={24} />,
+
 
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",

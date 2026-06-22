@@ -11,74 +11,99 @@ import {
   Rocket,
 } from "lucide-react";
 
-export default function MilestoneJourney() {
-  const milestones = [
-    {
-      name: "Project\nInitiation",
-      percentage: "23%",
-      status: "In Progress",
-      icon: Flag,
-      active: true,
-    },
-    {
-      name: "Requirement\nStudy",
-      percentage: "0%",
-      status: "Not Started",
-      icon: FileText,
-    },
-    {
-      name: "Solution\nDesign",
-      percentage: "0%",
-      status: "Not Started",
-      icon: Pencil,
-    },
-    {
-      name: "Development",
-      percentage: "0%",
-      status: "Not Started",
-      icon: Laptop,
-    },
-    {
-      name: "Testing\n(QA)",
-      percentage: "0%",
-      status: "Not Started",
-      icon: Bug,
-    },
-    {
-      name: "Training",
-      percentage: "0%",
-      status: "Not Started",
-      icon: GraduationCap,
-    },
-    {
-      name: "UAT - 1\n(Bank Module)",
-      percentage: "0%",
-      status: "Not Started",
-      icon: Database,
-    },
-    {
-      name: "Data Migration\n(Final)",
-      percentage: "0%",
-      status: "Not Started",
-      icon: Server,
-    },
-    {
-      name: "UAT - 2\n(High Value)",
-      percentage: "0%",
-      status: "Not Started",
-      icon: ClipboardCheck,
-    },
-    {
-      name: "Go Live",
-      percentage: "0%",
-      status: "Not Started",
-      icon: Rocket,
-    },
+export default function MilestoneJourney({
+  project,
+}) {
+  const icons = [
+    Flag,
+    FileText,
+    Pencil,
+    Laptop,
+    Bug,
+    GraduationCap,
+    Database,
+    Server,
+    ClipboardCheck,
+    Rocket,
   ];
+
+  const milestones =
+    project?.phases?.flatMap((phase) =>
+      phase.milestones?.map(
+        (milestone, index) => {
+          const activities =
+            milestone.tasks?.flatMap(
+              (task) =>
+                task.subTasks?.flatMap(
+                  (subTask) =>
+                    subTask.activities ||
+                    []
+                ) || []
+            ) || [];
+
+          const totalActivities =
+            activities.length;
+
+          const totalProgress =
+            activities.reduce(
+              (sum, activity) =>
+                sum +
+                (activity.progress ||
+                  0),
+              0
+            );
+
+          const avgProgress =
+            totalActivities > 0
+              ? Math.round(
+                  totalProgress /
+                    totalActivities
+                )
+              : 0;
+
+          const completed =
+            activities.every(
+              (activity) =>
+                activity.executionStatus ===
+                "Completed"
+            );
+
+          const inProgress =
+            activities.some(
+              (activity) =>
+                activity.executionStatus ===
+                "In Progress"
+            );
+
+          const status = completed
+            ? "Completed"
+            : inProgress
+            ? "In Progress"
+            : "Not Started";
+
+          return {
+            name:
+              milestone.milestoneName,
+            percentage: `${avgProgress}%`,
+            progress:
+              avgProgress,
+            status,
+            active:
+              status ===
+              "In Progress",
+            icon:
+              icons[
+                index %
+                  icons.length
+              ],
+          };
+        }
+      ) || []
+    );
 
   return (
     <div className="bg-white rounded-2xl border border-[#E5EAF2] p-4 mt-4">
-      {/* Header */}
+
       <div className="flex items-center gap-3 mb-8">
         <div
           className="
@@ -97,37 +122,58 @@ export default function MilestoneJourney() {
         </div>
 
         <h2 className="text-[16px] font-bold text-[#0B1F59]">
-          Milestone Journey (Weightage Wise)
+          Milestone Journey
         </h2>
       </div>
 
-      {/* Timeline */}
       <div className="relative">
-        {/* Dashed Line */}
-        <div
-          className="
-          absolute
-          top-7
-          left-10
-          right-10
-          border-t-2
-          border-dashed
-          border-[#D6DCE8]
-          "
-        />
 
-        <div className="grid grid-cols-10 gap-1 relative z-10">
-          {milestones.map((milestone, index) => {
-            const Icon = milestone.icon;
+       <div className="overflow-x-auto pb-2">
+<div
+      className="
+      absolute
+      top-5
+      left-16
+      border-t-2
+      border-dashed
+      border-[#D6DCE8]
+      "
+      style={{
+        width: `${milestones.length * 140}px`,
+      }}
+    />
 
-            return (
-              <div
-                key={index}
-                className="flex flex-col items-center text-center"
-              >
-                {/* Circle Icon */}
+    <div
+      className="
+      relative
+      z-10
+      grid
+      gap-3
+      min-w-max
+      "
+      style={{
+        gridTemplateColumns: `repeat(${Math.max(
+          milestones.length,
+          1
+        )}, 140px)`,
+      }}
+    >
+          {milestones.map(
+            (
+              milestone,
+              index
+            ) => {
+              const Icon =
+                milestone.icon;
+
+              return (
                 <div
-                  className={`
+                  key={index}
+                  className="flex flex-col items-center text-center"
+                >
+
+                  <div
+                    className={`
                     w-11
                     h-11
                     rounded-full
@@ -142,75 +188,76 @@ export default function MilestoneJourney() {
                         : "border-[#E5EAF2]"
                     }
                   `}
-                >
-                  <Icon
-                    size={18}
-                    className={
+                  >
+                    <Icon
+                      size={18}
+                      className={
+                        milestone.active
+                          ? "text-[#2563EB]"
+                          : "text-[#64748B]"
+                      }
+                    />
+                  </div>
+
+      <p
+  className="
+  mt-4
+  text-[11px]
+  font-semibold
+  text-[#0B1F59]
+  h-[42px]
+  overflow-hidden
+  text-ellipsis
+  "
+  title={milestone.name}
+>
+  {milestone.name}
+</p>
+
+                  <p
+                    className={`
+                    mt-3
+                    text-[14px]
+                    font-bold
+                    ${
                       milestone.active
                         ? "text-[#2563EB]"
-                        : "text-[#64748B]"
+                        : "text-[#0B1F59]"
                     }
-                  />
+                  `}
+                  >
+                    {
+                      milestone.percentage
+                    }
+                  </p>
+
+                  <p
+                    className={`
+                    text-[10px]
+                    mt-1
+                    ${
+                      milestone.active
+                        ? "text-[#2563EB]"
+                        : "text-[#94A3B8]"
+                    }
+                  `}
+                  >
+                    {
+                      milestone.status
+                    }
+                  </p>
+
                 </div>
+              );
+            }
+          )}
 
-                {/* Name */}
-                <p
-                  className="
-                  mt-4
-                  text-[11px]
-                  font-semibold
-                  text-[#0B1F59]
-                  whitespace-pre-line
-                  min-h-[42px]
-                  "
-                >
-                  {milestone.name}
-                </p>
-
-                {/* Percentage */}
-                <p
-                  className={`
-                  mt-3
-                  text-[14px]
-                  font-bold
-                  ${
-                    milestone.active
-                      ? "text-[#2563EB]"
-                      : "text-[#0B1F59]"
-                  }
-                `}
-                >
-                  {milestone.percentage}
-                </p>
-
-                {/* Status */}
-                <p
-                  className={`
-                  text-[10px]
-                  mt-1
-                  ${
-                    milestone.active
-                      ? "text-[#2563EB]"
-                      : "text-[#94A3B8]"
-                  }
-                `}
-                >
-                  {milestone.status}
-                </p>
-              </div>
-            );
-          })}
         </div>
+</div>
 
-        {/* Bottom Scale */}
-        <div className="mt-10 border-t border-[#E5EAF2] pt-4">
-          <div className="flex justify-between text-xs text-[#64748B] px-4">
-            <span>0%</span>
-            <span>50%</span>
-            <span>100%</span>
-          </div>
-        </div>
+
       </div>
+
     </div>
   );
 }

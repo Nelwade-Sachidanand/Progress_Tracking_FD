@@ -145,13 +145,13 @@ const paginatedTasks =
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
-  const clearFilters = () => {
-  setSelectedPhase("All Phases");
+const clearFilters = () => {
+  setSelectedPhase("");
   setSelectedMilestone([]);
-  setSelectedTask("All Tasks");
-  setSelectedSubTask("All Sub Tasks");
-  setSelectedActivity("All Activities");
-  setSelectedStatus("All Status");
+  setSelectedTask("");
+  setSelectedSubTask("");
+  setSelectedActivity("");
+  setSelectedStatus("");
   setSearchTerm("");
 };
 // const ITEMS_PER_PAGE = 10;

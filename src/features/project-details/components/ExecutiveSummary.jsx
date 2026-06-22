@@ -28,6 +28,9 @@ const [toDate,
   setToDate] =
   useState("");
 
+  const [quickSelect, setQuickSelect] =
+  useState("");
+
 const [showMilestoneDropdown,
   setShowMilestoneDropdown] =
   useState(false);
@@ -172,6 +175,74 @@ const activities =
     );
   };
 }, []);
+
+const handleQuickSelect = (
+  type
+) => {
+  const today = new Date();
+
+  let start = new Date();
+  let end = new Date();
+
+  switch (type) {
+    case "today":
+      break;
+
+    case "week":
+      start.setDate(
+        today.getDate() - 7
+      );
+      break;
+
+    case "month":
+      start.setMonth(
+        today.getMonth() - 1
+      );
+      break;
+
+    case "quarter":
+      start.setMonth(
+        today.getMonth() - 3
+      );
+      break;
+
+    case "half-yearly":
+      start.setMonth(
+        today.getMonth() - 6
+      );
+      break;
+
+    case "year":
+      start.setFullYear(
+        today.getFullYear() - 1
+      );
+      break;
+
+    default:
+      return;
+  }
+
+  setFromDate(
+    start
+      .toISOString()
+      .split("T")[0]
+  );
+
+  setToDate(
+    end
+      .toISOString()
+      .split("T")[0]
+  );
+
+  setQuickSelect(type);
+};
+
+const clearDateFilter = () => {
+  setSelectedMilestones([]);
+  setFromDate("");
+  setToDate("");
+  setQuickSelect("");
+};
   const cards = [
   {
     title: "Overall Progress",
@@ -381,66 +452,193 @@ const activities =
 
 </div>
 
-        <input
-  type="date"
-  value={fromDate}
-  onChange={(e) =>
-    setFromDate(
-      e.target.value
-    )
-  }
-  className="
-  h-11
-  px-4
-  rounded-xl
-  border
-  border-[#E5EAF2]
-  text-sm
-  "
-/>
+   <div className="flex items-center gap-1 flex-nowrap overflow-x-auto">
 
-<span className="font-bold">
-  →
-</span>
+  <input
+    type="date"
+    value={fromDate}
+    onChange={(e) => {
+      setFromDate(e.target.value);
+      setQuickSelect("custom");
+    }}
+    className="
+    h-8
+    px-2
+    rounded-lg
+    border
+    border-[#E5EAF2]
+    text-xs
+    "
+  />
 
-<input
-  type="date"
-  value={toDate}
-  onChange={(e) =>
-    setToDate(
-      e.target.value
-    )
-  }
-  className="
-  h-11
-  px-4
-  rounded-xl
-  border
-  border-[#E5EAF2]
-  text-sm
-  "
-/>
-<button
-  type="button"
-  onClick={() => {
-    setSelectedMilestones([]);
-    setFromDate("");
-    setToDate("");
-  }}
-  className="
-  h-11
-  px-4
-  rounded-xl
-  border
-  border-[#E5EAF2]
-  bg-white
-  text-sm
-  font-medium
-  hover:bg-[#F8FAFC]
-  "
->
-  Clear
-</button>
+  <span className="text-xs font-bold px-1">
+    →
+  </span>
+
+  <input
+    type="date"
+    value={toDate}
+    onChange={(e) => {
+      setToDate(e.target.value);
+      setQuickSelect("custom");
+    }}
+    className="
+    h-8
+    px-2
+    rounded-lg
+    border
+    border-[#E5EAF2]
+    text-xs
+    "
+  />
+
+  <button
+    onClick={() =>
+      handleQuickSelect("today")
+    }
+    className={`
+    h-8
+    px-2
+    rounded-lg
+    text-xs
+    border
+    whitespace-nowrap
+    ${
+      quickSelect === "today"
+        ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
+        : "bg-white"
+    }
+    `}
+  >
+    Today
+  </button>
+
+  <button
+    onClick={() =>
+      handleQuickSelect("week")
+    }
+    className={`
+    h-8
+    px-2
+    rounded-lg
+    text-xs
+    border
+    whitespace-nowrap
+    ${
+      quickSelect === "week"
+        ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
+        : "bg-white"
+    }
+    `}
+  >
+    Week
+  </button>
+
+  <button
+    onClick={() =>
+      handleQuickSelect("month")
+    }
+    className={`
+    h-8
+    px-2
+    rounded-lg
+    text-xs
+    border
+    whitespace-nowrap
+    ${
+      quickSelect === "month"
+        ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
+        : "bg-white"
+    }
+    `}
+  >
+    Month
+  </button>
+
+  <button
+    onClick={() =>
+      handleQuickSelect("quarter")
+    }
+    className={`
+    h-8
+    px-2
+    rounded-lg
+    text-xs
+    border
+    whitespace-nowrap
+    ${
+      quickSelect === "quarter"
+        ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
+        : "bg-white"
+    }
+    `}
+  >
+    Quarter
+  </button>
+
+  <button
+    onClick={() =>
+      handleQuickSelect(
+        "half-yearly"
+      )
+    }
+    className={`
+    h-8
+    px-2
+    rounded-lg
+    text-xs
+    border
+    whitespace-nowrap
+    ${
+      quickSelect ===
+      "half-yearly"
+        ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
+        : "bg-white"
+    }
+    `}
+  >
+    Half-Yearly
+  </button>
+
+  <button
+    onClick={() =>
+      handleQuickSelect("year")
+    }
+    className={`
+    h-8
+    px-2
+    rounded-lg
+    text-xs
+    border
+    whitespace-nowrap
+    ${
+      quickSelect === "year"
+        ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
+        : "bg-white"
+    }
+    `}
+  >
+    Year
+  </button>
+
+  <button
+    onClick={clearDateFilter}
+    className="
+    h-8
+    px-2
+    rounded-lg
+    text-xs
+    border
+    bg-red-50
+    text-red-600
+    border-red-200
+    whitespace-nowrap
+    "
+  >
+    Clear
+  </button>
+
+</div>
         </div>
 
       </div>

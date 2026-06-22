@@ -38,7 +38,7 @@ const projectName =
   </h1>
 
   <p className="text-sm text-gray-500">
-    {projectName}
+    Create and manage project task
   </p>
 </div>
 

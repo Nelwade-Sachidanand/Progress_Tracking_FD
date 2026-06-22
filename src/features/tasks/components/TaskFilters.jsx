@@ -194,22 +194,23 @@ export default function TaskFilters({
         justify-end
         "
               >
-                <button
-                  type="button"
-                  onClick={() =>
-                    setSelectedMilestone([])
-                  }
-                  className="
-          px-4
-          py-2
-          border
-          border-[#DCE3EE]
-          rounded-lg
-          text-sm
-          "
-                >
-                  Clear
-                </button>
+               <button
+  type="button"
+  onClick={() => {
+    setSelectedMilestone([]);
+    setShowMilestoneDropdown(false);
+  }}
+  className="
+    px-4
+    py-2
+    border
+    border-[#DCE3EE]
+    rounded-lg
+    text-sm
+  "
+>
+  Clear
+</button>
               </div>
             </div>
           )}
