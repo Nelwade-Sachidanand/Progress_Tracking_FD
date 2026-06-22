@@ -16,16 +16,24 @@ export const useAuth = () => {
 
         localStorage.setItem("user", JSON.stringify(response.details.user));
 
-        localStorage.setItem(
-          "projects",
-          JSON.stringify(response.details.projects),
-        );
+        sessionStorage.setItem("user", JSON.stringify(response.details.user));
+
+
+        localStorage.setItem("projects", JSON.stringify(response.details.projects),);
+
+        sessionStorage.setItem("projects", JSON.stringify(response.details.projects),);
+
 
         localStorage.setItem("accessToken", response.details.accessToken);
 
+        sessionStorage.setItem("accessToken", response.details.accessToken);
+
         localStorage.setItem("refreshToken", response.details.refreshToken);
 
-        console.log(response.details);
+        sessionStorage.setItem("refreshToken", response.details.refreshToken);
+
+
+        // console.log(response.details);
 
         return response;
       }
@@ -34,7 +42,7 @@ export const useAuth = () => {
 
       return null;
     } catch (error) {
-      toast.error(error.response?.data?.statusDesc || "Login Failed");
+      toast.error(error.response?.data?.statusDesc || "Backend is Not Responding");
       throw error;
     } finally {
       setLoading(false);

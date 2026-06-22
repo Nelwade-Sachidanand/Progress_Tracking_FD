@@ -13,6 +13,8 @@ export default function TaskActions({
 }) {
   const navigate = useNavigate();
 
+  const user = JSON.parse(sessionStorage.getItem("user"));
+
   const handleExportExcel = async () => {
     try {
       const selectedProjectId = localStorage.getItem("selectedProjectId");
@@ -26,8 +28,8 @@ export default function TaskActions({
 
         phaseName: selectedPhase === "All Phases" ? null : selectedPhase,
 
-        milestoneName:
-          selectedMilestone?.length > 0 ? selectedMilestone.join(",") : null,
+        milestoneNames:
+          selectedMilestone?.length > 0 ? selectedMilestone : null,
 
         taskName: selectedTask === "All Tasks" ? null : selectedTask,
 
@@ -44,7 +46,7 @@ export default function TaskActions({
         plannedEndDate: null,
       };
 
-      console.log("Export Payload:", payload);
+      // console.log("Export Payload:", payload);
 
       const blob = await exportExcelReport(payload);
 
@@ -101,9 +103,10 @@ export default function TaskActions({
         </button>
       </div>
 
-      <button
-        onClick={() => navigate("add-task")}
-        className="
+      {(user?.role === "ADMIN" || user?.role === "IMPLEMENTATION USER") &&
+        <button
+          onClick={() => navigate("add-task")}
+          className="
           bg-[#6D4AFF]
           hover:bg-[#5B3DF4]
           text-white
@@ -117,10 +120,12 @@ export default function TaskActions({
           shadow-sm
           cursor-pointer
         "
-      >
-        <Plus size={18} />
-        Add Task
-      </button>
+        >
+          <Plus size={18} />
+          Add Task
+        </button>
+      }
+
     </div>
   );
 }

@@ -9,6 +9,12 @@ export default function MainLayout() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const token = localStorage.getItem("accessToken");
+
+  if (!token) {
+    navigate("/");
+  }
+
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />

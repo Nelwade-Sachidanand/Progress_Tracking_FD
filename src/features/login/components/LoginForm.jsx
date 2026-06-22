@@ -43,28 +43,35 @@ const LoginForm = () => {
     const response = await login(username, password);
 
     if (response?.statusType === "S") {
-      navigate("/dashboard");
+
+      const user = response.details.user;
+
+      const projects = response.details.projects || [];
+
+      if (user.role === "USER") {
+        if (projects.length > 0) {
+          localStorage.setItem("selectedProjectId", projects[0].id);
+          navigate("/project-details");
+        }
+      }else navigate("/dashboard");
       setUsername("");
       setPassword("");
       setShowPassword(false);
-    } else {
-      setPassword("");
-      setShowPassword(false);
-    }
-  };
+    };
+  }
 
-  return (
-    <div
-      className="
+    return (
+      <div
+        className="
         w-full
         max-w-[460px]
         xl:max-w-[520px] px-5
         2xl:max-w-[560px]
       "
-    >
-      {/* Card */}
-      <div
-        className="
+      >
+        {/* Card */}
+        <div
+          className="
           bg-white
 
           rounded-[28px]
@@ -80,10 +87,10 @@ const LoginForm = () => {
           xl:py-12
           2xl:py-14
         "
-      >
-        {/* Heading */}
-        <h1
-          className="
+        >
+          {/* Heading */}
+          <h1
+            className="
             text-center
 
             font-bold
@@ -95,12 +102,12 @@ const LoginForm = () => {
 
             leading-none
           "
-        >
-          Welcome Back
-        </h1>
+          >
+            Welcome Back
+          </h1>
 
-        <h2
-          className="
+          <h2
+            className="
             text-center
             text-[#081D5C]
 
@@ -112,24 +119,24 @@ const LoginForm = () => {
             xl:text-[16px]
             2xl:text-[20px]
           "
-        >
-          Implementation Governance Portal
-        </h2>
+          >
+            Implementation Governance Portal
+          </h2>
 
-        {/* Divider */}
-        <div
-          className="
+          {/* Divider */}
+          <div
+            className="
             flex
             items-center
             gap-5
 
             mt-6
           "
-        >
-          <div className="flex-1 h-px bg-gray-200" />
+          >
+            <div className="flex-1 h-px bg-gray-200" />
 
-          <ShieldCheck
-            className="
+            <ShieldCheck
+              className="
               text-[#2563EB]
 
               w-5
@@ -137,16 +144,16 @@ const LoginForm = () => {
               xl:w-6
               xl:h-6
             "
-          />
+            />
 
-          <div className="flex-1 h-px bg-gray-200" />
-        </div>
+            <div className="flex-1 h-px bg-gray-200" />
+          </div>
 
-        {/* Form */}
-        <form className="mt-6" onSubmit={handleSubmit}>
-          {/* Username */}
-          <label
-            className="
+          {/* Form */}
+          <form className="mt-6" onSubmit={handleSubmit}>
+            {/* Username */}
+            <label
+              className="
               block
 
               font-semibold
@@ -157,13 +164,13 @@ const LoginForm = () => {
               text-[15px]
               xl:text-[16px]
             "
-          >
-            Username
-          </label>
+            >
+              Username
+            </label>
 
-          <div className="relative">
-            <User
-              className="
+            <div className="relative">
+              <User
+                className="
                 absolute
                 left-4
                 top-1/2
@@ -174,15 +181,15 @@ const LoginForm = () => {
                 w-5
                 h-5
               "
-            />
+              />
 
-            <input
-              data-testid="username-input"
-              type="text"
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="
+              <input
+                data-testid="username-input"
+                type="text"
+                placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="
                 w-full
 
                 h-12
@@ -205,12 +212,12 @@ const LoginForm = () => {
 
                 focus:border-blue-500
               "
-            />
-          </div>
+              />
+            </div>
 
-          {/* Password */}
-          <label
-            className="
+            {/* Password */}
+            <label
+              className="
               block
 
               font-semibold
@@ -222,13 +229,13 @@ const LoginForm = () => {
               text-[15px]
               xl:text-[16px]
             "
-          >
-            Password
-          </label>
+            >
+              Password
+            </label>
 
-          <div className="relative">
-            <Lock
-              className="
+            <div className="relative">
+              <Lock
+                className="
                 absolute
                 left-4
                 top-1/2
@@ -239,15 +246,15 @@ const LoginForm = () => {
                 w-5
                 h-5
               "
-            />
+              />
 
-            <input
-              data-testid="password-input"
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="
+              <input
+                data-testid="password-input"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="
                 w-full
 
                 h-12
@@ -270,13 +277,13 @@ const LoginForm = () => {
 
                 focus:border-blue-500
               "
-            />
+              />
 
-            <button
-              data-testid="toggle-password"
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="
+              <button
+                data-testid="toggle-password"
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="
                 absolute
                 right-4
                 top-1/2
@@ -284,23 +291,23 @@ const LoginForm = () => {
 
                 text-gray-400
               "
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
 
-          {/* Remember */}
-          <div
-            className="
+            {/* Remember */}
+            <div
+              className="
               flex
               justify-between
               items-center
 
               mt-5
             "
-          >
-            <label
-              className="
+            >
+              <label
+                className="
                 flex
                 items-center
                 gap-2
@@ -310,14 +317,14 @@ const LoginForm = () => {
                 text-[14px]
                 xl:text-[15px]
               "
-            >
-              <input type="checkbox" className="w-3 h-3" />
-              Remember me
-            </label>
+              >
+                <input type="checkbox" className="w-3 h-3" />
+                Remember me
+              </label>
 
-            <button
-              type="button"
-              className="
+              <button
+                type="button"
+                className="
                 text-[#2563EB]
 
                 font-semibold
@@ -327,15 +334,15 @@ const LoginForm = () => {
 
                 hover:underline
               "
-            >
-              Forgot Password?
-            </button>
-          </div>
+              >
+                Forgot Password?
+              </button>
+            </div>
 
-          {/* Login Button */}
-          <button
-            disabled={loading}
-            className="
+            {/* Login Button */}
+            <button
+              disabled={loading}
+              className="
               w-full
 
               h-14
@@ -363,15 +370,15 @@ const LoginForm = () => {
 
               cursor-pointer
             "
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
-      </div>
+            >
+              {loading ? "Logging in..." : "Login"}
+            </button>
+          </form>
+        </div>
 
-      {/* Footer */}
-      <p
-        className="
+        {/* Footer */}
+        <p
+          className="
           text-center
           text-[#667085]
 
@@ -381,13 +388,13 @@ const LoginForm = () => {
           xl:text-[15px]
           2xl:text-[16px]
         "
-      >
-        © 2026 Novillex Technologies. All rights reserved.
-      </p>
+        >
+          © 2026 Novillex Technologies. All rights reserved.
+        </p>
 
-      {showSessionModal && (
-        <div
-          className="
+        {showSessionModal && (
+          <div
+            className="
           fixed
           inset-0
           z-[9999]
@@ -398,9 +405,9 @@ const LoginForm = () => {
           backdrop-blur-sm
           px-4
           "
-        >
-          <div
-            className="
+          >
+            <div
+              className="
             bg-white
             rounded-3xl
             shadow-2xl
@@ -417,9 +424,9 @@ const LoginForm = () => {
 
             text-center
             "
-          >
-            <div
-              className="
+            >
+              <div
+                className="
               mx-auto
               flex
               items-center
@@ -432,20 +439,20 @@ const LoginForm = () => {
               rounded-full
               bg-red-100
              "
-            >
-              <AlertTriangle
-                className="
+              >
+                <AlertTriangle
+                  className="
                 text-red-600
 
                 w-7 h-7
                 xl:w-8 xl:h-8
                 2xl:w-10 2xl:h-10
                 "
-              />
-            </div>
+                />
+              </div>
 
-            <h2
-              className="
+              <h2
+                className="
               mt-5
               font-bold
               text-[#081D5C]
@@ -454,12 +461,12 @@ const LoginForm = () => {
               xl:text-2xl
               2xl:text-3xl
               "
-            >
-              Session Expired
-            </h2>
+              >
+                Session Expired
+              </h2>
 
-            <p
-              className="
+              <p
+                className="
               mt-3
               text-slate-600
 
@@ -467,16 +474,16 @@ const LoginForm = () => {
               xl:text-base
               2xl:text-lg
               "
-            >
-              {message}
-            </p>
+              >
+                {message}
+              </p>
 
-            <button
-              onClick={() => setShowSessionModal(false)}
-              className="
+              <button
+                onClick={() => setShowSessionModal(false)}
+                className="
                 mt-6
 
-                w-full
+                w-[60px]
                 h-11
                 xl:h-12
                 2xl:h-14
@@ -496,14 +503,14 @@ const LoginForm = () => {
                 transition-all
                 cursor-pointer
                 "
-            >
-              OK
-            </button>
+              >
+                OK
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
-  );
-};
+        )}
+      </div>
+    );
+  };
 
-export default LoginForm;
+  export default LoginForm;
