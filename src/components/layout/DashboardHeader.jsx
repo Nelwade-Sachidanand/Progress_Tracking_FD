@@ -55,7 +55,7 @@ const DashboardHeader = ({
 
   const [searchText, setSearchText] = useState("");
 
-  const { projects } = useProjects();
+  const { projects, setProjects } = useProjects();
 
   const banks = [
     "All Banks",
@@ -78,8 +78,8 @@ const DashboardHeader = ({
     .toUpperCase();
 
   const handleLogout = () => {
+    setProjects([]);
     sessionStorage.clear();
-
     navigate("/");
   };
 
@@ -461,7 +461,7 @@ const DashboardHeader = ({
                             key={bank}
                             onClick={() => {
                               setSelectedBank(bank);
-                              localStorage.setItem("selectedBank", bank);
+                              sessionStorage.setItem("selectedBank", bank);
                               window.dispatchEvent(new Event("bankChanged"));
                               setShowBanks(false);
                             }}
