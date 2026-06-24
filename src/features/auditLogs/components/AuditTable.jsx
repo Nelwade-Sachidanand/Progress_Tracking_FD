@@ -107,11 +107,11 @@ export default function AuditTable({ logs = [], loading, onView }) {
                 className="
                 px-6
                 py-4
-                text-left
+                text-center
                 text-sm
                 font-semibold
                 text-slate-600
-                2xl:text-base
+                xl:text-base 2xl:text-lg
                 "
               >
                 Sr. No.
@@ -121,11 +121,11 @@ export default function AuditTable({ logs = [], loading, onView }) {
                 className="
                 px-6
                 py-4
-                text-left
+                text-center
                 text-sm
                 font-semibold
                 text-slate-600
-                2xl:text-base
+                xl:text-base 2xl:text-lg
                 "
               >
                 Action Type
@@ -135,11 +135,11 @@ export default function AuditTable({ logs = [], loading, onView }) {
                 className="
                 px-6
                 py-4
-                text-left
+                text-center
                 text-sm
                 font-semibold
                 text-slate-600
-                2xl:text-base
+                xl:text-base 2xl:text-lg
                 "
               >
                 Entity Type
@@ -149,11 +149,11 @@ export default function AuditTable({ logs = [], loading, onView }) {
                 className="
                 px-6
                 py-4
-                text-left
+                text-center
                 text-sm
                 font-semibold
                 text-slate-600
-                2xl:text-base
+                xl:text-base 2xl:text-lg
                 "
               >
                 Entity Name
@@ -163,11 +163,11 @@ export default function AuditTable({ logs = [], loading, onView }) {
                 className="
                 px-6
                 py-4
-                text-left
+                text-center
                 text-sm
                 font-semibold
                 text-slate-600
-                2xl:text-base
+                xl:text-base 2xl:text-lg
                 "
               >
                 Modified By
@@ -177,11 +177,11 @@ export default function AuditTable({ logs = [], loading, onView }) {
                 className="
                 px-6
                 py-4
-                text-left
+                text-center
                 text-sm
                 font-semibold
                 text-slate-600
-                2xl:text-base
+                xl:text-base 2xl:text-lg
                 "
               >
                 Modified Date
@@ -195,7 +195,7 @@ export default function AuditTable({ logs = [], loading, onView }) {
                 text-sm
                 font-semibold
                 text-slate-600
-                2xl:text-base
+                xl:text-base 2xl:text-lg
                 "
               >
                 Actions
@@ -219,11 +219,13 @@ export default function AuditTable({ logs = [], loading, onView }) {
 
                   <td
                     className="
+                    text-center
                     px-6
                     py-5
                     font-medium
                     text-slate-700
-                    2xl:text-lg
+                    text-sm
+                    xl:text-base 2xl:text-lg
                     "
                   >
                     {(currentPage - 1) * RECORDS_PER_PAGE + index + 1}
@@ -231,15 +233,16 @@ export default function AuditTable({ logs = [], loading, onView }) {
 
                   {/* Action Type */}
 
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-5 text-center">
                     <span
                       className={`
+                        
                       px-3
                       py-1.5
                       rounded-full
                       text-xs
                       font-medium
-                      2xl:text-base
+                      xl:text-xs 2xl:text-base
                       ${getActionColor(log.actionType)}
                       `}
                     >
@@ -251,13 +254,14 @@ export default function AuditTable({ logs = [], loading, onView }) {
 
                   <td
                     className="
+                    text-center
                     px-6
                     py-5
                     font-bold
                     text-slate-700
                     font-medium
-                    xl:text-sm
-                    2xl:text-lg
+                    text-sm
+                    xl:text-sm 2xl:text-base
                     "
                   >
                     {log.entityType}
@@ -267,10 +271,12 @@ export default function AuditTable({ logs = [], loading, onView }) {
 
                   <td
                     className="
+                    text-center
                     px-6
                     py-5
                     text-slate-700
-                    2xl:text-lg
+                    text-sm
+                    xl:text-base 2xl:text-lg
                     "
                   >
                     {log.entityName}
@@ -280,10 +286,12 @@ export default function AuditTable({ logs = [], loading, onView }) {
 
                   <td
                     className="
+                    text-center
                     px-6
                     py-5
                     text-slate-700
-                    2xl:text-lg
+                    text-sm
+                    xl:text-base 2xl:text-lg
                     "
                   >
                     {log.modifiedBy}
@@ -293,10 +301,12 @@ export default function AuditTable({ logs = [], loading, onView }) {
 
                   <td
                     className="
+                    text-center
                     px-6
                     py-5
                     text-slate-700
-                    2xl:text-lg
+                    text-sm
+                    xl:text-base 2xl:text-lg
                     "
                   >
                     {new Date(log.modifiedDate).toLocaleString()}
@@ -306,6 +316,7 @@ export default function AuditTable({ logs = [], loading, onView }) {
 
                   <td
                     className="
+                    text-center
                     px-6
                     py-5
                     "

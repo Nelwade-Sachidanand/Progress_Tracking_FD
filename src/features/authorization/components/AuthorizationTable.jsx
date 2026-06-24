@@ -41,7 +41,13 @@ const getStatusStyle = (status) => {
   }
 };
 
-export default function AuthorizationTable({ logs = [], loading, onView, approveSelectedRequests, rejectSelectedRequests }) {
+export default function AuthorizationTable({
+  logs = [],
+  loading,
+  onView,
+  approveSelectedRequests,
+  rejectSelectedRequests,
+}) {
   const [currentPage, setCurrentPage] = useState(1);
 
   const [selectedRows, setSelectedRows] = useState([]);
@@ -77,24 +83,15 @@ export default function AuthorizationTable({ logs = [], loading, onView, approve
 
   const handleRowSelect = (id) => {
     if (selectedRows.includes(id)) {
-      setSelectedRows(
-        selectedRows.filter(
-          (selectedId) => selectedId !== id
-        )
-      );
+      setSelectedRows(selectedRows.filter((selectedId) => selectedId !== id));
     } else {
-      setSelectedRows([
-        ...selectedRows,
-        id,
-      ]);
+      setSelectedRows([...selectedRows, id]);
     }
   };
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedRows(
-        paginatedLogs.map((log) => log.id)
-      );
+      setSelectedRows(paginatedLogs.map((log) => log.id));
     } else {
       setSelectedRows([]);
     }
@@ -102,9 +99,7 @@ export default function AuthorizationTable({ logs = [], loading, onView, approve
 
   const handleApprove = async () => {
     try {
-      await approveSelectedRequests(
-        selectedRows
-      );
+      await approveSelectedRequests(selectedRows);
 
       setSelectedRows([]);
       setShowApproveModal(false);
@@ -115,10 +110,7 @@ export default function AuthorizationTable({ logs = [], loading, onView, approve
 
   const handleReject = async () => {
     try {
-      await rejectSelectedRequests(
-        selectedRows,
-        rejectReason
-      );
+      await rejectSelectedRequests(selectedRows, rejectReason);
 
       setSelectedRows([]);
       setRejectReason("");
@@ -256,36 +248,33 @@ export default function AuthorizationTable({ logs = [], loading, onView, approve
                   type="checkbox"
                   checked={
                     paginatedLogs.length > 0 &&
-                    paginatedLogs.every((log) =>
-                      selectedRows.includes(log.id)
-                    )
+                    paginatedLogs.every((log) => selectedRows.includes(log.id))
                   }
-
                   onChange={handleSelectAll}
                 />
               </th>
 
-              <th className="w-[6%] px-3 xl:px-4 py-4 text-left text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
+              <th className="w-[6%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
                 Sr No.
               </th>
 
-              <th className="w-[14%] px-3 xl:px-4 py-4 text-left text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
+              <th className="w-[14%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
                 Request Type
               </th>
 
-              <th className="w-[12%] px-3 xl:px-4 py-4 text-left text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
+              <th className="w-[12%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
                 Requested By
               </th>
 
-              <th className="w-[28%] px-3 xl:px-4 py-4 text-left text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
+              <th className="w-[28%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
                 Resource
               </th>
 
-              <th className="w-[18%] px-3 xl:px-4 py-4 text-left text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
+              <th className="w-[18%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
                 Requested At
               </th>
 
-              <th className="w-[10%] px-3 xl:px-4 py-4 text-left text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
+              <th className="w-[10%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
                 Status
               </th>
 
@@ -326,7 +315,7 @@ export default function AuthorizationTable({ logs = [], loading, onView, approve
                   transition
                   "
                   >
-                    <td className="px-3 xl:px-4 py-3 text-center">
+                    <td className="w-[4%] px-3 xl:px-4 py-3 text-center">
                       <input
                         className="cursor-pointer 2xl:w-5 2xl:h-5"
                         type="checkbox"
@@ -335,11 +324,11 @@ export default function AuthorizationTable({ logs = [], loading, onView, approve
                       />
                     </td>
 
-                    <td className="px-3 xl:px-4 py-3 text-xs xl:text-sm font-medium text-[#0F172A] 2xl:text-lg 2xl:font-medium 2xl:tracking-wide">
+                    <td className="w-[6%] px-3 xl:px-4 py-3 text-center text-xs xl:text-sm font-medium text-[#0F172A] 2xl:text-lg 2xl:font-medium 2xl:tracking-wide">
                       {srNo}
                     </td>
 
-                    <td className="px-3 xl:px-4 py-3">
+                    <td className="w-[14%] px-3 xl:px-4 py-3 text-center">
                       <span
                         className={`
                       px-3
@@ -356,20 +345,25 @@ export default function AuthorizationTable({ logs = [], loading, onView, approve
                       </span>
                     </td>
 
-                    <td className="px-3 xl:px-4 py-4 text-xs xl:text-base 2xl:text-lg font-medium text-[#0F172A] 2xl:font-medium 2xl:tracking-wide">
+                    <td className="w-[12%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg font-medium text-[#0F172A] 2xl:font-medium 2xl:tracking-wide">
                       {log.requestedBy}
                     </td>
 
-                    <td className="px-3 xl:px-4 py-4">
+                    <td className="w-[28%] px-3 xl:px-4 py-4 text-center">
                       <div
                         className="
-                      max-w-[140px]
-                      xl:max-w-[280px]
-                      truncate
-                      text-slate-600
-                      
-                      xl:text-[15px]
-                      2xl:text-[18px]
+                        mx-auto
+                        max-w-[140px]
+                        md:max-w-[200px]
+                        xl:max-w-[280px]
+                        2xl:max-w-[350px]
+                        truncate
+                        overflow-hidden
+                        whitespace-nowrap
+                        text-slate-600
+                        text-sm
+                        xl:text-[15px]
+                        2xl:text-[18px]
                       "
                         title={log.activityName}
                       >
@@ -377,11 +371,11 @@ export default function AuthorizationTable({ logs = [], loading, onView, approve
                       </div>
                     </td>
 
-                    <td className="px-3 xl:px-4 py-4 text-sm xl:text-base 2xl:text-lg text-[#475569] 2xl:font-medium 2xl:tracking-wide">
+                    <td className="w-[18%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg text-[#475569] 2xl:font-medium 2xl:tracking-wide">
                       {new Date(log.requestedAt).toLocaleString()}
                     </td>
 
-                    <td className="px-3 xl:px-4 py-4">
+                    <td className="w-[10%] px-3 xl:px-4 py-4 text-center">
                       <span
                         className={`
                       px-3
@@ -398,7 +392,7 @@ export default function AuthorizationTable({ logs = [], loading, onView, approve
                       </span>
                     </td>
 
-                    <td className="px-3 xl:px-4 py-4">
+                    <td className="w-[8%] px-3 xl:px-4 py-4">
                       <div className="flex justify-center">
                         <button
                           onClick={() => onView(log)}
@@ -526,55 +520,46 @@ export default function AuthorizationTable({ logs = [], loading, onView, approve
         </div>
       </div>
 
-      {
-        showApproveModal && (
-          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl p-6 w-[420px]">
-              <h2 className="text-lg font-semibold mb-2">
-                Approve Requests
-              </h2>
+      {showApproveModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 w-[420px]">
+            <h2 className="text-lg font-semibold mb-2">Approve Requests</h2>
 
-              <p className="text-slate-600">
-                Are you sure you want to approve{" "}
-                <b>{selectedRows.length}</b> request(s)?
-              </p>
+            <p className="text-slate-600">
+              Are you sure you want to approve <b>{selectedRows.length}</b>{" "}
+              request(s)?
+            </p>
 
-              <div className="flex justify-end gap-3 mt-6">
-                <button
-                  onClick={() => setShowApproveModal(false)}
-                  className="px-4 py-2 border rounded-lg cursor-pointer"
-                >
-                  Cancel
-                </button>
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setShowApproveModal(false)}
+                className="px-4 py-2 border rounded-lg cursor-pointer"
+              >
+                Cancel
+              </button>
 
-                <button
-                  onClick={handleApprove}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg cursor-pointer"
-                >
-                  Approve
-                </button>
-              </div>
+              <button
+                onClick={handleApprove}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg cursor-pointer"
+              >
+                Approve
+              </button>
             </div>
           </div>
-        )
-      }
+        </div>
+      )}
 
-      {
-        showRejectModal && (
-          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl p-6 w-[500px]">
-              <h2 className="text-lg font-semibold mb-4">
-                Reject Requests
-              </h2>
+      {showRejectModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 w-[500px]">
+            <h2 className="text-lg font-semibold mb-4">Reject Requests</h2>
 
-              <textarea
-                value={rejectReason}
-                onChange={(e) =>
-                  setRejectReason(e.target.value)
-                }
-                rows={4}
-                placeholder="Enter rejection reason..."
-                className="
+            <textarea
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              rows={4}
+              placeholder="Enter rejection reason..."
+              className="
             w-full
             border
             rounded-lg
@@ -582,23 +567,23 @@ export default function AuthorizationTable({ logs = [], loading, onView, approve
             outline-none
             focus:border-blue-500
           "
-              />
+            />
 
-              <div className="flex justify-end gap-3 mt-6">
-                <button
-                  onClick={() => setShowRejectModal(false)}
-                  className="px-4 py-2 border rounded-lg cursor-pointer"
-                >
-                  Cancel
-                </button>
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setShowRejectModal(false)}
+                className="px-4 py-2 border rounded-lg cursor-pointer"
+              >
+                Cancel
+              </button>
 
-                <button
-                  disabled={!rejectReason.trim()}
-                  onClick={() => {
-                    setShowRejectModal(false);
-                    setShowRejectConfirm(true);
-                  }}
-                  className="
+              <button
+                disabled={!rejectReason.trim()}
+                onClick={() => {
+                  setShowRejectModal(false);
+                  setShowRejectConfirm(true);
+                }}
+                className="
               px-4
               py-2
               bg-red-600
@@ -607,51 +592,48 @@ export default function AuthorizationTable({ logs = [], loading, onView, approve
               disabled:opacity-50
               cursor-pointer
             "
-                >
-                  Continue
-                </button>
-              </div>
+              >
+                Continue
+              </button>
             </div>
           </div>
-        )
-      }
+        </div>
+      )}
 
-      {
-        showRejectConfirm && (
-          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl p-6 w-[450px]">
-              <h2 className="text-lg font-semibold text-red-600">
-                Confirm Rejection
-              </h2>
+      {showRejectConfirm && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 w-[450px]">
+            <h2 className="text-lg font-semibold text-red-600">
+              Confirm Rejection
+            </h2>
 
-              <p className="mt-3 text-slate-600">
-                Are you sure you want to reject{" "}
-                <b>{selectedRows.length}</b> request(s)?
-              </p>
+            <p className="mt-3 text-slate-600">
+              Are you sure you want to reject <b>{selectedRows.length}</b>{" "}
+              request(s)?
+            </p>
 
-              <div className="mt-2 p-3 bg-red-50 rounded-lg text-sm">
-                <b>Reason:</b> {rejectReason}
-              </div>
+            <div className="mt-2 p-3 bg-red-50 rounded-lg text-sm">
+              <b>Reason:</b> {rejectReason}
+            </div>
 
-              <div className="flex justify-end gap-3 mt-6">
-                <button
-                  onClick={() => setShowRejectConfirm(false)}
-                  className="px-4 py-2 border rounded-lg"
-                >
-                  Cancel
-                </button>
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setShowRejectConfirm(false)}
+                className="px-4 py-2 border rounded-lg"
+              >
+                Cancel
+              </button>
 
-                <button
-                  onClick={handleReject}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg"
-                >
-                  Confirm Reject
-                </button>
-              </div>
+              <button
+                onClick={handleReject}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg"
+              >
+                Confirm Reject
+              </button>
             </div>
           </div>
-        )
-      }
+        </div>
+      )}
     </div>
   );
 }

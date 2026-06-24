@@ -46,7 +46,7 @@ export default function TaskActions({
         plannedEndDate: null,
       };
 
-      // console.log("Export Payload:", payload);
+      console.log("Export Payload:", payload);
 
       const blob = await exportExcelReport(payload);
 
@@ -67,11 +67,20 @@ export default function TaskActions({
 
       toast.success("Excel downloaded successfully");
     } catch (error) {
-      console.error("Export Error:", error.response?.data || error);
+      try {
+        if (error.response?.data instanceof Blob) {
+          const text = await error.response.data.text();
+          const errorData = JSON.parse(text);
 
-      toast.error(
-        error.response?.data?.statusDesc || "Failed to export report",
-      );
+          toast.error(errorData.statusDesc || "Failed to export report");
+        } else {
+          toast.error(
+            error.response?.data?.statusDesc || "Failed to export report",
+          );
+        }
+      } catch {
+        toast.error("Failed to export report");
+      }
     }
   };
 
@@ -103,7 +112,7 @@ export default function TaskActions({
         </button>
       </div>
 
-      {(user?.role === "ADMIN" || user?.role === "IMPLEMENTATION USER") &&
+      {(user?.role === "ADMIN" || user?.role === "IMPLEMENTATION USER") && (
         <button
           onClick={() => navigate("add-task")}
           className="
@@ -124,8 +133,7 @@ export default function TaskActions({
           <Plus size={18} />
           Add Task
         </button>
-      }
-
+      )}
     </div>
   );
 }

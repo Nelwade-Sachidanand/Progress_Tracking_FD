@@ -155,7 +155,7 @@ export default function InfrastructureTab({
                 name="currentDatabase"
                 value={infrastructure.currentDatabase || ""}
                 onChange={handleChange}
-                placeholder="Oracle / MySQL"
+                placeholder="e.g. Oracle / SQL"
                 className="
                   w-full
                   h-11
@@ -231,27 +231,27 @@ export default function InfrastructureTab({
           <table className="w-full min-w-[1000px] border-separate border-spacing-y-2">
             <thead>
               <tr className="bg-slate-100">
-                <th className="px-3 py-3 text-xs font-semibold text-left">
+                <th className="px-3 py-3 text-sm font-semibold text-center">
                   Server Type
                 </th>
 
-                <th className="px-3 py-3 text-xs font-semibold text-left">
+                <th className="px-3 py-3 text-sm font-semibold text-center">
                   No. of Units
                 </th>
 
-                <th className="px-3 py-3 text-xs font-semibold text-left">
+                <th className="px-3 py-3 text-sm font-semibold text-center">
                   Disk Space (GB)
                 </th>
 
-                <th className="px-3 py-3 text-xs font-semibold text-left">
+                <th className="px-3 py-3 text-sm font-semibold text-center">
                   RAM (GB)
                 </th>
 
-                <th className="px-3 py-3 text-xs font-semibold text-left">
+                <th className="px-3 py-3 text-sm font-semibold text-center">
                   No. of Cores
                 </th>
 
-                <th className="px-3 py-3 text-xs font-semibold text-center">
+                <th className="px-3 py-3 text-sm font-semibold text-center">
                   Action
                 </th>
               </tr>

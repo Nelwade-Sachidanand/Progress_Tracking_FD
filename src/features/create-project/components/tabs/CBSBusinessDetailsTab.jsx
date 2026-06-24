@@ -124,7 +124,9 @@ export default function CBSBusinessDetailsTab({
           </div>
 
           <div>
-            <label className="block mb-2 text-sm font-medium">CBS Since</label>
+            <label className="block mb-2 text-sm font-medium">
+              CBS Since (e.g. June,2022)
+            </label>
 
             <div className="relative">
               <Calendar

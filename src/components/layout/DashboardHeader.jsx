@@ -213,8 +213,8 @@ const DashboardHeader = ({
     },
 
     "/tasks/add-task": {
-  title: "Activity Creation Form",
-  subtitle: "Define project execution activities",
+      title: "Activity Creation Form",
+      subtitle: "Define project execution activities",
 
       icon: <Plus size={24} />,
 
@@ -223,7 +223,7 @@ const DashboardHeader = ({
     },
     "/edit-task": {
       title: "Activity Update Form",
-  subtitle: "Modify project activity details",
+      subtitle: "Modify project activity details",
       icon: <Pencil size={24} />,
       titleClass: "text-[30px]",
       subtitleClass: "text-[12px]",
@@ -287,7 +287,6 @@ const DashboardHeader = ({
       title: "Implementation Readiness Dashboard",
       subtitle: "Track Overall Project health and Go-live Readiness",
       icon: <LayoutDashboard size={24} />,
-
 
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",
@@ -463,9 +462,7 @@ const DashboardHeader = ({
                             onClick={() => {
                               setSelectedBank(bank);
                               localStorage.setItem("selectedBank", bank);
-                              window.dispatchEvent(
-                                new Event("bankChanged")
-                              );
+                              window.dispatchEvent(new Event("bankChanged"));
                               setShowBanks(false);
                             }}
                             title={bank}
@@ -536,10 +533,8 @@ const DashboardHeader = ({
                 </div>
               </>
             )}
-
-
             {/* Notification */}
-            {role === "ADMIN" &&
+            {role === "ADMIN" && (
               <div className="relative">
                 <button
                   data-testid="notification-button"
@@ -752,20 +747,19 @@ const DashboardHeader = ({
                   </div>
                 )}
               </div>
-            }
-
-
+            )}
             {/* User */}
             <div className="relative">
               <button
                 onClick={() => setOpen(!open)}
                 className="
-              flex
-              items-center
-              gap-2
-              sm:gap-3
-              cursor-pointer
-            "
+                flex
+                items-center
+                gap-2
+                sm:gap-3
+                cursor-pointer
+                min-w-0
+              "
               >
                 <div
                   className="
@@ -789,12 +783,33 @@ const DashboardHeader = ({
                   {initials}
                 </div>
 
-                <div className="hidden lg:block text-left">
-                  <h4 className="font-bold text-[#0B1F59] 2xl:text-lg">
+                <div className="hidden lg:block text-left min-w-0">
+                  <h4
+                    className="
+                    font-bold
+                    text-[#0B1F59]
+                    2xl:text-lg
+                    truncate
+                    max-w-[140px]
+                    xl:max-w-[180px]
+                    2xl:max-w-[220px]
+                  "
+                    title={fullname}
+                  >
                     {fullname}
                   </h4>
 
-                  <p className="text-sm text-[#64748B] 2xl:text-base">
+                  <p
+                    className="
+                    text-sm
+                    text-[#64748B]
+                    2xl:text-base
+                    truncate
+                    max-w-[140px]
+                    xl:max-w-[180px]
+                    2xl:max-w-[220px]
+                  "
+                  >
                     {role.replaceAll("_", " ")}
                   </p>
                 </div>
