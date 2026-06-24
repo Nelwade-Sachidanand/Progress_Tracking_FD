@@ -1,6 +1,8 @@
 import { ArrowLeft, Save, UserPlus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useProjects } from "../../../context/ProjectContext";
 import { useUsers } from "../hooks/useUsers";
 
 const UserForm = ({ mode = "add", userData = null }) => {
@@ -9,6 +11,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
 
   const { createUser, updateUser } = useUsers();
 
+  const [id, setId] = useState("");
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -16,10 +19,13 @@ const UserForm = ({ mode = "add", userData = null }) => {
   const [status, setStatus] = useState("ACTIVE");
   const [selectedProjects, setSelectedProjects] = useState([]);
 
-  const availableProjects = JSON.parse(localStorage.getItem("projects")) || [];
+  const { projects } = useProjects();
+
+  const availableProjects = projects;
 
   useEffect(() => {
     if (mode === "edit" && userData) {
+      setId(userData.id || "");
       setFullName(userData.fullname || "");
       setUsername(userData.username || "");
       setRole(userData.role || "USER");
@@ -48,7 +54,69 @@ const UserForm = ({ mode = "add", userData = null }) => {
     );
   };
 
+  const validateForm = () => {
+    if (!fullName.trim()) {
+      toast.error("Full Name is required");
+      return false;
+    }
+
+    if (fullName.trim().length < 3) {
+      toast.error("Full Name must be at least 3 characters");
+      return false;
+    }
+
+    if (!/^[A-Za-z\s]+$/.test(fullName.trim())) {
+      toast.error("Full Name can contain only alphabets and spaces");
+      return false;
+    }
+
+    if (!username.trim()) {
+      toast.error("Username is required");
+      return false;
+    }
+
+    if (username.trim().length < 4) {
+      toast.error("Username must be at least 4 characters");
+      return false;
+    }
+
+    if (!/^[a-zA-Z0-9._]+$/.test(username.trim())) {
+      toast.error(
+        "Username can contain only letters, numbers, dot (.) and underscore (_)",
+      );
+      return false;
+    }
+
+    // Password validation only for Add User
+    if (mode === "add") {
+      if (!password.trim()) {
+        toast.error("Password is required");
+        return false;
+      }
+
+      if (password.length < 8) {
+        toast.error("Password must be at least 8 characters");
+        return false;
+      }
+
+      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/.test(password)) {
+        toast.error(
+          "Password must contain at least one uppercase letter, one lowercase letter and one number",
+        );
+        return false;
+      }
+    }
+
+    if (selectedProjects.length === 0) {
+      toast.error("Please assign at least one project");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmitUser = async () => {
+    if (!validateForm()) return;
     try {
       
 
@@ -64,7 +132,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
         projectIds: selectedProjects.map((project) => project.id),
       };
 
-      console.log(payload);
+      // console.log(payload);
 
       const response =
         mode === "add" ? await createUser(payload) : await updateUser(payload);

@@ -17,9 +17,9 @@ export default function TaskActions({
 
   const handleExportExcel = async () => {
     try {
-      const selectedProjectId = localStorage.getItem("selectedProjectId");
+      const selectedProjectId = sessionStorage.getItem("selectedProjectId");
 
-      const selectedProjectName = localStorage.getItem("selectedProjectName");
+      const selectedProjectName = sessionStorage.getItem("selectedProjectName");
 
       const payload = {
         projectId: selectedProjectId,
@@ -46,7 +46,7 @@ export default function TaskActions({
         plannedEndDate: null,
       };
 
-      // console.log("Export Payload:", payload);
+      console.log("Export Payload:", payload);
 
       const blob = await exportExcelReport(payload);
 
@@ -67,11 +67,20 @@ export default function TaskActions({
 
       toast.success("Excel downloaded successfully");
     } catch (error) {
-      console.error("Export Error:", error.response?.data || error);
+      try {
+        if (error.response?.data instanceof Blob) {
+          const text = await error.response.data.text();
+          const errorData = JSON.parse(text);
 
-      toast.error(
-        error.response?.data?.statusDesc || "Failed to export report",
-      );
+          toast.error(errorData.statusDesc || "Failed to export report");
+        } else {
+          toast.error(
+            error.response?.data?.statusDesc || "Failed to export report",
+          );
+        }
+      } catch {
+        toast.error("Failed to export report");
+      }
     }
   };
 
@@ -151,35 +160,29 @@ export default function TaskActions({
       </button>
     </div>
 
-    {/* Add Task Button */}
-    {(user?.role === "ADMIN" ||
-      user?.role === "IMPLEMENTATION USER") && (
-      <button
-        onClick={() =>
-          navigate("add-task")
-        }
-        className="
-        bg-[#6D4AFF]
-        hover:bg-[#5B3DF4]
-        text-white
-        px-5
-        py-2.5
-        rounded-xl
-        flex
-        items-center
-        justify-center
-        gap-2
-        font-medium
-        shadow-sm
-        cursor-pointer
-        w-full
-        sm:w-auto
+      {(user?.role === "ADMIN" || user?.role === "IMPLEMENTATION USER") &&
+        <button
+          onClick={() => navigate("add-task")}
+          className="
+          bg-[#6D4AFF]
+          hover:bg-[#5B3DF4]
+          text-white
+          px-5
+          py-2.5
+          rounded-xl
+          flex
+          items-center
+          gap-2
+          font-medium
+          shadow-sm
+          cursor-pointer
         "
-      >
-        <Plus size={18} />
-        Add Task
-      </button>
-    )}
-  </div>
-);
+        >
+          <Plus size={18} />
+          Add Task
+        </button>
+      }
+
+    </div>
+  );
 }

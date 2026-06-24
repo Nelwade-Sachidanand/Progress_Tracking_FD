@@ -7,40 +7,17 @@ import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { updateActivity } from "../api/editTaskApi";
+import { useProjects } from "../../../context/ProjectContext";
 
 export default function useEditTask() {
 
   const { state } = useLocation();
 
   const task = state?.task;
-console.log("TASK DATA:", task);
 
-console.log(
-  "plannedStartDate:",
-  task?.plannedStartDate
-);
-
-console.log(
-  "plannedEndDate:",
-  task?.plannedEndDate
-);
-
-console.log(
-  "actualStartDate:",
-  task?.actualStartDate
-);
-
-console.log(
-  "actualEndDate:",
-  task?.actualEndDate
-);
-  const projects =
-    JSON.parse(
-      localStorage.getItem("projects")
-    ) || [];
-
+  const { projects } = useProjects();
   const selectedProjectId =
-    localStorage.getItem(
+    sessionStorage.getItem(
       "selectedProjectId"
     );
 
@@ -424,7 +401,7 @@ if (
         toast.error(
           error?.response?.data
             ?.statusDesc ||
-            "Failed to update activity"
+          "Failed to update activity"
         );
 
       }

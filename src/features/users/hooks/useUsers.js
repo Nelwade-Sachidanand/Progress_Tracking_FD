@@ -3,7 +3,8 @@ import {
   getUsers,
   registerUser,
   updateUser as updateUserService,
-  getProjectNames
+  getProjectNames,
+  deleteUser as deleteUserApi
 } from "../services/userService";
 import { toast } from "react-toastify";
 
@@ -19,7 +20,7 @@ export const useUsers = () => {
 
       const users = userResponse.details || [];
 
-      console.log(users);
+      // console.log(users);
 
       const uniqueProjectIds = [
         ...new Set(users.flatMap((user) => user.projectIds || [])),
@@ -33,7 +34,7 @@ export const useUsers = () => {
         projectMap = projectResponse.details || {};
       }
 
-      console.log(projectMap);
+      // console.log(projectMap);
 
       const usersWithProjectNames = users.map((user) => ({
         ...user,
@@ -95,6 +96,29 @@ export const useUsers = () => {
     }
   };
 
+  const deleteUser = async (userId) => {
+    try {
+      setLoading(true);
+
+      const response = await deleteUserApi(userId);
+
+      if (response?.statusType === "S") {
+        toast.success(response.statusDesc);
+        return response;
+      }
+
+      toast.error(response?.statusDesc || "Failed to delete user");
+      return null;
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.statusDesc || "Failed to delete user"
+      );
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -105,5 +129,6 @@ export const useUsers = () => {
     fetchUsers,
     createUser,
     updateUser: updateUserData,
+    deleteUser,
   };
 };

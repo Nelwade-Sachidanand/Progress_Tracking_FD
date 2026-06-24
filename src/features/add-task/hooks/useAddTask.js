@@ -1,30 +1,29 @@
 import { useState, useMemo } from "react";
 import { toast } from "react-toastify";
 import { createActivity } from "../api/addTaskApi";
+import { useProjects } from "../../../context/ProjectContext";
 export default function useAddTask() {
-const projects =
-  JSON.parse(
-    localStorage.getItem("projects")
-  ) || [];
 
-const selectedProjectId =
-  localStorage.getItem(
-    "selectedProjectId"
-  );
+  const {projects} = useProjects();
 
-const selectedProject =
-  projects.find(
-    (project) =>
-      String(project.id) ===
-      String(selectedProjectId)
-  ) || null;
+  const selectedProjectId =
+    sessionStorage.getItem(
+      "selectedProjectId"
+    );
+
+  const selectedProject =
+    projects.find(
+      (project) =>
+        String(project.id) ===
+        String(selectedProjectId)
+    ) || null;
 
 
 
-//const selectedProject = projects[0];
+  //const selectedProject = projects[0];
 
   const [formData, setFormData] = useState({
-   
+
     phaseName: "",
     milestoneName: "",
     taskName: "",
@@ -38,139 +37,139 @@ const selectedProject =
     actualEndDate: "",
     progress: 0,
     executionStatus: "",
-    scheduleHealth:"",
+    scheduleHealth: "",
   });
-const handleSubmit = async () => {
-  try {
-    console.log(formData);
-    
-    if (!formData.phaseName) {
-      toast.error("Please select Phase");
-      return;
-    }
+  const handleSubmit = async () => {
+    try {
+      console.log(formData);
 
-    if (!formData.milestoneName) {
-      toast.error("Please select Milestone");
-      return;
-    }
+      if (!formData.phaseName) {
+        toast.error("Please select Phase");
+        return;
+      }
 
-    if (!formData.taskName) {
-      toast.error("Please select Task");
-      return;
-    }
+      if (!formData.milestoneName) {
+        toast.error("Please select Milestone");
+        return;
+      }
 
-    if (!formData.subTaskName) {
-      toast.error("Please select Sub Task");
-      return;
-    }
+      if (!formData.taskName) {
+        toast.error("Please select Task");
+        return;
+      }
 
-    if (!formData.activityName?.trim()) {
-      toast.error("Please enter Activity");
-      return;
-    }
+      if (!formData.subTaskName) {
+        toast.error("Please select Sub Task");
+        return;
+      }
 
-    const payload = {
+      if (!formData.activityName?.trim()) {
+        toast.error("Please enter Activity");
+        return;
+      }
+
+      const payload = {
         projectId: selectedProject?.id,
-      projectName:
-        selectedProject?.projectName,
+        projectName:
+          selectedProject?.projectName,
 
-      phaseName:
-        formData.phaseName,
+        phaseName:
+          formData.phaseName,
 
-      milestoneName:
-        formData.milestoneName,
+        milestoneName:
+          formData.milestoneName,
 
-      taskName:
-        formData.taskName,
+        taskName:
+          formData.taskName,
 
-      subTaskName:
-        formData.subTaskName,
+        subTaskName:
+          formData.subTaskName,
 
-      activityName:
-        formData.activityName,
+        activityName:
+          formData.activityName,
 
-      owner:
-        formData.owner,
+        owner:
+          formData.owner,
 
-      estimatedPeriodWeek:
-        Number(
-          formData.estimatedPeriodWeek
-        ),
+        estimatedPeriodWeek:
+          Number(
+            formData.estimatedPeriodWeek
+          ),
 
-      plannedStartDate:
-        formData.plannedStartDate ||
-        null,
+        plannedStartDate:
+          formData.plannedStartDate ||
+          null,
 
-      plannedEndDate:
-        formData.plannedEndDate ||
-        null,
+        plannedEndDate:
+          formData.plannedEndDate ||
+          null,
 
-      actualStartDate:
-        formData.actualStartDate ||
-        null,
+        actualStartDate:
+          formData.actualStartDate ||
+          null,
 
-      actualEndDate:
-        formData.actualEndDate ||
-        null,
+        actualEndDate:
+          formData.actualEndDate ||
+          null,
 
-      progress:
-        Number(formData.progress),
+        progress:
+          Number(formData.progress),
 
-      executionStatus:
-        formData.executionStatus,
+        executionStatus:
+          formData.executionStatus,
 
-      scheduleHealth:
-        formData.scheduleHealth ||
-        "GREEN",
-    };
-console.log("TOKEN:", localStorage.getItem("token"));
-    const response =
-      await createActivity(
-        payload
-      );
+        scheduleHealth:
+          formData.scheduleHealth ||
+          "GREEN",
+      };
+      // console.log("TOKEN:", sessionStorage.getItem("token"));
+      const response =
+        await createActivity(
+          payload
+        );
 
-    if (
-      response.statusType === "S"
-    ) {
-      toast.success(
-        response.statusDesc
-      );
+      if (
+        response.statusType === "S"
+      ) {
+        toast.success(
+          response.statusDesc
+        );
 
-      resetForm();
-    } else {
+        resetForm();
+      } else {
+        toast.error(
+          response.statusDesc
+        );
+      }
+    } catch (error) {
+      console.error(error);
+
       toast.error(
-        response.statusDesc
+        error?.response?.data
+          ?.statusDesc ||
+        "Failed to create activity"
       );
     }
-  } catch (error) {
-    console.error(error);
+  };
+  const resetForm = () => {
+    setFormData({
 
-    toast.error(
-      error?.response?.data
-        ?.statusDesc ||
-        "Failed to create activity"
-    );
-  }
-};
- const resetForm = () => {
-  setFormData({
-   
-    phaseName: "",
-    milestoneName: "",
-    taskName: "",
-    subTaskName: "",
-    activityName: "",
-    owner: "",
-    estimatedPeriodWeek: "",
-    plannedStartDate: "",
-    plannedEndDate: "",
-    actualStartDate: "",
-    actualEndDate: "",
-    progress: 0,
-    executionStatus: " ",
-    scheduleHealth:"",
-  });
-};
+      phaseName: "",
+      milestoneName: "",
+      taskName: "",
+      subTaskName: "",
+      activityName: "",
+      owner: "",
+      estimatedPeriodWeek: "",
+      plannedStartDate: "",
+      plannedEndDate: "",
+      actualStartDate: "",
+      actualEndDate: "",
+      progress: 0,
+      executionStatus: " ",
+      scheduleHealth: "",
+    });
+  };
 
 
   const phases = useMemo(() => {
@@ -194,28 +193,28 @@ console.log("TOKEN:", localStorage.getItem("token"));
     );
   }, [selectedProject, formData.phaseName]);
 
- const taskOptions = useMemo(() => {
-  const phase =
-    selectedProject?.phases?.find(
-      (p) => p.phaseName === formData.phaseName
-    );
+  const taskOptions = useMemo(() => {
+    const phase =
+      selectedProject?.phases?.find(
+        (p) => p.phaseName === formData.phaseName
+      );
 
-  const milestone =
-    phase?.milestones?.find(
-      (m) =>
-        m.milestoneName === formData.milestoneName
-    );
+    const milestone =
+      phase?.milestones?.find(
+        (m) =>
+          m.milestoneName === formData.milestoneName
+      );
 
-  return (
-    milestone?.tasks?.map(
-      (t) => t.taskName
-    ) || []
-  );
-}, [
-  selectedProject,
-  formData.phaseName,
-  formData.milestoneName,
-]);
+    return (
+      milestone?.tasks?.map(
+        (t) => t.taskName
+      ) || []
+    );
+  }, [
+    selectedProject,
+    formData.phaseName,
+    formData.milestoneName,
+  ]);
 
   const subTasks = useMemo(() => {
     const phase =
@@ -246,46 +245,46 @@ console.log("TOKEN:", localStorage.getItem("token"));
     formData.taskName,
   ]);
 
- const handleChange = (
-  field,
-  value
-) => {
-  setFormData((prev) => {
-    const updated = {
-      ...prev,
-      [field]: value,
-    };
+  const handleChange = (
+    field,
+    value
+  ) => {
+    setFormData((prev) => {
+      const updated = {
+        ...prev,
+        [field]: value,
+      };
 
-    if (field === "phaseName") {
-      updated.milestoneName = "";
-      updated.taskName = "";
-      updated.subTaskName = "";
-    }
+      if (field === "phaseName") {
+        updated.milestoneName = "";
+        updated.taskName = "";
+        updated.subTaskName = "";
+      }
 
-    if (field === "milestoneName") {
-      updated.taskName = "";
-      updated.subTaskName = "";
-    }
+      if (field === "milestoneName") {
+        updated.taskName = "";
+        updated.subTaskName = "";
+      }
 
-    if (field === "taskName") {
-      updated.subTaskName = "";
-    }
+      if (field === "taskName") {
+        updated.subTaskName = "";
+      }
 
-    return updated;
-  });
-};
+      return updated;
+    });
+  };
 
 
- return {
-  selectedProject,
-  formData,
-  handleChange,
-  phases,
-  milestones,
-  taskOptions,
-  subTasks,
-  resetForm,
-  handleSubmit,
-};
+  return {
+    selectedProject,
+    formData,
+    handleChange,
+    phases,
+    milestones,
+    taskOptions,
+    subTasks,
+    resetForm,
+    handleSubmit,
+  };
 
 }

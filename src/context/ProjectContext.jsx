@@ -1,0 +1,51 @@
+import { createContext, useContext, useEffect, useState } from "react";
+import { getProjectsByUserId } from "../services/projectService";
+
+const ProjectContext = createContext();
+
+export const ProjectProvider = ({ children }) => {
+    const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    const user = JSON.parse(sessionStorage.getItem("user"));
+
+    const fetchProjects = async () => {
+        try {
+            setLoading(true);
+
+            const response = await getProjectsByUserId(user.id);
+
+            // console.log(response);
+
+            if (response?.statusType === "S") {
+                setProjects(response.details || []);
+            }
+        } catch (error) {
+            console.error("Failed to fetch projects", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        // console.log(user.id);
+        if (user?.id) {
+            fetchProjects();
+        }
+    }, []);
+
+    return (
+        <ProjectContext.Provider
+            value={{
+                projects,
+                loading,
+                fetchProjects,
+                setProjects,
+            }}
+        >
+            {children}
+        </ProjectContext.Provider>
+    );
+};
+
+export const useProjects = () => useContext(ProjectContext);

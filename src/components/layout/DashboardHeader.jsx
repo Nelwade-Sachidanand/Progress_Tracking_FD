@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useProjects } from "../../context/ProjectContext";
 import {
   getNotifications,
   getUnreadCount,
@@ -47,21 +48,21 @@ const DashboardHeader = ({
   const [unreadCount, setUnreadCount] = useState(0);
 
   const [selectedBank, setSelectedBank] = useState(
-    localStorage.getItem("selectedBank") || "All Banks",
+    sessionStorage.getItem("selectedBank") || "All Banks",
   );
 
   const [showBanks, setShowBanks] = useState(false);
 
   const [searchText, setSearchText] = useState("");
 
-  const projects = JSON.parse(localStorage.getItem("projects")) || [];
+  const { projects } = useProjects();
 
   const banks = [
     "All Banks",
     ...new Set(projects.map((p) => p.bankName).filter(Boolean)),
   ];
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
 
   const fullname = user?.fullname || "Admin";
 
@@ -77,8 +78,7 @@ const DashboardHeader = ({
     .toUpperCase();
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.clear();
+    sessionStorage.clear();
 
     navigate("/");
   };
@@ -213,8 +213,8 @@ const DashboardHeader = ({
     },
 
     "/tasks/add-task": {
-  title: "Activity Creation Form",
-  subtitle: "Define project execution activities",
+      title: "Activity Creation Form",
+      subtitle: "Define project execution activities",
 
       icon: <Plus size={24} />,
 
@@ -223,7 +223,7 @@ const DashboardHeader = ({
     },
     "/edit-task": {
       title: "Activity Update Form",
-  subtitle: "Modify project activity details",
+      subtitle: "Modify project activity details",
       icon: <Pencil size={24} />,
       titleClass: "text-[30px]",
       subtitleClass: "text-[12px]",
@@ -287,7 +287,6 @@ const DashboardHeader = ({
       title: "Implementation Readiness Dashboard",
       subtitle: "Track Overall Project health and Go-live Readiness",
       icon: <LayoutDashboard size={24} />,
-
 
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",
@@ -463,9 +462,7 @@ const DashboardHeader = ({
                             onClick={() => {
                               setSelectedBank(bank);
                               localStorage.setItem("selectedBank", bank);
-                              window.dispatchEvent(
-                                new Event("bankChanged")
-                              );
+                              window.dispatchEvent(new Event("bankChanged"));
                               setShowBanks(false);
                             }}
                             title={bank}
@@ -536,10 +533,8 @@ const DashboardHeader = ({
                 </div>
               </>
             )}
-
-
             {/* Notification */}
-            {role === "ADMIN" &&
+            {role === "ADMIN" && (
               <div className="relative">
                 <button
                   data-testid="notification-button"
@@ -764,20 +759,19 @@ lg:w-[420px]
                   </div>
                 )}
               </div>
-            }
-
-
+            )}
             {/* User */}
             <div className="relative">
               <button
                 onClick={() => setOpen(!open)}
                 className="
-              flex
-              items-center
-              gap-2
-              sm:gap-3
-              cursor-pointer
-            "
+                flex
+                items-center
+                gap-2
+                sm:gap-3
+                cursor-pointer
+                min-w-0
+              "
               >
                 <div
                   className="
@@ -801,12 +795,33 @@ lg:w-[420px]
                   {initials}
                 </div>
 
-                <div className="hidden lg:block text-left">
-                  <h4 className="font-bold text-[#0B1F59] 2xl:text-lg">
+                <div className="hidden lg:block text-left min-w-0">
+                  <h4
+                    className="
+                    font-bold
+                    text-[#0B1F59]
+                    2xl:text-lg
+                    truncate
+                    max-w-[140px]
+                    xl:max-w-[180px]
+                    2xl:max-w-[220px]
+                  "
+                    title={fullname}
+                  >
                     {fullname}
                   </h4>
 
-                  <p className="text-sm text-[#64748B] 2xl:text-base">
+                  <p
+                    className="
+                    text-sm
+                    text-[#64748B]
+                    2xl:text-base
+                    truncate
+                    max-w-[140px]
+                    xl:max-w-[180px]
+                    2xl:max-w-[220px]
+                  "
+                  >
                     {role.replaceAll("_", " ")}
                   </p>
                 </div>

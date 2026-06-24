@@ -1,18 +1,11 @@
 export const getMilestoneManagementData = (
-  selectedBank
+  selectedBank,
+  projects
 ) => {
-  const projects =
-    JSON.parse(
-      localStorage.getItem("projects")
-    ) || [];
-
   const milestones = [];
 
   projects.forEach((project) => {
-    if (
-      selectedBank &&
-      project.bankName !== selectedBank
-    )
+    if (selectedBank &&project.bankName !== selectedBank)
       return;
 
     project.phases?.forEach((phase) => {
@@ -45,27 +38,19 @@ export const getMilestoneManagementData = (
               : 0;
 
           milestones.push({
-            id:
-              project.projectName +
-              "-" +
-              milestone.milestoneName,
+            id: project.projectName + "-" + milestone.milestoneName,
 
             projectId: project.id,
 
             bankName: project.bankName,
 
-            projectName:
-              project.projectName,
+            projectName: project.projectName,
 
             phaseName: phase.phaseName,
 
-            milestoneName:
-              milestone.milestoneName,
+            milestoneName: milestone.milestoneName,
 
-            weightage:
-              Number(
-                milestone.weightage || 0
-              ),
+            weightage: Number(milestone.weightage || 0),
 
             progress,
           });
@@ -77,12 +62,7 @@ export const getMilestoneManagementData = (
   return milestones;
 };
 
-export const getBanks = () => {
-  const projects =
-    JSON.parse(
-      localStorage.getItem("projects")
-    ) || [];
-
+export const getBanks = (projects) => {
   return [
     ...new Set(
       projects.map(

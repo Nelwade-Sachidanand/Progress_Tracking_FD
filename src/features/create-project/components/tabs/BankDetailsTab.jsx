@@ -1,12 +1,29 @@
 import { Briefcase, Building2, MapPin, Phone } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import BackButton from "./BackButton";
 
 export default function BankDetailsTab({ data, updateRootFields }) {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    // Contact Number Validation
+    if (name === "headOfficeContactNo") {
+      // Allow only digits
+      if (!/^\d*$/.test(value)) {
+        return;
+      }
+
+      // Maximum 10 digits
+      if (value.length > 10) {
+        toast.error("Contact number cannot exceed 10 digits");
+        return;
+      }
+    }
+
     updateRootFields({
       [e.target.name]: e.target.value,
     });
@@ -256,6 +273,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
 
               <input
                 type="text"
+                maxLength={10}
                 name="headOfficeContactNo"
                 value={data.headOfficeContactNo || ""}
                 onChange={handleChange}

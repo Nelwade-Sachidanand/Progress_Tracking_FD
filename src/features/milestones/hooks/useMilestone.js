@@ -17,27 +17,17 @@ export const useMilestone = () => {
                     payload
                 );
 
-            if (
-                response.statusType === "S"
-            ) {
-                toast.success(
-                    response.statusDesc
-                );
+            if (response.statusType === "S") {
+                toast.success(response.statusDesc);
 
                 return response;
             }
 
-            toast.error(
-                response.statusDesc
-            );
+            toast.error(response.statusDesc);
 
             return null;
         } catch (error) {
-            toast.error(
-                error.response?.data
-                    ?.statusDesc ||
-                "Failed to update milestone weightages"
-            );
+            toast.error(error.response?.data?.statusDesc ||"Failed to update milestone weightages");
 
             throw error;
         } finally {

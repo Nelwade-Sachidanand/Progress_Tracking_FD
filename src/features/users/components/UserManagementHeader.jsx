@@ -93,7 +93,6 @@ const UserManagementHeader = () => {
         shadow-purple-500/25
 
         hover:scale-[1.02]
-        hover:shadow-purple-500/40
 
         transition-all
         duration-300

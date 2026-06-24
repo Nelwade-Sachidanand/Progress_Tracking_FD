@@ -35,7 +35,7 @@ const getRoleStyle = (role) => {
   }
 };
 
-const UserTable = ({ users = [], loading }) => {
+const UserTable = ({ users = [], loading, onDelete, }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
@@ -67,27 +67,27 @@ const UserTable = ({ users = [], loading }) => {
         <table className="min-w-[1000px] w-full">
           <thead>
             <tr className="border-b border-[#EDF2F7] bg-white">
-              <th className="px-4 md:px-6 py-4 text-left text-xs md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
+              <th className="px-4 md:px-6 py-4 text-center text-sm md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
                 Full Name
               </th>
 
-              <th className="px-4 md:px-6 py-4 text-left text-xs md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
+              <th className="px-4 md:px-6 py-4 text-center text-sm md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
                 Username
               </th>
 
-              <th className="px-4 md:px-6 py-4 text-left text-xs md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
+              <th className="px-4 md:px-6 py-4 text-center text-sm md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
                 Role
               </th>
 
-              <th className="px-4 md:px-6 py-4 text-left text-xs md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
+              <th className="px-4 md:px-6 py-4 text-center text-sm md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
                 Projects
               </th>
 
-              <th className="px-4 md:px-6 py-4 text-left text-xs md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
+              <th className="px-4 md:px-6 py-4 text-center text-sm md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
                 Status
               </th>
 
-              <th className="px-4 md:px-6 py-4 text-center text-xs md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
+              <th className="px-4 md:px-6 py-4 text-center text-sm md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
                 Actions
               </th>
             </tr>
@@ -97,7 +97,7 @@ const UserTable = ({ users = [], loading }) => {
             {paginatedUsers.map((user) => (
               <tr key={user.id} className="border-b border-[#EDF2F7]">
                 {/* Name */}
-                <td className="px-4 md:px-6 py-4">
+                <td className="px-4 md:px-6 py-4 text-center">
                   <div className="flex items-center gap-3">
                     <div
                       className="
@@ -124,15 +124,19 @@ const UserTable = ({ users = [], loading }) => {
 
                     <span
                       className="
-                    font-semibold
-                    text-[#0F172A]
-                    text-sm
-                    2xl:text-xl
-                      whitespace-nowrap
-                      2xl:whitespace-normal
-                    md:text-base
-                    whitespace-nowrap
+                      block
+                      max-w-[180px]
+                      md:max-w-[220px]
+                      xl:max-w-[260px]
+                      2xl:max-w-[320px]
+                      truncate
+                      font-semibold
+                      text-[#0F172A]
+                      text-sm
+                      md:text-base
+                      2xl:text-xl
                     "
+                      title={user.fullname}
                     >
                       {user.fullname}
                     </span>
@@ -140,12 +144,17 @@ const UserTable = ({ users = [], loading }) => {
                 </td>
 
                 {/* Username */}
-                <td className="px-4 md:px-6 py-4 text-[#0F172A] whitespace-nowrap 2xl:whitespace-normal 2xl:text-xl">
-                  {user.username}
+                <td className="px-4 md:px-6 py-4 text-center">
+                  <div
+                    className=" text-[#0F172A] text-base md:max-w-[180px] lg:max-w-[220px] xl:max-w-[260px] 2xl:max-w-[320px] truncate 2xl:text-xl"
+                    title={user.username}
+                  >
+                    {user.username}
+                  </div>
                 </td>
 
                 {/* Role */}
-                <td className="px-4 md:px-6 py-4">
+                <td className="px-4 md:px-6 py-4 text-center">
                   <span
                     className={`
                     px-2 md:px-4
@@ -164,45 +173,28 @@ const UserTable = ({ users = [], loading }) => {
                 </td>
 
                 {/* Projects */}
-                <td className="px-4 md:px-6 py-4">
-                  <div className="flex flex-wrap gap-2">
-                    {user.projectNames?.slice(0, 2).map((project) => (
+                <td className="px-4 md:px-6 py-4 text-center">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-md">
+                    {user.projectNames?.map((project) => (
                       <span
                         key={project}
                         className="
-                      px-3
-                      py-1
-                      rounded-full
-                      bg-[#F1F5F9]
-                      text-[#475569]
-                      text-sm
-                      font-medium
-                      2xl:text-lg
-                      whitespace-nowrap
-                      2xl:whitespace-normal
+                        px-3
+                        py-1
+                        rounded-full
+                        bg-[#F1F5F9]
+                        text-[#475569]
+                        text-sm
+                        font-medium
+                        text-center
+                        truncate
+                        2xl:text-lg
                       "
+                        title={project}
                       >
                         {project}
                       </span>
                     ))}
-
-                    {user.projectNames?.length > 2 && (
-                      <span
-                        className="
-                      px-3
-                      py-1
-                      rounded-full
-                      bg-[#F1F5F9]
-                      text-[#475569]
-                      text-xs
-                      2xl:text-lg
-                      whitespace-nowrap
-                      2xl:whitespace-normal
-                      "
-                      >
-                        +{user.projectNames.length - 2}
-                      </span>
-                    )}
                   </div>
                 </td>
 
@@ -218,11 +210,10 @@ const UserTable = ({ users = [], loading }) => {
                     2xl:text-lg
                       whitespace-nowrap
                       2xl:whitespace-normal
-                    ${
-                      user.status
+                    ${user.status
                         ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-600"
-                    }
+                      }
                   `}
                   >
                     ● {user.status === true ? "Active" : "Inactive"}
@@ -234,9 +225,7 @@ const UserTable = ({ users = [], loading }) => {
                   <div className="flex justify-center gap-2">
                     <button
                       onClick={() =>
-                        navigate("/users/edit", {
-                          state: { user },
-                        })
+                        navigate("/users/edit", {state: { user },})
                       }
                       className="
                     w-8 h-8
@@ -256,6 +245,7 @@ const UserTable = ({ users = [], loading }) => {
                     </button>
 
                     <button
+                      onClick={() => onDelete(user.id)}
                       className="
                     w-8 h-8
                     md:w-10 md:h-10
@@ -267,6 +257,7 @@ const UserTable = ({ users = [], loading }) => {
                     2xl:w-12 2xl:h-12
                     2xl:text-lg
                     2xl:font-medium
+                    cursor-pointer
                     "
                     >
                       <Trash2 size={14} className="text-[#EF4444]" />
