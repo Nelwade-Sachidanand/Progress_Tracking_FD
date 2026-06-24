@@ -46,12 +46,14 @@ const LoginForm = () => {
 
     if (response?.statusType === "S") {
       const user = response.details.user;
+      // console.log(response.details.user);
 
       const projects = await fetchProjects(user.id);
+      // console.log("In Login" + projects);
 
       if (user.role === "USER") {
         if (projects.length > 0) {
-          localStorage.setItem("selectedProjectId", projects[0].id);
+          sessionStorage.setItem("selectedProjectId", projects[0].id);
           navigate("/project-details");
         }
       } else navigate("/dashboard");

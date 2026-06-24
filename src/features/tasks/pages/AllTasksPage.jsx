@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useProjects } from "../../../context/ProjectContext";
 import ActiveFilters from "../components/ActiveFilters";
 import Pagination from "../components/Pagination";
 import RemarkModal from "../components/RemarkModal";
@@ -88,23 +89,15 @@ export default function AllTasksPage() {
     ),
   ];
 
-  useEffect(() => {
-    const projects = JSON.parse(localStorage.getItem("projects")) || [];
-
-    console.log(projects);
-
-    setTasks([]);
-  }, []);
-
   const total = filteredTasks.length;
 
   const completed = filteredTasks.filter(
     (task) => task.status === "Completed",
   ).length;
 
-const delayed = filteredTasks.filter(
-  (task) => task.status === "Delayed"
-).length;
+  const delayed = filteredTasks.filter(
+    (task) => task.status === "Delayed",
+  ).length;
 
   const notStarted = filteredTasks.filter(
     (task) => task.status === "Not Started",
@@ -118,33 +111,26 @@ const delayed = filteredTasks.filter(
   const ITEMS_PER_PAGE = 10;
 
   const totalPages = Math.ceil(filteredTasks.length / ITEMS_PER_PAGE);
-  // const totalPages = Math.ceil(
-  //   tasks.length / ITEMS_PER_PAGE
-  // );
 
   const paginatedTasks = filteredTasks.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE,
   );
-const clearFilters = () => {
-  setSelectedPhase("");
-  setSelectedMilestone([]);
-  setSelectedTask("");
-  setSelectedSubTask("");
-  setSelectedActivity("");
-  setSelectedStatus("");
-  setSearchTerm("");
-};
-// const ITEMS_PER_PAGE = 10;
 
-  // const totalPages = Math.ceil(
-  //   tasks.length / ITEMS_PER_PAGE
-  // );
+  const clearFilters = () => {
+    setSelectedPhase("");
+    setSelectedMilestone([]);
+    setSelectedTask("");
+    setSelectedSubTask("");
+    setSelectedActivity("");
+    setSelectedStatus("");
+    setSearchTerm("");
+  };
+
   const [remark, setRemark] = useState("");
-  useEffect(() => {
-    const projects = JSON.parse(localStorage.getItem("projects")) || [];
 
-    const selectedProjectId = localStorage.getItem("selectedProjectId");
+  useEffect(() => {
+    const selectedProjectId = sessionStorage.getItem("selectedProjectId");
 
     const selectedProject = projects.find(
       (project) => String(project.id) === String(selectedProjectId),
@@ -225,7 +211,7 @@ const clearFilters = () => {
     <div className="p-6 w-full w-[1200px]">
       <div className="mb-5">
         <h1 className="text-2xl font-bold text-[#0B1F59]">
-          {localStorage.getItem("selectedProjectName")}
+          {sessionStorage.getItem("selectedProjectName")}
         </h1>
 
         <p className="text-sm text-slate-500">Project Tasks</p>
@@ -233,47 +219,42 @@ const clearFilters = () => {
       {/* <TaskHeader />  */}
 
       {/* <TaskActions /> */}
-<TaskActions
-  selectedPhase={selectedPhase}
-  selectedMilestone={selectedMilestone}
-  selectedTask={selectedTask}
-  selectedSubTask={selectedSubTask}
-  selectedActivity={selectedActivity}
-  selectedStatus={selectedStatus}
-/>
-  <TaskFilters
-  phases={phases}
-  milestones={filteredMilestones}
-  tasks={filteredTaskNames}
-  subTasks={filteredSubTasks}
-  activities={filteredActivities}
-
-  selectedPhase={selectedPhase}
-  selectedMilestone={selectedMilestone}
-  selectedTask={selectedTask}
-  selectedSubTask={selectedSubTask}
-  selectedActivity={selectedActivity}
-  selectedStatus={selectedStatus}
-  searchTerm={searchTerm}
-
-  setSelectedPhase={setSelectedPhase}
-  setSelectedMilestone={setSelectedMilestone}
-  setSelectedTask={setSelectedTask}
-  setSelectedSubTask={setSelectedSubTask}
-  setSelectedActivity={setSelectedActivity}
-  setSelectedStatus={setSelectedStatus}
-  setSearchTerm={setSearchTerm}
-
-  handleMilestoneChange={
-    handleMilestoneChange
-  }
-/>
-<ActiveFilters
-  selectedMilestone={selectedMilestone}
-  selectedTask={selectedTask}
-  selectedStatus={selectedStatus}
-  clearFilters={clearFilters}
-/>
+      <TaskActions
+        selectedPhase={selectedPhase}
+        selectedMilestone={selectedMilestone}
+        selectedTask={selectedTask}
+        selectedSubTask={selectedSubTask}
+        selectedActivity={selectedActivity}
+        selectedStatus={selectedStatus}
+      />
+      <TaskFilters
+        phases={phases}
+        milestones={filteredMilestones}
+        tasks={filteredTaskNames}
+        subTasks={filteredSubTasks}
+        activities={filteredActivities}
+        selectedPhase={selectedPhase}
+        selectedMilestone={selectedMilestone}
+        selectedTask={selectedTask}
+        selectedSubTask={selectedSubTask}
+        selectedActivity={selectedActivity}
+        selectedStatus={selectedStatus}
+        searchTerm={searchTerm}
+        setSelectedPhase={setSelectedPhase}
+        setSelectedMilestone={setSelectedMilestone}
+        setSelectedTask={setSelectedTask}
+        setSelectedSubTask={setSelectedSubTask}
+        setSelectedActivity={setSelectedActivity}
+        setSelectedStatus={setSelectedStatus}
+        setSearchTerm={setSearchTerm}
+        handleMilestoneChange={handleMilestoneChange}
+      />
+      <ActiveFilters
+        selectedMilestone={selectedMilestone}
+        selectedTask={selectedTask}
+        selectedStatus={selectedStatus}
+        clearFilters={clearFilters}
+      />
       <TaskSummaryCards
         total={total}
         tasks={filteredTasks}

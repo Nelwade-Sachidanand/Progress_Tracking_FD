@@ -4,15 +4,11 @@ import EditTaskForm from "../components/EditTaskForm";
 
 export default function EditTaskPage() {
   const navigate = useNavigate();
-const projectName =
-  localStorage.getItem(
-    "selectedProjectName"
-  ) || "No Project Selected";
+  const projectName =
+    sessionStorage.getItem("selectedProjectName") || "No Project Selected";
   return (
     <div className="p-6">
-
       <div className="flex items-center gap-4 mb-6">
-
         <button
           onClick={() => navigate("/tasks")}
           className="
@@ -29,18 +25,13 @@ const projectName =
         </button>
 
         <div>
-          <h1 className="text-2xl font-bold">
-            Edit Task
-          </h1>
+          <h1 className="text-2xl font-bold">Edit Task</h1>
 
-          <p className="text-sm text-gray-500">
-            Update activity details
-          </p>
+          <p className="text-sm text-gray-500">Update activity details</p>
         </div>
-
       </div>
-<div
-  className="
+      <div
+        className="
   mb-6
   bg-[#F8FAFF]
   border
@@ -48,23 +39,20 @@ const projectName =
   rounded-2xl
   p-4
   "
->
-  <p className="text-sm text-slate-500">
-    Selected Project
-  </p>
+      >
+        <p className="text-sm text-slate-500">Selected Project</p>
 
-  <h2
-    className="
+        <h2
+          className="
     text-lg
     font-semibold
     text-[#2563EB]
     "
-  >
-    {projectName}
-  </h2>
-</div>
+        >
+          {projectName}
+        </h2>
+      </div>
       <EditTaskForm />
-
     </div>
   );
 }
