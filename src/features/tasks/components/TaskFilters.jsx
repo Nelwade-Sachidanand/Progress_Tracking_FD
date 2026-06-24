@@ -58,10 +58,29 @@ export default function TaskFilters({
     };
   }, []);
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-5 mb-6">
+<div
+  className="
+  bg-white
+  rounded-2xl
+  border
+  border-gray-200
+  p-4
+  lg:p-5
+  mb-6
+  "
+>
 
       {/* Filters Row */}
-      <div className="grid grid-cols-5 gap-4 mb-4">
+  <div
+  className="
+  grid
+  grid-cols-1
+  sm:grid-cols-2
+  xl:grid-cols-5
+  gap-4
+  mb-4
+  "
+>
 
         {/* Phase */}
         <select
@@ -131,7 +150,9 @@ export default function TaskFilters({
       top-full
       left-0
       mt-2
-      w-[320px]
+w-full
+min-w-[280px]
+max-w-[350px]
       bg-white
       border
       border-[#DCE3EE]
@@ -207,6 +228,10 @@ export default function TaskFilters({
     border-[#DCE3EE]
     rounded-lg
     text-sm
+    bg-red-50
+    text-red-600
+    border-red-200
+    cursor-pointer
   "
 >
   Clear
@@ -270,7 +295,14 @@ export default function TaskFilters({
       </div>
 
       {/* Search + Status */}
-      <div className="flex gap-4">
+     <div
+  className="
+  flex
+  flex-col
+  lg:flex-row
+  gap-4
+  "
+>
 
 
 
@@ -280,7 +312,8 @@ export default function TaskFilters({
             setSelectedStatus(e.target.value)
           }
           className="
-          w-[220px]
+          w-full
+lg:w-[220px]
           bg-white
           border
           border-slate-300
@@ -307,17 +340,18 @@ export default function TaskFilters({
             setSearchTerm(e.target.value)
           }
           className="
-          flex-1
-          bg-white
-          border
-          border-gray-200
-          rounded-xl
-          p-3
-          text-sm
-          border-slate-300
-            outline-none
-            focus:border-blue-500
-          "
+w-full
+lg:flex-1
+bg-white
+border
+border-gray-200
+rounded-xl
+p-3
+text-sm
+border-slate-300
+outline-none
+focus:border-blue-500
+"
         />
 
       </div>

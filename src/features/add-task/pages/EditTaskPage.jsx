@@ -4,7 +4,10 @@ import EditTaskForm from "../components/EditTaskForm";
 
 export default function EditTaskPage() {
   const navigate = useNavigate();
-
+const projectName =
+  localStorage.getItem(
+    "selectedProjectName"
+  ) || "No Project Selected";
   return (
     <div className="p-6">
 
@@ -19,6 +22,7 @@ export default function EditTaskPage() {
           flex
           items-center
           justify-center
+          cursor-pointer
           "
         >
           <ArrowLeft size={18} />
@@ -35,7 +39,30 @@ export default function EditTaskPage() {
         </div>
 
       </div>
+<div
+  className="
+  mb-6
+  bg-[#F8FAFF]
+  border
+  border-[#E2E8F0]
+  rounded-2xl
+  p-4
+  "
+>
+  <p className="text-sm text-slate-500">
+    Selected Project
+  </p>
 
+  <h2
+    className="
+    text-lg
+    font-semibold
+    text-[#2563EB]
+    "
+  >
+    {projectName}
+  </h2>
+</div>
       <EditTaskForm />
 
     </div>

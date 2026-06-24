@@ -68,42 +68,55 @@ const upcomingActivities =
           4
         </div>
 
-        <h2 className="text-[20px] font-bold text-[#0B1F59]">
+<h2
+  className="
+  text-[16px]
+  sm:text-[18px]
+  lg:text-[20px]
+  font-bold
+  text-[#0B1F59]
+  "
+>
           Activity Status Overview
         </h2>
 
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div
+  className="
+  grid
+  grid-cols-1
+  lg:grid-cols-2
+  gap-4
+  "
+>
 
         {/* Upcoming Activities */}
 
         <div
-  className="
-  bg-white
-  border
-  border-[#E9EEF5]
-  rounded-xl
-  overflow-hidden
-  h-[420px]
-  flex
-  flex-col
-  "
+ className="
+bg-white
+border
+border-[#E9EEF5]
+rounded-xl
+overflow-hidden
+min-h-[350px]
+lg:h-[420px]
+flex
+flex-col
+"
 >
 
-          <div
-            className="
-            flex
-            items-center
-            justify-between
-            px-4
-            py-3
-            bg-[#EFF6FF]
-            border-b
-            border-[#EEF2F7]
-            "
-          >
-
+         <div
+  className="
+  flex
+  items-start
+  justify-between
+  gap-3
+  px-4
+  py-3
+  "
+>
             <div className="flex items-center gap-3">
 
               <Building2
@@ -140,13 +153,29 @@ const upcomingActivities =
         border-b
         border-[#F1F5F9]
         "
+        cursor-pointer
       >
         <div>
-          <p className="text-[13px] text-[#334155] font-medium">
+        <p
+  className="
+  text-[12px]
+  lg:text-[13px]
+  text-[#334155]
+  font-medium
+  break-words
+  "
+>
             {activity.activityName}
           </p>
 
-          <p className="text-[11px] text-[#94A3B8]">
+         <p
+  className="
+  text-[10px]
+  lg:text-[11px]
+  text-[#94A3B8]
+  break-words
+  "
+>
             {activity.milestoneName}
           </p>
         </div>
@@ -176,19 +205,7 @@ const upcomingActivities =
   )}
 </div>
 
-          {/* {upcomingActivities.length >
-            6 && (
-            <div className="px-5 py-4">
-
-              <button className="text-[#2563EB] text-sm font-semibold">
-                +{" "}
-                {upcomingActivities.length -
-                  6}{" "}
-                more
-              </button>
-
-            </div>
-          )} */}
+         
 
         </div>
 
@@ -291,20 +308,7 @@ const upcomingActivities =
     </div>
   )}
 </div>
-{/* 
-          {delayedActivities.length >
-            6 && (
-            <div className="px-5 py-4">
 
-              <button className="text-[#EF4444] text-sm font-semibold">
-                +{" "}
-                {delayedActivities.length -
-                  6}{" "}
-                more
-              </button>
-
-            </div>
-          )} */}
 
         </div>
 

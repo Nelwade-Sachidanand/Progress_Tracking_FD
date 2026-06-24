@@ -26,50 +26,51 @@ export default function TaskTable({
 
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-      <table className="w-full">
+<div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+ <div className="overflow-x-auto lg:overflow-x-hidden">
+  <table className="w-full min-w-[900px] lg:min-w-full">
 
         <thead className="bg-[#F8FAFC] border-b">
 
           <tr>
             <th className="p-4 text-left">#</th>
 
-            <th className="px-4 py-3 text-left text-[14px] font-bold text-[#0F172A]">
+            <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
               ACTIVITY / TASK
             </th>
 
-            <th className="px-4 py-3 text-left text-[14px] font-bold text-[#0F172A]">
+            <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
               PHASE
             </th>
 
-            <th className="px-4 py-3 text-left text-[14px] font-bold text-[#0F172A]">
+            <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
               MILESTONE
             </th>
 
 
-            <th className="px-4 py-3 text-left text-[14px] font-bold text-[#0F172A] min-w-[120px]">
+            <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A] min-w-[120px]">
               START DATE
             </th>
 
-            <th className="px-4 py-3 text-left text-[14px] font-bold text-[#0F172A] min-w-[120px]">
+            <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A] min-w-[120px]">
               END DATE
             </th>
 
-            <th className="px-4 py-3 text-left text-[14px] font-bold text-[#0F172A]">
+            <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
               PROGRESS
             </th>
 
-            <th className="px-4 py-3 text-left text-[14px] font-bold text-[#0F172A]">
+            <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
               STATUS
             </th>
 
             {["ADMIN", "MANAGEMENT USER", "IMPLEMENTATION USER"].includes(user?.role) &&
-              <th className="px-4 py-3 text-left text-[14px] font-bold text-[#0F172A]">
+              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
                 ACTIONS
               </th>
             }
 
-            <th className="px-4 py-3 text-left text-[14px] font-bold text-[#0F172A]">
+            <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
               REMARK
             </th>
           </tr>
@@ -96,11 +97,11 @@ export default function TaskTable({
 
                 <td className="p-4">
                   <div>
-                    <p className="text-[13px] font-semibold text-[#0F172A]">
+                    <p className="text-[12px] lg:text-[13px] font-semibold text-[#0F172A]">
                       {task.activity}
                     </p>
 
-                    <p className="text-[11px] text-[#94A3B8] mt-1">
+                    <p className="text-[10px] lg:text-[11px] text-[#5a6371] font-semibold mt-1">
                       {task.task}
                     </p>
                   </div>
@@ -133,7 +134,7 @@ export default function TaskTable({
                 </td>
 
                 {/* Progress */}
-                <td className="p-4 min-w-[180px]">
+              <td className="p-4 min-w-[160px] lg:min-w-[180px]">
 
                   <div className="flex items-center gap-3">
 
@@ -166,7 +167,7 @@ export default function TaskTable({
                     px-3
                     py-1
                     rounded-full
-                    text-xs
+                    text-[10px] lg:text-xs
                     font-semibold
                     whitespace-nowrap
                     ${getStatusColor(task.status)}
@@ -184,7 +185,7 @@ export default function TaskTable({
                         className="p-2 rounded-lg bg-blue-50 hover:bg-blue-100 cursor-pointer"
                       >
                         <Pencil
-                          size={16}
+                          size={14}
                           className="text-blue-600"
                         />
                       </button>
@@ -228,6 +229,6 @@ export default function TaskTable({
 
       </table>
 
-    </div>
+    </div></div>
   );
 }

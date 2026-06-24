@@ -51,61 +51,62 @@ export default function TaskSummaryCards({
 ];
 
   return (
-    // <div className="grid grid-cols-4 gap-6 mb-6">
-    //   {cards.map((card) => {
-    //     const Icon = card.icon;
-
-    //     return (
-    //       <div
-    //         key={card.title}
-    //         className="bg-white rounded-3xl border border-[#E7EDF5] p-6"
-    //       >
-    //         <div
-    //           className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
-    //           style={{ backgroundColor: card.iconBg }}
-    //         >
-    //           <Icon
-    //             size={28}
-    //             style={{ color: card.color }}
-    //           />
-    //         </div>
-
-    //         <p className="text-[#475569] text-[18px] mb-2">
-    //           {card.title}
-    //         </p>
-
-    //         <h2
-    //           className="text-[42px] font-bold"
-    //           style={{ color: card.color }}
-    //         >
-    //           {card.value}
-    //         </h2>
-    //       </div>
-    //     );
-    //   })}
-    // </div>
-  <div className="grid grid-cols-4 gap-5 mb-6">
+    
+  <div
+  className="
+  grid
+  grid-cols-1
+  sm:grid-cols-2
+  xl:grid-cols-4
+  gap-4
+  lg:gap-5
+  mb-6
+  "
+>
   {cards.map((card) => {
     const Icon = card.icon;
 
     return (
       <div
         key={card.title}
-        className="rounded-2xl border border-[#E7EDF5] p-5"
+      className="
+rounded-2xl
+border
+border-[#E7EDF5]
+p-4
+lg:p-5
+"
         style={{
           backgroundColor: card.bg,
         }}
       >
-        <div className="flex items-start gap-4">
+        <div
+  className="
+  flex
+  items-center
+  gap-3
+  lg:gap-4
+  "
+>
 
           <div
-            className="w-14 h-14 rounded-full flex items-center justify-center shrink-0"
+            className="
+w-12
+h-12
+lg:w-14
+lg:h-14
+rounded-full
+flex
+items-center
+justify-center
+shrink-0
+"
             style={{
               backgroundColor: card.iconBg,
             }}
           >
             <Icon
-              size={26}
+             size={22}
               style={{
                 color: card.color,
               }}
@@ -113,12 +114,24 @@ export default function TaskSummaryCards({
           </div>
 
           <div>
-            <p className="text-[#0B1F59] font-semibold text-[16px]">
+            <p className="
+text-[#0B1F59]
+font-semibold
+text-[14px]
+lg:text-[16px]
+">
               {card.title}
             </p>
 
             <h2
-              className="text-[42px] font-bold leading-none mt-2"
+              className="
+text-[30px]
+sm:text-[36px]
+lg:text-[42px]
+font-bold
+leading-none
+mt-2
+"
               style={{
                 color: card.color,
               }}
@@ -126,7 +139,13 @@ export default function TaskSummaryCards({
               {card.value}
             </h2>
 
-            <p className="text-[#64748B] text-sm mt-3">
+            <p className="
+text-[#64748B]
+text-[12px]
+lg:text-sm
+mt-2
+lg:mt-3
+">
               {card.subtitle}
             </p>
           </div>

@@ -301,7 +301,16 @@ border:
   ];
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E5EAF2] p-5">
+   <div
+  className="
+  bg-white
+  rounded-2xl
+  border
+  border-[#E5EAF2]
+  p-4
+  lg:p-5
+  "
+>
       <div className="flex items-center gap-3 mb-5">
         <div
           className="
@@ -319,12 +328,28 @@ border:
           7
         </div>
 
-        <h2 className="text-[20px] font-bold text-[#0B1F59]">
+       <h2
+  className="
+  text-[16px]
+  sm:text-[18px]
+  lg:text-[20px]
+  font-bold
+  text-[#0B1F59]
+  "
+>
           Executive Health
         </h2>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+    <div
+  className="
+  grid
+  grid-cols-1
+  sm:grid-cols-2
+  xl:grid-cols-4
+  gap-4
+  "
+>
         {cards.map((card) => {
           const Icon =
             card.icon;
@@ -335,9 +360,12 @@ border:
               className="
               rounded-2xl
               border
-              px-5
-              py-5
-              min-h-[150px]
+             px-4
+py-4
+lg:px-5
+lg:py-5
+             min-h-[130px]
+lg:min-h-[150px]
               "
               style={{
                 borderColor:
@@ -346,16 +374,31 @@ border:
                   card.bg,
               }}
             >
-              <div className="flex items-center justify-center gap-3">
-                <Icon
-                  size={24}
-                  style={{
-                    color:
-                      card.iconColor,
-                  }}
-                />
+            <div
+  className="
+  flex
+  items-center
+  justify-center
+  gap-2
+  lg:gap-3
+  "
+><Icon
+  size={20}
+  className="lg:w-6 lg:h-6"
+  style={{
+    color: card.iconColor,
+  }}
+/>
 
-                <span className="text-[13px] font-semibold text-[#0B1F59]">
+             <span
+  className="
+  text-[12px]
+  lg:text-[13px]
+  font-semibold
+  text-[#0B1F59]
+  text-center
+  "
+>
                   {card.title}
                 </span>
               </div>
@@ -363,7 +406,9 @@ border:
               <div className="mt-6 text-center">
                 <h3
                   className="
-                  text-[30px]
+                 text-[24px]
+sm:text-[26px]
+lg:text-[30px]
                   font-bold
                   leading-none
                   "
@@ -378,9 +423,12 @@ border:
                 <p
                   className="
                   mt-4
-                  text-[13px]
+text-[11px]
+sm:text-[12px]
+lg:text-[13px]
                   font-medium
                   "
+                  cursor-pointer
                   style={{
                     color:
                       card.subtitleColor,

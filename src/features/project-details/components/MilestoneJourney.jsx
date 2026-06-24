@@ -40,46 +40,85 @@ export default function MilestoneJourney({
                     []
                 ) || []
             ) || [];
+const totalActivities =
+  activities.length;
 
-          const totalActivities =
-            activities.length;
+const completedActivities =
+  activities.filter(
+    (activity) =>
+      activity.executionStatus ===
+      "Completed"
+  ).length;
 
-          const totalProgress =
-            activities.reduce(
-              (sum, activity) =>
-                sum +
-                (activity.progress ||
-                  0),
-              0
-            );
+const inProgressActivities =
+  activities.filter(
+    (activity) =>
+      activity.executionStatus ===
+      "In Progress"
+  ).length;
 
-          const avgProgress =
-            totalActivities > 0
-              ? Math.round(
-                  totalProgress /
-                    totalActivities
-                )
-              : 0;
+const avgProgress =
+  totalActivities > 0
+    ? Math.round(
+        (completedActivities /
+          totalActivities) *
+          100
+      )
+    : 0;
 
-          const completed =
-            activities.every(
-              (activity) =>
-                activity.executionStatus ===
-                "Completed"
-            );
+let status = "Not Started";
 
-          const inProgress =
-            activities.some(
-              (activity) =>
-                activity.executionStatus ===
-                "In Progress"
-            );
+if (
+  completedActivities ===
+    totalActivities &&
+  totalActivities > 0
+) {
+  status = "Completed";
+} else if (
+  completedActivities > 0 ||
+  inProgressActivities > 0
+) {
+  status = "In Progress";
+}
+          // const totalActivities =
+          //   activities.length;
 
-          const status = completed
-            ? "Completed"
-            : inProgress
-            ? "In Progress"
-            : "Not Started";
+          // const totalProgress =
+          //   activities.reduce(
+          //     (sum, activity) =>
+          //       sum +
+          //       (activity.progress ||
+          //         0),
+          //     0
+          //   );
+
+          // const avgProgress =
+          //   totalActivities > 0
+          //     ? Math.round(
+          //         totalProgress /
+          //           totalActivities
+          //       )
+          //     : 0;
+
+          // const completed =
+          //   activities.every(
+          //     (activity) =>
+          //       activity.executionStatus ===
+          //       "Completed"
+          //   );
+
+          // const inProgress =
+          //   activities.some(
+          //     (activity) =>
+          //       activity.executionStatus ===
+          //       "In Progress"
+          //   );
+
+          // const status = completed
+          //   ? "Completed"
+          //   : inProgress
+          //   ? "In Progress"
+          //   : "Not Started";
 
           return {
             name:
@@ -102,7 +141,18 @@ export default function MilestoneJourney({
     );
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E5EAF2] p-4 mt-4">
+   <div
+  className="
+  bg-white
+  rounded-2xl
+  border
+  border-[#E5EAF2]
+  p-3
+  sm:p-4
+  lg:p-5
+  mt-4
+  "
+>
 
       <div className="flex items-center gap-3 mb-8">
         <div
@@ -121,26 +171,42 @@ export default function MilestoneJourney({
           3
         </div>
 
-        <h2 className="text-[16px] font-bold text-[#0B1F59]">
+       <h2
+  className="
+  text-[15px]
+  sm:text-[16px]
+  lg:text-[18px]
+  xl:text-[20px]
+  font-bold
+  text-[#0B1F59]
+  "
+>
           Milestone Journey
         </h2>
       </div>
 
-      <div className="relative">
+     <div className="relative overflow-hidden">
 
-       <div className="overflow-x-auto pb-2">
+       <div
+  className="
+  overflow-x-auto
+  pb-3
+  scrollbar-thin
+  "
+>
 <div
       className="
       absolute
-      top-5
-      left-16
+     top-[22px]
+left-[80px]
       border-t-2
       border-dashed
       border-[#D6DCE8]
       "
-      style={{
-        width: `${milestones.length * 140}px`,
-      }}
+      cursor-pointer
+     style={{
+  width: `${milestones.length * 160}px`,
+}}
     />
 
     <div
@@ -151,11 +217,12 @@ export default function MilestoneJourney({
       gap-3
       min-w-max
       "
+      cursor-pointer
       style={{
-        gridTemplateColumns: `repeat(${Math.max(
-          milestones.length,
-          1
-        )}, 140px)`,
+      gridTemplateColumns: `repeat(${Math.max(
+  milestones.length,
+  1
+)}, minmax(140px, 140px))`,
       }}
     >
           {milestones.map(
@@ -169,7 +236,13 @@ export default function MilestoneJourney({
               return (
                 <div
                   key={index}
-                  className="flex flex-col items-center text-center"
+                 className="
+flex
+flex-col
+items-center
+text-center
+px-2
+"
                 >
 
                   <div
@@ -200,15 +273,19 @@ export default function MilestoneJourney({
                   </div>
 
       <p
-  className="
-  mt-4
-  text-[11px]
-  font-semibold
-  text-[#0B1F59]
-  h-[42px]
-  overflow-hidden
-  text-ellipsis
-  "
+ className="
+mt-4
+text-[10px]
+sm:text-[11px]
+lg:text-[12px]
+font-semibold
+text-[#0B1F59]
+leading-4
+h-[48px]
+overflow-hidden
+break-words
+"
+cursor-pointer
   title={milestone.name}
 >
   {milestone.name}
@@ -217,7 +294,8 @@ export default function MilestoneJourney({
                   <p
                     className={`
                     mt-3
-                    text-[14px]
+                  text-[13px]
+                  lg:text-[14px]
                     font-bold
                     ${
                       milestone.active
@@ -233,7 +311,8 @@ export default function MilestoneJourney({
 
                   <p
                     className={`
-                    text-[10px]
+text-[9px]
+lg:text-[10px]
                     mt-1
                     ${
                       milestone.active

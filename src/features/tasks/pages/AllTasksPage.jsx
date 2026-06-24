@@ -102,9 +102,9 @@ export default function AllTasksPage() {
     (task) => task.status === "Completed",
   ).length;
 
-  const delayed = filteredTasks.filter(
-    (task) => task.status === "Delayed",
-  ).length;
+const delayed = filteredTasks.filter(
+  (task) => task.status === "Delayed"
+).length;
 
   const notStarted = filteredTasks.filter(
     (task) => task.status === "Not Started",
@@ -126,16 +126,16 @@ export default function AllTasksPage() {
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE,
   );
-  const clearFilters = () => {
-    setSelectedPhase("");
-    setSelectedMilestone([]);
-    setSelectedTask("");
-    setSelectedSubTask("");
-    setSelectedActivity("");
-    setSelectedStatus("");
-    setSearchTerm("");
-  };
-  // const ITEMS_PER_PAGE = 10;
+const clearFilters = () => {
+  setSelectedPhase("");
+  setSelectedMilestone([]);
+  setSelectedTask("");
+  setSelectedSubTask("");
+  setSelectedActivity("");
+  setSelectedStatus("");
+  setSearchTerm("");
+};
+// const ITEMS_PER_PAGE = 10;
 
   // const totalPages = Math.ceil(
   //   tasks.length / ITEMS_PER_PAGE
@@ -233,42 +233,47 @@ export default function AllTasksPage() {
       {/* <TaskHeader />  */}
 
       {/* <TaskActions /> */}
-      <TaskActions
-        selectedPhase={selectedPhase}
-        selectedMilestone={selectedMilestone}
-        selectedTask={selectedTask}
-        selectedSubTask={selectedSubTask}
-        selectedActivity={selectedActivity}
-        selectedStatus={selectedStatus}
-      />
-      <TaskFilters
-        phases={phases}
-        milestones={filteredMilestones}
-        tasks={filteredTaskNames}
-        subTasks={filteredSubTasks}
-        activities={filteredActivities}
-        selectedPhase={selectedPhase}
-        selectedMilestone={selectedMilestone}
-        selectedTask={selectedTask}
-        selectedSubTask={selectedSubTask}
-        selectedActivity={selectedActivity}
-        selectedStatus={selectedStatus}
-        searchTerm={searchTerm}
-        setSelectedPhase={setSelectedPhase}
-        setSelectedMilestone={setSelectedMilestone}
-        setSelectedTask={setSelectedTask}
-        setSelectedSubTask={setSelectedSubTask}
-        setSelectedActivity={setSelectedActivity}
-        setSelectedStatus={setSelectedStatus}
-        setSearchTerm={setSearchTerm}
-        handleMilestoneChange={handleMilestoneChange}
-      />
-      <ActiveFilters
-        selectedMilestone={selectedMilestone}
-        selectedTask={selectedTask}
-        selectedStatus={selectedStatus}
-        clearFilters={clearFilters}
-      />
+<TaskActions
+  selectedPhase={selectedPhase}
+  selectedMilestone={selectedMilestone}
+  selectedTask={selectedTask}
+  selectedSubTask={selectedSubTask}
+  selectedActivity={selectedActivity}
+  selectedStatus={selectedStatus}
+/>
+  <TaskFilters
+  phases={phases}
+  milestones={filteredMilestones}
+  tasks={filteredTaskNames}
+  subTasks={filteredSubTasks}
+  activities={filteredActivities}
+
+  selectedPhase={selectedPhase}
+  selectedMilestone={selectedMilestone}
+  selectedTask={selectedTask}
+  selectedSubTask={selectedSubTask}
+  selectedActivity={selectedActivity}
+  selectedStatus={selectedStatus}
+  searchTerm={searchTerm}
+
+  setSelectedPhase={setSelectedPhase}
+  setSelectedMilestone={setSelectedMilestone}
+  setSelectedTask={setSelectedTask}
+  setSelectedSubTask={setSelectedSubTask}
+  setSelectedActivity={setSelectedActivity}
+  setSelectedStatus={setSelectedStatus}
+  setSearchTerm={setSearchTerm}
+
+  handleMilestoneChange={
+    handleMilestoneChange
+  }
+/>
+<ActiveFilters
+  selectedMilestone={selectedMilestone}
+  selectedTask={selectedTask}
+  selectedStatus={selectedStatus}
+  clearFilters={clearFilters}
+/>
       <TaskSummaryCards
         total={total}
         tasks={filteredTasks}

@@ -151,7 +151,7 @@ export default function RemarkModal({
           />
         </div>
 
-        <div>
+        {/* <div>
           <label className="block mb-2 font-medium">
             Remark
           </label>
@@ -175,7 +175,62 @@ export default function RemarkModal({
             "
             placeholder="Enter remark..."
           />
-        </div>
+        </div> */
+        }
+        <div className="space-y-4">
+
+  {/* Existing Remark */}
+  <div>
+    <label className="block mb-2 font-medium text-slate-700">
+      Existing Remark
+    </label>
+
+    <div
+      className="
+      min-h-[90px]
+      p-3
+      rounded-xl
+      border
+      border-slate-200
+      bg-slate-50
+      text-sm
+      text-slate-600
+      whitespace-pre-wrap
+      "
+    >
+      Existing remark will appear here...
+    </div>
+  </div>
+
+  {/* New Remark */}
+  <div>
+    <label className="block mb-2 font-medium text-slate-700">
+      Latest Remark
+      <span className="text-red-500 ml-1">
+        *
+      </span>
+    </label>
+
+    <textarea
+      rows="4"
+      value={remark}
+      onChange={(e) =>
+        setRemark(e.target.value)
+      }
+      className="
+      w-full
+      border
+      rounded-xl
+      p-3
+      border-slate-300
+      outline-none
+      focus:border-[#6D4AFF]
+      "
+      placeholder="Enter remark..."
+    />
+  </div>
+
+</div>
 
         <div className="flex justify-end gap-3 mt-6">
           <button

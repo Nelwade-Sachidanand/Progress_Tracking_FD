@@ -58,8 +58,17 @@ const projectStartDate =
     const projectType =
   project?.projectName;
   return (
-    <div className="bg-white rounded-2xl border border-[#E5EAF2] p-6">
-      <div className="flex items-center gap-3 mb-6">
+<div
+  className="
+  bg-white
+  rounded-2xl
+  border
+  border-[#E5EAF2]
+  p-4
+  md:p-5
+  lg:p-6
+  "
+>      <div className="flex items-center gap-3 mb-6">
         <div className="w-8 h-8 rounded-full bg-[#2563EB] text-white flex items-center justify-center text-sm font-bold">
           1
         </div>
@@ -68,24 +77,67 @@ const projectStartDate =
           Project Overview
         </h2>
       </div>
-
-      <div className="grid grid-cols-2 gap-8">
+<div
+  className="
+  grid
+  grid-cols-1
+  xl:grid-cols-2
+  gap-6
+  xl:gap-8
+  "
+>
         {/* Left */}
 
-        <div className="flex gap-5">
-          <div className="w-20 h-20 rounded-2xl bg-[#F3EEFF] flex items-center justify-center">
+      <div
+  className="
+  flex
+  flex-col
+  sm:flex-row
+  gap-4
+  sm:gap-5
+  "
+>
+          <div
+  className="
+  w-16
+  h-16
+  sm:w-20
+  sm:h-20
+  rounded-2xl
+  bg-[#F3EEFF]
+  flex
+  items-center
+  justify-center
+  shrink-0
+  "
+>
             <Building2
-              size={42}
+              size={32}
               className="text-[#6D4AFF]"
             />
           </div>
 
           <div>
-            <h3 className="text-[21px] font-bold text-[#6D4AFF] leading-none">
+            <h3 className="
+text-[18px]
+sm:text-[20px]
+lg:text-[21px]
+font-bold
+text-[#6D4AFF]
+leading-tight
+">
               {project?.projectName}
             </h3>
 
-            <h2 className="mt-2 text-[20px] font-[690] text-[#0B1F59] leading-[20px]">
+            <h2 className="
+mt-2
+text-[16px]
+sm:text-[18px]
+lg:text-[20px]
+font-[690]
+text-[#0B1F59]
+leading-tight
+">
               {project?.bankName}
             </h2>
 
@@ -93,7 +145,7 @@ const projectStartDate =
               {projectType}
             </div>
 
-            <div className="mt-8 flex items-start gap-3">
+<div className="mt-5 lg:mt-8 flex items-start gap-3">
               <Users
                 size={18}
                 className="text-[#2563EB] mt-1"
@@ -114,12 +166,20 @@ const projectStartDate =
 
         {/* Right */}
 
-        <div className="grid grid-cols-2 gap-x-12 gap-y-6">
-
+<div
+  className="
+  grid
+  grid-cols-1
+  sm:grid-cols-2
+  gap-5
+  lg:gap-x-12
+  lg:gap-y-6
+  "
+>
           <div className="flex gap-4">
             <CalendarDays
-              size={24}
-              className="text-[#7C3AED]"
+              className="text-[#7C3AED] w-5 h-5 lg:w-6 lg:h-6"
+              
             />
 
             <div>
@@ -178,7 +238,20 @@ const projectStartDate =
                 Project Status
               </p>
 
-              <span className="inline-flex mt-2 px-4 py-1.5 rounded-full bg-[#FEE2E2] text-[#EF4444] text-[13px] font-semibold">
+              <span
+className="
+inline-flex
+mt-2
+px-3
+lg:px-4
+py-1.5
+rounded-full
+bg-[#FEE2E2]
+text-[#EF4444]
+text-[12px]
+lg:text-[13px]
+font-semibold
+">
                 {projectStatus}
               </span>
             </div>

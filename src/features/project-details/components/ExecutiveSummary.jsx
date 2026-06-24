@@ -311,12 +311,25 @@ const clearDateFilter = () => {
     <div className="bg-white rounded-2xl border border-[#E5EAF2] p-5 ">
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-5">
-
+     <div
+  className="
+  flex
+  flex-col
+  xl:flex-row
+  xl:items-center
+  xl:justify-between
+  gap-4
+  mb-5
+  "
+>
         <div className="flex items-center gap-3">
           <div
             className="
-            w-8 h-8
+            w-8 h-
+              min-w-8
+  min-h-8
+  shrink-0
+
             rounded-full
             bg-[#2563EB]
             text-white
@@ -330,12 +343,29 @@ const clearDateFilter = () => {
             2
           </div>
 
-          <h2 className="text-[20px] font-bold text-[#0B1F59]">
+        <h2
+  className="
+  text-[16px]
+  sm:text-[18px]
+  lg:text-[20px]
+  font-bold
+  text-[#0B1F59]
+  "
+>
             Executive Summary
           </h2>
         </div>
 
-        <div className="flex items-center gap-3">
+       <div
+  className="
+  flex
+  flex-col
+  lg:flex-row
+  gap-3
+  w-full
+  xl:w-auto
+  "
+>
 <div
   className="relative"
   ref={dropdownRef}
@@ -350,7 +380,7 @@ const clearDateFilter = () => {
     }
     className="
     h-11
-    w-[220px]
+    w-full lg:w-[220px]
     px-4
     rounded-xl
     border
@@ -452,8 +482,16 @@ const clearDateFilter = () => {
 
 </div>
 
-   <div className="flex items-center gap-1 flex-nowrap overflow-x-auto">
-
+  <div
+  className="
+  flex
+  flex-wrap
+  lg:flex-nowrap
+  gap-2
+  overflow-x-auto
+  "
+  cursor-pointer
+>
   <input
     type="date"
     value={fromDate}
@@ -462,18 +500,29 @@ const clearDateFilter = () => {
       setQuickSelect("custom");
     }}
     className="
-    h-8
-    px-2
+    h-10
+    px-3
     rounded-lg
     border
     border-[#E5EAF2]
     text-xs
     "
+    cursor-pointer
   />
 
-  <span className="text-xs font-bold px-1">
+ <div
+  className="
+  h-10
+  flex
+  items-center
+  justify-center
+  px-1
+  "
+>
+  <span className="text-base font-bold text-slate-500">
     →
   </span>
+</div>
 
   <input
     type="date"
@@ -483,13 +532,14 @@ const clearDateFilter = () => {
       setQuickSelect("custom");
     }}
     className="
-    h-8
-    px-2
+    h-10
+    px-3
     rounded-lg
     border
     border-[#E5EAF2]
     text-xs
     "
+    cursor-pointer
   />
 
   <button
@@ -497,12 +547,13 @@ const clearDateFilter = () => {
       handleQuickSelect("today")
     }
     className={`
-    h-8
+    h-8.5
     px-2
     rounded-lg
     text-xs
     border
     whitespace-nowrap
+    cursor-pointer
     ${
       quickSelect === "today"
         ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
@@ -518,12 +569,13 @@ const clearDateFilter = () => {
       handleQuickSelect("week")
     }
     className={`
-    h-8
+    h-8.5
     px-2
     rounded-lg
     text-xs
     border
     whitespace-nowrap
+    cursor-pointer
     ${
       quickSelect === "week"
         ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
@@ -539,12 +591,13 @@ const clearDateFilter = () => {
       handleQuickSelect("month")
     }
     className={`
-    h-8
+    h-8.5
     px-2
     rounded-lg
     text-xs
     border
     whitespace-nowrap
+    cursor-pointer
     ${
       quickSelect === "month"
         ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
@@ -560,12 +613,13 @@ const clearDateFilter = () => {
       handleQuickSelect("quarter")
     }
     className={`
-    h-8
+    h-8.5
     px-2
     rounded-lg
     text-xs
     border
     whitespace-nowrap
+    cursor-pointer
     ${
       quickSelect === "quarter"
         ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
@@ -583,12 +637,13 @@ const clearDateFilter = () => {
       )
     }
     className={`
-    h-8
+    h-8.5
     px-2
     rounded-lg
     text-xs
     border
     whitespace-nowrap
+    cursor-pointer
     ${
       quickSelect ===
       "half-yearly"
@@ -605,12 +660,13 @@ const clearDateFilter = () => {
       handleQuickSelect("year")
     }
     className={`
-    h-8
+    h-8.5
     px-2
     rounded-lg
     text-xs
     border
     whitespace-nowrap
+    cursor-pointer
     ${
       quickSelect === "year"
         ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
@@ -624,7 +680,7 @@ const clearDateFilter = () => {
   <button
     onClick={clearDateFilter}
     className="
-    h-8
+    h-8.5
     px-2
     rounded-lg
     text-xs
@@ -634,6 +690,7 @@ const clearDateFilter = () => {
     border-red-200
     whitespace-nowrap
     "
+    cursor-pointer
   >
     Clear
   </button>
@@ -644,7 +701,16 @@ const clearDateFilter = () => {
       </div>
 
       {/* Cards */}
-      <div className="grid grid-cols-5 gap-4">
+     <div
+  className="
+  grid
+  grid-cols-1
+  sm:grid-cols-2
+  lg:grid-cols-3
+  xl:grid-cols-5
+  gap-4
+  "
+>
 
         {cards.map((card) => {
           const Icon = card.icon;
@@ -656,7 +722,7 @@ const clearDateFilter = () => {
   rounded-2xl
   border
   p-4
-  min-h-[170px]
+  min-h-[150px] lg:min-h-[170px]
   "
   style={{
     backgroundColor: card.bg,
@@ -687,7 +753,7 @@ const clearDateFilter = () => {
 
   <h3
     className="
-    text-[34px]
+   text-[28px] lg:text-[34px]
     font-bold
     leading-none
     "
@@ -701,7 +767,7 @@ const clearDateFilter = () => {
   <p
     className="
     mt-2
-    text-[15px]
+    text-[13px] lg:text-[15px]
     font-semibold
     "
     style={{
