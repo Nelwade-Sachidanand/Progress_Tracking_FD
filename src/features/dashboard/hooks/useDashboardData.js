@@ -1,5 +1,7 @@
 import { useMemo } from "react";
 
+import { useProjects } from "../../../context/ProjectContext";
+
 import {
   calculateOverallProgress,
   getDelayedProjects,
@@ -11,14 +13,9 @@ import {
 } from "../utils/dashboardUtils";
 
 export default function useDashboardData() {
-
-  const projects =
-    JSON.parse(
-      localStorage.getItem("projects")
-    ) || [];
+  const { projects, loading } = useProjects();
 
   const dashboardData = useMemo(() => {
-
     const overallProgress =
       calculateOverallProgress(projects);
 
@@ -36,38 +33,29 @@ export default function useDashboardData() {
 
     return {
       projects,
+      loading,
 
-      totalBanks:
-        getTotalBanks(projects),
+      totalBanks: getTotalBanks(projects),
 
-      totalProjects:
-        projects.length,
+      totalProjects: projects.length,
 
-      activeProjects:
-        getActiveProjects(projects),
+      activeProjects: getActiveProjects(projects),
 
-      delayedProjects:
-        delayedProjects.length,
+      delayedProjects: delayedProjects.length,
 
-      onTrackProjects:
-        onTrackProjects.length,
+      onTrackProjects: onTrackProjects.length,
 
-      upcomingGoLive:
-        upcomingGoLiveProjects.length,
+      upcomingGoLive: upcomingGoLiveProjects.length,
 
-      completedMilestones:
-        milestoneStats.completed,
+      completedMilestones: milestoneStats.completed,
 
-      inProgressMilestones:
-        milestoneStats.inProgress,
+      inProgressMilestones: milestoneStats.inProgress,
 
-      delayedMilestones:
-        milestoneStats.delayed,
+      delayedMilestones: milestoneStats.delayed,
 
       overallProgress,
     };
-
-  }, [projects]);
+  }, [projects, loading]);
 
   return dashboardData;
 }

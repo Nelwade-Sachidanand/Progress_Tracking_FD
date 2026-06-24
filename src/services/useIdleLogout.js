@@ -9,7 +9,7 @@ export default function useIdleLogout() {
   const timerRef = useRef(null);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = sessionStorage.getItem("accessToken");
 
     // Do not start idle timer if user is not logged in
     if (!accessToken) {
@@ -17,7 +17,7 @@ export default function useIdleLogout() {
     }
 
     const logout = () => {
-      localStorage.clear();
+      sessionStorage.clear();
 
       navigate("/", {
         replace: true,

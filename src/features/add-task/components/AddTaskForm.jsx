@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import useAddTask from "../hooks/useAddTask";
+import { useProjects } from "../../../context/ProjectContext";
 
 export default function AddTaskForm() {
   const {
@@ -49,7 +50,7 @@ export default function AddTaskForm() {
   const handleAddPhase = () => {
     if (!newPhase.trim()) return;
 
-    const projects = JSON.parse(localStorage.getItem("projects")) || [];
+    const { projects,setProjects } = useProjects();
 
     const updatedProjects = projects.map((project) => {
       // use first project or selected project
@@ -78,7 +79,7 @@ export default function AddTaskForm() {
       return project;
     });
 
-    localStorage.setItem("projects", JSON.stringify(updatedProjects));
+    setProjects(updatedProjects);
 
     handleChange("phaseName", newPhase.trim());
 
@@ -89,7 +90,7 @@ export default function AddTaskForm() {
   const handleAddMilestone = () => {
     if (!newMilestone.trim()) return;
 
-    const projects = JSON.parse(localStorage.getItem("projects")) || [];
+    const { projects,setProjects } = useProjects();
 
     const updatedProjects = projects.map((project) => {
       if (project.projectName === selectedProject.projectName) {
@@ -126,7 +127,7 @@ export default function AddTaskForm() {
       return project;
     });
 
-    localStorage.setItem("projects", JSON.stringify(updatedProjects));
+    setProjects(updatedProjects);
 
     handleChange("milestoneName", newMilestone.trim());
 
@@ -143,7 +144,7 @@ export default function AddTaskForm() {
       return;
     }
 
-    const projects = JSON.parse(localStorage.getItem("projects")) || [];
+    const { projects,setProjects } = useProjects();
 
     const updatedProjects = projects.map((project) => {
       if (project.projectName === selectedProject.projectName) {
@@ -189,7 +190,7 @@ export default function AddTaskForm() {
       return project;
     });
 
-    localStorage.setItem("projects", JSON.stringify(updatedProjects));
+    setProjects(updatedProjects);
 
     handleChange("taskName", newTask.trim());
 
@@ -216,7 +217,7 @@ export default function AddTaskForm() {
       return;
     }
 
-    const projects = JSON.parse(localStorage.getItem("projects")) || [];
+  const { projects, setProjects } = useProjects();
 
     const updatedProjects = projects.map((project) => {
       if (project.projectName === selectedProject.projectName) {
@@ -272,7 +273,7 @@ export default function AddTaskForm() {
       return project;
     });
 
-    localStorage.setItem("projects", JSON.stringify(updatedProjects));
+    setProjects(updatedProjects);
 
     handleChange("subTaskName", newSubTask.trim());
 
@@ -389,9 +390,8 @@ export default function AddTaskForm() {
 
                 <ChevronDown
                   size={18}
-                  className={`transition-transform ${
-                    showPhaseDropdown ? "rotate-180" : ""
-                  }`}
+                  className={`transition-transform ${showPhaseDropdown ? "rotate-180" : ""
+                    }`}
                 />
               </button>
 
@@ -549,9 +549,8 @@ export default function AddTaskForm() {
 
                 <ChevronDown
                   size={18}
-                  className={`transition-transform ${
-                    showMilestoneDropdown ? "rotate-180" : ""
-                  }`}
+                  className={`transition-transform ${showMilestoneDropdown ? "rotate-180" : ""
+                    }`}
                 />
               </button>
 
@@ -714,9 +713,8 @@ export default function AddTaskForm() {
 
                 <ChevronDown
                   size={18}
-                  className={`transition-transform ${
-                    showTaskDropdown ? "rotate-180" : ""
-                  }`}
+                  className={`transition-transform ${showTaskDropdown ? "rotate-180" : ""
+                    }`}
                 />
               </button>
 
@@ -879,9 +877,8 @@ export default function AddTaskForm() {
 
                 <ChevronDown
                   size={18}
-                  className={`transition-transform ${
-                    showSubTaskDropdown ? "rotate-180" : ""
-                  }`}
+                  className={`transition-transform ${showSubTaskDropdown ? "rotate-180" : ""
+                    }`}
                 />
               </button>
 

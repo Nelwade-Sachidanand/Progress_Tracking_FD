@@ -415,7 +415,7 @@ export default function AuthorizationTable({
                         2xl:h-10
                         "
                         >
-                          <Eye size={14} className="text-[#2563EB]" />
+                          <Eye size={14} className="text-[#2563EB] 2xl:w-5 h-5" />
                         </button>
                       </div>
                     </td>

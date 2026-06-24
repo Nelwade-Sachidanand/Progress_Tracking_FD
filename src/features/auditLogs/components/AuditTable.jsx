@@ -339,7 +339,7 @@ export default function AuditTable({ logs = [], loading, onView }) {
                       >
                         <Eye
                           size={16}
-                          className="text-[#2563EB] 2xl:w-8 2xl:h-8"
+                          className="text-[#2563EB] 2xl:w-5 2xl:h-5"
                         />
                       </button>
                     </div>

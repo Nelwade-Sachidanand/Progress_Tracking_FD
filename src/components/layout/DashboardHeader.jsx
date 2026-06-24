@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useProjects } from "../../context/ProjectContext";
 import {
   getNotifications,
   getUnreadCount,
@@ -47,21 +48,21 @@ const DashboardHeader = ({
   const [unreadCount, setUnreadCount] = useState(0);
 
   const [selectedBank, setSelectedBank] = useState(
-    localStorage.getItem("selectedBank") || "All Banks",
+    sessionStorage.getItem("selectedBank") || "All Banks",
   );
 
   const [showBanks, setShowBanks] = useState(false);
 
   const [searchText, setSearchText] = useState("");
 
-  const projects = JSON.parse(localStorage.getItem("projects")) || [];
+  const { projects } = useProjects();
 
   const banks = [
     "All Banks",
     ...new Set(projects.map((p) => p.bankName).filter(Boolean)),
   ];
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
 
   const fullname = user?.fullname || "Admin";
 
@@ -77,8 +78,7 @@ const DashboardHeader = ({
     .toUpperCase();
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.clear();
+    sessionStorage.clear();
 
     navigate("/");
   };

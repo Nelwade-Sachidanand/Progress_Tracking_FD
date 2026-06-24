@@ -14,21 +14,21 @@ export const useAuth = () => {
       if (response.statusType === "S") {
         toast.success(response.statusDesc);
 
-        localStorage.setItem("user", JSON.stringify(response.details.user));
+        // localStorage.setItem("user", JSON.stringify(response.details.user));
 
         sessionStorage.setItem("user", JSON.stringify(response.details.user));
 
 
-        localStorage.setItem("projects", JSON.stringify(response.details.projects),);
+        // localStorage.setItem("projects", JSON.stringify(response.details.projects),);
+ 
+        // sessionStorage.setItem("projects", JSON.stringify(response.details.projects),);
 
-        sessionStorage.setItem("projects", JSON.stringify(response.details.projects),);
 
-
-        localStorage.setItem("accessToken", response.details.accessToken);
+        // localStorage.setItem("accessToken", response.details.accessToken);
 
         sessionStorage.setItem("accessToken", response.details.accessToken);
 
-        localStorage.setItem("refreshToken", response.details.refreshToken);
+        // localStorage.setItem("refreshToken", response.details.refreshToken);
 
         sessionStorage.setItem("refreshToken", response.details.refreshToken);
 

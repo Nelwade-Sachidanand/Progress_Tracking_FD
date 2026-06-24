@@ -10,6 +10,8 @@ import TaskTable from "../components/TaskTable";
 import useTaskFilters from "../hooks/useTaskFilters";
 
 export default function AllTasksPage() {
+  const { projects } = useProjects();
+
   const [tasks, setTasks] = useState([]);
 
   const navigate = useNavigate();
@@ -274,6 +276,17 @@ export default function AllTasksPage() {
         delayed={delayed}
         notStarted={notStarted}
       />
+      {/* 
+<TaskTable
+  tasks={filteredTasks}
+ tasks={tasks}
+  onEdit={(task) => console.log(task)}
+  onDelete={(task) => console.log(task)}
+  onRemark={(task) => {
+    setSelectedRemarkTask(task);
+    setShowRemarkModal(true);
+  }}
+/> */}
 
       <TaskTable
         tasks={paginatedTasks}

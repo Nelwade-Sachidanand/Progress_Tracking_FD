@@ -27,12 +27,12 @@ export default function DashboardPage() {
   };
 
   const [selectedBank, setSelectedBank] = useState(
-    localStorage.getItem("selectedBank") || "All Banks",
+    sessionStorage.getItem("selectedBank") || "All Banks",
   );
 
   useEffect(() => {
     const handleBankChange = () => {
-      setSelectedBank(localStorage.getItem("selectedBank") || "All Banks");
+      setSelectedBank(sessionStorage.getItem("selectedBank") || "All Banks");
     };
 
     window.addEventListener("bankChanged", handleBankChange);

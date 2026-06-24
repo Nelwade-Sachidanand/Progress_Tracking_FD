@@ -17,9 +17,9 @@ export default function TaskActions({
 
   const handleExportExcel = async () => {
     try {
-      const selectedProjectId = localStorage.getItem("selectedProjectId");
+      const selectedProjectId = sessionStorage.getItem("selectedProjectId");
 
-      const selectedProjectName = localStorage.getItem("selectedProjectName");
+      const selectedProjectName = sessionStorage.getItem("selectedProjectName");
 
       const payload = {
         projectId: selectedProjectId,

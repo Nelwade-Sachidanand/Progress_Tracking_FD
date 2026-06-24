@@ -2,6 +2,7 @@ import { ArrowLeft, Save, UserPlus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useProjects } from "../../../context/ProjectContext";
 import { useUsers } from "../hooks/useUsers";
 
 const UserForm = ({ mode = "add", userData = null }) => {
@@ -10,6 +11,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
 
   const { createUser, updateUser } = useUsers();
 
+  const [id, setId] = useState("");
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -17,10 +19,13 @@ const UserForm = ({ mode = "add", userData = null }) => {
   const [status, setStatus] = useState("ACTIVE");
   const [selectedProjects, setSelectedProjects] = useState([]);
 
-  const availableProjects = JSON.parse(localStorage.getItem("projects")) || [];
+  const { projects } = useProjects();
+
+  const availableProjects = projects;
 
   useEffect(() => {
     if (mode === "edit" && userData) {
+      setId(userData.id || "");
       setFullName(userData.fullname || "");
       setUsername(userData.username || "");
       setRole(userData.role || "USER");
@@ -116,15 +121,15 @@ const UserForm = ({ mode = "add", userData = null }) => {
       setLoading(true);
 
       const payload = {
-        fullname: fullName.trim(),
-        username: username.trim(),
+        fullname: fullName,
+        username,
         password,
         role,
         status: status === "ACTIVE" ? true : false,
         projectIds: selectedProjects.map((project) => project.id),
       };
 
-      console.log(payload);
+      // console.log(payload);
 
       const response =
         mode === "add" ? await createUser(payload) : await updateUser(payload);

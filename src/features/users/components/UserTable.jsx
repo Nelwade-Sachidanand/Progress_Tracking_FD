@@ -35,7 +35,7 @@ const getRoleStyle = (role) => {
   }
 };
 
-const UserTable = ({ users = [], loading }) => {
+const UserTable = ({ users = [], loading, onDelete, }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
@@ -210,11 +210,10 @@ const UserTable = ({ users = [], loading }) => {
                     2xl:text-lg
                       whitespace-nowrap
                       2xl:whitespace-normal
-                    ${
-                      user.status
+                    ${user.status
                         ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-600"
-                    }
+                      }
                   `}
                   >
                     ● {user.status === true ? "Active" : "Inactive"}
@@ -226,9 +225,7 @@ const UserTable = ({ users = [], loading }) => {
                   <div className="flex justify-center gap-2">
                     <button
                       onClick={() =>
-                        navigate("/users/edit", {
-                          state: { user },
-                        })
+                        navigate("/users/edit", {state: { user },})
                       }
                       className="
                     w-8 h-8
@@ -248,6 +245,7 @@ const UserTable = ({ users = [], loading }) => {
                     </button>
 
                     <button
+                      onClick={() => onDelete(user.id)}
                       className="
                     w-8 h-8
                     md:w-10 md:h-10
@@ -259,6 +257,7 @@ const UserTable = ({ users = [], loading }) => {
                     2xl:w-12 2xl:h-12
                     2xl:text-lg
                     2xl:font-medium
+                    cursor-pointer
                     "
                     >
                       <Trash2 size={14} className="text-[#EF4444]" />

@@ -1,8 +1,10 @@
-export const getSelectedProject = () => {
-  const projects =
-    JSON.parse(localStorage.getItem("projects")) || [];
+export const getSelectedProject = (projects) => {
 
-  const selectedProjectId =localStorage.getItem("selectedProjectId");
+  const selectedProjectId = sessionStorage.getItem("selectedProjectId");
+
+  console.log("Projects:", projects);
+  console.log("Selected Id:", selectedProjectId);
+  // console.log("Selected Project:", selectedProject);
 
   return (
     projects.find(

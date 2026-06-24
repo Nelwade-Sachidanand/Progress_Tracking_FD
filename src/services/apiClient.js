@@ -11,7 +11,7 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("accessToken");
+    const token = sessionStorage.getItem("accessToken");
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -36,7 +36,7 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshToken = localStorage.getItem("refreshToken");
+        const refreshToken = sessionStorage.getItem("refreshToken");
 
         console.log("Refresh Token:", refreshToken);
 
@@ -56,7 +56,7 @@ apiClient.interceptors.response.use(
 
         const newAccessToken = refreshResponse.data.details;
 
-        localStorage.setItem("accessToken", newAccessToken);
+        sessionStorage.setItem("accessToken", newAccessToken);
 
         return apiClient({
           ...originalRequest,
@@ -68,7 +68,7 @@ apiClient.interceptors.response.use(
       } catch (e) {
         console.log("Refresh Failed", e);
 
-        localStorage.clear();
+        sessionStorage.clear();
 
         window.dispatchEvent(new Event("session-expired"));
 
