@@ -116,7 +116,7 @@ const completed = filteredTasks.filter(
 ).length;
 
 const delayed = filteredTasks.filter(
-  (task) => task.status === "Delayed"
+  (task) => task.scheduleHealth === "Delayed"
 ).length;
 
 const notStarted = filteredTasks.filter(
@@ -146,12 +146,12 @@ const paginatedTasks =
     currentPage * ITEMS_PER_PAGE
   );
 const clearFilters = () => {
-  setSelectedPhase("");
+  setSelectedPhase("All Phases");
   setSelectedMilestone([]);
-  setSelectedTask("");
-  setSelectedSubTask("");
-  setSelectedActivity("");
-  setSelectedStatus("");
+  setSelectedTask("All Tasks");
+  setSelectedSubTask("All Sub Tasks");
+  setSelectedActivity("All Activities");
+  setSelectedStatus("All Status");
   setSearchTerm("");
 };
 // const ITEMS_PER_PAGE = 10;
@@ -315,9 +315,16 @@ useEffect(() => {
   }
 />
 <ActiveFilters
+  selectedPhase={selectedPhase}
   selectedMilestone={selectedMilestone}
   selectedTask={selectedTask}
   selectedStatus={selectedStatus}
+
+  setSelectedPhase={setSelectedPhase}
+  setSelectedMilestone={setSelectedMilestone}
+  setSelectedTask={setSelectedTask}
+  setSelectedStatus={setSelectedStatus}
+
   clearFilters={clearFilters}
 />
       <TaskSummaryCards

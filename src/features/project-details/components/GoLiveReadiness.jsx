@@ -190,23 +190,57 @@ const milestoneData =
   ) || [];
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E5EAF2] p-5">
+   <div
+  className="
+  bg-white
+  rounded-2xl
+  border
+  border-[#E5EAF2]
+  p-4
+  lg:p-5
+  "
+>
       <div className="flex items-center gap-3 mb-6">
         <div className="w-8 h-8 rounded-full bg-[#2563EB] text-white flex items-center justify-center text-sm font-bold">
           6
         </div>
 
-        <h2 className="text-[20px] font-bold text-[#0B1F59]">
+        <h2
+  className="
+  text-[16px]
+  sm:text-[18px]
+  lg:text-[20px]
+  font-bold
+  text-[#0B1F59]
+  "
+>
           Go-Live Readiness
         </h2>
       </div>
 
-      <div className="grid grid-cols-[240px_1fr_280px] gap-6">
+     <div
+  className="
+  grid
+  grid-cols-1
+  xl:grid-cols-[240px_1fr_280px]
+  gap-6
+  "
+>
 
         {/* Overall Readiness */}
 
         <div className="flex justify-center items-center">
-          <div className="relative w-[190px] h-[190px]">
+        <div
+  className="
+  relative
+  w-[160px]
+  h-[160px]
+  sm:w-[180px]
+  sm:h-[180px]
+  lg:w-[190px]
+  lg:h-[190px]
+  "
+>
             <svg
               className="w-full h-full rotate-[-90deg]"
               viewBox="0 0 120 120"
@@ -253,20 +287,29 @@ const milestoneData =
             </svg>
 
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <h3 className="text-[40px] font-bold text-[#0B1F59]">
+             <h3
+  className="
+  text-[27px]
+  sm:text-[36px]
+  lg:text-[40px]
+  font-bold
+  text-[#0B1F59]
+  "
+>
                 {
                   overallReadiness
                 }
                 %
               </h3>
 
-              <p className="text-center text-[11px] font-medium text-[#334155] mt-2">
+              <p className="text-center text-[10px] font-medium text-[#334155] mt-2">
                 Overall
                 <br />
                 Readiness
               </p>
 
-              <span className="mt-3 px-4 py-1 rounded-full bg-[#FEE2E2] text-[#EF4444] text-[8.5px] font-semibold">
+              <span className="mt-3 px-4 py-1 rounded-full bg-[#FEE2E2] text-[#EF4444] text-[8px]
+sm:text-[8.5px] font-semibold">
                 {
                   readinessStatus
                 }
@@ -277,7 +320,15 @@ const milestoneData =
 
         {/* Progress Bars */}
 
-        <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+       <div
+  className="
+  space-y-4
+  max-h-[450px]
+  lg:max-h-[500px]
+  overflow-y-auto
+  pr-2
+  "
+>
           {milestoneData.map((item) => {
 
   const barColor =
@@ -316,7 +367,8 @@ const milestoneData =
 
           <p
             className="
-            text-[13px]
+text-[12px]
+lg:text-[13px]
             font-semibold
             text-[#0B1F59]
             truncate
@@ -359,7 +411,12 @@ const milestoneData =
 
         {/* Summary */}
 
-        <div className="space-y-4">
+       <div
+  className="
+  space-y-4
+  w-full
+  "
+>
 
           <div className="bg-[#F8FAFF] border border-[#E8EDF5] rounded-2xl overflow-hidden">
             <div className="px-5 py-4 bg-[#F4F7FD]">
@@ -419,7 +476,15 @@ const milestoneData =
           </div>
 
           <div className="bg-[#F8FAFF] border border-[#E8EDF5] rounded-2xl p-5">
-            <div className="flex gap-4">
+           <div
+  className="
+  flex
+  flex-col
+  sm:flex-row
+  gap-3
+  sm:gap-4
+  "
+>
               <CalendarDays
                 size={26}
                 className="text-[#4F46E5]"

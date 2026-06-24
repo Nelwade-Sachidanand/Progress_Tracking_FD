@@ -13,13 +13,14 @@ import useEditTask from "../hooks/useEditTask";
 
 export default function EditTaskForm() {
     const {
+        selectedProject,
         formData,
         handleChange,
         phases,
         milestones,
         taskOptions,
         subTasks,
-        resetForm,
+       // resetForm,
         handleUpdate,
     } = useEditTask();
 
@@ -28,11 +29,17 @@ export default function EditTaskForm() {
     const taskRef = useRef(null);
     const subTaskRef = useRef(null);
 
-
-
-
-
-
+const [originalDates, setOriginalDates] =
+  useState({
+    plannedStartDate: "",
+    plannedEndDate: "",
+  });
+ 
+const isDateChanged =
+  formData.plannedStartDate !==
+    originalDates.plannedStartDate ||
+  formData.plannedEndDate !==
+    originalDates.plannedEndDate;
 
     // const inputClass =
     //     "w-full border border-[#E5E7EB] rounded-xl p-3 text-sm";
@@ -49,7 +56,19 @@ export default function EditTaskForm() {
     const dropdownItemClass =
         "w-full px-4 py-3 text-left text-sm hover:bg-slate-50";
  
-
+useEffect(() => {
+  if (
+    formData.plannedStartDate ||
+    formData.plannedEndDate
+  ) {
+    setOriginalDates({
+      plannedStartDate:
+        formData.plannedStartDate,
+      plannedEndDate:
+        formData.plannedEndDate,
+    });
+  }
+}, []);
     return (
         <div className="space-y-6  mx-auto w-full">
             {/* Basic Information */}
@@ -90,7 +109,7 @@ export default function EditTaskForm() {
     Phase <span className="text-red-500">*</span>
   </label>
 
-  <input
+  {/* <input
     type="text"
     placeholder="Enter Phase"
     className={inputClass}
@@ -101,14 +120,20 @@ export default function EditTaskForm() {
         e.target.value
       )
     }
-  />
+  /> */}
+  <input
+  value={formData.phaseName}
+  readOnly
+  disabled
+  className={`${inputClass} bg-slate-100 cursor-not-allowed`}
+/>
 </div>
                    <div>
   <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
     Milestone <span className="text-red-500">*</span>
   </label>
 
-  <input
+  {/* <input
     type="text"
     placeholder="Enter Milestone"
     className={inputClass}
@@ -119,14 +144,20 @@ export default function EditTaskForm() {
         e.target.value
       )
     }
-  />
+  /> */}
+  <input
+  value={formData.milestoneName}
+  readOnly
+  disabled
+  className={`${inputClass} bg-slate-100 cursor-not-allowed`}
+/>
 </div>
                     <div>
   <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
     Task <span className="text-red-500">*</span>
   </label>
 
-  <input
+  {/* <input
     type="text"
     placeholder="Enter Task"
     className={inputClass}
@@ -137,14 +168,20 @@ export default function EditTaskForm() {
         e.target.value
       )
     }
-  />
+  /> */}
+   <input
+  value={formData.taskName}
+  readOnly
+  disabled
+  className={`${inputClass} bg-slate-100 cursor-not-allowed`}
+/>
 </div>
                    <div>
   <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
     Sub Task <span className="text-red-500">*</span>
   </label>
 
-  <input
+  {/* <input
     type="text"
     placeholder="Enter Sub Task"
     className={inputClass}
@@ -155,7 +192,13 @@ export default function EditTaskForm() {
         e.target.value
       )
     }
-  />
+  /> */}
+  <input
+  value={formData.subTaskName}
+  readOnly
+  disabled
+  className={`${inputClass} bg-slate-100 cursor-not-allowed`}
+/>
 </div>
 
                 </div>
@@ -166,7 +209,7 @@ export default function EditTaskForm() {
                             Activity <span className="text-red-500">*</span>
                         </label>
 
-                        <input
+                        {/* <input
                             placeholder="Enter Activity"
                             className={inputClass}
                             value={formData.activityName}
@@ -176,7 +219,13 @@ export default function EditTaskForm() {
                                     e.target.value
                                 )
                             }
-                        />
+                        /> */}
+                         <input
+  value={formData.activityName}
+  readOnly
+  disabled
+  className={`${inputClass} bg-slate-100 cursor-not-allowed`}
+/>
                     </div>
                     <div>
                         <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
@@ -322,6 +371,7 @@ export default function EditTaskForm() {
 
                         <input
                             type="number"
+                             step="0.1"
                             placeholder="Enter Estimated Weeks"
                             className={inputClass}
                             value={formData.estimatedPeriodWeek}
@@ -333,7 +383,44 @@ export default function EditTaskForm() {
                             }
                         />
                     </div>
+{isDateChanged && (
+  <div>
+    <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
+      Reason For Change
+      <span className="text-red-500">
+        *
+      </span>
+    </label>
 
+    <input
+      type="text"
+      value={
+        formData.changeReason || ""
+      }
+      onChange={(e) =>
+        handleChange(
+          "changeReason",
+          e.target.value
+        )
+      }
+      placeholder="Enter reason for changing planned dates"
+      className="
+        w-full
+        h-11
+        px-4
+        text-sm
+        bg-white
+        border
+        border-[#DCE3EE]
+        rounded-xl
+        outline-none
+        focus:border-[#6D4AFF]
+        focus:ring-4
+        focus:ring-[#6D4AFF]/10
+      "
+    />
+  </div>
+)}
                 </div>
             </div>
 
@@ -378,11 +465,11 @@ export default function EditTaskForm() {
 
                         <div
                             className="
-        border
-        border-[#DCE3EE]
-        rounded-xl
-        p-4
-        "
+                             border
+                             border-[#DCE3EE]
+                              rounded-xl
+                               p-4
+                                "
                         >
                             <input
                                 type="range"
@@ -396,9 +483,9 @@ export default function EditTaskForm() {
                                     )
                                 }
                                 className="
-          w-full
-          accent-[#6D4AFF]
-          "
+                                w-full
+                                accent-[#6D4AFF]
+                                 "
                             />
 
                             <div className="flex justify-between mt-2">
@@ -426,20 +513,20 @@ export default function EditTaskForm() {
 
                         <select
                             className="
-        w-full
-        h-11
-        px-4
-        text-sm
-        bg-white
-        border
-        border-[#DCE3EE]
-        rounded-xl
-        outline-none
-        focus:border-[#6D4AFF]
-        focus:ring-4
-        focus:ring-[#6D4AFF]/10
-        cursor-pointer
-        "
+                             w-full
+                             h-11
+                             px-4
+                             text-sm
+                              bg-white
+                             border
+                             border-[#DCE3EE]
+                             rounded-xl
+                            outline-none
+                            focus:border-[#6D4AFF]
+                            focus:ring-4
+                            focus:ring-[#6D4AFF]/10
+                             cursor-pointer
+                               "
                             value={formData.executionStatus}
                             onChange={(e) =>
                                 handleChange(
@@ -478,7 +565,7 @@ export default function EditTaskForm() {
             <div className="flex justify-end items-center gap-3 mt-6">
 
                 {/* Reset */}
-                <button
+                {/* <button
                     type="button"
                     onClick={resetForm}
                     className="
@@ -501,7 +588,7 @@ export default function EditTaskForm() {
                 >
                     <RotateCcw size={15} />
                     Reset
-                </button>
+                </button> */}
 
                 {/* Back */}
                 <button
@@ -533,6 +620,7 @@ export default function EditTaskForm() {
                 {/* Update Task */}
                 <button
                     type="button"
+                    
                     onClick={handleUpdate}
                     className="
       h-11

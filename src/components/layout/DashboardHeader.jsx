@@ -118,35 +118,35 @@ const DashboardHeader = ({
     switch (type) {
       case "RISK":
         return (
-          <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center">
+          <div className="w-10 h-10 shrink-0 rounded-2xl bg-red-50 flex items-center justify-center">
             <AlertTriangle size={24} className="text-red-500" />
           </div>
         );
 
       case "PROJECT":
         return (
-          <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center">
+          <div className="w-10 h-10 shrink-0 rounded-2xl bg-orange-50 flex items-center justify-center">
             <FolderOpen size={24} className="text-orange-500" />
           </div>
         );
 
       case "MILESTONE":
         return (
-          <div className="w-12 h-12 rounded-2xl bg-green-50 flex items-center justify-center">
+          <div className="w-10 h-10 shrink-0 rounded-2xl bg-green-50 flex items-center justify-center">
             <CheckCircle2 size={24} className="text-green-500" />
           </div>
         );
 
       case "ACTIVITY_UPDATE":
         return (
-          <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center">
+          <div className="w-10 h-10 shrink-0 rounded-2xl bg-blue-50 flex items-center justify-center">
             <UserRound size={20} className="text-blue-500" />
           </div>
         );
 
       default:
         return (
-          <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center">
+          <div className="w-10 h-10 shrink-0 rounded-2xl bg-purple-50 flex items-center justify-center">
             <Shield size={24} className="text-purple-500" />
           </div>
         );
@@ -582,9 +582,14 @@ const DashboardHeader = ({
                   <div
                     className="
                   absolute
-                  right-[-250px]
+                right-0
+lg:right-[-80px]
+xl:right-[-120px]
                   top-14
-                  w-[400px]
+                w-[92vw]
+max-w-[420px]
+sm:w-[380px]
+lg:w-[420px]
                   bg-white
                   rounded-3xl
                   border
@@ -659,28 +664,33 @@ const DashboardHeader = ({
                               setShowNotifications(false);
                             }}
                             className="
-                          flex
-                          gap-4
-                          p-5
-                          border-b
-                          cursor-pointer
-                          hover:bg-slate-50
-                          transition
-                          "
+                            flex
+                            gap-3
+                             p-4
+                            border-b
+                            cursor-pointer
+                             hover:bg-slate-50
+                             transition
+                             overflow-hidden
+                               "
+
                           >
                             {getNotificationIcon(notification.type)}
 
-                            <div className="flex-1">
+                          <div className="flex-1 min-w-0">
                               <div className="flex justify-between">
                                 <h4
-                                  className="
-                                font-bold
-                                text-[16px]
-                                text-[#0B1F59]
-                                "
-                                >
+                                 className="
+                                  font-bold
+                                   text-[14px]
+                                   lg:text-[15px]
+                                   text-[#0B1F59]
+                                  break-words
+                                   leading-5
+                                      "
+                                  >
                                   {notification.title}
-                                </h4>
+                                 </h4>
 
                                 {!notification.read && (
                                   <div
@@ -697,15 +707,17 @@ const DashboardHeader = ({
 
                               <p
                                 className="
-                              text-[#475569]
-                              xl:text-[14px]
-                              2xl:text-[16px]
-                              mt-1
-                              leading-6
-                              "
-                              >
-                                {notification.message}
-                              </p>
+                                text-[#475569]
+                                 text-[12px]
+                                lg:text-[13px]
+                                  mt-1
+                                  leading-5
+                                 break-words
+                                 whitespace-normal
+                                  "
+                                 >
+                              {notification.message}
+                               </p>
 
                               <p
                                 className="

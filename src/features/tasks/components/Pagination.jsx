@@ -12,10 +12,29 @@ export default function Pagination({
   }
 
   return (
-    <div className="flex items-center justify-between mt-4 px-2">
-
+   <div
+  className="
+  flex
+  flex-col
+  lg:flex-row
+  lg:items-center
+  lg:justify-between
+  gap-4
+  mt-4
+  px-2
+  "
+>
       {/* Left */}
-      <p className="text-[13px] text-[#475569] font-medium">
+      <p
+  className="
+  text-[12px]
+  lg:text-[13px]
+  text-[#475569]
+  font-medium
+  text-center
+  lg:text-left
+  "
+>
         Showing{" "}
         {(currentPage - 1) * pageSize + 1}
         {" "}to{" "}
@@ -26,7 +45,16 @@ export default function Pagination({
       </p>
 
       {/* Right */}
-      <div className="flex items-center gap-2">
+     <div
+  className="
+  flex
+  flex-wrap
+  items-center
+  justify-center
+  lg:justify-end
+  gap-2
+  "
+>
 
         {/* Previous */}
         <button
@@ -35,7 +63,9 @@ export default function Pagination({
             setCurrentPage(currentPage - 1)
           }
           className="
-            w-10 h-10
+           w-9 h-9
+lg:w-10
+lg:h-10
             rounded-lg
             border
             border-[#E2E8F0]
@@ -51,7 +81,12 @@ export default function Pagination({
         </button>
 
         {/* Page Numbers */}
-        {pages.slice(0, 5).map((page) => (
+        {pages
+  .slice(
+    0,
+    window.innerWidth < 640 ? 3 : 5
+  )
+  .map((page) => (
           <button
             key={page}
             onClick={() =>
@@ -126,7 +161,9 @@ export default function Pagination({
         {/* Page Size */}
         <select
           className="
-            ml-2
+           lg:ml-2
+           w-full
+sm:w-auto
             h-10
             px-3
             rounded-lg

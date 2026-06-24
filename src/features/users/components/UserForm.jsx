@@ -50,6 +50,9 @@ const UserForm = ({ mode = "add", userData = null }) => {
 
   const handleSubmitUser = async () => {
     try {
+      
+
+    
       setLoading(true);
 
       const payload = {
@@ -237,8 +240,11 @@ const UserForm = ({ mode = "add", userData = null }) => {
               2xl:text-[17px]
               2xl:font-medium
               2xl:tracking-wide
+              block mb-2 font-semibold text-slate-700
               "
             >
+              
+
               Username
             </label>
 
@@ -277,6 +283,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
               2xl:text-[17px]
               2xl:font-medium
               2xl:tracking-wide
+              block mb-2 font-semibold text-slate-700
               "
             >
               Password

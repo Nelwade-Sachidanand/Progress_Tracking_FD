@@ -75,57 +75,111 @@ export default function TaskActions({
     }
   };
 
-  return (
-    <div className="flex items-center justify-between mb-6">
-      <div className="flex gap-3">
-        <button className="bg-[#6D4AFF] text-white px-4 py-2.5 rounded-xl text-sm font-medium">
-          Generate Report
-        </button>
-
-        <button
-          onClick={handleExportExcel}
-          className="
-            bg-[#10B981]
-            text-white
-            px-4
-            py-2.5
-            rounded-xl
-            text-sm
-            font-medium
-            hover:bg-[#059669]
-          "
-        >
-          Export Excel
-        </button>
-
-        <button className="bg-[#2563EB] text-white px-4 py-2.5 rounded-xl text-sm font-medium">
-          Print Report
-        </button>
-      </div>
-
-      {(user?.role === "ADMIN" || user?.role === "IMPLEMENTATION USER") &&
-        <button
-          onClick={() => navigate("add-task")}
-          className="
-          bg-[#6D4AFF]
-          hover:bg-[#5B3DF4]
-          text-white
-          px-5
-          py-2.5
-          rounded-xl
-          flex
-          items-center
-          gap-2
-          font-medium
-          shadow-sm
-          cursor-pointer
+ return (
+  <div
+    className="
+    flex
+    flex-col
+    lg:flex-row
+    lg:items-center
+    lg:justify-between
+    gap-4
+    mb-6
+    cursor-pointer
+    "
+  >
+    {/* Action Buttons */}
+    <div
+      className="
+      flex
+      flex-wrap
+      gap-3
+      w-full
+      lg:w-auto
+      "
+    >
+      <button
+        className="
+        bg-[#6D4AFF]
+        text-white
+        px-4
+        py-2.5
+        rounded-xl
+        text-sm
+        font-medium
+        flex-1
+        sm:flex-none
         "
-        >
-          <Plus size={18} />
-          Add Task
-        </button>
-      }
+      >
+        Generate Report
+      </button>
 
+      <button
+        onClick={handleExportExcel}
+        className="
+        bg-[#10B981]
+        text-white
+        px-4
+        py-2.5
+        rounded-xl
+        text-sm
+        font-medium
+        hover:bg-[#059669]
+        flex-1
+        sm:flex-none
+        cursor-pointer
+        "
+        
+      >
+        Export Excel
+      </button>
+
+      <button
+        className="
+        bg-[#2563EB]
+        text-white
+        px-4
+        py-2.5
+        rounded-xl
+        text-sm
+        font-medium
+        flex-1
+        sm:flex-none
+        "
+      >
+        Print Report
+      </button>
     </div>
-  );
+
+    {/* Add Task Button */}
+    {(user?.role === "ADMIN" ||
+      user?.role === "IMPLEMENTATION USER") && (
+      <button
+        onClick={() =>
+          navigate("add-task")
+        }
+        className="
+        bg-[#6D4AFF]
+        hover:bg-[#5B3DF4]
+        text-white
+        px-5
+        py-2.5
+        rounded-xl
+        flex
+        items-center
+        justify-center
+        gap-2
+        font-medium
+        shadow-sm
+        cursor-pointer
+        w-full
+        sm:w-auto
+        "
+      >
+        <Plus size={18} />
+        Add Task
+      </button>
+    )}
+  </div>
+);
 }

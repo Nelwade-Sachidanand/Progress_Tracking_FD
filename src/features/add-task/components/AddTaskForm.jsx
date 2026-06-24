@@ -333,13 +333,13 @@ export default function AddTaskForm() {
 
       <div
         className=" w-full
-  bg-white
-  rounded-3xl
-  p-6
-  shadow-sm
-  border
-  border-[#EEF2F7]
-  "
+         bg-white
+         rounded-3xl
+         p-6
+         shadow-sm
+         border
+        border-[#EEF2F7]
+         "
       >
         <div className="flex items-center gap-3 mb-6">
           <ClipboardList size={20} className="text-[#6D4AFF]" />
@@ -1142,6 +1142,7 @@ export default function AddTaskForm() {
 
             <input
               type="number"
+               step="0.1"
               placeholder="Enter Estimated Weeks"
               className={inputClass}
               value={formData.estimatedPeriodWeek}

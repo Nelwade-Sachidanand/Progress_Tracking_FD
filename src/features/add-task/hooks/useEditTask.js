@@ -111,70 +111,75 @@ console.log(
       scheduleHealth:
         task?.scheduleHealth ||
         "",
+        changeReason: "",
     });
+const originalPlannedStartDate =
+  task?.plannedStartDate || "";
 
-  const resetForm = () => {
-    setFormData({
-      phaseName:
-        task?.phaseName ||
-        task?.phase ||
-        "",
+const originalPlannedEndDate =
+  task?.plannedEndDate || "";
+  // const resetForm = () => {
+  //   setFormData({
+  //     phaseName:
+  //       task?.phaseName ||
+  //       task?.phase ||
+  //       "",
 
-      milestoneName:
-        task?.milestoneName ||
-        task?.milestone ||
-        "",
+  //     milestoneName:
+  //       task?.milestoneName ||
+  //       task?.milestone ||
+  //       "",
 
-      taskName:
-        task?.taskName ||
-        task?.task ||
-        "",
+  //     taskName:
+  //       task?.taskName ||
+  //       task?.task ||
+  //       "",
 
-      subTaskName:
-        task?.subTaskName ||
-        task?.subTask ||
-        "",
+  //     subTaskName:
+  //       task?.subTaskName ||
+  //       task?.subTask ||
+  //       "",
 
-      activityName:
-        task?.activityName ||
-        task?.activity ||
-        "",
+  //     activityName:
+  //       task?.activityName ||
+  //       task?.activity ||
+  //       "",
 
-      owner:
-        task?.owner || "",
+  //     owner:
+  //       task?.owner || "",
 
-      estimatedPeriodWeek:
-        task?.estimatedPeriodWeek ||
-        "",
+  //     estimatedPeriodWeek:
+  //       task?.estimatedPeriodWeek ||
+  //       "",
 
-      plannedStartDate:
-        task?.plannedStartDate ||
-        "",
+  //     plannedStartDate:
+  //       task?.plannedStartDate ||
+  //       "",
 
-      plannedEndDate:
-        task?.plannedEndDate ||
-        "",
+  //     plannedEndDate:
+  //       task?.plannedEndDate ||
+  //       "",
 
-      actualStartDate:
-        task?.actualStartDate ||
-        "",
+  //     actualStartDate:
+  //       task?.actualStartDate ||
+  //       "",
 
-      actualEndDate:
-        task?.actualEndDate ||
-        "",
+  //     actualEndDate:
+  //       task?.actualEndDate ||
+  //       "",
 
-      progress:
-        task?.progress || 0,
+  //     progress:
+  //       task?.progress || 0,
 
-      executionStatus:
-        task?.executionStatus ||
-        "Not Started",
+  //     executionStatus:
+  //       task?.executionStatus ||
+  //       "Not Started",
 
-      scheduleHealth:
-        task?.scheduleHealth ||
-        "",
-    });
-  };
+  //     scheduleHealth:
+  //       task?.scheduleHealth ||
+  //       "",
+  //   });
+  // };
 
   const phases = useMemo(() => {
     return (
@@ -320,7 +325,21 @@ console.log(
 
   const handleUpdate =
     async () => {
+const isDateChanged =
+  formData.plannedStartDate !==
+    originalPlannedStartDate ||
+  formData.plannedEndDate !==
+    originalPlannedEndDate;
 
+if (
+  isDateChanged &&
+  !formData.changeReason?.trim()
+) {
+  toast.error(
+    "Please enter reason for changing planned dates"
+  );
+  return;
+}
       try {
 
         const payload = {
@@ -375,6 +394,9 @@ console.log(
 
           scheduleHealth:
             formData.scheduleHealth,
+
+            changeReason:
+             formData.changeReason,
         };
 
         const response =
@@ -416,7 +438,7 @@ console.log(
     milestones,
     taskOptions,
     subTasks,
-    resetForm,
+   // resetForm,
     handleUpdate,
     selectedProject,
   };

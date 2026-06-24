@@ -1,35 +1,56 @@
 import { X } from "lucide-react";
 
 function ActiveFilters({
+  selectedPhase,
   selectedMilestone,
   selectedTask,
   selectedStatus,
-  clearFilters,
-}) {
-  const filters = [];
 
-  if (selectedMilestone?.length > 0) {
-    filters.push({
-      label: `Milestone: ${selectedMilestone.join(", ")}`
-    });
-  }
+  setSelectedPhase,
+  setSelectedMilestone,
+  setSelectedTask,
+  setSelectedStatus,
+
+  clearFilters,
+}){
+  const filters = [];
+if (
+  selectedPhase &&
+  selectedPhase !== "All Phases"
+) {
+  filters.push({
+    type: "phase",
+    label: `Phase: ${selectedPhase}`,
+  });
+}
+
+selectedMilestone.forEach((milestone) => {
+  filters.push({
+    type: "milestone",
+    value: milestone,
+    label: `Milestone: ${milestone}`,
+  });
+});
+  
 
   if (
     selectedTask &&
     selectedTask !== "All Tasks"
   ) {
-    filters.push({
-      label: `Task: ${selectedTask}`
-    });
+filters.push({
+  type: "task",
+  label: `Task: ${selectedTask}`
+});
   }
 
   if (
     selectedStatus &&
     selectedStatus !== "All Status"
   ) {
-    filters.push({
-      label: `Status: ${selectedStatus}`
-    });
+filters.push({
+  type: "status",
+  label: `Status: ${selectedStatus}`
+});
   }
 
   if (filters.length === 0) return null;
@@ -47,14 +68,44 @@ function ActiveFilters({
             className="bg-[#F3F0FF] text-[#6D4AFF] px-3 py-1 rounded-full text-sm flex items-center gap-2"
           >
             {filter.label}
-            <X size={14} />
+    <X
+  size={14}
+  className="cursor-pointer"
+  onClick={() => {
+    if (filter.type === "phase") {
+      setSelectedPhase("All Phases");
+    }
+
+if (filter.type === "milestone") {
+  setSelectedMilestone(
+    selectedMilestone.filter(
+      (item) => item !== filter.value
+    )
+  );
+}
+
+    if (filter.type === "task") {
+      setSelectedTask("All Tasks");
+    }
+
+    if (filter.type === "status") {
+      setSelectedStatus("All Status");
+    }
+  }}
+/>
           </div>
         ))}
       </div>
 
       <button
         onClick={clearFilters}
-        className="border border-gray-200 px-4 py-2 rounded-xl text-sm"
+        className="border border-gray-200 px-4 py-2    
+         bg-red-50
+    text-red-600
+    border-red-200
+    cursor-pointer
+    rounded-xl 
+    text-sm"
       >
         Clear All Filters
       </button>

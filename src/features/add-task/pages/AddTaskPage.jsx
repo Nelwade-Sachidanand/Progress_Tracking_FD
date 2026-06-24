@@ -27,6 +27,7 @@ const projectName =
           flex
           items-center
           justify-center
+          cursor-pointer
           "
         >
           <ArrowLeft size={18} />
