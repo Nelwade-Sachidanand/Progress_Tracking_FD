@@ -14,47 +14,35 @@ import {
 } from "../utils/milestoneManagementUtils";
 
 import { useMilestone } from "../hooks/useMilestone";
+import { useProjects } from "../../../context/ProjectContext";
 
 export default function MilestoneManagement() {
-  const [banks, setBanks] =
-    useState([]);
 
-  const [
-    selectedBank,
-    setSelectedBank,
-  ] = useState("");
+  const {projects} = useProjects();
 
-  const [
-    milestones,
-    setMilestones,
-  ] = useState([]);
+  const [banks, setBanks] = useState([]);
 
-  const {
-    updateWeightages,
-    loading,
-  } = useMilestone();
+  const [selectedBank,setSelectedBank] = useState("");
+
+  const [milestones,setMilestones] = useState([]);
+
+  const {updateWeightages,loading} = useMilestone();
 
   useEffect(() => {
-    const bankList = getBanks();
+    const bankList = getBanks(projects);
 
     setBanks(bankList);
 
     if (bankList.length) {
-      setSelectedBank(
-        bankList[0]
-      );
+      setSelectedBank(bankList[0]);
     }
-  }, []);
+  }, [projects]);
 
   useEffect(() => {
     if (!selectedBank) return;
-
-    setMilestones(
-      getMilestoneManagementData(
-        selectedBank
-      )
+    setMilestones(getMilestoneManagementData(selectedBank,projects)
     );
-  }, [selectedBank]);
+  }, [selectedBank,projects]);
 
   const handleWeightageChange =
     (index, value) => {
@@ -102,9 +90,7 @@ export default function MilestoneManagement() {
 
         // console.log("Update Payload",payload);
 
-        await updateWeightages(
-          payload
-        );
+        await updateWeightages(payload);
       } catch (error) {
         console.error(error);
       }

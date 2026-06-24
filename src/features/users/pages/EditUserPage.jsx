@@ -6,7 +6,7 @@ const EditUserPage = () => {
 
     const userData = location.state?.user;
 
-    console.log(userData);
+    // console.log(userData);
 
     return (
         <div

@@ -28,6 +28,7 @@ import {
   markAllRead,
   markAsRead,
 } from "../../services/notificationService";
+import { useProjects } from "../../context/ProjectContext";
 
 const DashboardHeader = ({
   title,
@@ -47,21 +48,21 @@ const DashboardHeader = ({
   const [unreadCount, setUnreadCount] = useState(0);
 
   const [selectedBank, setSelectedBank] = useState(
-    localStorage.getItem("selectedBank") || "All Banks",
+    sessionStorage.getItem("selectedBank") || "All Banks",
   );
 
   const [showBanks, setShowBanks] = useState(false);
 
   const [searchText, setSearchText] = useState("");
 
-  const projects = JSON.parse(localStorage.getItem("projects")) || [];
+  const { projects } = useProjects();
 
   const banks = [
     "All Banks",
     ...new Set(projects.map((p) => p.bankName).filter(Boolean)),
   ];
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
 
   const fullname = user?.fullname || "Admin";
 
@@ -77,8 +78,7 @@ const DashboardHeader = ({
     .toUpperCase();
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.clear();
+    sessionStorage.clear();
 
     navigate("/");
   };
@@ -213,8 +213,8 @@ const DashboardHeader = ({
     },
 
     "/tasks/add-task": {
-  title: "Activity Creation Form",
-  subtitle: "Define project execution activities",
+      title: "Activity Creation Form",
+      subtitle: "Define project execution activities",
 
       icon: <Plus size={24} />,
 
@@ -223,7 +223,7 @@ const DashboardHeader = ({
     },
     "/edit-task": {
       title: "Activity Update Form",
-  subtitle: "Modify project activity details",
+      subtitle: "Modify project activity details",
       icon: <Pencil size={24} />,
       titleClass: "text-[30px]",
       subtitleClass: "text-[12px]",
@@ -462,7 +462,7 @@ const DashboardHeader = ({
                             key={bank}
                             onClick={() => {
                               setSelectedBank(bank);
-                              localStorage.setItem("selectedBank", bank);
+                              sessionStorage.setItem("selectedBank", bank);
                               window.dispatchEvent(
                                 new Event("bankChanged")
                               );

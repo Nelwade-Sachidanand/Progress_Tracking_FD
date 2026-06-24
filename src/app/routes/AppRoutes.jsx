@@ -14,6 +14,7 @@ import UserManagementPage from "../../features/users/pages/UserManagementPage";
 import MainLayout from "../../layouts/MainLayout";
 import MilestoneManagement from "../../features/milestones/pages/MilestoneManagement";
 import ProtectedRoute from "./ProtectedRoute ";
+import UploadExcel from "../../components/pages/UploadExcel";
 
 const AppRoutes = () => {
   return (
@@ -34,6 +35,7 @@ const AppRoutes = () => {
           <Route path="/tasks/add-task" element={<AddTaskPage />} />
           <Route path="/edit-task" element={<EditTaskPage />} />
           <Route path="/milestones" element={<MilestoneManagement />} />
+          <Route path="/upload-excel" element={<UploadExcel />} />
         </Route>
       </Route>
 

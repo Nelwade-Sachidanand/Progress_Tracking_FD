@@ -14,8 +14,8 @@ export default function ProgressCard({ projects = [] }) {
   const navigate = useNavigate();
 
   const handleProjectSelect = (project) => {
-    localStorage.setItem("selectedProjectId", project.id);
-    localStorage.setItem("selectedProjectName", project.projectName);
+    sessionStorage.setItem("selectedProjectId", project.id);
+    sessionStorage.setItem("selectedProjectName", project.projectName);
 
     navigate("/project-details");
   };
