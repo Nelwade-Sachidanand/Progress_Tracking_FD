@@ -690,8 +690,8 @@ lg:w-[420px]
                                 {!notification.read && (
                                   <div
                                     className="
-                                  w-4
-                                  h-4
+                                  w-2
+                                  h-2
                                   rounded-full
                                   bg-red-500
                                   mt-1

@@ -43,7 +43,15 @@ const UserManagementPage = () => {
       await fetchUsers();
     }
   };
+const [
+  showResetPasswordModal,
+  setShowResetPasswordModal,
+] = useState(false);
 
+const [
+  selectedUser,
+  setSelectedUser,
+] = useState(null);
   return (
     <div
       className="
@@ -67,6 +75,13 @@ const UserManagementPage = () => {
         <UserStatsCards users={users} />
 
         <UserFilters
+         users={users}
+  loading={loading}
+  //onDelete={handleDelete}
+  onResetPassword={(user) => {
+    setSelectedUser(user);
+    setShowResetPasswordModal(true);
+  }}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           roleFilter={roleFilter}

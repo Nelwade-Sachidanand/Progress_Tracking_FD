@@ -124,6 +124,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
       setLoading(true);
 
       const payload = {
+        userId: id,
         fullname: fullName,
         username,
         password,

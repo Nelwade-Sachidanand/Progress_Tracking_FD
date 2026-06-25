@@ -96,7 +96,7 @@ export default function AllTasksPage() {
   ).length;
 
   const delayed = filteredTasks.filter(
-    (task) => task.status === "Delayed",
+    (task) => task.scheduleHealth === "Delayed",
   ).length;
 
   const notStarted = filteredTasks.filter(
@@ -118,14 +118,14 @@ export default function AllTasksPage() {
   );
 
   const clearFilters = () => {
-    setSelectedPhase("");
-    setSelectedMilestone([]);
-    setSelectedTask("");
-    setSelectedSubTask("");
-    setSelectedActivity("");
-    setSelectedStatus("");
-    setSearchTerm("");
-  };
+  setSelectedPhase("All Phases");
+  setSelectedMilestone([]);
+  setSelectedTask("All Tasks");
+  setSelectedSubTask("All Sub Tasks");
+  setSelectedActivity("All Activities");
+  setSelectedStatus("All Status");
+  setSearchTerm("");
+};
 
   const [remark, setRemark] = useState("");
 
@@ -249,12 +249,19 @@ export default function AllTasksPage() {
         setSearchTerm={setSearchTerm}
         handleMilestoneChange={handleMilestoneChange}
       />
-      <ActiveFilters
-        selectedMilestone={selectedMilestone}
-        selectedTask={selectedTask}
-        selectedStatus={selectedStatus}
-        clearFilters={clearFilters}
-      />
+<ActiveFilters
+  selectedPhase={selectedPhase}
+  selectedMilestone={selectedMilestone}
+  selectedTask={selectedTask}
+  selectedStatus={selectedStatus}
+
+  setSelectedPhase={setSelectedPhase}
+  setSelectedMilestone={setSelectedMilestone}
+  setSelectedTask={setSelectedTask}
+  setSelectedStatus={setSelectedStatus}
+
+  clearFilters={clearFilters}
+/>
       <TaskSummaryCards
         total={total}
         tasks={filteredTasks}

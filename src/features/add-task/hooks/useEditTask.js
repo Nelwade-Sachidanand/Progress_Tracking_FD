@@ -95,68 +95,6 @@ const originalPlannedStartDate =
 
 const originalPlannedEndDate =
   task?.plannedEndDate || "";
-  // const resetForm = () => {
-  //   setFormData({
-  //     phaseName:
-  //       task?.phaseName ||
-  //       task?.phase ||
-  //       "",
-
-  //     milestoneName:
-  //       task?.milestoneName ||
-  //       task?.milestone ||
-  //       "",
-
-  //     taskName:
-  //       task?.taskName ||
-  //       task?.task ||
-  //       "",
-
-  //     subTaskName:
-  //       task?.subTaskName ||
-  //       task?.subTask ||
-  //       "",
-
-  //     activityName:
-  //       task?.activityName ||
-  //       task?.activity ||
-  //       "",
-
-  //     owner:
-  //       task?.owner || "",
-
-  //     estimatedPeriodWeek:
-  //       task?.estimatedPeriodWeek ||
-  //       "",
-
-  //     plannedStartDate:
-  //       task?.plannedStartDate ||
-  //       "",
-
-  //     plannedEndDate:
-  //       task?.plannedEndDate ||
-  //       "",
-
-  //     actualStartDate:
-  //       task?.actualStartDate ||
-  //       "",
-
-  //     actualEndDate:
-  //       task?.actualEndDate ||
-  //       "",
-
-  //     progress:
-  //       task?.progress || 0,
-
-  //     executionStatus:
-  //       task?.executionStatus ||
-  //       "Not Started",
-
-  //     scheduleHealth:
-  //       task?.scheduleHealth ||
-  //       "",
-  //   });
-  // };
 
   const phases = useMemo(() => {
     return (
@@ -308,6 +246,36 @@ const isDateChanged =
   formData.plannedEndDate !==
     originalPlannedEndDate;
 
+
+console.log(
+  "Original Planned Start:",
+  originalPlannedStartDate
+);
+
+console.log(
+  "Updated Planned Start:",
+  formData.plannedStartDate
+);
+
+console.log(
+  "Original Planned End:",
+  originalPlannedEndDate
+);
+
+console.log(
+  "Updated Planned End:",
+  formData.plannedEndDate
+);
+
+console.log(
+  "Is Date Changed:",
+  isDateChanged
+);
+
+console.log(
+  "Change Reason:",
+  formData.changeReason
+);
 if (
   isDateChanged &&
   !formData.changeReason?.trim()
@@ -380,7 +348,15 @@ if (
           await updateActivity(
             payload
           );
+console.log(
+  "Update Payload:",
+  payload
+);
 
+console.log(
+  "Change Reason Sent:",
+  payload.changeReason
+);
         if (
           response.statusType ===
           "S"

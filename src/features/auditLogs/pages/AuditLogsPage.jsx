@@ -1,12 +1,12 @@
 import { useState } from "react";
-import AuditDetailsDrawer from "../components/AuditDetailsDrawer";
+import AuditDetailsModal from "../components/AuditDetailsModal";
 import AuditFilters from "../components/AuditFilters";
 import AuditSummaryCards from "../components/AuditSummaryCards";
 import AuditTable from "../components/AuditTable";
 import { useAuditLogs } from "../hooks/useAuditLogs";
 
 const AuditLogsPage = () => {
-  const [selectedLog, setSelectedLog] = useState(null);
+ // const [selectedLog, setSelectedLog] = useState(null);
 
   const { auditLogs, loading } = useAuditLogs();
 
@@ -35,6 +35,11 @@ const AuditLogsPage = () => {
     return searchMatch && entityMatch && actionMatch && dateMatch;
   });
 
+const [showAuditModal, setShowAuditModal] =
+  useState(false);
+
+const [selectedLog, setSelectedLog] =
+  useState(null);
   return (
     <div
       className="
@@ -50,14 +55,11 @@ const AuditLogsPage = () => {
     >
       {/* Main Content */}
       <div
-        className={`
-        transition-all
-        duration-300
-        overflow-y-auto
-
-        ${selectedLog ? "w-full xl:w-[72%]" : "w-full"}
-      `}
-      >
+  className="
+  w-full
+  overflow-y-auto
+  "
+>
         <AuditSummaryCards auditLogs={filteredLogs} />
 
         <AuditFilters
@@ -71,31 +73,27 @@ const AuditLogsPage = () => {
           setSelectedDate={setSelectedDate}
         />
 
-        <AuditTable
-          logs={filteredLogs}
-          loading={loading}
-          onView={setSelectedLog}
-        />
+ <AuditTable
+  logs={filteredLogs}
+  loading={loading}
+  onView={(log) => {
+    setSelectedLog(log);
+    setShowAuditModal(true);
+  }}
+/>
       </div>
 
       {/* Right Drawer */}
-      {selectedLog && (
-        <div
-          className="
-          hidden
-          xl:block
-          w-[30%]
-          h-full
-          overflow-hidden
-          shrink-0
-        "
-        >
-          <AuditDetailsDrawer
-            log={selectedLog}
-            onClose={() => setSelectedLog(null)}
-          />
-        </div>
-      )}
+     {/* Audit Modal */}
+{showAuditModal && (
+  <AuditDetailsModal
+    log={selectedLog}
+    onClose={() => {
+      setShowAuditModal(false);
+      setSelectedLog(null);
+    }}
+  />
+)}
     </div>
   );
 };

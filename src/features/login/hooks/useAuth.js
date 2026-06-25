@@ -23,7 +23,7 @@ export const useAuth = () => {
         return response;
       }
 
-      toast.error(response.statusDesc);
+      else toast.error(response.statusDesc);
 
       return null;
     } catch (error) {

@@ -361,11 +361,11 @@ border:
               rounded-2xl
               border
              px-4
-py-4
-lg:px-5
-lg:py-5
+              py-4
+            lg:px-5
+             lg:py-5
              min-h-[130px]
-lg:min-h-[150px]
+             lg:min-h-[150px]
               "
               style={{
                 borderColor:
@@ -407,8 +407,8 @@ lg:min-h-[150px]
                 <h3
                   className="
                  text-[24px]
-sm:text-[26px]
-lg:text-[30px]
+                 sm:text-[26px]
+                 lg:text-[30px]
                   font-bold
                   leading-none
                   "
@@ -423,9 +423,9 @@ lg:text-[30px]
                 <p
                   className="
                   mt-4
-text-[11px]
-sm:text-[12px]
-lg:text-[13px]
+                  text-[11px]
+                  sm:text-[12px]
+                  lg:text-[13px]
                   font-medium
                   "
                   cursor-pointer

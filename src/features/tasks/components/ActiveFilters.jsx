@@ -68,7 +68,7 @@ filters.push({
             className="bg-[#F3F0FF] text-[#6D4AFF] px-3 py-1 rounded-full text-sm flex items-center gap-2"
           >
             {filter.label}
-    <X
+  <X
   size={14}
   className="cursor-pointer"
   onClick={() => {
@@ -76,13 +76,9 @@ filters.push({
       setSelectedPhase("All Phases");
     }
 
-if (filter.type === "milestone") {
-  setSelectedMilestone(
-    selectedMilestone.filter(
-      (item) => item !== filter.value
-    )
-  );
-}
+    if (filter.type === "milestone") {
+      setSelectedMilestone([]);
+    }
 
     if (filter.type === "task") {
       setSelectedTask("All Tasks");

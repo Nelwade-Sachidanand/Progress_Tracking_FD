@@ -39,6 +39,9 @@ const LoginForm = () => {
 
   const { login, loading } = useAuth();
 
+const [showForgotModal, setShowForgotModal] =
+  useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -325,7 +328,7 @@ const LoginForm = () => {
               Remember me
             </label>
 
-            <button
+            {/* <button
               type="button"
               className="
                 text-[#2563EB]
@@ -339,7 +342,21 @@ const LoginForm = () => {
               "
             >
               Forgot Password?
-            </button>
+            </button> */}
+            <button
+  type="button"
+  onClick={() => setShowForgotModal(true)}
+  className="
+    text-[#2563EB]
+    font-semibold
+    text-[14px]
+    xl:text-[15px]
+    hover:underline
+    cursor-pointer
+  "
+>
+  Forgot Password?
+</button>
           </div>
 
           {/* Login Button */}
@@ -512,6 +529,57 @@ const LoginForm = () => {
           </div>
         </div>
       )}
+      {showForgotModal && (
+  <div
+    className="
+    fixed
+    inset-0
+    bg-black/50
+    flex
+    items-center
+    justify-center
+    z-[9999]
+    "
+  >
+    <div
+      className="
+      bg-white
+      rounded-2xl
+      p-6
+      w-full
+      max-w-md
+      shadow-xl
+      "
+    >
+      <h2 className="text-xl font-bold text-[#081D5C] mb-3">
+        Forgot Password
+      </h2>
+
+      <p className="text-slate-600 text-sm leading-6">
+        Please contact your administrator
+        to reset your password.
+      </p>
+
+      <div className="mt-6 flex justify-end">
+        <button
+          onClick={() =>
+            setShowForgotModal(false)
+          }
+          className="
+          px-5
+          py-2
+          bg-[#2563EB]
+          text-white
+          rounded-lg
+          cursor-pointer
+          "
+        >
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 };

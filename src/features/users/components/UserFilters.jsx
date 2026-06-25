@@ -98,9 +98,9 @@ const UserFilters = ({
 
           <option value="ADMIN">Admin</option>
 
-          <option value="SUPER_ADMIN">Super Admin</option>
+          <option value="USER">Bank User</option>
 
-          <option value="MANAGEMENT">Manager</option>
+          <option value="MANAGEMENT USER">Manager</option>
 
           <option value="IMPLEMENTATION USER">Implementation User</option>
         </select>

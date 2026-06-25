@@ -1,4 +1,8 @@
-import { Pencil, Trash2 } from "lucide-react";
+import {
+  Pencil,
+  Trash2,
+  KeyRound,
+} from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -20,13 +24,13 @@ const getRoleStyle = (role) => {
     case "ADMIN":
       return "bg-purple-100 text-purple-600";
 
-    case "SUPER_ADMIN":
-      return "bg-purple-100 text-purple-600";
+    case "USER":
+      return "bg-blue-100 text-blue-600";
 
-    case "IMPLEMENTATION_USER":
-      return "bg-green-100 text-green-700";
+    case "IMPLEMENTATION USER":
+      return "bg-pink-100 text-pink-700";
 
-    case "MANAGEMENT":
+    case "MANAGEMENT USER":
     case "MANAGER":
       return "bg-orange-100 text-orange-600";
 
@@ -35,7 +39,7 @@ const getRoleStyle = (role) => {
   }
 };
 
-const UserTable = ({ users = [], loading, onDelete, }) => {
+const UserTable = ({ users = [], loading, onDelete, onResetPassword,}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
@@ -162,7 +166,7 @@ const UserTable = ({ users = [], loading, onDelete, }) => {
                     rounded-full
                     text-[11px] md:text-[13px]
                     font-medium
-                    2xl:text-lg
+                    2xl:text-base
                       whitespace-nowrap
                       2xl:whitespace-normal
                     ${getRoleStyle(user.role)}
@@ -243,7 +247,28 @@ const UserTable = ({ users = [], loading, onDelete, }) => {
                     >
                       <Pencil size={14} className="text-[#2563EB]" />
                     </button>
-
+<button
+  onClick={() =>
+    onResetPassword?.(user)
+  }
+  title="Reset Password"
+  className="
+  w-8 h-8
+  md:w-10 md:h-10
+  rounded-xl
+  bg-amber-50
+  flex
+  items-center
+  justify-center
+  cursor-pointer
+  2xl:w-12 2xl:h-12
+  "
+>
+  <KeyRound
+    size={14}
+    className="text-amber-600"
+  />
+</button>
                     <button
                       onClick={() => onDelete(user.id)}
                       className="
