@@ -28,6 +28,13 @@ export default function MilestoneTable({
     };
   };
 
+  const totalWeightage = milestones.reduce(
+    (sum, milestone) => sum + (Number(milestone.weightage) || 0),
+    0,
+  );
+
+  const isValidWeightage = totalWeightage === 100;
+
   return (
     <div
       className="
@@ -82,28 +89,28 @@ export default function MilestoneTable({
         <button
           onClick={onUpdate}
           disabled={loading}
-          className="
-                    h-11
-                    xl:h-12
-                    px-5
-                    xl:px-6
-                    bg-[#2563EB]
-                    hover:bg-[#1D4ED8]
-                    disabled:bg-slate-400
-                    disabled:cursor-not-allowed
-                    text-white
-                    rounded-xl
-                    text-sm
-                    xl:text-base
-                    font-medium
-                    flex
-                    items-center
-                    gap-2
-                    transition
-                    self-start
-                    lg:self-auto
-                    cursor-pointer
-                    "
+          className={`
+          h-11
+          xl:h-12
+          px-5
+          xl:px-6
+          rounded-xl
+          text-sm
+          xl:text-base
+          font-medium
+          flex
+          items-center
+          gap-2
+          transition
+          self-start
+          lg:self-auto
+
+          ${
+            loading || !isValidWeightage
+              ? "bg-slate-300 text-slate-500 cursor-not-allowed"
+              : "bg-[#2563EB] hover:bg-[#1D4ED8] text-white cursor-pointer"
+          }
+        `}
         >
           <Save size={18} />
 

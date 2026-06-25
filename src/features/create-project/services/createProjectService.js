@@ -6,3 +6,17 @@ export const createProject = async (payload) => {
 
   return response.data;
 };
+
+export const getProjectInformation = async (bankName, projectName) => {
+  const response = await apiClient.get(
+    "/project-information/getProjectInformation",
+    {
+      params: {
+        bankName,
+        projectName,
+      },
+    },
+  );
+
+  return response.data;
+};

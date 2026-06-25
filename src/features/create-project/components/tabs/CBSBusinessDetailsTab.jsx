@@ -154,6 +154,7 @@ export default function CBSBusinessDetailsTab({
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           <InputField
+            type="number"
             label="Total Active Customers"
             name="totalActiveCustomers"
             value={businessStatistics.totalActiveCustomers}
@@ -161,6 +162,7 @@ export default function CBSBusinessDetailsTab({
           />
 
           <InputField
+            type="number"
             label="Total Accounts"
             name="totalAccounts"
             value={businessStatistics.totalAccounts}
@@ -168,6 +170,7 @@ export default function CBSBusinessDetailsTab({
           />
 
           <InputField
+            type="number"
             label="Total Users"
             name="totalUsers"
             value={businessStatistics.totalUsers}
@@ -175,6 +178,7 @@ export default function CBSBusinessDetailsTab({
           />
 
           <InputField
+            type="number"
             label="Concurrent Users"
             name="concurrentUsers"
             value={businessStatistics.concurrentUsers}
@@ -182,6 +186,7 @@ export default function CBSBusinessDetailsTab({
           />
 
           <InputField
+            type="number"
             label="Accounts Increased / Year"
             name="accountsPerYear"
             value={businessStatistics.accountsPerYear}
@@ -189,6 +194,7 @@ export default function CBSBusinessDetailsTab({
           />
 
           <InputField
+            type="number"
             label="Daily Transactions"
             name="dailyTransactions"
             value={businessStatistics.dailyTransactions}
@@ -196,6 +202,7 @@ export default function CBSBusinessDetailsTab({
           />
 
           <InputField
+            type="number"
             label="Digital Transactions"
             name="digitalTransactions"
             value={businessStatistics.digitalTransactions}
@@ -203,6 +210,7 @@ export default function CBSBusinessDetailsTab({
           />
 
           <InputField
+            type="number"
             label="UPI Transactions"
             name="upiTransactions"
             value={businessStatistics.upiTransactions}
@@ -210,6 +218,7 @@ export default function CBSBusinessDetailsTab({
           />
 
           <InputField
+            type="number"
             label="Business Mix"
             name="businessMix"
             value={businessStatistics.businessMix}
@@ -217,6 +226,7 @@ export default function CBSBusinessDetailsTab({
           />
 
           <InputField
+            type="number"
             label="Customer Onboarding / Day"
             name="customerOnboarding"
             value={businessStatistics.customerOnboarding}
@@ -224,6 +234,7 @@ export default function CBSBusinessDetailsTab({
           />
 
           <InputField
+            type="number"
             label="Loan Issues / Day"
             name="loanIssues"
             value={businessStatistics.loanIssues}
@@ -242,7 +253,7 @@ export default function CBSBusinessDetailsTab({
   );
 }
 
-function InputField({ label, name, value, onChange }) {
+function InputField({ label, name, value, onChange, type = "text" }) {
   return (
     <div>
       <label className="block mb-2 text-sm font-medium text-slate-700">
@@ -250,10 +261,16 @@ function InputField({ label, name, value, onChange }) {
       </label>
 
       <input
-        type="text"
+        type={type}
         name={name}
-        value={value || ""}
+        value={value ?? ""}
         onChange={onChange}
+        min={type === "number" ? 0 : undefined}
+        onKeyDown={(e) => {
+          if (type === "number" && (e.key === "-" || e.key === "e")) {
+            e.preventDefault();
+          }
+        }}
         className="
           w-full
           h-11

@@ -248,7 +248,13 @@ export default function AuthorizationRequestModal({
                 grid
                 grid-cols-1
                 sm:grid-cols-2
-                ${request.status === "PENDING" ? "xl:grid-cols-4" : "xl:grid-cols-3"}
+                ${
+                  request.status === "PENDING"
+                    ? "xl:grid-cols-4"
+                    : request.status === "ROLLED_BACK"
+                      ? "xl:grid-cols-3"
+                      : "xl:grid-cols-3"
+                }
                 gap-5
               `}
               >
@@ -282,39 +288,60 @@ export default function AuthorizationRequestModal({
                   </p>
                 </div>
 
-                {request.status !== "PENDING" && (
-                  <>
-                    <div>
-                      <p className="text-sm text-slate-500">
-                        {request.status === "APPROVED"
-                          ? "Approved By"
-                          : "Rejected By"}
-                      </p>
+                {request.status !== "PENDING" &&
+                  request.status !== "ROLLED_BACK" && (
+                    <>
+                      <div>
+                        <p className="text-sm text-slate-500">
+                          {request.status === "APPROVED"
+                            ? "Approved By"
+                            : "Rejected By"}
+                        </p>
 
-                      <p
-                        className={`
+                        <p
+                          className={`
                         font-semibold
                         ${request.status === "APPROVED" ? "text-green-700" : "text-red-700"}
                       `}
-                      >
-                        {request.approvedBy}
+                        >
+                          {request.approvedBy}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-sm text-slate-500">
+                          {request.status === "APPROVED"
+                            ? "Approved At"
+                            : "Rejected At"}
+                        </p>
+
+                        <p
+                          className={`
+                        font-semibold
+                        ${request.status === "APPROVED" ? "text-green-700" : "text-red-700"}
+                      `}
+                        >
+                          {formatDate(request.approvedAt)}
+                        </p>
+                      </div>
+                    </>
+                  )}
+
+                {request.status === "ROLLED_BACK" && (
+                  <>
+                    <div>
+                      <p className="text-sm text-slate-500">Rolled Back By</p>
+
+                      <p className="font-semibold text-amber-700">
+                        {request.rolledBackBy}
                       </p>
                     </div>
 
                     <div>
-                      <p className="text-sm text-slate-500">
-                        {request.status === "APPROVED"
-                          ? "Approved At"
-                          : "Rejected At"}
-                      </p>
+                      <p className="text-sm text-slate-500">Rolled Back At</p>
 
-                      <p
-                        className={`
-                        font-semibold
-                        ${request.status === "APPROVED" ? "text-green-700" : "text-red-700"}
-                      `}
-                      >
-                        {formatDate(request.approvedAt)}
+                      <p className="font-semibold text-amber-700">
+                        {formatDate(request.rolledBackAt)}
                       </p>
                     </div>
                   </>
@@ -322,8 +349,7 @@ export default function AuthorizationRequestModal({
               </div>
             </div>
           </div>
-
-          {request.changeReason && (
+          {request.rollbackReason && (
             <div
               className="
               px-5
@@ -351,20 +377,20 @@ export default function AuthorizationRequestModal({
                   mb-3
                 "
                 >
-                  Change Reason
+                  Rollback Reason
                 </h4>
 
                 <p
                   className="
                   text-sm
                   xl:text-base
-                  text-slate-600
                   whitespace-pre-wrap
                   break-words
                   leading-relaxed
+                  text-amber-700
                 "
                 >
-                  {request.changeReason}
+                  {request.rollbackReason}
                 </p>
               </div>
             </div>
@@ -450,7 +476,7 @@ export default function AuthorizationRequestModal({
             xl:px-12
 
             mt-3
-            pb-8
+            pb-5
             "
           >
             {changes.length === 0 ? (
@@ -621,12 +647,59 @@ export default function AuthorizationRequestModal({
             )}
           </div>
 
-          {request.status === "REJECTED" && request.rejectionReason && (
+          {request.changeReason && (
             <div
               className="
               px-5
               md:px-8
               xl:px-12
+            "
+            >
+              <div
+                className="
+                border
+                border-slate-200
+                rounded-2xl
+                p-4
+                xl:p-5
+                bg-white
+              "
+              >
+                <h4
+                  className="
+                  text-sm
+                  xl:text-base
+                  font-semibold
+                  text-[#142850]
+                  mb-3
+                "
+                >
+                  Activity Change Reason
+                </h4>
+
+                <p
+                  className="
+                  text-sm
+                  xl:text-base
+                  text-slate-600
+                  whitespace-pre-wrap
+                  break-words
+                  leading-relaxed
+                "
+                >
+                  {request.changeReason}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {request.rejectionReason && (
+            <div
+              className="
+              px-5
+              md:px-8
+              xl:px-12
+              mt-4
             "
             >
               <div

@@ -306,6 +306,15 @@ const DashboardHeader = ({
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",
     },
+
+    "/notifications": {
+      title: "Notifications",
+      subtitle: "View and manage all system notifications and activity updates",
+      icon: <Bell size={24} />,
+
+      titleClass: "text-[26px]",
+      subtitleClass: "text-[12px]",
+    },
   };
 
   const location = useLocation();
@@ -547,11 +556,12 @@ const DashboardHeader = ({
               </>
             )}
             {/* Notification */}
-            <div className="relative">
-              <button
-                data-testid="notification-button"
-                onClick={() => setShowNotifications(!showNotifications)}
-                className="
+            {location.pathname !== "/notifications" && (
+              <div className="relative">
+                <button
+                  data-testid="notification-button"
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="
                 relative
                 w-10
                 h-10
@@ -559,12 +569,12 @@ const DashboardHeader = ({
                 items-center
                 justify-center
                 "
-              >
-                <Bell size={20} className="text-[#0B1F59] cursor-pointer" />
+                >
+                  <Bell size={20} className="text-[#0B1F59] cursor-pointer" />
 
-                {unreadCount > 0 && (
-                  <span
-                    className="
+                  {unreadCount > 0 && (
+                    <span
+                      className="
                     absolute
                     -top-1
                     -right-1
@@ -579,15 +589,15 @@ const DashboardHeader = ({
                     items-center
                     justify-center
                   "
-                  >
-                    {unreadCount}
-                  </span>
-                )}
-              </button>
+                    >
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
 
-              {showNotifications && (
-                <div
-                  className="
+                {showNotifications && (
+                  <div
+                    className="
                   absolute
                   right-0
                   lg:right-[-80px]
@@ -605,10 +615,10 @@ const DashboardHeader = ({
                   overflow-hidden
                   z-[9999]
                 "
-                >
-                  {/* Header */}
-                  <div
-                    className="
+                  >
+                    {/* Header */}
+                    <div
+                      className="
                     flex
                     items-center
                     justify-between
@@ -616,25 +626,25 @@ const DashboardHeader = ({
                     py-5
                     border-b
                   "
-                  >
-                    <h3
-                      className="
+                    >
+                      <h3
+                        className="
                       xl:text-[16px]
                       2xl:text-[18px]
                       font-bold
                       text-[#0B1F59]
                       "
-                    >
-                      Notifications ({unreadCount})
-                    </h3>
+                      >
+                        Notifications ({unreadCount})
+                      </h3>
 
-                    <button
-                      onClick={async () => {
-                        await markAllRead();
+                      <button
+                        onClick={async () => {
+                          await markAllRead();
 
-                        loadNotifications();
-                      }}
-                      className="
+                          loadNotifications();
+                        }}
+                        className="
                       text-[#2563EB]
                       font-medium
                       hover:underline
@@ -642,35 +652,35 @@ const DashboardHeader = ({
                       2xl:text-[17px]
                       cursor-pointer
                     "
-                    >
-                      Mark all as read
-                    </button>
-                  </div>
+                      >
+                        Mark all as read
+                      </button>
+                    </div>
 
-                  {/* Body */}
-                  <div className="max-h-[600px] overflow-y-auto">
-                    {!notifications || notifications.length === 0 ? (
-                      <div className="p-10 text-center text-slate-500">
-                        No Notifications
-                      </div>
-                    ) : (
-                      notifications.map((notification) => (
-                        <div
-                          key={notification.id}
-                          onClick={async () => {
-                            if (!notification.read) {
-                              await markAsRead(notification.id);
+                    {/* Body */}
+                    <div className="max-h-[600px] overflow-y-auto">
+                      {!notifications || notifications.length === 0 ? (
+                        <div className="p-10 text-center text-slate-500">
+                          No Notifications
+                        </div>
+                      ) : (
+                        notifications.slice(0, 2).map((notification) => (
+                          <div
+                            key={notification.id}
+                            onClick={async () => {
+                              if (!notification.read) {
+                                await markAsRead(notification.id);
 
-                              loadNotifications();
-                            }
+                                loadNotifications();
+                              }
 
-                            if (notification.redirectUrl) {
-                              navigate(notification.redirectUrl);
-                            }
+                              if (notification.redirectUrl) {
+                                navigate(notification.redirectUrl);
+                              }
 
-                            setShowNotifications(false);
-                          }}
-                          className="
+                              setShowNotifications(false);
+                            }}
+                            className="
                             flex
                             gap-3
                              p-4
@@ -680,13 +690,13 @@ const DashboardHeader = ({
                              transition
                              overflow-hidden
                                "
-                        >
-                          {getNotificationIcon(notification.type)}
+                          >
+                            {getNotificationIcon(notification.type)}
 
-                          <div className="flex-1 min-w-0">
-                            <div className="flex justify-between">
-                              <h4
-                                className="
+                            <div className="flex-1 min-w-0">
+                              <div className="flex justify-between">
+                                <h4
+                                  className="
                                   font-bold
                                    text-[14px]
                                    lg:text-[15px]
@@ -694,25 +704,25 @@ const DashboardHeader = ({
                                   break-words
                                    leading-5
                                       "
-                              >
-                                {notification.title}
-                              </h4>
+                                >
+                                  {notification.title}
+                                </h4>
 
-                              {!notification.read && (
-                                <div
-                                  className="
+                                {!notification.read && (
+                                  <div
+                                    className="
                                   w-3
                                   h-3
                                   rounded-full
                                   bg-red-500
                                   mt-1
                                   "
-                                />
-                              )}
-                            </div>
+                                  />
+                                )}
+                              </div>
 
-                            <p
-                              className="
+                              <p
+                                className="
                                 text-[#475569]
                                  text-[12px]
                                 lg:text-[13px]
@@ -721,34 +731,34 @@ const DashboardHeader = ({
                                  break-words
                                  whitespace-normal
                                   "
-                            >
-                              {notification.message}
-                            </p>
+                              >
+                                {notification.message}
+                              </p>
 
-                            <p
-                              className="
+                              <p
+                                className="
                               text-[#94A3B8]
                               text-sm
                               mt-2
                               "
-                            >
-                              {formatTimeAgo(notification.createdAt)}
-                            </p>
+                              >
+                                {formatTimeAgo(notification.createdAt)}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
+                        ))
+                      )}
+                    </div>
 
-                  {/* Footer */}
-                  <div className="p-1 flex items-center justify-center">
-                    <button
-                      onClick={() => {
-                        navigate("/notifications");
+                    {/* Footer */}
+                    <div className="p-1 flex items-center justify-center">
+                      <button
+                        onClick={() => {
+                          navigate("/notifications");
 
-                        setShowNotifications(false);
-                      }}
-                      className="
+                          setShowNotifications(false);
+                        }}
+                        className="
                       w-[120px]
                       py-2
                       rounded-2xl
@@ -762,14 +772,15 @@ const DashboardHeader = ({
                       gap-2
                       cursor-pointer
                       "
-                    >
-                      View All
-                      <ArrowRight size={18} />
-                    </button>
+                      >
+                        View All
+                        <ArrowRight size={18} />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
             {/* User */}
             <div className="relative">
               <button

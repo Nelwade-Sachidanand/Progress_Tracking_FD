@@ -11,7 +11,18 @@ import TaskTable from "../components/TaskTable";
 import useTaskFilters from "../hooks/useTaskFilters";
 
 export default function AllTasksPage() {
-  const { projects } = useProjects();
+  const { fetchProjects, projects } = useProjects();
+  const user = JSON.parse(sessionStorage.getItem("user"));
+
+  useEffect(() => {
+    const loadProjects = async () => {
+      await fetchProjects(user.id);
+    };
+
+    if (user?.id) {
+      loadProjects();
+    }
+  }, []);
 
   const [tasks, setTasks] = useState([]);
 
@@ -118,14 +129,14 @@ export default function AllTasksPage() {
   );
 
   const clearFilters = () => {
-  setSelectedPhase("All Phases");
-  setSelectedMilestone([]);
-  setSelectedTask("All Tasks");
-  setSelectedSubTask("All Sub Tasks");
-  setSelectedActivity("All Activities");
-  setSelectedStatus("All Status");
-  setSearchTerm("");
-};
+    setSelectedPhase("All Phases");
+    setSelectedMilestone([]);
+    setSelectedTask("All Tasks");
+    setSelectedSubTask("All Sub Tasks");
+    setSelectedActivity("All Activities");
+    setSelectedStatus("All Status");
+    setSearchTerm("");
+  };
 
   const [remark, setRemark] = useState("");
 
@@ -247,19 +258,17 @@ export default function AllTasksPage() {
         setSearchTerm={setSearchTerm}
         handleMilestoneChange={handleMilestoneChange}
       />
-<ActiveFilters
-  selectedPhase={selectedPhase}
-  selectedMilestone={selectedMilestone}
-  selectedTask={selectedTask}
-  selectedStatus={selectedStatus}
-
-  setSelectedPhase={setSelectedPhase}
-  setSelectedMilestone={setSelectedMilestone}
-  setSelectedTask={setSelectedTask}
-  setSelectedStatus={setSelectedStatus}
-
-  clearFilters={clearFilters}
-/>
+      <ActiveFilters
+        selectedPhase={selectedPhase}
+        selectedMilestone={selectedMilestone}
+        selectedTask={selectedTask}
+        selectedStatus={selectedStatus}
+        setSelectedPhase={setSelectedPhase}
+        setSelectedMilestone={setSelectedMilestone}
+        setSelectedTask={setSelectedTask}
+        setSelectedStatus={setSelectedStatus}
+        clearFilters={clearFilters}
+      />
       <TaskSummaryCards
         total={total}
         tasks={filteredTasks}

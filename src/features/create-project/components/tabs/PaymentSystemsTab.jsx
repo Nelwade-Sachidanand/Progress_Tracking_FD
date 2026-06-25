@@ -1,12 +1,9 @@
 import {
   Building2,
-  CheckCircle,
   CreditCard,
+  HandCoins,
   Landmark,
-  Receipt,
-  ShieldCheck,
   Smartphone,
-  Wallet,
 } from "lucide-react";
 import BackButton from "./BackButton";
 
@@ -45,15 +42,20 @@ export default function PaymentSystemsTab({ data, updateSection }) {
     { key: "rtgs", title: "RTGS", icon: Landmark },
     { key: "neft", title: "NEFT", icon: Landmark },
     { key: "imps", title: "IMPS", icon: Smartphone },
-    { key: "upi", title: "UPI", icon: Smartphone },
-    { key: "nach", title: "NACH", icon: Receipt },
-    { key: "bbps", title: "BBPS", icon: Receipt },
-    { key: "aeps", title: "AEPS", icon: Wallet },
-    { key: "rupay", title: "RuPay", icon: CreditCard },
+    // { key: "upi", title: "UPI", icon: Smartphone },
+    // { key: "nach", title: "NACH", icon: Receipt },
+    // { key: "bbps", title: "BBPS", icon: Receipt },
+    // { key: "aeps", title: "AEPS", icon: Wallet },
+    // { key: "rupay", title: "RuPay", icon: CreditCard },
     { key: "atmSwitch", title: "ATM Switch", icon: Building2 },
     { key: "pos", title: "POS", icon: CreditCard },
-    { key: "reconciliation", title: "Reconciliation", icon: CheckCircle },
-    { key: "aml", title: "AML", icon: ShieldCheck },
+    {
+      key: "loanRecovery",
+      title: "Loan Recovery",
+      icon: HandCoins,
+    },
+    // { key: "reconciliation", title: "Reconciliation", icon: CheckCircle },
+    // { key: "aml", title: "AML", icon: ShieldCheck },
   ];
 
   return (
@@ -170,9 +172,15 @@ export default function PaymentSystemsTab({ data, updateSection }) {
 
             <input
               type="number"
+              min="0"
               name="dailyUpiTransactions"
               value={data.dailyUpiTransactions || ""}
               onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === "-" || e.key === "e" || e.key === "+") {
+                  e.preventDefault();
+                }
+              }}
               className={inputClass}
             />
           </div>
@@ -184,9 +192,15 @@ export default function PaymentSystemsTab({ data, updateSection }) {
 
             <input
               type="number"
+              min="0"
               name="dailyImpsTransactions"
               value={data.dailyImpsTransactions || ""}
               onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === "-" || e.key === "e" || e.key === "+") {
+                  e.preventDefault();
+                }
+              }}
               className={inputClass}
             />
           </div>
@@ -198,9 +212,15 @@ export default function PaymentSystemsTab({ data, updateSection }) {
 
             <input
               type="number"
+              min="0"
               name="dailyNeftTransactions"
               value={data.dailyNeftTransactions || ""}
               onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === "-" || e.key === "e" || e.key === "+") {
+                  e.preventDefault();
+                }
+              }}
               className={inputClass}
             />
           </div>
@@ -212,9 +232,15 @@ export default function PaymentSystemsTab({ data, updateSection }) {
 
             <input
               type="number"
+              min="0"
               name="dailyRtgsTransactions"
               value={data.dailyRtgsTransactions || ""}
               onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === "-" || e.key === "e" || e.key === "+") {
+                  e.preventDefault();
+                }
+              }}
               className={inputClass}
             />
           </div>

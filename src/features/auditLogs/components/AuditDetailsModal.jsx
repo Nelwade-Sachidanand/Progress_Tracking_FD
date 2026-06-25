@@ -1,4 +1,4 @@
-import { Clock, FileText, User, X } from "lucide-react";
+import { X } from "lucide-react";
 
 export default function AuditDetailsModal({ log, onClose }) {
   if (!log) return null;
@@ -20,14 +20,14 @@ export default function AuditDetailsModal({ log, onClose }) {
     ) {
       const changed = JSON.stringify(value) !== JSON.stringify(compareValue);
 
-      return ( 
+      return (
         <span
           className={`font-medium ${
             changed
-  ? isOld
-    ? "bg-red-100 border border-red-300"
-    : "bg-green-100 border border-green-300"
-  : "bg-white border border-slate-200"
+              ? isOld
+                ? "bg-red-100 border border-red-300"
+                : "bg-green-100 border border-green-300"
+              : "bg-white border border-slate-200"
           }`}
         >
           {typeof value === "boolean" ? (value ? "Yes" : "No") : String(value)}
@@ -42,7 +42,7 @@ export default function AuditDetailsModal({ log, onClose }) {
           {value.map((item, index) => (
             <div
               key={index}
-             className="
+              className="
 bg-white
 rounded-xl
 p-4
@@ -68,7 +68,9 @@ border-slate-200
                 >
                   <span className="text-slate-300">{formatLabel(k)}</span>
 
-                  <span className="text-[#0F172A] font-medium">{String(v)}</span>
+                  <span className="text-[#0F172A] font-medium">
+                    {String(v)}
+                  </span>
                 </div>
               ))}
             </div>
@@ -207,49 +209,48 @@ border-slate-200
     );
   };
 
-//   const renderJsonDiff = (current, compare, isOld = false) => {
-//     return Object.entries(current || {}).map(([key, value]) => {
-//       const changed = JSON.stringify(value) !== JSON.stringify(compare?.[key]);
+  //   const renderJsonDiff = (current, compare, isOld = false) => {
+  //     return Object.entries(current || {}).map(([key, value]) => {
+  //       const changed = JSON.stringify(value) !== JSON.stringify(compare?.[key]);
 
-//       return (
-//         <div
-//           key={key}
-//           className={`
-//             mb-5
-//             rounded-2xl
-//             p-4
-//             ${
-//   changed
-//     ? isOld
-//       ? "bg-red-100 border border-red-300"
-//       : "bg-green-100 border border-green-300"
-//     : "bg-white border border-slate-200"
-// }
-//           `}
-//         >
-//           <h4
-//             className="
-//               text-[#2563EB]
-//               font-semibold
-//               mb-4
-//               text-sm
-//               xl:text-base
-//             "
-//           >
-//             {formatLabel(key)}
-//           </h4>
+  //       return (
+  //         <div
+  //           key={key}
+  //           className={`
+  //             mb-5
+  //             rounded-2xl
+  //             p-4
+  //             ${
+  //   changed
+  //     ? isOld
+  //       ? "bg-red-100 border border-red-300"
+  //       : "bg-green-100 border border-green-300"
+  //     : "bg-white border border-slate-200"
+  // }
+  //           `}
+  //         >
+  //           <h4
+  //             className="
+  //               text-[#2563EB]
+  //               font-semibold
+  //               mb-4
+  //               text-sm
+  //               xl:text-base
+  //             "
+  //           >
+  //             {formatLabel(key)}
+  //           </h4>
 
-//           {renderValue(value, compare?.[key], isOld)}
-//         </div>
-//       );
-//     });
-//   };
+  //           {renderValue(value, compare?.[key], isOld)}
+  //         </div>
+  //       );
+  //     });
+  //   };
 
- return (
- <div className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4">
-
-<div
-  className="
+  return (
+    <div className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4">
+      <div
+        className="
   bg-white
   rounded-xl
   shadow-xl
@@ -258,53 +259,50 @@ border-slate-200
   max-h-[80vh]
   overflow-hidden
   "
->      {/* Header */}
+      >
+        {" "}
+        {/* Header */}
+        <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-[#0F172A]">
+            Audit Details
+          </h2>
 
-     <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
-  <h2 className="text-lg font-semibold text-[#0F172A]">
-    Audit Details
-  </h2>
-
-  <button
-    onClick={onClose}
-    className="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center"
-  >
-    <X size={16} />
-  </button>
-</div>
-
-      {/* Summary */}
-
-
-      {/* Old vs New */}
-
-     <div
-  className="
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center cursor-pointer"
+          >
+            <X size={16} />
+          </button>
+        </div>
+        {/* Summary */}
+        {/* Old vs New */}
+        <div
+          className="
   p-5
   max-h-[65vh]
   overflow-y-auto
   "
->
-  <div
-    className="
+        >
+          <div
+            className="
     grid
     grid-cols-1
     lg:grid-cols-2
     gap-4
     "
-  >
-    {/* Previous Data */}
-    <div
-      className="
+          >
+            {/* Previous Data */}
+            <div
+              className="
       bg-[#FAFAF8]
       border
       border-[#E5E7EB]
       rounded-xl
       p-4
       "
-    >
-      <h3
-        className="
+            >
+              <h3
+                className="
         text-red-600
         font-semibold
         text-base
@@ -313,14 +311,14 @@ border-slate-200
         border-b
         border-red-200
         "
-      >
-        Previous Data
-      </h3>
+              >
+                Previous Data
+              </h3>
 
-      {Object.keys(oldData || {}).map((key) => (
-        <div
-          key={key}
-          className="
+              {Object.keys(oldData || {}).map((key) => (
+                <div
+                  key={key}
+                  className="
           flex
           justify-between
           gap-3
@@ -330,37 +328,37 @@ border-slate-200
           last:border-0
           text-sm
           "
-        >
-          <span className="font-medium text-slate-600">
-            {formatLabel(key)}
-          </span>
+                >
+                  <span className="font-medium text-slate-600">
+                    {formatLabel(key)}
+                  </span>
 
-          <span
-            className={
-              JSON.stringify(oldData?.[key]) !==
-              JSON.stringify(newData?.[key])
-                ? "text-red-600 font-semibold"
-                : "text-slate-700"
-            }
-          >
-            {String(oldData?.[key] ?? "-")}
-          </span>
-        </div>
-      ))}
-    </div>
+                  <span
+                    className={
+                      JSON.stringify(oldData?.[key]) !==
+                      JSON.stringify(newData?.[key])
+                        ? "text-red-600 font-semibold"
+                        : "text-slate-700"
+                    }
+                  >
+                    {String(oldData?.[key] ?? "-")}
+                  </span>
+                </div>
+              ))}
+            </div>
 
-    {/* Updated Data */}
-    <div
-      className="
+            {/* Updated Data */}
+            <div
+              className="
       bg-[#FAFAF8]
       border
       border-[#E5E7EB]
       rounded-xl
       p-4
       "
-    >
-      <h3
-        className="
+            >
+              <h3
+                className="
         text-green-600
         font-semibold
         text-base
@@ -369,14 +367,14 @@ border-slate-200
         border-b
         border-green-200
         "
-      >
-        Updated Data
-      </h3>
+              >
+                Updated Data
+              </h3>
 
-      {Object.keys(newData || {}).map((key) => (
-        <div
-          key={key}
-          className="
+              {Object.keys(newData || {}).map((key) => (
+                <div
+                  key={key}
+                  className="
           flex
           justify-between
           gap-3
@@ -386,29 +384,27 @@ border-slate-200
           last:border-0
           text-sm
           "
-        >
-          <span className="font-medium text-slate-600">
-            {formatLabel(key)}
-          </span>
+                >
+                  <span className="font-medium text-slate-600">
+                    {formatLabel(key)}
+                  </span>
 
-          <span
-            className={
-              JSON.stringify(oldData?.[key]) !==
-              JSON.stringify(newData?.[key])
-                ? "text-green-600 font-semibold"
-                : "text-slate-700"
-            }
-          >
-            {String(newData?.[key] ?? "-")}
-          </span>
+                  <span
+                    className={
+                      JSON.stringify(oldData?.[key]) !==
+                      JSON.stringify(newData?.[key])
+                        ? "text-green-600 font-semibold"
+                        : "text-slate-700"
+                    }
+                  >
+                    {String(newData?.[key] ?? "-")}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      ))}
+      </div>
     </div>
-  </div>
-</div>
-
-    </div>
-
-  </div>
-);
+  );
 }

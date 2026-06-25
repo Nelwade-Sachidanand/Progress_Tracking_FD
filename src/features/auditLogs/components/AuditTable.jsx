@@ -417,6 +417,7 @@ export default function AuditTable({ logs = [], loading, onView }) {
             2xl:rounded-2xl
             2xl:border-2
             2xl:border-slate-300
+            cursor-pointer
             "
           >
             <ChevronLeft size={16} />
@@ -456,6 +457,7 @@ export default function AuditTable({ logs = [], loading, onView }) {
             2xl:rounded-2xl
             2xl:border-2
             2xl:border-slate-300
+            cursor-pointer
             "
           >
             <ChevronRight size={16} />

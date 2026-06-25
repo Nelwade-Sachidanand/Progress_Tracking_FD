@@ -1,18 +1,25 @@
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { updateActivity } from "../../add-task/api/editTaskApi";
+import { useProjects } from "../../../context/ProjectContext";
+import { addRemark } from "../services/remarkService";
 
 export default function RemarkModal({ isOpen, onClose, task, onRemarkSaved }) {
-  const [remark, setRemark] = useState("");
+  const [existingRemark, setExistingRemark] = useState("");
+  const [latestRemark, setLatestRemark] = useState("");
+
+  const user = JSON.parse(sessionStorage.getItem("user"));
+  const { fetchProjects } = useProjects();
 
   useEffect(() => {
-    setRemark(task?.remark || "");
+    setExistingRemark(task?.remark || "");
+    setLatestRemark("");
   }, [task]);
 
   if (!isOpen) return null;
 
   const handleSave = async () => {
+    console.log("task : ", task);
     try {
       const payload = {
         projectId: task?.projectId,
@@ -29,38 +36,20 @@ export default function RemarkModal({ isOpen, onClose, task, onRemarkSaved }) {
 
         activityName: task?.activity,
 
-        owner: task?.owner,
-
-        plannedStartDate: task?.plannedStartDate,
-
-        plannedEndDate: task?.plannedEndDate,
-
-        actualStartDate: task?.actualStartDate,
-
-        actualEndDate: task?.actualEndDate,
-
-        estimatedPeriodWeek: task?.estimatedPeriodWeek,
-
-        progress: task?.progress,
-
-        executionStatus: task?.status,
-
-        scheduleHealth: task?.scheduleHealth,
-
-        remark: remark,
+        remark: latestRemark,
       };
 
-      // console.log(
-      //   "Remark Update Payload:",
-      //   payload
-      // );
-
-      const response = await updateActivity(payload);
+      console.log("payload : ", payload);
+      const response = await addRemark(payload);
 
       if (response?.statusType === "S") {
-        toast.success(response.statusDesc || "Remark updated successfully");
+        toast.success(response.statusDesc);
+
+        await fetchProjects(user.id);
 
         onRemarkSaved?.(task?.id, remark);
+        setExistingRemark("");
+        setLatestRemark("");
 
         onClose();
       } else {
@@ -102,53 +91,22 @@ export default function RemarkModal({ isOpen, onClose, task, onRemarkSaved }) {
           />
         </div>
 
-        {/* <div>
-          <label className="block mb-2 font-medium">
-            Remark
-          </label>
-
-          <textarea
-            rows="5"
-            value={remark}
-            onChange={(e) =>
-              setRemark(
-                e.target.value
-              )
-            }
-            className="
-              w-full
-              border
-              rounded-lg
-              p-3
-              border-slate-300
-              outline-none
-              focus:border-blue-500
-            "
-            placeholder="Enter remark..."
-          />
-        </div> */}
         <div className="space-y-4">
           {/* Existing Remark */}
-          <div>
-            <label className="block mb-2 font-medium text-slate-700">
-              Existing Remark
-            </label>
-
-            <div
-              className="
-      min-h-[90px]
-      p-3
-      rounded-xl
-      border
-      border-slate-200
-      bg-slate-50
-      text-sm
-      text-slate-600
-      whitespace-pre-wrap
-      "
-            >
-              Existing remark will appear here...
-            </div>
+          <div
+            className="
+            min-h-[90px]
+            p-3
+            rounded-xl
+            border
+            border-slate-200
+            bg-slate-50
+            text-sm
+            text-slate-600
+            whitespace-pre-wrap
+  "
+          >
+            {existingRemark || "No remarks available"}
           </div>
 
           {/* New Remark */}
@@ -159,19 +117,19 @@ export default function RemarkModal({ isOpen, onClose, task, onRemarkSaved }) {
             </label>
 
             <textarea
-              rows="4"
-              value={remark}
-              onChange={(e) => setRemark(e.target.value)}
+              rows={4}
+              value={latestRemark}
+              onChange={(e) => setLatestRemark(e.target.value)}
               className="
-      w-full
-      border
-      rounded-xl
-      p-3
-      border-slate-300
-      outline-none
-      focus:border-[#6D4AFF]
-      "
-              placeholder="Enter remark..."
+              w-full
+              border
+              rounded-xl
+              p-3
+              border-slate-300
+              outline-none
+              focus:border-[#6D4AFF]
+            "
+              placeholder="Enter latest remark..."
             />
           </div>
         </div>
