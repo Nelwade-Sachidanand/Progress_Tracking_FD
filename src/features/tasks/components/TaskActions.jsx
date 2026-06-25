@@ -342,7 +342,7 @@ const handleGenerateWord = () => {
     lg:items-center
     lg:justify-between
     gap-4
-    mb-6
+    mb-3
     cursor-pointer
     "
   >

@@ -21,7 +21,7 @@ import {
   Users,
   XCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useProjects } from "../../context/ProjectContext";
 import {
@@ -39,6 +39,9 @@ const DashboardHeader = ({
   setSidebarOpen,
 }) => {
   const navigate = useNavigate();
+
+  const notificationRef = useRef(null);
+  const notificationButtonRef = useRef(null);
 
   const [open, setOpen] = useState(false);
 
@@ -114,6 +117,28 @@ const DashboardHeader = ({
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target) &&
+        notificationButtonRef.current &&
+        !notificationButtonRef.current.contains(event.target)
+      ) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, []);
 
   const getNotificationIcon = (type) => {
     switch (type) {
@@ -559,15 +584,18 @@ const DashboardHeader = ({
             {location.pathname !== "/notifications" && (
               <div className="relative">
                 <button
+                  ref={notificationButtonRef}
                   data-testid="notification-button"
-                  onClick={() => setShowNotifications(!showNotifications)}
+                  onClick={() =>
+                    setShowNotifications(!showNotifications)
+                  }
                   className="
-                relative
-                w-10
-                h-10
-                flex
-                items-center
-                justify-center
+                  relative
+                  w-10
+                  h-10
+                  flex
+                  items-center
+                  justify-center
                 "
                 >
                   <Bell size={20} className="text-[#0B1F59] cursor-pointer" />
@@ -597,6 +625,7 @@ const DashboardHeader = ({
 
                 {showNotifications && (
                   <div
+                  ref={notificationRef}
                     className="
                   absolute
                   right-0

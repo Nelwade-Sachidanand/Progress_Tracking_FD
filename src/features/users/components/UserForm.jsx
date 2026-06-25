@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useProjects } from "../../../context/ProjectContext";
 import { useUsers } from "../hooks/useUsers";
+import { Eye, EyeOff } from "lucide-react";
 
 const UserForm = ({ mode = "add", userData = null }) => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
   const [role, setRole] = useState("USER");
   const [status, setStatus] = useState("ACTIVE");
   const [selectedProjects, setSelectedProjects] = useState([]);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { projects } = useProjects();
 
@@ -353,26 +355,49 @@ const UserForm = ({ mode = "add", userData = null }) => {
               Password
             </label>
 
-            <input
-              type="password"
-              placeholder="Enter password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="
-              w-full
-              h-10
-              xl:h-10
-              px-4
-              rounded-xl
-              border
-              border-slate-300
-              focus:border-blue-500
-              outline-none
-              2xl:text-[17px]
-              2xl:font-medium
-              2xl:tracking-wide
-              "
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="
+      w-full
+      h-10
+      xl:h-10
+      px-4
+      pr-12
+      rounded-xl
+      border
+      border-slate-300
+      focus:border-blue-500
+      outline-none
+      2xl:text-[17px]
+      2xl:font-medium
+      2xl:tracking-wide
+    "
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="
+      absolute
+      right-3
+      top-1/2
+      -translate-y-1/2
+      text-slate-500
+      hover:text-slate-700
+      cursor-pointer
+    "
+              >
+                {showPassword ? (
+                  <EyeOff size={18} />
+                ) : (
+                  <Eye size={18} />
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Role */}
