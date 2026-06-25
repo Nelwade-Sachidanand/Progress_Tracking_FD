@@ -53,69 +53,8 @@ export default function useEditTask() {
 
   const originalPlannedEndDate =
     task?.plannedEndDate || "";
-  const originalPlannedEndDate = task?.plannedEndDate || "";
-  // const resetForm = () => {
-  //   setFormData({
-  //     phaseName:
-  //       task?.phaseName ||
-  //       task?.phase ||
-  //       "",
+  
 
-  //     milestoneName:
-  //       task?.milestoneName ||
-  //       task?.milestone ||
-  //       "",
-
-  //     taskName:
-  //       task?.taskName ||
-  //       task?.task ||
-  //       "",
-
-  //     subTaskName:
-  //       task?.subTaskName ||
-  //       task?.subTask ||
-  //       "",
-
-  //     activityName:
-  //       task?.activityName ||
-  //       task?.activity ||
-  //       "",
-
-  //     owner:
-  //       task?.owner || "",
-
-  //     estimatedPeriodWeek:
-  //       task?.estimatedPeriodWeek ||
-  //       "",
-
-  //     plannedStartDate:
-  //       task?.plannedStartDate ||
-  //       "",
-
-  //     plannedEndDate:
-  //       task?.plannedEndDate ||
-  //       "",
-
-  //     actualStartDate:
-  //       task?.actualStartDate ||
-  //       "",
-
-  //     actualEndDate:
-  //       task?.actualEndDate ||
-  //       "",
-
-  //     progress:
-  //       task?.progress || 0,
-
-  //     executionStatus:
-  //       task?.executionStatus ||
-  //       "Not Started",
-
-  //     scheduleHealth:
-  //       task?.scheduleHealth ||
-  //       "",
-  //   });
-  // };
 
   const phases = useMemo(() => {
     return selectedProject?.phases?.map((phase) => phase.phaseName) || [];
