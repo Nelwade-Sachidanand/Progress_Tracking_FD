@@ -1,29 +1,20 @@
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { createActivity } from "../api/addTaskApi";
 import { useProjects } from "../../../context/ProjectContext";
+import { createActivity } from "../api/addTaskApi";
 export default function useAddTask() {
+  const { fetchProjects, projects } = useProjects();
 
-  const {projects} = useProjects();
-
-  const selectedProjectId =
-    sessionStorage.getItem(
-      "selectedProjectId"
-    );
+  const selectedProjectId = sessionStorage.getItem("selectedProjectId");
 
   const selectedProject =
     projects.find(
-      (project) =>
-        String(project.id) ===
-        String(selectedProjectId)
+      (project) => String(project.id) === String(selectedProjectId),
     ) || null;
-
-
 
   //const selectedProject = projects[0];
 
   const [formData, setFormData] = useState({
-
     phaseName: "",
     milestoneName: "",
     taskName: "",
@@ -70,90 +61,57 @@ export default function useAddTask() {
 
       const payload = {
         projectId: selectedProject?.id,
-        projectName:
-          selectedProject?.projectName,
+        projectName: selectedProject?.projectName,
 
-        phaseName:
-          formData.phaseName,
+        phaseName: formData.phaseName,
 
-        milestoneName:
-          formData.milestoneName,
+        milestoneName: formData.milestoneName,
 
-        taskName:
-          formData.taskName,
+        taskName: formData.taskName,
 
-        subTaskName:
-          formData.subTaskName,
+        subTaskName: formData.subTaskName,
 
-        activityName:
-          formData.activityName,
+        activityName: formData.activityName,
 
-        owner:
-          formData.owner,
+        owner: formData.owner,
 
-        estimatedPeriodWeek:
-          Number(
-            formData.estimatedPeriodWeek
-          ),
+        estimatedPeriodWeek: Number(formData.estimatedPeriodWeek),
 
-        plannedStartDate:
-          formData.plannedStartDate ||
-          null,
+        plannedStartDate: formData.plannedStartDate || null,
 
-        plannedEndDate:
-          formData.plannedEndDate ||
-          null,
+        plannedEndDate: formData.plannedEndDate || null,
 
-        actualStartDate:
-          formData.actualStartDate ||
-          null,
+        actualStartDate: formData.actualStartDate || null,
 
-        actualEndDate:
-          formData.actualEndDate ||
-          null,
+        actualEndDate: formData.actualEndDate || null,
 
-        progress:
-          Number(formData.progress),
+        progress: Number(formData.progress),
 
-        executionStatus:
-          formData.executionStatus,
+        executionStatus: formData.executionStatus,
 
-        scheduleHealth:
-          formData.scheduleHealth ||
-          "GREEN",
+        scheduleHealth: formData.scheduleHealth || "GREEN",
       };
-      // console.log("TOKEN:", sessionStorage.getItem("token"));
-      const response =
-        await createActivity(
-          payload
-        );
 
-      if (
-        response.statusType === "S"
-      ) {
-        toast.success(
-          response.statusDesc
-        );
+      const response = await createActivity(payload);
+
+      if (response.statusType === "S") {
+        toast.success(response.statusDesc);
+        await fetchProjects(user.id);
 
         resetForm();
       } else {
-        toast.error(
-          response.statusDesc
-        );
+        toast.error(response.statusDesc);
       }
     } catch (error) {
       console.error(error);
 
       toast.error(
-        error?.response?.data
-          ?.statusDesc ||
-        "Failed to create activity"
+        error?.response?.data?.statusDesc || "Failed to create activity",
       );
     }
   };
   const resetForm = () => {
     setFormData({
-
       phaseName: "",
       milestoneName: "",
       taskName: "",
@@ -171,73 +129,44 @@ export default function useAddTask() {
     });
   };
 
-
   const phases = useMemo(() => {
-    return (
-      selectedProject?.phases?.map(
-        (p) => p.phaseName
-      ) || []
-    );
+    return selectedProject?.phases?.map((p) => p.phaseName) || [];
   }, [selectedProject]);
 
   const milestones = useMemo(() => {
-    const phase =
-      selectedProject?.phases?.find(
-        (p) => p.phaseName === formData.phaseName
-      );
-
-    return (
-      phase?.milestones?.map(
-        (m) => m.milestoneName
-      ) || []
+    const phase = selectedProject?.phases?.find(
+      (p) => p.phaseName === formData.phaseName,
     );
+
+    return phase?.milestones?.map((m) => m.milestoneName) || [];
   }, [selectedProject, formData.phaseName]);
 
   const taskOptions = useMemo(() => {
-    const phase =
-      selectedProject?.phases?.find(
-        (p) => p.phaseName === formData.phaseName
-      );
-
-    const milestone =
-      phase?.milestones?.find(
-        (m) =>
-          m.milestoneName === formData.milestoneName
-      );
-
-    return (
-      milestone?.tasks?.map(
-        (t) => t.taskName
-      ) || []
+    const phase = selectedProject?.phases?.find(
+      (p) => p.phaseName === formData.phaseName,
     );
-  }, [
-    selectedProject,
-    formData.phaseName,
-    formData.milestoneName,
-  ]);
+
+    const milestone = phase?.milestones?.find(
+      (m) => m.milestoneName === formData.milestoneName,
+    );
+
+    return milestone?.tasks?.map((t) => t.taskName) || [];
+  }, [selectedProject, formData.phaseName, formData.milestoneName]);
 
   const subTasks = useMemo(() => {
-    const phase =
-      selectedProject?.phases?.find(
-        (p) => p.phaseName === formData.phaseName
-      );
-
-    const milestone =
-      phase?.milestones?.find(
-        (m) =>
-          m.milestoneName === formData.milestoneName
-      );
-
-    const task =
-      milestone?.tasks?.find(
-        (t) => t.taskName === formData.taskName
-      );
-
-    return (
-      task?.subTasks?.map(
-        (s) => s.subTaskName
-      ) || []
+    const phase = selectedProject?.phases?.find(
+      (p) => p.phaseName === formData.phaseName,
     );
+
+    const milestone = phase?.milestones?.find(
+      (m) => m.milestoneName === formData.milestoneName,
+    );
+
+    const task = milestone?.tasks?.find(
+      (t) => t.taskName === formData.taskName,
+    );
+
+    return task?.subTasks?.map((s) => s.subTaskName) || [];
   }, [
     selectedProject,
     formData.phaseName,
@@ -245,10 +174,7 @@ export default function useAddTask() {
     formData.taskName,
   ]);
 
-  const handleChange = (
-    field,
-    value
-  ) => {
+  const handleChange = (field, value) => {
     setFormData((prev) => {
       const updated = {
         ...prev,
@@ -274,7 +200,6 @@ export default function useAddTask() {
     });
   };
 
-
   return {
     selectedProject,
     formData,
@@ -286,5 +211,4 @@ export default function useAddTask() {
     resetForm,
     handleSubmit,
   };
-
 }

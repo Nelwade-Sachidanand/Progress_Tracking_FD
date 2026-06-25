@@ -1,12 +1,4 @@
-import {
-  CreditCard,
-  Globe,
-  Mail,
-  MessageCircle,
-  Phone,
-  Smartphone,
-  Tablet,
-} from "lucide-react";
+import { Globe, PiggyBank, Smartphone, Tablet } from "lucide-react";
 import BackButton from "./BackButton";
 
 export default function DigitalChannelsTab({ data, updateSection }) {
@@ -57,30 +49,35 @@ export default function DigitalChannelsTab({ data, updateSection }) {
       icon: Tablet,
     },
     {
-      key: "whatsAppBanking",
-      title: "WhatsApp Banking",
-      icon: MessageCircle,
+      key: "pigmyBanking",
+      title: "PigMy Banking",
+      icon: PiggyBank,
     },
-    {
-      key: "missedCallBanking",
-      title: "Missed Call Banking",
-      icon: Phone,
-    },
-    {
-      key: "smsBanking",
-      title: "SMS Banking",
-      icon: Mail,
-    },
-    {
-      key: "eStatement",
-      title: "E-Statement",
-      icon: Mail,
-    },
-    {
-      key: "debitCardServices",
-      title: "Debit Card Services",
-      icon: CreditCard,
-    },
+    // {
+    //   key: "whatsAppBanking",
+    //   title: "WhatsApp Banking",
+    //   icon: MessageCircle,
+    // },
+    // {
+    //   key: "missedCallBanking",
+    //   title: "Missed Call Banking",
+    //   icon: Phone,
+    // },
+    // {
+    //   key: "smsBanking",
+    //   title: "SMS Banking",
+    //   icon: Mail,
+    // },
+    // {
+    //   key: "eStatement",
+    //   title: "E-Statement",
+    //   icon: Mail,
+    // },
+    // {
+    //   key: "debitCardServices",
+    //   title: "Debit Card Services",
+    //   icon: CreditCard,
+    // },
   ];
 
   return (
@@ -181,10 +178,16 @@ export default function DigitalChannelsTab({ data, updateSection }) {
             </label>
 
             <input
-              type="text"
+              type="number"
+              min="0"
               name="mobileUsers"
               value={data.mobileUsers || ""}
               onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === "-" || e.key === "e" || e.key === "+") {
+                  e.preventDefault();
+                }
+              }}
               className={inputClass}
             />
           </div>
@@ -195,10 +198,16 @@ export default function DigitalChannelsTab({ data, updateSection }) {
             </label>
 
             <input
-              type="text"
+              type="number"
+              min="0"
               name="internetUsers"
               value={data.internetUsers || ""}
               onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === "-" || e.key === "e" || e.key === "+") {
+                  e.preventDefault();
+                }
+              }}
               className={inputClass}
             />
           </div>
@@ -209,10 +218,16 @@ export default function DigitalChannelsTab({ data, updateSection }) {
             </label>
 
             <input
-              type="text"
+              type="number"
+              min="0"
               name="cardUsers"
               value={data.cardUsers || ""}
               onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === "-" || e.key === "e" || e.key === "+") {
+                  e.preventDefault();
+                }
+              }}
               className={inputClass}
             />
           </div>
@@ -223,10 +238,16 @@ export default function DigitalChannelsTab({ data, updateSection }) {
             </label>
 
             <input
-              type="text"
+              type="number"
+              min="0"
               name="activeDigitalUsers"
               value={data.activeDigitalUsers || ""}
               onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === "-" || e.key === "e" || e.key === "+") {
+                  e.preventDefault();
+                }
+              }}
               className={inputClass}
             />
           </div>

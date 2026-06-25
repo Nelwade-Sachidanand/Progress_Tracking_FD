@@ -18,7 +18,18 @@ import {
 } from "../utils/dashboardUtils";
 
 export default function DashboardPage() {
-  const { projects, loading } = useProjects();
+  const { fetchProjects, projects, loading } = useProjects();
+  const user = JSON.parse(sessionStorage.getItem("user"));
+
+  useEffect(() => {
+    const loadProjects = async () => {
+      await fetchProjects(user.id);
+    };
+
+    if (user?.id) {
+      loadProjects();
+    }
+  }, []);
 
   const data = useDashboardData(projects, loading);
   const navigate = useNavigate();

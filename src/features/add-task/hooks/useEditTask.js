@@ -11,9 +11,9 @@ export default function useEditTask() {
 
   const task = state?.task;
 
-  const { projects } = useProjects();
+  const { fetchProjects, projects } = useProjects();
   const selectedProjectId = sessionStorage.getItem("selectedProjectId");
-
+  const user = JSON.parse(sessionStorage.getItem("user"));
   const selectedProject =
     projects.find(
       (project) => String(project.id) === String(selectedProjectId),
@@ -51,71 +51,7 @@ export default function useEditTask() {
   });
   const originalPlannedStartDate = task?.plannedStartDate || "";
 
-  const originalPlannedEndDate =
-    task?.plannedEndDate || "";
   const originalPlannedEndDate = task?.plannedEndDate || "";
-  // const resetForm = () => {
-  //   setFormData({
-  //     phaseName:
-  //       task?.phaseName ||
-  //       task?.phase ||
-  //       "",
-
-  //     milestoneName:
-  //       task?.milestoneName ||
-  //       task?.milestone ||
-  //       "",
-
-  //     taskName:
-  //       task?.taskName ||
-  //       task?.task ||
-  //       "",
-
-  //     subTaskName:
-  //       task?.subTaskName ||
-  //       task?.subTask ||
-  //       "",
-
-  //     activityName:
-  //       task?.activityName ||
-  //       task?.activity ||
-  //       "",
-
-  //     owner:
-  //       task?.owner || "",
-
-  //     estimatedPeriodWeek:
-  //       task?.estimatedPeriodWeek ||
-  //       "",
-
-  //     plannedStartDate:
-  //       task?.plannedStartDate ||
-  //       "",
-
-  //     plannedEndDate:
-  //       task?.plannedEndDate ||
-  //       "",
-
-  //     actualStartDate:
-  //       task?.actualStartDate ||
-  //       "",
-
-  //     actualEndDate:
-  //       task?.actualEndDate ||
-  //       "",
-
-  //     progress:
-  //       task?.progress || 0,
-
-  //     executionStatus:
-  //       task?.executionStatus ||
-  //       "Not Started",
-
-  //     scheduleHealth:
-  //       task?.scheduleHealth ||
-  //       "",
-  //   });
-  // };
 
   const phases = useMemo(() => {
     return selectedProject?.phases?.map((phase) => phase.phaseName) || [];
@@ -193,43 +129,8 @@ export default function useEditTask() {
       formData.plannedStartDate !== originalPlannedStartDate ||
       formData.plannedEndDate !== originalPlannedEndDate;
 
-
-    console.log(
-      "Original Planned Start:",
-      originalPlannedStartDate
-    );
-
-    console.log(
-      "Updated Planned Start:",
-      formData.plannedStartDate
-    );
-
-    console.log(
-      "Original Planned End:",
-      originalPlannedEndDate
-    );
-
-    console.log(
-      "Updated Planned End:",
-      formData.plannedEndDate
-    );
-
-    console.log(
-      "Is Date Changed:",
-      isDateChanged
-    );
-
-    console.log(
-      "Change Reason:",
-      formData.changeReason
-    );
-    if (
-      isDateChanged &&
-      !formData.changeReason?.trim()
-    ) {
-      toast.error(
-        "Please enter reason for changing planned dates"
-      );
+    if (isDateChanged && !formData.changeReason?.trim()) {
+      toast.error("Please enter reason for changing planned dates");
       return;
     }
     try {
@@ -275,40 +176,19 @@ export default function useEditTask() {
 
       // console.log(payload);
 
-      const response =
-        await updateActivity(
-          payload
-        );
-      console.log(
-        "Update Payload:",
-        payload
-      );
+      const response = await updateActivity(payload);
 
-      console.log(
-        "Change Reason Sent:",
-        payload.changeReason
-      );
-      if (
-        response.statusType ===
-        "S"
-      ) {
-        toast.success(
-          response.statusDesc
-        );
+      if (response.statusType === "S") {
+        toast.success(response.statusDesc);
+        await fetchProjects(user.id);
       } else {
-        toast.error(
-          response.statusDesc
-        );
+        toast.error(response.statusDesc);
       }
-
     } catch (error) {
-
       console.error(error);
 
       toast.error(
-        error?.response?.data
-          ?.statusDesc ||
-        "Failed to update activity"
+        error?.response?.data?.statusDesc || "Failed to update activity",
       );
     }
   };
@@ -320,7 +200,6 @@ export default function useEditTask() {
     milestones,
     taskOptions,
     subTasks,
-    // resetForm,
     handleUpdate,
     selectedProject,
   };

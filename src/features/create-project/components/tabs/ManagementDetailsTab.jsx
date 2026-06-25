@@ -1,4 +1,5 @@
 import { Phone, User } from "lucide-react";
+import { toast } from "react-toastify";
 import BackButton from "./BackButton";
 
 export default function ManagementDetailsTab({ data, updateSection }) {
@@ -22,6 +23,24 @@ export default function ManagementDetailsTab({ data, updateSection }) {
   ];
 
   const handleChange = (contactKey, field, value) => {
+    if (field === "contactNumber") {
+      // Allow only digits
+      if (!/^\d*$/.test(value)) {
+        return;
+      }
+
+      // Maximum 10 digits
+      if (value.length > 10) {
+        toast.error("Contact number cannot exceed 10 digits");
+        return;
+      }
+
+      // Must start with 6-9 (Indian mobile numbers)
+      if (value.length === 1 && !/[6-9]/.test(value)) {
+        toast.error("Contact number must start with 6, 7, 8 or 9");
+        return;
+      }
+    }
     updateSection("contactDetails", {
       ...data,
       [contactKey]: {
@@ -162,6 +181,7 @@ export default function ManagementDetailsTab({ data, updateSection }) {
 
                   <input
                     type="text"
+                    maxLength={10}
                     value={data?.[contact.key]?.contactNumber || ""}
                     onChange={(e) =>
                       handleChange(contact.key, "contactNumber", e.target.value)
