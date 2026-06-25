@@ -328,7 +328,7 @@ const DashboardHeader = ({
     <header className="bg-white border-b border-[#EAEFF5] px-3 sm:px-4 lg:px-8 py-3 lg:py-4">
       <div className="flex flex-col gap-4">
         {/* Top Row */}
-        <div className="flex items-start lg:items-center justify-between gap-4">
+        <div className="flex items-start lg:items-center justify-between gap-4 ">
           {/* Left */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <button
