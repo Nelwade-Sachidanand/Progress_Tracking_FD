@@ -9,6 +9,7 @@ import TaskFilters from "../components/TaskFilters";
 import TaskSummaryCards from "../components/TaskSummaryCards";
 import TaskTable from "../components/TaskTable";
 import useTaskFilters from "../hooks/useTaskFilters";
+import TaskHeader from "../components/TaskHeader";
 
 export default function AllTasksPage() {
   const { fetchProjects, projects } = useProjects();
@@ -220,13 +221,7 @@ export default function AllTasksPage() {
   return (
     // <div className="p-6 bg-[#F5F7FB] min-h-screen ">
     <div className="p-6 w-full w-[1200px]">
-      <div className="mb-5">
-        <h1 className="text-2xl font-bold text-[#0B1F59]">
-          {sessionStorage.getItem("selectedProjectName")}
-        </h1>
-
-        <p className="text-sm text-slate-500">Project Tasks</p>
-      </div>
+      <TaskHeader/>
 
       <TaskActions
         selectedPhase={selectedPhase}

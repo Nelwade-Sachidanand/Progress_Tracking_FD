@@ -160,22 +160,31 @@ const cards = [
       </div>
 
       {/* Cards */}
-<div className="grid grid-cols-4 gap-4">
+<div
+  className="
+  grid
+  grid-cols-1
+  sm:grid-cols-2
+  xl:grid-cols-4
+  gap-4
+  "
+>
         {cards.map((card) => {
           const Icon = card.icon;
 
           return (
             <div
   key={card.title}
-  className="
-  rounded-2xl
-  border
-  px-5
-  py-5
-  min-h-[180px]
-  flex
-  flex-col
-  "
+ className="
+rounded-2xl
+border
+p-4
+lg:p-5
+min-h-[170px]
+lg:min-h-[190px]
+flex
+flex-col
+"
   style={{
     backgroundColor: card.bg,
     borderColor: card.border,
@@ -185,15 +194,17 @@ const cards = [
   {/* Icon + Value */}
   <div className="flex items-center gap-4 mb-5">
     <div
-      className="
-      w-11
-      h-11
-      rounded-full
-      flex
-      items-center
-      justify-center
-      shrink-0
-      "
+     className="
+w-10
+h-10
+lg:w-11
+lg:h-11
+rounded-full
+flex
+items-center
+justify-center
+shrink-0
+"
       style={{
         backgroundColor: card.iconBg,
       }}
@@ -206,7 +217,9 @@ const cards = [
 
     <h3
       className="
-      text-[28px]
+     text-[22px]
+sm:text-[24px]
+lg:text-[30px]
       font-bold
       leading-none
       "
@@ -222,7 +235,9 @@ const cards = [
   <div className="flex-1 text-center">
     <h4
       className="
-      text-[16px]
+      text-[15px]
+sm:text-[16px]
+lg:text-[18px]
       font-bold
       text-[#0B1F59]
       leading-6
@@ -233,7 +248,8 @@ const cards = [
 
     <p
       className="
-      text-[13px]
+     text-[12px]
+lg:text-[13px]
       text-[#64748B]
       mt-2
       "
@@ -274,52 +290,171 @@ const cards = [
         })}
       </div>
       {isModalOpen && (
-  <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+ <div
+className="
+fixed
+inset-0
+z-[9999]
+bg-black/50
+backdrop-blur-sm
+flex
+items-center
+justify-center
+p-3
+sm:p-5
+"
+>
 
-    <div className="bg-white rounded-2xl w-[1000px] max-h-[80vh] overflow-hidden">
+   <div
+className="
+bg-white
+rounded-2xl
+shadow-2xl
+w-full
+max-w-[98%]
+sm:max-w-4xl
+xl:max-w-6xl
+max-h-[90vh]
+overflow-hidden
+"
+>
 
-      <div className="px-6 py-4 border-b flex justify-between items-center">
-
-        <h2 className="text-xl font-bold">
-          {modalTitle}
-        </h2>
+ <div
+className="
+px-6
+py-4
+bg-[#F8FAFC]
+border-b
+border-slate-200
+flex
+justify-between
+items-center
+"
+>
+<h2 className="text-xl font-bold text-[#0F172A]">
+    {modalTitle}
+</h2>
 
         <button
           onClick={() =>
             setIsModalOpen(false)
           }
-          className="text-2xl"
+          className="
+w-9
+h-9
+rounded-lg
+hover:bg-slate-100
+text-slate-500
+hover:text-slate-800
+transition
+
+"
         >
           ×
         </button>
 
       </div>
 
-      <div className="overflow-y-auto max-h-[65vh]">
+     <div
+className="
+overflow-auto
+max-h-[72vh]
+"
+>
+       <table
+className="
+min-w-[850px]
+w-full
+"
+>
 
-        <table className="w-full">
-
-          <thead className="bg-[#F8FAFF] sticky top-0">
+         <thead
+className="
+bg-[#F8FAFC]
+sticky
+top-0
+z-10
+"
+>
 
             <tr>
 
-              <th className="text-left p-3">
+  <th
+className="
+px-4
+py-3
+text-left
+text-sm
+font-semibold
+text-[#334155]
+border-b
+border-slate-200
+"
+>
                 Activity
               </th>
 
-              <th className="text-left p-3">
+             
+<th
+className="
+px-4
+py-3
+text-left
+text-sm
+font-semibold
+text-[#334155]
+border-b
+border-slate-200
+"
+>
                 Milestone
               </th>
 
-              <th className="text-left p-3">
+              
+  <th
+className="
+px-4
+py-3
+text-left
+text-sm
+font-semibold
+text-[#334155]
+border-b
+border-slate-200
+"
+>
                 Progress
               </th>
 
-              <th className="text-left p-3">
+              
+    <th
+className="
+px-4
+py-3
+text-left
+text-sm
+font-semibold
+text-[#334155]
+border-b
+border-slate-200
+"
+>
                 Status
               </th>
 
-              <th className="text-left p-3">
+              
+        <th
+className="
+px-4
+py-3
+text-left
+text-sm
+font-semibold
+text-[#334155]
+border-b
+border-slate-200
+"
+>
                 Planned End
               </th>
 
@@ -336,33 +471,63 @@ const cards = [
               ) => (
                 <tr
                   key={index}
-                  className="border-b"
+                 className="border-b border-slate-100 hover:bg-[#FAFAFA] transition"
                 >
 
-                  <td className="p-3">
+    <td className="px-4 py-3 text-sm text-[#475569]">
                     {
                       activity.activityName
                     }
                   </td>
 
-                  <td className="p-3">
+  <td className="px-4 py-3 text-sm text-[#475569]">
                     {
                       activity.milestoneName
                     }
                   </td>
 
-                  <td className="p-3">
-                    {
-                      activity.progress
-                    }
-                    %
+<td className="px-4 py-3 text-sm text-[#475569]">
+                   <span className="font-semibold text-[#2563EB]">
+{activity.progress}%
+</span>
+                    
                   </td>
+<td className="px-4 py-3 text-sm text-[#475569]">
 
-                  <td className="p-3">
+<span
+className={`
+
+inline-flex
+items-center
+justify-center
+rounded-full
+px-3
+py-1
+text-xs
+font-semibold
+
+${
+activity.executionStatus==="Completed"
+? "bg-green-100 text-green-700"
+: activity.executionStatus==="Delayed"
+? "bg-red-100 text-red-700"
+: activity.executionStatus==="In Progress"
+? "bg-blue-100 text-blue-700"
+: "bg-slate-100 text-slate-600"
+}
+`}
+>
+
+{activity.executionStatus}
+
+</span>
+
+</td>
+                  {/* <td className="p-3">
                     {
                       activity.executionStatus
                     }
-                  </td>
+                  </td> */}
 
                   <td className="p-3">
                     {
