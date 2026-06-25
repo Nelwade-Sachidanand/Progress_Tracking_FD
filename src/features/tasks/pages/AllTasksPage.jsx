@@ -205,7 +205,7 @@ export default function AllTasksPage() {
     });
 
     setTasks(allActivities);
-  }, []);
+  }, [projects]);
   return (
     // <div className="p-6 bg-[#F5F7FB] min-h-screen ">
     <div className="p-6 w-full w-[1200px]">
@@ -216,9 +216,7 @@ export default function AllTasksPage() {
 
         <p className="text-sm text-slate-500">Project Tasks</p>
       </div>
-      {/* <TaskHeader />  */}
 
-      {/* <TaskActions /> */}
       <TaskActions
         selectedPhase={selectedPhase}
         selectedMilestone={selectedMilestone}
@@ -269,17 +267,6 @@ export default function AllTasksPage() {
         delayed={delayed}
         notStarted={notStarted}
       />
-      {/* 
-<TaskTable
-  tasks={filteredTasks}
- tasks={tasks}
-  onEdit={(task) => console.log(task)}
-  onDelete={(task) => console.log(task)}
-  onRemark={(task) => {
-    setSelectedRemarkTask(task);
-    setShowRemarkModal(true);
-  }}
-/> */}
 
       <TaskTable
         tasks={paginatedTasks}
@@ -309,7 +296,7 @@ export default function AllTasksPage() {
         setRemark={setRemark}
         onClose={() => setShowRemarkModal(false)}
         onSave={() => {
-          console.log("Save Remark", remark);
+          // console.log("Save Remark", remark);
 
           setShowRemarkModal(false);
         }}

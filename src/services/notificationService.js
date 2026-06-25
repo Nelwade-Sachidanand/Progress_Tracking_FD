@@ -7,7 +7,7 @@ export const getNotifications = async () => {
 };
 
 export const getUnreadCount = async () => {
-  const response = await apiClient.get("/notifications/count");
+  const response = await apiClient.get("/notifications/unread-count");
 
   return response.data;
 };
@@ -23,4 +23,3 @@ export const markAllRead = async (id) => {
 
   return response.data;
 };
-

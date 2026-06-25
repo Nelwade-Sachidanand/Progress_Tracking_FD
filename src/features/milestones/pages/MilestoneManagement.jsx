@@ -1,7 +1,4 @@
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 
 import { toast } from "react-toastify";
 
@@ -13,20 +10,19 @@ import {
   getMilestoneManagementData,
 } from "../utils/milestoneManagementUtils";
 
-import { useMilestone } from "../hooks/useMilestone";
 import { useProjects } from "../../../context/ProjectContext";
+import { useMilestone } from "../hooks/useMilestone";
 
 export default function MilestoneManagement() {
-
-  const {projects} = useProjects();
+  const { projects } = useProjects();
 
   const [banks, setBanks] = useState([]);
 
-  const [selectedBank,setSelectedBank] = useState("");
+  const [selectedBank, setSelectedBank] = useState("");
 
-  const [milestones,setMilestones] = useState([]);
+  const [milestones, setMilestones] = useState([]);
 
-  const {updateWeightages,loading} = useMilestone();
+  const { updateWeightages, loading } = useMilestone();
 
   useEffect(() => {
     const bankList = getBanks(projects);
@@ -40,61 +36,48 @@ export default function MilestoneManagement() {
 
   useEffect(() => {
     if (!selectedBank) return;
-    setMilestones(getMilestoneManagementData(selectedBank,projects)
-    );
-  }, [selectedBank,projects]);
+    setMilestones(getMilestoneManagementData(selectedBank, projects));
+  }, [selectedBank, projects]);
 
-  const handleWeightageChange =
-    (index, value) => {
-      const updated = [
-        ...milestones,
-      ];
+  const handleWeightageChange = (index, value) => {
+    const updated = [...milestones];
 
-      updated[index].weightage =
-        Number(value);
+    updated[index].weightage = value === "" ? "" : Number(value);
 
-      setMilestones(updated);
-    };
+    setMilestones(updated);
+  };
 
-  const handleUpdate =
-    async () => {
-      try {
-        if (
-          milestones.reduce(
-            (sum, item) =>
-              sum + Number(item.weightage || 0),0
-          ) !== 100
-        ) {
-          toast.error("Total weightage must equal 100%");
+  const handleUpdate = async () => {
+    try {
+      if (
+        milestones.reduce(
+          (sum, item) => sum + Number(item.weightage || 0),
+          0,
+        ) !== 100
+      ) {
+        toast.error("Total weightage must equal 100%");
 
-          return;
-        }
-
-        const payload = {
-          projectId:
-            milestones[0]
-              ?.projectId,
-
-          phaseName:
-            milestones[0]
-              ?.phaseName,
-
-          milestones:
-            milestones.map(
-              (item) => ({
-                milestoneName: item.milestoneName,
-                weightage: Number(item.weightage),
-              })
-            ),
-        };
-
-        // console.log("Update Payload",payload);
-
-        await updateWeightages(payload);
-      } catch (error) {
-        console.error(error);
+        return;
       }
-    };
+
+      const payload = {
+        projectId: milestones[0]?.projectId,
+
+        phaseName: milestones[0]?.phaseName,
+
+        milestones: milestones.map((item) => ({
+          milestoneName: item.milestoneName,
+          weightage: Number(item.weightage),
+        })),
+      };
+
+      // console.log("Update Payload",payload);
+
+      await updateWeightages(payload);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div
@@ -107,25 +90,15 @@ export default function MilestoneManagement() {
     >
       <BankSelector
         banks={banks}
-        selectedBank={
-          selectedBank
-        }
-        setSelectedBank={
-          setSelectedBank
-        }
+        selectedBank={selectedBank}
+        setSelectedBank={setSelectedBank}
       />
 
       <MilestoneTable
-        milestones={
-          milestones
-        }
+        milestones={milestones}
         loading={loading}
-        onUpdate={
-          handleUpdate
-        }
-        onWeightageChange={
-          handleWeightageChange
-        }
+        onUpdate={handleUpdate}
+        onWeightageChange={handleWeightageChange}
       />
     </div>
   );

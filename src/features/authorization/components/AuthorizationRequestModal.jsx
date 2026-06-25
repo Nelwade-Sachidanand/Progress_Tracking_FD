@@ -30,12 +30,16 @@ export default function AuthorizationRequestModal({
   onClose,
   onApprove,
   onReject,
+  onRollback,
 }) {
   if (!request) return null;
 
   const [projectName, setProjectName] = useState("");
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
+  const [rollbackReason, setRollbackReason] = useState("");
+  const [adminPassword, setAdminPassword] = useState("");
+  const [showRollbackModal, setShowRollbackModal] = useState(false);
 
   useEffect(() => {
     const fetchProjectName = async () => {
@@ -181,7 +185,7 @@ export default function AuthorizationRequestModal({
 
             text-xl
             sm:text-2xl
-            xl:text-[34px]
+            xl:text-[30px]
 
             font-bold
 
@@ -240,90 +244,131 @@ export default function AuthorizationRequestModal({
               "
             >
               <div
-                className="
+                className={`
                 grid
-
                 grid-cols-1
                 sm:grid-cols-2
-                xl:grid-cols-4
-
+                ${request.status === "PENDING" ? "xl:grid-cols-4" : "xl:grid-cols-3"}
                 gap-5
-                "
+              `}
               >
                 <div>
-                  <p
-                    className="
-                    text-slate-500
-                    text-sm
-                    "
-                  >
-                    Project
-                  </p>
+                  <p className="text-slate-500 text-sm">Project</p>
 
-                  <p
-                    className="
-                    font-semibold
-
-                    break-all
-
-                    text-sm
-                    xl:text-base
-                    "
-                  >
+                  <p className="font-semibold break-all text-sm xl:text-base">
                     {projectName}
                   </p>
                 </div>
 
                 <div>
-                  <p
-                    className="
-                    text-slate-500
-                    text-sm
-                    "
-                  >
-                    Activity
-                  </p>
+                  <p className="text-slate-500 text-sm">Activity</p>
 
-                  <p
-                    className="
-                    font-semibold
-                    break-words
-                    "
-                  >
+                  <p className="font-semibold break-words">
                     {request.activityName}
                   </p>
                 </div>
 
                 <div>
-                  <p
-                    className="
-                    text-slate-500
-                    text-sm
-                    "
-                  >
-                    Requested By
-                  </p>
+                  <p className="text-slate-500 text-sm">Requested By</p>
 
                   <p className="font-semibold">{request.requestedBy}</p>
                 </div>
 
                 <div>
-                  <p
-                    className="
-                    text-slate-500
-                    text-sm
-                    "
-                  >
-                    Requested At
-                  </p>
+                  <p className="text-slate-500 text-sm">Requested At</p>
 
                   <p className="font-semibold">
                     {formatDate(request.requestedAt)}
                   </p>
                 </div>
+
+                {request.status !== "PENDING" && (
+                  <>
+                    <div>
+                      <p className="text-sm text-slate-500">
+                        {request.status === "APPROVED"
+                          ? "Approved By"
+                          : "Rejected By"}
+                      </p>
+
+                      <p
+                        className={`
+                        font-semibold
+                        ${request.status === "APPROVED" ? "text-green-700" : "text-red-700"}
+                      `}
+                      >
+                        {request.approvedBy}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-sm text-slate-500">
+                        {request.status === "APPROVED"
+                          ? "Approved At"
+                          : "Rejected At"}
+                      </p>
+
+                      <p
+                        className={`
+                        font-semibold
+                        ${request.status === "APPROVED" ? "text-green-700" : "text-red-700"}
+                      `}
+                      >
+                        {formatDate(request.approvedAt)}
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
+
+          {request.changeReason && (
+            <div
+              className="
+              px-5
+              md:px-8
+              xl:px-12
+              mt-4
+            "
+            >
+              <div
+                className="
+                border
+                border-slate-200
+                rounded-2xl
+                p-4
+                xl:p-5
+                bg-white
+              "
+              >
+                <h4
+                  className="
+                  text-sm
+                  xl:text-base
+                  font-semibold
+                  text-[#142850]
+                  mb-3
+                "
+                >
+                  Change Reason
+                </h4>
+
+                <p
+                  className="
+                  text-sm
+                  xl:text-base
+                  text-slate-600
+                  whitespace-pre-wrap
+                  break-words
+                  leading-relaxed
+                "
+                >
+                  {request.changeReason}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Changes Header */}
 
@@ -575,6 +620,52 @@ export default function AuthorizationRequestModal({
               </div>
             )}
           </div>
+
+          {request.status === "REJECTED" && request.rejectionReason && (
+            <div
+              className="
+              px-5
+              md:px-8
+              xl:px-12
+            "
+            >
+              <div
+                className="
+                border
+                border-slate-200
+                rounded-2xl
+                p-4
+                xl:p-5
+                bg-white
+              "
+              >
+                <h4
+                  className="
+                  text-sm
+                  xl:text-base
+                  font-semibold
+                  text-red-600
+                  mb-3
+                "
+                >
+                  Rejection Reason
+                </h4>
+
+                <p
+                  className="
+                  text-sm
+                  xl:text-base
+                  text-slate-600
+                  whitespace-pre-wrap
+                  break-words
+                  leading-relaxed
+                "
+                >
+                  {request.rejectionReason}
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer */}
@@ -593,109 +684,100 @@ export default function AuthorizationRequestModal({
                     md:px-8
                     xl:px-12
 
-                    py-5
+                    py-1
                     "
         >
           <div
             className="
-                        flex
-
-                        flex-col
-                        md:flex-row
-
-                        justify-center
-
-                        gap-4
-                        "
+            mt-3
+            xl:mt-4
+            2xl:mt-5
+            flex
+            flex-col
+            md:flex-row
+            justify-center
+            gap-4
+          "
           >
-            <button
-              onClick={() => onApprove?.(request.id)}
-              className="
-                            w-full
-                            md:w-auto
+            {request.status === "PENDING" && (
+              <>
+                <button
+                  onClick={() => onApprove?.(request.id)}
+                  className="
+                  w-full md:w-auto
+                  h-12 xl:h-11
+                  px-8
+                  rounded-xl
+                  bg-green-600
+                  hover:bg-green-700
+                  text-white
+                  font-semibold
+                  flex items-center justify-center gap-2
+                  transition
+                  cursor-pointer
+                "
+                >
+                  <Check size={20} />
+                  Approve Request
+                </button>
 
-                            h-12
-                            xl:h-11
+                <button
+                  onClick={() => setShowRejectModal(true)}
+                  className="
+                  w-full md:w-auto
+                  h-12 xl:h-11
+                  px-8
+                  rounded-xl
+                  bg-red-500
+                  hover:bg-red-600
+                  text-white
+                  font-semibold
+                  flex items-center justify-center gap-2
+                  transition
+                  cursor-pointer
+                "
+                >
+                  <XCircle size={20} />
+                  Reject Request
+                </button>
+              </>
+            )}
 
-                            px-8
-
-                            rounded-xl
-
-                            bg-green-600
-                            hover:bg-green-700
-
-                            text-white
-                            font-semibold
-
-                            flex
-                            items-center
-                            justify-center
-                            gap-2
-
-                            transition
-                            cursor-pointer
-                            "
-            >
-              <Check size={20} />
-              Approve Request
-            </button>
-
-            <button
-              onClick={() => setShowRejectModal(true)}
-              className="
-                            w-full
-                            md:w-auto
-
-                            h-12
-                            xl:h-11
-
-                            px-8
-
-                            rounded-xl
-
-                            bg-red-500
-                            hover:bg-red-600
-
-                            text-white
-                            font-semibold
-
-                            flex
-                            items-center
-                            justify-center
-                            gap-2
-
-                            transition
-                            cursor-pointer
-                            "
-            >
-              <XCircle size={20} />
-              Reject Request
-            </button>
+            {(request.status === "APPROVED" ||
+              request.status === "REJECTED") && (
+              <button
+                onClick={() => setShowRollbackModal(true)}
+                className="
+                w-full md:w-auto
+                h-12 xl:h-11
+                px-8
+                rounded-xl
+                bg-orange-500
+                hover:bg-orange-600
+                text-white
+                font-semibold
+                flex items-center justify-center gap-2
+                transition
+                cursor-pointer
+              "
+              >
+                <ShieldCheck size={18} />
+                Revert Changes
+              </button>
+            )}
 
             <button
               onClick={onClose}
               className="
-                            w-full
-                            md:w-auto
-
-                            h-12
-                            xl:h-11
-
-                            px-8
-
-                            rounded-xl
-
-                            border
-                            border-slate-300
-
-                            font-semibold
-
-                            flex
-                            items-center
-                            justify-center
-                            gap-2
-                            cursor-pointer
-                            "
+              w-full md:w-auto
+              h-12 xl:h-11
+              px-8
+              rounded-xl
+              border border-slate-300
+              font-semibold
+              flex items-center justify-center gap-2
+              cursor-pointer
+              "
             >
               <ArrowLeft size={18} />
               Go Back
@@ -819,6 +901,100 @@ export default function AuthorizationRequestModal({
                                 "
               >
                 Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showRollbackModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[10000]">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+            <h3 className="text-lg font-semibold mb-4">
+              Revert Activity Changes
+            </h3>
+
+            <textarea
+              value={rollbackReason}
+              onChange={(e) => setRollbackReason(e.target.value)}
+              placeholder="Reason for rollback..."
+              rows={4}
+              className="
+          w-full
+          border
+          rounded-xl
+          p-3
+          resize-none
+          mb-4
+        "
+            />
+
+            <input
+              type="password"
+              value={adminPassword}
+              onChange={(e) => setAdminPassword(e.target.value)}
+              placeholder="Enter admin password"
+              className="
+          w-full
+          border
+          rounded-xl
+          p-3
+        "
+            />
+
+            <div className="flex justify-end gap-3 mt-5">
+              <button
+                onClick={() => {
+                  setShowRollbackModal(false);
+                  setRollbackReason("");
+                  setAdminPassword("");
+                }}
+                className="
+                px-4 py-2
+                border
+                border-slate-700
+                rounded-lg
+                cursor-pointer
+          "
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={async () => {
+                  if (!rollbackReason.trim()) {
+                    toast.error("Please enter rollback reason");
+                    return;
+                  }
+
+                  if (!adminPassword.trim()) {
+                    toast.error("Please enter admin password");
+                    return;
+                  }
+
+                  const success = await onRollback?.(
+                    request.id,
+                    adminPassword,
+                    rollbackReason,
+                  );
+
+                  console.log(success);
+
+                  if (success) {
+                    setShowRollbackModal(false);
+                    setRollbackReason("");
+                    setAdminPassword("");
+                  }
+                }}
+                className="
+                px-4 py-2
+                bg-orange-600
+                text-white
+                rounded-lg
+                cursor-pointer
+              "
+              >
+                Confirm Rollback
               </button>
             </div>
           </div>

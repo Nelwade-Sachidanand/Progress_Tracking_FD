@@ -316,12 +316,14 @@ export default function AuthorizationTable({
                   "
                   >
                     <td className="w-[4%] px-3 xl:px-4 py-3 text-center">
-                      <input
-                        className="cursor-pointer 2xl:w-5 2xl:h-5"
-                        type="checkbox"
-                        checked={selectedRows.includes(log.id)}
-                        onChange={() => handleRowSelect(log.id)}
-                      />
+                      {log.status !== "ROLLED_BACK" && (
+                        <input
+                          className="cursor-pointer 2xl:w-5 2xl:h-5"
+                          type="checkbox"
+                          checked={selectedRows.includes(log.id)}
+                          onChange={() => handleRowSelect(log.id)}
+                        />
+                      )}
                     </td>
 
                     <td className="w-[6%] px-3 xl:px-4 py-3 text-center text-xs xl:text-sm font-medium text-[#0F172A] 2xl:text-lg 2xl:font-medium 2xl:tracking-wide">
@@ -415,7 +417,10 @@ export default function AuthorizationTable({
                         2xl:h-10
                         "
                         >
-                          <Eye size={14} className="text-[#2563EB] 2xl:w-5 h-5" />
+                          <Eye
+                            size={14}
+                            className="text-[#2563EB] 2xl:w-5 h-5"
+                          />
                         </button>
                       </div>
                     </td>

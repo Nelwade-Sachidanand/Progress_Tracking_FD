@@ -118,9 +118,6 @@ const UserForm = ({ mode = "add", userData = null }) => {
   const handleSubmitUser = async () => {
     if (!validateForm()) return;
     try {
-      
-
-    
       setLoading(true);
 
       const payload = {
@@ -312,8 +309,6 @@ const UserForm = ({ mode = "add", userData = null }) => {
               block mb-2 font-semibold text-slate-700
               "
             >
-              
-
               Username
             </label>
 

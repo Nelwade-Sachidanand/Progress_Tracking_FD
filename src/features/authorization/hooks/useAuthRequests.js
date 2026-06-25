@@ -8,6 +8,7 @@ import {
   getAuthRequests,
   rejectRequest as rejectRequestApi,
   rejectSelectedRequests as rejectSelectedRequestsApi,
+  rollbackRequest as rollbackRequestApi,
 } from "../services/authService";
 
 export const useAuthRequests = () => {
@@ -45,6 +46,7 @@ export const useAuthRequests = () => {
 
         // Refresh list after approval
         await fetchAuthRequests();
+        await getAllAuthRequests();
       }
 
       return response;
@@ -70,6 +72,7 @@ export const useAuthRequests = () => {
 
         // Refresh list after rejection
         await fetchAuthRequests();
+        await getAllAuthRequests();
       }
 
       return response;
@@ -88,7 +91,7 @@ export const useAuthRequests = () => {
       setLoading(true);
 
       const response = await allAuthRequests();
-      console.log(response);
+      // console.log(response);
       setAllAuths(response.details || []);
       // return response;
     } catch (error) {
@@ -144,6 +147,32 @@ export const useAuthRequests = () => {
     }
   };
 
+  const rollbackRequest = async (requestId, password, reason) => {
+    try {
+      setLoading(true);
+
+      const response = await rollbackRequestApi(requestId, password, reason);
+      console.log(response);
+
+      if (response?.statusType === "S") {
+        toast.success(response.statusDesc);
+
+        await fetchAuthRequests();
+        await getAllAuthRequests();
+        return response;
+      }
+
+      return null;
+    } catch (error) {
+      toast.error(
+        error.response?.data?.statusDesc || "Failed to rollback request",
+      );
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchAuthRequests();
     getAllAuthRequests();
@@ -155,6 +184,7 @@ export const useAuthRequests = () => {
     fetchAuthRequests,
     approveRequest,
     rejectRequest,
+    rollbackRequest,
 
     approveSelectedRequests,
     rejectSelectedRequests,

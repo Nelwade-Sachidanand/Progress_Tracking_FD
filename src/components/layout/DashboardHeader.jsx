@@ -19,6 +19,7 @@ import {
   User,
   UserRound,
   Users,
+  XCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -102,7 +103,7 @@ const DashboardHeader = ({
     try {
       const notificationsRes = await getNotifications();
 
-      // console.log(notificationsRes);
+      console.log(notificationsRes);
 
       const countRes = await getUnreadCount();
 
@@ -141,6 +142,20 @@ const DashboardHeader = ({
         return (
           <div className="w-10 h-10 shrink-0 rounded-2xl bg-blue-50 flex items-center justify-center">
             <UserRound size={20} className="text-blue-500" />
+          </div>
+        );
+
+      case "ACTIVITY_APPROVED":
+        return (
+          <div className="w-10 h-10 shrink-0 rounded-2xl bg-green-50 flex items-center justify-center">
+            <ShieldCheck size={20} className="text-green-600" />
+          </div>
+        );
+
+      case "ACTIVITY_REJECTED":
+        return (
+          <div className="w-10 h-10 shrink-0 rounded-2xl bg-red-50 flex items-center justify-center">
+            <XCircle size={20} className="text-red-600" />
           </div>
         );
 
@@ -294,8 +309,6 @@ const DashboardHeader = ({
   };
 
   const location = useLocation();
-
-  // const user = sessionStorage.getItem("user");
 
   const currentPage = pageConfig[location.pathname] || {
     title: "Progress Tracker",
@@ -534,12 +547,11 @@ const DashboardHeader = ({
               </>
             )}
             {/* Notification */}
-            {role === "ADMIN" && (
-              <div className="relative">
-                <button
-                  data-testid="notification-button"
-                  onClick={() => setShowNotifications(!showNotifications)}
-                  className="
+            <div className="relative">
+              <button
+                data-testid="notification-button"
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="
                 relative
                 w-10
                 h-10
@@ -547,12 +559,12 @@ const DashboardHeader = ({
                 items-center
                 justify-center
                 "
-                >
-                  <Bell size={20} className="text-[#0B1F59] cursor-pointer" />
+              >
+                <Bell size={20} className="text-[#0B1F59] cursor-pointer" />
 
-                  {unreadCount > 0 && (
-                    <span
-                      className="
+                {unreadCount > 0 && (
+                  <span
+                    className="
                     absolute
                     -top-1
                     -right-1
@@ -567,24 +579,24 @@ const DashboardHeader = ({
                     items-center
                     justify-center
                   "
-                    >
-                      {unreadCount}
-                    </span>
-                  )}
-                </button>
+                  >
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
 
-                {showNotifications && (
-                  <div
-                    className="
+              {showNotifications && (
+                <div
+                  className="
                   absolute
-                right-0
-lg:right-[-80px]
-xl:right-[-120px]
+                  right-0
+                  lg:right-[-80px]
+                  xl:right-[-120px]
                   top-14
-                w-[92vw]
-max-w-[420px]
-sm:w-[380px]
-lg:w-[420px]
+                  w-[92vw]
+                  max-w-[420px]
+                  sm:w-[380px]
+                  lg:w-[420px]
                   bg-white
                   rounded-3xl
                   border
@@ -593,10 +605,10 @@ lg:w-[420px]
                   overflow-hidden
                   z-[9999]
                 "
-                  >
-                    {/* Header */}
-                    <div
-                      className="
+                >
+                  {/* Header */}
+                  <div
+                    className="
                     flex
                     items-center
                     justify-between
@@ -604,25 +616,25 @@ lg:w-[420px]
                     py-5
                     border-b
                   "
-                    >
-                      <h3
-                        className="
+                  >
+                    <h3
+                      className="
                       xl:text-[16px]
                       2xl:text-[18px]
                       font-bold
                       text-[#0B1F59]
                       "
-                      >
-                        Notifications ({unreadCount})
-                      </h3>
+                    >
+                      Notifications ({unreadCount})
+                    </h3>
 
-                      <button
-                        onClick={async () => {
-                          await markAllRead();
+                    <button
+                      onClick={async () => {
+                        await markAllRead();
 
-                          loadNotifications();
-                        }}
-                        className="
+                        loadNotifications();
+                      }}
+                      className="
                       text-[#2563EB]
                       font-medium
                       hover:underline
@@ -630,35 +642,35 @@ lg:w-[420px]
                       2xl:text-[17px]
                       cursor-pointer
                     "
-                      >
-                        Mark all as read
-                      </button>
-                    </div>
+                    >
+                      Mark all as read
+                    </button>
+                  </div>
 
-                    {/* Body */}
-                    <div className="max-h-[600px] overflow-y-auto">
-                      {!notifications || notifications.length === 0 ? (
-                        <div className="p-10 text-center text-slate-500">
-                          No Notifications
-                        </div>
-                      ) : (
-                        notifications.map((notification) => (
-                          <div
-                            key={notification.id}
-                            onClick={async () => {
-                              if (!notification.read) {
-                                await markAsRead(notification.id);
+                  {/* Body */}
+                  <div className="max-h-[600px] overflow-y-auto">
+                    {!notifications || notifications.length === 0 ? (
+                      <div className="p-10 text-center text-slate-500">
+                        No Notifications
+                      </div>
+                    ) : (
+                      notifications.map((notification) => (
+                        <div
+                          key={notification.id}
+                          onClick={async () => {
+                            if (!notification.read) {
+                              await markAsRead(notification.id);
 
-                                loadNotifications();
-                              }
+                              loadNotifications();
+                            }
 
-                              if (notification.redirectUrl) {
-                                navigate(notification.redirectUrl);
-                              }
+                            if (notification.redirectUrl) {
+                              navigate(notification.redirectUrl);
+                            }
 
-                              setShowNotifications(false);
-                            }}
-                            className="
+                            setShowNotifications(false);
+                          }}
+                          className="
                             flex
                             gap-3
                              p-4
@@ -668,14 +680,13 @@ lg:w-[420px]
                              transition
                              overflow-hidden
                                "
-
-                          >
-                            {getNotificationIcon(notification.type)}
+                        >
+                          {getNotificationIcon(notification.type)}
 
                           <div className="flex-1 min-w-0">
-                              <div className="flex justify-between">
-                                <h4
-                                 className="
+                            <div className="flex justify-between">
+                              <h4
+                                className="
                                   font-bold
                                    text-[14px]
                                    lg:text-[15px]
@@ -683,25 +694,25 @@ lg:w-[420px]
                                   break-words
                                    leading-5
                                       "
-                                  >
-                                  {notification.title}
-                                 </h4>
+                              >
+                                {notification.title}
+                              </h4>
 
-                                {!notification.read && (
-                                  <div
-                                    className="
-                                  w-2
-                                  h-2
+                              {!notification.read && (
+                                <div
+                                  className="
+                                  w-3
+                                  h-3
                                   rounded-full
                                   bg-red-500
                                   mt-1
                                   "
-                                  />
-                                )}
-                              </div>
+                                />
+                              )}
+                            </div>
 
-                              <p
-                                className="
+                            <p
+                              className="
                                 text-[#475569]
                                  text-[12px]
                                 lg:text-[13px]
@@ -710,34 +721,34 @@ lg:w-[420px]
                                  break-words
                                  whitespace-normal
                                   "
-                                 >
+                            >
                               {notification.message}
-                               </p>
+                            </p>
 
-                              <p
-                                className="
+                            <p
+                              className="
                               text-[#94A3B8]
                               text-sm
                               mt-2
                               "
-                              >
-                                {formatTimeAgo(notification.createdAt)}
-                              </p>
-                            </div>
+                            >
+                              {formatTimeAgo(notification.createdAt)}
+                            </p>
                           </div>
-                        ))
-                      )}
-                    </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
 
-                    {/* Footer */}
-                    <div className="p-1 flex items-center justify-center">
-                      <button
-                        onClick={() => {
-                          navigate("/notifications");
+                  {/* Footer */}
+                  <div className="p-1 flex items-center justify-center">
+                    <button
+                      onClick={() => {
+                        navigate("/notifications");
 
-                          setShowNotifications(false);
-                        }}
-                        className="
+                        setShowNotifications(false);
+                      }}
+                      className="
                       w-[120px]
                       py-2
                       rounded-2xl
@@ -751,15 +762,14 @@ lg:w-[420px]
                       gap-2
                       cursor-pointer
                       "
-                      >
-                        View All
-                        <ArrowRight size={18} />
-                      </button>
-                    </div>
+                    >
+                      View All
+                      <ArrowRight size={18} />
+                    </button>
                   </div>
-                )}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
             {/* User */}
             <div className="relative">
               <button

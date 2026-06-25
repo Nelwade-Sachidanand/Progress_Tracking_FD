@@ -6,6 +6,7 @@ import PortfolioProgress from "../components/PortfolioProgress";
 import ProgressCard from "../components/ProgressCard";
 import useDashboardData from "../hooks/useDashboardData";
 
+import { useProjects } from "../../../context/ProjectContext";
 import {
   calculateOverallProgress,
   getActiveProjects,
@@ -17,7 +18,9 @@ import {
 } from "../utils/dashboardUtils";
 
 export default function DashboardPage() {
-  const data = useDashboardData();
+  const { projects, loading } = useProjects();
+
+  const data = useDashboardData(projects, loading);
   const navigate = useNavigate();
 
   const [searchText, setSearchText] = useState("");
