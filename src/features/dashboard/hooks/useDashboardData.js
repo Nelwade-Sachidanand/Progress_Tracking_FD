@@ -1,35 +1,26 @@
 import { useMemo } from "react";
 
-import { useProjects } from "../../../context/ProjectContext";
-
 import {
   calculateOverallProgress,
-  getDelayedProjects,
-  getOnTrackProjects,
-  getUpcomingGoLiveProjects,
-  getMilestoneStats,
   getActiveProjects,
+  getDelayedProjects,
+  getMilestoneStats,
+  getOnTrackProjects,
   getTotalBanks,
+  getUpcomingGoLiveProjects,
 } from "../utils/dashboardUtils";
 
-export default function useDashboardData() {
-  const { projects, loading } = useProjects();
-
+export default function useDashboardData(projects, loading) {
   const dashboardData = useMemo(() => {
-    const overallProgress =
-      calculateOverallProgress(projects);
+    const overallProgress = calculateOverallProgress(projects);
 
-    const delayedProjects =
-      getDelayedProjects(projects);
+    const delayedProjects = getDelayedProjects(projects);
 
-    const onTrackProjects =
-      getOnTrackProjects(projects);
+    const onTrackProjects = getOnTrackProjects(projects);
 
-    const upcomingGoLiveProjects =
-      getUpcomingGoLiveProjects(projects);
+    const upcomingGoLiveProjects = getUpcomingGoLiveProjects(projects);
 
-    const milestoneStats =
-      getMilestoneStats(projects);
+    const milestoneStats = getMilestoneStats(projects);
 
     return {
       projects,

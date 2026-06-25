@@ -13,7 +13,8 @@ export const getProjectMetrics = (project) => {
   let phaseFound = false;
   let milestoneFound = false;
 
-  
+  let weightedProgressSum = 0;
+  let totalWeightage = 0;
 
   project?.phases?.forEach((phase) => {
     let phaseActivities = 0;
@@ -71,7 +72,7 @@ export const getProjectMetrics = (project) => {
               activity.plannedStartDate &&
               (!projectStartDate ||
                 new Date(activity.plannedStartDate) <
-                new Date(projectStartDate))
+                  new Date(projectStartDate))
             ) {
               projectStartDate = activity.plannedStartDate;
             }
@@ -89,6 +90,12 @@ export const getProjectMetrics = (project) => {
 
       const milestonePercent =
         milestoneActivities > 0 ? milestoneProgress / milestoneActivities : 0;
+
+      const weightage = Number(milestone.weightage || 0);
+
+      weightedProgressSum += milestonePercent * weightage;
+
+      totalWeightage += weightage;
 
       if (!milestoneFound && milestonePercent < 100) {
         currentMilestone =
@@ -109,8 +116,11 @@ export const getProjectMetrics = (project) => {
   });
 
   const overallProgress =
-    totalActivities > 0 ? Math.round(totalProgress / totalActivities) : 0;
-
+    totalWeightage > 0
+      ? Math.round(weightedProgressSum / totalWeightage)
+      : totalActivities > 0
+        ? Math.round(totalProgress / totalActivities)
+        : 0;
   const readiness =
     totalActivities > 0
       ? Math.round((completedActivities / totalActivities) * 100)
@@ -118,9 +128,9 @@ export const getProjectMetrics = (project) => {
 
   const daysRemaining = goLiveDate
     ? Math.max(
-      0,
-      Math.ceil((new Date(goLiveDate) - new Date()) / (1000 * 60 * 60 * 24)),
-    )
+        0,
+        Math.ceil((new Date(goLiveDate) - new Date()) / (1000 * 60 * 60 * 24)),
+      )
     : 0;
 
   let status = "On Track";
@@ -153,7 +163,6 @@ export const getProjectMetrics = (project) => {
 
     scheduleVariance = Math.round(overallProgress - plannedProgress);
   }
-
 
   return {
     overallProgress,

@@ -1,16 +1,10 @@
-import { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { updateActivity } from "../../add-task/api/editTaskApi";
 
-export default function RemarkModal({
-  isOpen,
-  onClose,
-  task,
-  onRemarkSaved,
-}) {
-  const [remark, setRemark] =
-    useState("");
+export default function RemarkModal({ isOpen, onClose, task, onRemarkSaved }) {
+  const [remark, setRemark] = useState("");
 
   useEffect(() => {
     setRemark(task?.remark || "");
@@ -21,95 +15,62 @@ export default function RemarkModal({
   const handleSave = async () => {
     try {
       const payload = {
-        projectId:
-          task?.projectId,
+        projectId: task?.projectId,
 
-        projectName:
-          task?.projectName,
+        projectName: task?.projectName,
 
-        phaseName:
-          task?.phase,
+        phaseName: task?.phase,
 
-        milestoneName:
-          task?.milestone,
+        milestoneName: task?.milestone,
 
-        taskName:
-          task?.task,
+        taskName: task?.task,
 
-        subTaskName:
-          task?.subTask,
+        subTaskName: task?.subTask,
 
-        activityName:
-          task?.activity,
+        activityName: task?.activity,
 
-        owner:
-          task?.owner,
+        owner: task?.owner,
 
-        plannedStartDate:
-          task?.plannedStartDate,
+        plannedStartDate: task?.plannedStartDate,
 
-        plannedEndDate:
-          task?.plannedEndDate,
+        plannedEndDate: task?.plannedEndDate,
 
-        actualStartDate:
-          task?.actualStartDate,
+        actualStartDate: task?.actualStartDate,
 
-        actualEndDate:
-          task?.actualEndDate,
+        actualEndDate: task?.actualEndDate,
 
-        estimatedPeriodWeek:
-          task?.estimatedPeriodWeek,
+        estimatedPeriodWeek: task?.estimatedPeriodWeek,
 
-        progress:
-          task?.progress,
+        progress: task?.progress,
 
-        executionStatus:
-          task?.status,
+        executionStatus: task?.status,
 
-        scheduleHealth:
-          task?.scheduleHealth,
+        scheduleHealth: task?.scheduleHealth,
 
         remark: remark,
       };
 
-      console.log(
-        "Remark Update Payload:",
-        payload
-      );
+      // console.log(
+      //   "Remark Update Payload:",
+      //   payload
+      // );
 
-      const response =
-        await updateActivity(
-          payload
-        );
+      const response = await updateActivity(payload);
 
-      if (
-        response?.statusType ===
-        "S"
-      ) {
-        toast.success(
-          response.statusDesc ||
-            "Remark updated successfully"
-        );
+      if (response?.statusType === "S") {
+        toast.success(response.statusDesc || "Remark updated successfully");
 
-        onRemarkSaved?.(
-          task?.id,
-          remark
-        );
+        onRemarkSaved?.(task?.id, remark);
 
         onClose();
       } else {
-        toast.error(
-          response?.statusDesc ||
-            "Failed to update remark"
-        );
+        toast.error(response?.statusDesc || "Failed to update remark");
       }
     } catch (error) {
       console.error(error);
 
       toast.error(
-        error?.response?.data
-          ?.statusDesc ||
-          "Failed to update remark"
+        error?.response?.data?.statusDesc || "Failed to update remark",
       );
     }
   };
@@ -117,29 +78,19 @@ export default function RemarkModal({
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl w-[500px] p-6">
-
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">
-            Task Remark
-          </h2>
+          <h2 className="text-xl font-semibold">Task Remark</h2>
 
-          <button
-            onClick={onClose}
-            className="cursor-pointer"
-          >
+          <button onClick={onClose} className="cursor-pointer">
             <X />
           </button>
         </div>
 
         <div className="mb-4">
-          <label className="block mb-2 font-medium">
-            Activity
-          </label>
+          <label className="block mb-2 font-medium">Activity</label>
 
           <input
-            value={
-              task?.activity || ""
-            }
+            value={task?.activity || ""}
             disabled
             className="
               w-full
@@ -175,18 +126,16 @@ export default function RemarkModal({
             "
             placeholder="Enter remark..."
           />
-        </div> */
-        }
+        </div> */}
         <div className="space-y-4">
+          {/* Existing Remark */}
+          <div>
+            <label className="block mb-2 font-medium text-slate-700">
+              Existing Remark
+            </label>
 
-  {/* Existing Remark */}
-  <div>
-    <label className="block mb-2 font-medium text-slate-700">
-      Existing Remark
-    </label>
-
-    <div
-      className="
+            <div
+              className="
       min-h-[90px]
       p-3
       rounded-xl
@@ -197,27 +146,23 @@ export default function RemarkModal({
       text-slate-600
       whitespace-pre-wrap
       "
-    >
-      Existing remark will appear here...
-    </div>
-  </div>
+            >
+              Existing remark will appear here...
+            </div>
+          </div>
 
-  {/* New Remark */}
-  <div>
-    <label className="block mb-2 font-medium text-slate-700">
-      Latest Remark
-      <span className="text-red-500 ml-1">
-        *
-      </span>
-    </label>
+          {/* New Remark */}
+          <div>
+            <label className="block mb-2 font-medium text-slate-700">
+              Latest Remark
+              <span className="text-red-500 ml-1">*</span>
+            </label>
 
-    <textarea
-      rows="4"
-      value={remark}
-      onChange={(e) =>
-        setRemark(e.target.value)
-      }
-      className="
+            <textarea
+              rows="4"
+              value={remark}
+              onChange={(e) => setRemark(e.target.value)}
+              className="
       w-full
       border
       rounded-xl
@@ -226,11 +171,10 @@ export default function RemarkModal({
       outline-none
       focus:border-[#6D4AFF]
       "
-      placeholder="Enter remark..."
-    />
-  </div>
-
-</div>
+              placeholder="Enter remark..."
+            />
+          </div>
+        </div>
 
         <div className="flex justify-end gap-3 mt-6">
           <button
@@ -260,7 +204,6 @@ export default function RemarkModal({
             Save Remark
           </button>
         </div>
-
       </div>
     </div>
   );

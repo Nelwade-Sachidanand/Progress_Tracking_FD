@@ -12,6 +12,7 @@ const AuthorizationRequestsPage = () => {
     loading,
     approveRequest,
     rejectRequest,
+    rollbackRequest,
     allAuths,
     approveSelectedRequests,
     rejectSelectedRequests,
@@ -32,7 +33,18 @@ const AuthorizationRequestsPage = () => {
     setSelectedRequest(null);
   };
 
-  const filteredLogs = auths.filter((log) => {
+  const handleRollback = async (requestId, password, reason) => {
+    const response = await rollbackRequest(requestId, password, reason);
+
+    if (response?.statusType === "S") {
+      setSelectedRequest(null);
+      return true;
+    }
+
+    return false;
+  };
+
+  const filteredLogs = allAuths.filter((log) => {
     const matchesSearch =
       !search ||
       log.activityName?.toLowerCase().includes(search.toLowerCase()) ||
@@ -46,6 +58,23 @@ const AuthorizationRequestsPage = () => {
     const matchesUser = !requestedBy || log.requestedBy === requestedBy;
 
     return matchesSearch && matchesRequestType && matchesStatus && matchesUser;
+  });
+
+  const sortedLogs = [...filteredLogs].sort((a, b) => {
+    // Pending always first
+    if (a.status === "PENDING" && b.status !== "PENDING") return -1;
+    if (a.status !== "PENDING" && b.status === "PENDING") return 1;
+
+    // Pending requests sort by requestedAt desc
+    if (a.status === "PENDING" && b.status === "PENDING") {
+      return new Date(b.requestedAt) - new Date(a.requestedAt);
+    }
+
+    // Approved / Rejected sort by approvedAt desc
+    return (
+      new Date(b.approvedAt || b.requestedAt) -
+      new Date(a.approvedAt || a.requestedAt)
+    );
   });
 
   return (
@@ -63,7 +92,7 @@ const AuthorizationRequestsPage = () => {
       <AuthorizationSummaryCards auths={allAuths} />
 
       <AuthorizationFilters
-        logs={auths}
+        logs={allAuths}
         search={search}
         setSearch={setSearch}
         requestType={requestType}
@@ -75,7 +104,7 @@ const AuthorizationRequestsPage = () => {
       />
 
       <AuthorizationTable
-        logs={filteredLogs}
+        logs={sortedLogs}
         loading={loading}
         onView={setSelectedRequest}
         approveSelectedRequests={approveSelectedRequests}
@@ -88,6 +117,7 @@ const AuthorizationRequestsPage = () => {
           onClose={() => setSelectedRequest(null)}
           onApprove={handleApprove}
           onReject={handleReject}
+          onRollback={handleRollback}
         />
       )}
     </div>
