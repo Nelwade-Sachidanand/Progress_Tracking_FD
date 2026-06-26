@@ -1,13 +1,10 @@
 import { Plus } from "lucide-react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { exportExcelReport } from "../../add-task/api/exportExcelApi";
-import { useRef } from "react";
 import { useProjects } from "../../../context/ProjectContext";
+import { exportExcelReport } from "../../add-task/api/exportExcelApi";
 import GenerateReportModal from "../components/GenerateReportModal";
-import { useState } from "react";
-
-
 
 import PrintReport from "../components//PrintReport";
 
@@ -22,56 +19,46 @@ export default function TaskActions({
   const navigate = useNavigate();
   const [showReportModal, setShowReportModal] = useState(false);
 
-const [reportType, setReportType] = useState("pdf");
+  const [reportType, setReportType] = useState("pdf");
 
-const [fromDate, setFromDate] = useState("");
+  const [fromDate, setFromDate] = useState("");
 
-const [toDate, setToDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
   const user = JSON.parse(sessionStorage.getItem("user"));
- const reportRef = useRef(null);
-const { projects } = useProjects();
-const selectedProjectId =
-  sessionStorage.getItem(
-    "selectedProjectId"
+  const reportRef = useRef(null);
+  const { projects } = useProjects();
+  const selectedProjectId = sessionStorage.getItem("selectedProjectId");
+
+  const project = projects.find(
+    (p) => String(p.id) === String(selectedProjectId),
   );
 
-const project =
-  projects.find(
-    p =>
-      String(p.id) ===
-      String(selectedProjectId)
-  );
+  const handleGenerate = () => {
+    switch (reportType) {
+      case "pdf":
+        handleGeneratePdf();
+        break;
 
-  console.log("Selected Project ID:", selectedProjectId);
-console.log("Projects:", projects);
-console.log("Project:", project);
-console.log("Project Phases:", project?.phases);
-const handleGenerate = () => {
-  switch (reportType) {
-    case "pdf":
-      handleGeneratePdf();
-      break;
+      case "excel":
+        handleExportExcel();
+        break;
 
-    case "excel":
-      handleExportExcel();
-      break;
+      case "csv":
+        handleGenerateCsv();
+        break;
 
-    case "csv":
-      handleGenerateCsv();
-      break;
+      case "word":
+        handleGenerateWord();
+        break;
 
-    case "word":
-      handleGenerateWord();
-      break;
+      default:
+        toast.error("Please select report format");
+        return;
+    }
 
-    default:
-      toast.error("Please select report format");
-      return;
-  }
-
-  setShowReportModal(false);
-};
+    setShowReportModal(false);
+  };
   const handleExportExcel = async () => {
     try {
       const selectedProjectId = sessionStorage.getItem("selectedProjectId");
@@ -100,10 +87,8 @@ const handleGenerate = () => {
           selectedStatus === "All Status" ? null : selectedStatus,
 
         plannedStartDate: fromDate || null,
-plannedEndDate: toDate || null,
+        plannedEndDate: toDate || null,
       };
-
-      console.log("Export Payload:", payload);
 
       const blob = await exportExcelReport(payload);
 
@@ -140,26 +125,21 @@ plannedEndDate: toDate || null,
       }
     }
   };
-const handlePrintReport = () => {
-  if (!reportRef.current) {
-    toast.error("Nothing to print");
-    return;
-  }
+  const handlePrintReport = () => {
+    if (!reportRef.current) {
+      toast.error("Nothing to print");
+      return;
+    }
 
-  const projectName =
-    sessionStorage.getItem("selectedProjectName") ||
-    "Project";
+    const projectName =
+      sessionStorage.getItem("selectedProjectName") || "Project";
 
-  const printContent =
-    reportRef.current.innerHTML;
-console.log("Report Ref:", reportRef.current);
-console.log("Report HTML:", reportRef.current?.innerHTML);
-  const printWindow = window.open(
-    "",
-    "_blank"
-  );
+    const printContent = reportRef.current.innerHTML;
+    console.log("Report Ref:", reportRef.current);
+    console.log("Report HTML:", reportRef.current?.innerHTML);
+    const printWindow = window.open("", "_blank");
 
-  printWindow.document.write(`
+    printWindow.document.write(`
     <!DOCTYPE html>
     <html>
       <head>
@@ -218,30 +198,30 @@ console.log("Report HTML:", reportRef.current?.innerHTML);
     </html>
   `);
 
-  printWindow.document.close();
+    printWindow.document.close();
 
-  printWindow.focus();
+    printWindow.focus();
 
-  setTimeout(() => {
-    printWindow.print();
-    printWindow.close();
-  }, 500);
-};
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 500);
+  };
 
-const handleGeneratePdf = () => {
-  if (!reportRef.current) {
-    toast.error("Nothing to print");
-    return;
-  }
+  const handleGeneratePdf = () => {
+    if (!reportRef.current) {
+      toast.error("Nothing to print");
+      return;
+    }
 
-  const projectName =
-    sessionStorage.getItem("selectedProjectName") || "Project";
+    const projectName =
+      sessionStorage.getItem("selectedProjectName") || "Project";
 
-  const printContent = reportRef.current.innerHTML;
+    const printContent = reportRef.current.innerHTML;
 
-  const printWindow = window.open("", "_blank");
+    const printWindow = window.open("", "_blank");
 
-  printWindow.document.write(`
+    printWindow.document.write(`
     <!DOCTYPE html>
     <html>
       <head>
@@ -275,67 +255,67 @@ const handleGeneratePdf = () => {
     </html>
   `);
 
-  printWindow.document.close();
+    printWindow.document.close();
 
-  setTimeout(() => {
-    printWindow.print();
-    printWindow.close();
-  }, 500);
-};
-const handleGenerateCsv = () => {
-  const rows = [
-    [
-      "Phase",
-      "Milestone",
-      "Task",
-      "Sub Task",
-      "Activity",
-      "Owner",
-      "Progress",
-      "Status",
-      "Schedule Health",
-    ],
-  ];
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 500);
+  };
+  const handleGenerateCsv = () => {
+    const rows = [
+      [
+        "Phase",
+        "Milestone",
+        "Task",
+        "Sub Task",
+        "Activity",
+        "Owner",
+        "Progress",
+        "Status",
+        "Schedule Health",
+      ],
+    ];
 
-  filteredActivities.forEach((activity) => {
-    rows.push([
-      activity.phase,
-      activity.milestone,
-      activity.task,
-      activity.subTask,
-      activity.activityName,
-      activity.owner,
-      activity.progress,
-      activity.executionStatus,
-      activity.scheduleHealth,
-    ]);
-  });
+    filteredActivities.forEach((activity) => {
+      rows.push([
+        activity.phase,
+        activity.milestone,
+        activity.task,
+        activity.subTask,
+        activity.activityName,
+        activity.owner,
+        activity.progress,
+        activity.executionStatus,
+        activity.scheduleHealth,
+      ]);
+    });
 
-  const csv = rows.map((row) => row.join(",")).join("\n");
+    const csv = rows.map((row) => row.join(",")).join("\n");
 
-  const blob = new Blob([csv], {
-    type: "text/csv;charset=utf-8;",
-  });
+    const blob = new Blob([csv], {
+      type: "text/csv;charset=utf-8;",
+    });
 
-  const link = document.createElement("a");
+    const link = document.createElement("a");
 
-  link.href = URL.createObjectURL(blob);
+    link.href = URL.createObjectURL(blob);
 
-  link.download = `${project.projectName}.csv`;
+    link.download = `${project.projectName}.csv`;
 
-  link.click();
+    link.click();
 
-  URL.revokeObjectURL(link.href);
+    URL.revokeObjectURL(link.href);
 
-  toast.success("CSV downloaded successfully");
-};
+    toast.success("CSV downloaded successfully");
+  };
 
-const handleGenerateWord = () => {
-   // call Word generator
-};
- return (
-  <div
-    className="
+  const handleGenerateWord = () => {
+    // call Word generator
+  };
+  return (
+    <div
+      className="
     flex
     flex-col
     lg:flex-row
@@ -345,20 +325,20 @@ const handleGenerateWord = () => {
     mb-3
     cursor-pointer
     "
-  >
-    {/* Action Buttons */}
-    <div
-      className="
+    >
+      {/* Action Buttons */}
+      <div
+        className="
       flex
       flex-wrap
       gap-3
       w-full
       lg:w-auto
       "
-    >
-      <button
-  onClick={() => setShowReportModal(true)}
-  className="
+      >
+        <button
+          onClick={() => setShowReportModal(true)}
+          className="
     bg-[#6D4AFF]
     hover:bg-[#5B3DF4]
     text-white
@@ -369,11 +349,11 @@ const handleGenerateWord = () => {
     font-medium
     cursor-pointer
   "
->
-  Generate Report
-</button>
+        >
+          Generate Report
+        </button>
 
-      {/* <button
+        {/* <button
         onClick={handleExportExcel}
         className="
         bg-[#10B981]
@@ -393,7 +373,7 @@ const handleGenerateWord = () => {
         Export Excel
       </button> */}
 
-   {/* <button
+        {/* <button
  onClick={handlePrintReport}
   className="
   bg-[#2563EB]
@@ -405,9 +385,9 @@ const handleGenerateWord = () => {
 >
   Print Report
 </button> */}
-    </div>
+      </div>
 
-      {(user?.role === "ADMIN" || user?.role === "IMPLEMENTATION USER") &&
+      {(user?.role === "ADMIN" || user?.role === "IMPLEMENTATION USER") && (
         <button
           onClick={() => navigate("add-task")}
           className="
@@ -428,51 +408,45 @@ const handleGenerateWord = () => {
           <Plus size={18} />
           Add Task
         </button>
-      }
-<div
-  ref={reportRef}
-  style={{
-    position: "absolute",
-    left: "-9999px",
-    top: 0,
-  }}
->
-<PrintReport
-  project={project}
-  selectedPhase={selectedPhase}
-  selectedMilestone={selectedMilestone}
-  selectedTask={selectedTask}
-  selectedSubTask={selectedSubTask}
-  selectedActivity={selectedActivity}
-  selectedStatus={selectedStatus}
-  fromDate={fromDate}
-  toDate={toDate}
-/>
-</div>
-<GenerateReportModal
-  isOpen={showReportModal}
-  onClose={() => setShowReportModal(false)}
-
-  reportType={reportType}
-  setReportType={setReportType}
-
-  fromDate={fromDate}
-  setFromDate={setFromDate}
-
-  toDate={toDate}
-  setToDate={setToDate}
-
-  selectedProject={project?.projectName}
-
-  selectedPhase={selectedPhase}
-  selectedMilestone={selectedMilestone}
-  selectedTask={selectedTask}
-  selectedSubTask={selectedSubTask}
-  selectedActivity={selectedActivity}
-  selectedStatus={selectedStatus}
-
-  onGenerate={handleGenerate}
-/>
+      )}
+      <div
+        ref={reportRef}
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          top: 0,
+        }}
+      >
+        <PrintReport
+          project={project}
+          selectedPhase={selectedPhase}
+          selectedMilestone={selectedMilestone}
+          selectedTask={selectedTask}
+          selectedSubTask={selectedSubTask}
+          selectedActivity={selectedActivity}
+          selectedStatus={selectedStatus}
+          fromDate={fromDate}
+          toDate={toDate}
+        />
+      </div>
+      <GenerateReportModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        reportType={reportType}
+        setReportType={setReportType}
+        fromDate={fromDate}
+        setFromDate={setFromDate}
+        toDate={toDate}
+        setToDate={setToDate}
+        selectedProject={project?.projectName}
+        selectedPhase={selectedPhase}
+        selectedMilestone={selectedMilestone}
+        selectedTask={selectedTask}
+        selectedSubTask={selectedSubTask}
+        selectedActivity={selectedActivity}
+        selectedStatus={selectedStatus}
+        onGenerate={handleGenerate}
+      />
     </div>
   );
-} 
+}

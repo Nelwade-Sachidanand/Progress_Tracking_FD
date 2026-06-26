@@ -25,16 +25,15 @@ describe("AuthorizationRequestModal", () => {
 
   const request = {
     id: "1",
+    status: "PENDING", // <-- ADD THIS
     projectId: "p1",
     activityName: "Activity A",
     requestedBy: "Sachin",
     requestedAt: "2026-06-20T10:00:00.000Z",
-
     oldActivity: {
       owner: "Old Owner",
       progress: 10,
     },
-
     newActivity: {
       owner: "New Owner",
       progress: 50,
@@ -222,5 +221,280 @@ describe("AuthorizationRequestModal", () => {
     await waitFor(() => {
       expect(getProjectNames).toHaveBeenCalled();
     });
+  });
+  it("shows change reason", () => {
+    render(
+      <AuthorizationRequestModal
+        request={{
+          ...request,
+          changeReason: "Schedule updated",
+        }}
+      />,
+    );
+
+    expect(screen.getByText("Activity Change Reason")).toBeInTheDocument();
+    expect(screen.getByText("Schedule updated")).toBeInTheDocument();
+  });
+
+  it("shows rejection reason", () => {
+    render(
+      <AuthorizationRequestModal
+        request={{
+          ...request,
+          status: "REJECTED",
+          rejectionReason: "Incorrect data",
+        }}
+      />,
+    );
+
+    expect(screen.getByText("Rejection Reason")).toBeInTheDocument();
+    expect(screen.getByText("Incorrect data")).toBeInTheDocument();
+  });
+
+  it("shows rollback reason", () => {
+    render(
+      <AuthorizationRequestModal
+        request={{
+          ...request,
+          status: "ROLLED_BACK",
+          rollbackReason: "Rollback completed",
+        }}
+      />,
+    );
+
+    expect(screen.getByText("Rollback Reason")).toBeInTheDocument();
+    expect(screen.getByText("Rollback completed")).toBeInTheDocument();
+  });
+
+  it("shows approved details", () => {
+    render(
+      <AuthorizationRequestModal
+        request={{
+          ...request,
+          status: "APPROVED",
+          approvedBy: "Admin",
+          approvedAt: "2026-06-20T10:00:00.000Z",
+        }}
+      />,
+    );
+
+    expect(screen.getByText("Approved By")).toBeInTheDocument();
+    expect(screen.getByText("Admin")).toBeInTheDocument();
+  });
+
+  it("shows rejected details", () => {
+    render(
+      <AuthorizationRequestModal
+        request={{
+          ...request,
+          status: "REJECTED",
+          approvedBy: "Manager",
+          approvedAt: "2026-06-20T10:00:00.000Z",
+        }}
+      />,
+    );
+
+    expect(screen.getByText("Rejected By")).toBeInTheDocument();
+    expect(screen.getByText("Manager")).toBeInTheDocument();
+  });
+
+  it("shows rolled back details", () => {
+    render(
+      <AuthorizationRequestModal
+        request={{
+          ...request,
+          status: "ROLLED_BACK",
+          rolledBackBy: "Admin",
+          rolledBackAt: "2026-06-20T10:00:00.000Z",
+        }}
+      />,
+    );
+
+    expect(screen.getByText("Rolled Back By")).toBeInTheDocument();
+    expect(screen.getByText("Admin")).toBeInTheDocument();
+  });
+
+  it("shows revert button for approved request", () => {
+    render(
+      <AuthorizationRequestModal
+        request={{
+          ...request,
+          status: "APPROVED",
+        }}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", {
+        name: /Revert Changes/i,
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("opens rollback modal", () => {
+    render(
+      <AuthorizationRequestModal
+        request={{
+          ...request,
+          status: "APPROVED",
+        }}
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /Revert Changes/i,
+      }),
+    );
+
+    expect(
+      screen.getByPlaceholderText("Reason for rollback..."),
+    ).toBeInTheDocument();
+  });
+
+  it("validates rollback reason", () => {
+    const onRollback = vi.fn();
+
+    render(
+      <AuthorizationRequestModal
+        request={{
+          ...request,
+          status: "APPROVED",
+        }}
+        onRollback={onRollback}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Revert Changes/i }));
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /Confirm Rollback/i,
+      }),
+    );
+
+    expect(toast.error).toHaveBeenCalledWith("Please enter rollback reason");
+  });
+
+  it("validates admin password", () => {
+    const onRollback = vi.fn();
+
+    render(
+      <AuthorizationRequestModal
+        request={{
+          ...request,
+          status: "APPROVED",
+        }}
+        onRollback={onRollback}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Revert Changes/i }));
+
+    fireEvent.change(screen.getByPlaceholderText("Reason for rollback..."), {
+      target: {
+        value: "Rollback",
+      },
+    });
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /Confirm Rollback/i,
+      }),
+    );
+
+    expect(toast.error).toHaveBeenCalledWith("Please enter admin password");
+  });
+
+  it("calls onRollback successfully", async () => {
+    const onRollback = vi.fn().mockResolvedValue(true);
+
+    render(
+      <AuthorizationRequestModal
+        request={{
+          ...request,
+          status: "APPROVED",
+        }}
+        onRollback={onRollback}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Revert Changes/i }));
+
+    fireEvent.change(screen.getByPlaceholderText("Reason for rollback..."), {
+      target: {
+        value: "Rollback",
+      },
+    });
+
+    fireEvent.change(screen.getByPlaceholderText("Enter admin password"), {
+      target: {
+        value: "admin123",
+      },
+    });
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /Confirm Rollback/i,
+      }),
+    );
+
+    await waitFor(() => {
+      expect(onRollback).toHaveBeenCalledWith("1", "admin123", "Rollback");
+    });
+  });
+
+  it("closes rollback modal on cancel", () => {
+    render(
+      <AuthorizationRequestModal
+        request={{
+          ...request,
+          status: "APPROVED",
+        }}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Revert Changes/i }));
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Cancel",
+      }),
+    );
+
+    expect(
+      screen.queryByPlaceholderText("Reason for rollback..."),
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders null project when projectId is missing", async () => {
+    render(
+      <AuthorizationRequestModal
+        request={{
+          ...request,
+          projectId: null,
+        }}
+      />,
+    );
+
+    expect(getProjectNames).not.toHaveBeenCalled();
+  });
+
+  it("formats null values", () => {
+    render(
+      <AuthorizationRequestModal
+        request={{
+          ...request,
+          oldActivity: {
+            owner: null,
+          },
+          newActivity: {
+            owner: "Sachin",
+          },
+        }}
+      />,
+    );
+
+    expect(screen.getByText("null")).toBeInTheDocument();
   });
 });

@@ -43,9 +43,9 @@ describe("ActiveFilters", () => {
       />,
     );
 
-    expect(
-      screen.getByText("Milestone: Milestone 1, Milestone 2"),
-    ).toBeInTheDocument();
+    // ✅ FIX: each milestone is rendered separately
+    expect(screen.getByText("Milestone: Milestone 1")).toBeInTheDocument();
+    expect(screen.getByText("Milestone: Milestone 2")).toBeInTheDocument();
   });
 
   it("renders task filter", () => {
@@ -85,9 +85,7 @@ describe("ActiveFilters", () => {
     );
 
     expect(screen.getByText("Milestone: Milestone 1")).toBeInTheDocument();
-
     expect(screen.getByText("Task: Task A")).toBeInTheDocument();
-
     expect(screen.getByText("Status: Completed")).toBeInTheDocument();
   });
 
@@ -114,11 +112,7 @@ describe("ActiveFilters", () => {
       />,
     );
 
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: /clear all filters/i,
-      }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: /clear all filters/i }));
 
     expect(clearFilters).toHaveBeenCalledTimes(1);
   });
@@ -173,9 +167,7 @@ describe("ActiveFilters", () => {
     );
 
     expect(
-      screen.getByRole("button", {
-        name: "Clear All Filters",
-      }),
+      screen.getByRole("button", { name: "Clear All Filters" }),
     ).toBeInTheDocument();
   });
 });

@@ -1,47 +1,45 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
-
+import { describe, expect, it, vi } from "vitest";
 import TaskHeader from "../components/TaskHeader";
 
+/* Mock context */
+vi.mock("../../../context/ProjectContext", () => ({
+  useProjects: () => ({
+    projects: [{ id: "1", projectName: "Demo Project" }],
+  }),
+}));
+
 describe("TaskHeader", () => {
-  it("renders heading", () => {
-    render(<TaskHeader />);
-
-    expect(
-      screen.getByRole("heading", {
-        name: "All Tasks",
-      }),
-    ).toBeInTheDocument();
+  beforeEach(() => {
+    sessionStorage.clear();
   });
 
-  it("renders description", () => {
+  it("renders selected project label", () => {
+    sessionStorage.setItem("selectedProjectId", "1");
+
     render(<TaskHeader />);
 
-    expect(
-      screen.getByText("View and manage all project tasks"),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Selected Project/i)).toBeInTheDocument();
+    expect(screen.getByText("Demo Project")).toBeInTheDocument();
   });
 
-  it("renders add task button", () => {
+  it("renders fallback when no project selected", () => {
     render(<TaskHeader />);
 
-    expect(
-      screen.getByRole("button", {
-        name: /add task/i,
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByText("No Project Selected")).toBeInTheDocument();
   });
 
-  it("shows correct button text", () => {
+  it("renders project container", () => {
     render(<TaskHeader />);
 
-    expect(screen.getByText("Add Task")).toBeInTheDocument();
+    const container = screen.getByText(/Selected Project/i).closest("div");
+    expect(container).toBeInTheDocument();
   });
 
-  it("renders only one button", () => {
+  it("does not render add task button", () => {
     render(<TaskHeader />);
 
-    expect(screen.getAllByRole("button")).toHaveLength(1);
+    expect(screen.queryByRole("button")).toBeNull();
   });
 });

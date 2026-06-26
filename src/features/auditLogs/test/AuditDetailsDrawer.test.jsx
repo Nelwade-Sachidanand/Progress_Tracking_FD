@@ -1,23 +1,24 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import AuditDetailsDrawer from "../components/AuditDetailsDrawer";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 
-describe("AuditDetailsDrawer", () => {
+import AuditDetailsModal from "../components/AuditDetailsModal";
+
+describe("AuditDetailsModal", () => {
   const onClose = vi.fn();
 
-  const mockLog = {
-    entityType: "Activity",
-    actionType: "UPDATE",
-    modifiedBy: "Sachin",
-    modifiedDate: "2026-06-20T10:00:00.000Z",
+  const log = {
     oldData: JSON.stringify({
-      name: "Old Activity",
-      progress: 20,
+      projectName: "Project A",
+      owner: "Sachin",
+      active: true,
+      count: 5,
     }),
     newData: JSON.stringify({
-      name: "New Activity",
-      progress: 80,
+      projectName: "Project B",
+      owner: "Sachin",
+      active: false,
+      count: 10,
     }),
   };
 
@@ -25,121 +26,181 @@ describe("AuditDetailsDrawer", () => {
     vi.clearAllMocks();
   });
 
-  it("returns null when log is not provided", () => {
+  test("returns null when log is null", () => {
     const { container } = render(
-      <AuditDetailsDrawer log={null} onClose={onClose} />,
+      <AuditDetailsModal log={null} onClose={onClose} />,
     );
 
     expect(container.firstChild).toBeNull();
   });
 
-  it("renders audit details header", () => {
-    render(<AuditDetailsDrawer log={mockLog} onClose={onClose} />);
+  test("renders modal", () => {
+    render(<AuditDetailsModal log={log} onClose={onClose} />);
 
     expect(screen.getByText("Audit Details")).toBeInTheDocument();
   });
 
-  it("renders summary section", () => {
-    render(<AuditDetailsDrawer log={mockLog} onClose={onClose} />);
-
-    expect(screen.getByText("Summary")).toBeInTheDocument();
-
-    expect(screen.getByText("Entity Type")).toBeInTheDocument();
-
-    expect(screen.getByText("Action Type")).toBeInTheDocument();
-
-    expect(screen.getByText("Modified By")).toBeInTheDocument();
-
-    expect(screen.getByText("Modified Date")).toBeInTheDocument();
-  });
-
-  it("renders audit information", () => {
-    render(<AuditDetailsDrawer log={mockLog} onClose={onClose} />);
-
-    expect(screen.getByText("Activity")).toBeInTheDocument();
-
-    expect(screen.getByText("UPDATE")).toBeInTheDocument();
-
-    expect(screen.getByText("Sachin")).toBeInTheDocument();
-  });
-
-  it("renders previous data section", () => {
-    render(<AuditDetailsDrawer log={mockLog} onClose={onClose} />);
+  test("renders previous data heading", () => {
+    render(<AuditDetailsModal log={log} onClose={onClose} />);
 
     expect(screen.getByText("Previous Data")).toBeInTheDocument();
-
-    expect(screen.getByText(/Old Activity/i)).toBeInTheDocument();
   });
 
-  it("renders updated data section", () => {
-    render(<AuditDetailsDrawer log={mockLog} onClose={onClose} />);
+  test("renders updated data heading", () => {
+    render(<AuditDetailsModal log={log} onClose={onClose} />);
 
     expect(screen.getByText("Updated Data")).toBeInTheDocument();
-
-    expect(screen.getByText(/New Activity/i)).toBeInTheDocument();
   });
 
-  it("calls onClose when close button clicked", () => {
-    render(<AuditDetailsDrawer log={mockLog} onClose={onClose} />);
+  test("renders project names", () => {
+    render(<AuditDetailsModal log={log} onClose={onClose} />);
+
+    expect(screen.getByText("Project A")).toBeInTheDocument();
+
+    expect(screen.getByText("Project B")).toBeInTheDocument();
+  });
+
+  test("renders owner", () => {
+    render(<AuditDetailsModal log={log} onClose={onClose} />);
+
+    expect(screen.getAllByText("Sachin")).toHaveLength(2);
+  });
+
+  test("renders boolean values", () => {
+    render(<AuditDetailsModal log={log} onClose={onClose} />);
+
+    expect(screen.getByText("true")).toBeInTheDocument();
+
+    expect(screen.getByText("false")).toBeInTheDocument();
+  });
+
+  test("renders numeric values", () => {
+    render(<AuditDetailsModal log={log} onClose={onClose} />);
+
+    expect(screen.getByText("5")).toBeInTheDocument();
+
+    expect(screen.getByText("10")).toBeInTheDocument();
+  });
+
+  test("calls onClose", () => {
+    render(<AuditDetailsModal log={log} onClose={onClose} />);
 
     fireEvent.click(screen.getByRole("button"));
 
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("renders modified date", () => {
-    render(<AuditDetailsDrawer log={mockLog} onClose={onClose} />);
-
-    expect(screen.getByText("Modified Date")).toBeInTheDocument();
-  });
-
-  it("renders only updated data when oldData is null", () => {
-    const log = {
-      ...mockLog,
-      oldData: null,
-    };
-
-    render(<AuditDetailsDrawer log={log} onClose={onClose} />);
-
-    expect(screen.queryByText("Previous Data")).not.toBeInTheDocument();
+  test("handles missing oldData", () => {
+    render(
+      <AuditDetailsModal
+        log={{
+          oldData: null,
+          newData: JSON.stringify({
+            name: "New",
+          }),
+        }}
+        onClose={onClose}
+      />,
+    );
 
     expect(screen.getByText("Updated Data")).toBeInTheDocument();
   });
 
-  it("renders only previous data when newData is null", () => {
-    const log = {
-      ...mockLog,
-      newData: null,
-    };
-
-    render(<AuditDetailsDrawer log={log} onClose={onClose} />);
+  test("handles missing newData", () => {
+    render(
+      <AuditDetailsModal
+        log={{
+          oldData: JSON.stringify({
+            name: "Old",
+          }),
+          newData: null,
+        }}
+        onClose={onClose}
+      />,
+    );
 
     expect(screen.getByText("Previous Data")).toBeInTheDocument();
-
-    expect(screen.queryByText("Updated Data")).not.toBeInTheDocument();
   });
 
-  it("renders array data correctly", () => {
-    const log = {
-      ...mockLog,
-      oldData: JSON.stringify([
-        {
-          id: 1,
-          name: "Old Item",
-        },
-      ]),
-      newData: JSON.stringify([
-        {
-          id: 1,
-          name: "New Item",
-        },
-      ]),
-    };
+  test("renders nested object", () => {
+    render(
+      <AuditDetailsModal
+        log={{
+          oldData: JSON.stringify({
+            address: {
+              city: "Pune",
+            },
+          }),
+          newData: JSON.stringify({
+            address: {
+              city: "Mumbai",
+            },
+          }),
+        }}
+        onClose={onClose}
+      />,
+    );
 
-    render(<AuditDetailsDrawer log={log} onClose={onClose} />);
+    expect(screen.getAllByText("[object Object]")).toHaveLength(2);
+  });
 
-    expect(screen.getByText(/Old Item/i)).toBeInTheDocument();
+  test("renders array", () => {
+    render(
+      <AuditDetailsModal
+        log={{
+          oldData: JSON.stringify({
+            items: ["A", "B"],
+          }),
+          newData: JSON.stringify({
+            items: ["A", "C"],
+          }),
+        }}
+        onClose={onClose}
+      />,
+    );
 
-    expect(screen.getByText(/New Item/i)).toBeInTheDocument();
+    expect(screen.getAllByText("A,B")).toBeTruthy();
+  });
+
+  test("renders contact card object", () => {
+    render(
+      <AuditDetailsModal
+        log={{
+          oldData: JSON.stringify({
+            contact: {
+              name: "Sachin",
+              contactNumber: "9999999999",
+            },
+          }),
+          newData: JSON.stringify({
+            contact: {
+              name: "Rahul",
+              contactNumber: "8888888888",
+            },
+          }),
+        }}
+        onClose={onClose}
+      />,
+    );
+
+    expect(screen.getAllByText("[object Object]")).toHaveLength(2);
+  });
+
+  test("renders null values", () => {
+    render(
+      <AuditDetailsModal
+        log={{
+          oldData: JSON.stringify({
+            value: null,
+          }),
+          newData: JSON.stringify({
+            value: null,
+          }),
+        }}
+        onClose={onClose}
+      />,
+    );
+
+    expect(screen.getAllByText("-")).toHaveLength(2);
   });
 });

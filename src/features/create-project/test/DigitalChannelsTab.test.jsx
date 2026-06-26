@@ -10,11 +10,7 @@ describe("DigitalChannelsTab", () => {
     mobileBanking: true,
     internetBanking: false,
     tabletBanking: false,
-    whatsAppBanking: false,
-    missedCallBanking: false,
-    smsBanking: false,
-    eStatement: false,
-    debitCardServices: false,
+    pigmyBanking: false,
 
     mobileUsers: "1000",
     internetUsers: "500",
@@ -35,29 +31,23 @@ describe("DigitalChannelsTab", () => {
 
   test("renders heading", () => {
     renderComponent();
-
     expect(screen.getByText("Digital Channels")).toBeInTheDocument();
   });
 
   test("renders channel section", () => {
     renderComponent();
-
     expect(screen.getByText("Available Digital Channels")).toBeInTheDocument();
   });
 
   test("renders statistics section", () => {
     renderComponent();
-
     expect(screen.getByText("Channel Statistics")).toBeInTheDocument();
   });
 
   test("renders back button", () => {
     renderComponent();
-
     expect(
-      screen.getByRole("button", {
-        name: /back to dashboard/i,
-      }),
+      screen.getByRole("button", { name: /back to dashboard/i }),
     ).toBeInTheDocument();
   });
 
@@ -65,14 +55,9 @@ describe("DigitalChannelsTab", () => {
     renderComponent();
 
     expect(screen.getByText("Mobile Banking")).toBeInTheDocument();
-
     expect(screen.getByText("Internet Banking")).toBeInTheDocument();
-
     expect(screen.getByText("Tablet Banking")).toBeInTheDocument();
-
-    expect(screen.getByText("WhatsApp Banking")).toBeInTheDocument();
-
-    expect(screen.getByText("Debit Card Services")).toBeInTheDocument();
+    expect(screen.getByText("PigMy Banking")).toBeInTheDocument();
   });
 
   test("toggles mobile banking card", () => {
@@ -82,9 +67,7 @@ describe("DigitalChannelsTab", () => {
 
     expect(mockUpdateSection).toHaveBeenCalledWith(
       "digitalChannels",
-      expect.objectContaining({
-        mobileBanking: false,
-      }),
+      expect.objectContaining({ mobileBanking: false }),
     );
   });
 
@@ -95,9 +78,7 @@ describe("DigitalChannelsTab", () => {
 
     expect(mockUpdateSection).toHaveBeenCalledWith(
       "digitalChannels",
-      expect.objectContaining({
-        internetBanking: true,
-      }),
+      expect.objectContaining({ internetBanking: true }),
     );
   });
 
@@ -105,17 +86,12 @@ describe("DigitalChannelsTab", () => {
     renderComponent();
 
     fireEvent.change(screen.getByDisplayValue("1000"), {
-      target: {
-        name: "mobileUsers",
-        value: "2000",
-      },
+      target: { name: "mobileUsers", value: "2000" },
     });
 
     expect(mockUpdateSection).toHaveBeenCalledWith(
       "digitalChannels",
-      expect.objectContaining({
-        mobileUsers: "2000",
-      }),
+      expect.objectContaining({ mobileUsers: "2000" }),
     );
   });
 
@@ -123,17 +99,12 @@ describe("DigitalChannelsTab", () => {
     renderComponent();
 
     fireEvent.change(screen.getByDisplayValue("500"), {
-      target: {
-        name: "internetUsers",
-        value: "900",
-      },
+      target: { name: "internetUsers", value: "900" },
     });
 
     expect(mockUpdateSection).toHaveBeenCalledWith(
       "digitalChannels",
-      expect.objectContaining({
-        internetUsers: "900",
-      }),
+      expect.objectContaining({ internetUsers: "900" }),
     );
   });
 
@@ -141,17 +112,12 @@ describe("DigitalChannelsTab", () => {
     renderComponent();
 
     fireEvent.change(screen.getByDisplayValue("800"), {
-      target: {
-        name: "cardUsers",
-        value: "1200",
-      },
+      target: { name: "cardUsers", value: "1200" },
     });
 
     expect(mockUpdateSection).toHaveBeenCalledWith(
       "digitalChannels",
-      expect.objectContaining({
-        cardUsers: "1200",
-      }),
+      expect.objectContaining({ cardUsers: "1200" }),
     );
   });
 
@@ -159,17 +125,12 @@ describe("DigitalChannelsTab", () => {
     renderComponent();
 
     fireEvent.change(screen.getByDisplayValue("700"), {
-      target: {
-        name: "activeDigitalUsers",
-        value: "1500",
-      },
+      target: { name: "activeDigitalUsers", value: "1500" },
     });
 
     expect(mockUpdateSection).toHaveBeenCalledWith(
       "digitalChannels",
-      expect.objectContaining({
-        activeDigitalUsers: "1500",
-      }),
+      expect.objectContaining({ activeDigitalUsers: "1500" }),
     );
   });
 
@@ -183,7 +144,6 @@ describe("DigitalChannelsTab", () => {
 
   test("renders safely with empty data", () => {
     renderComponent({});
-
     expect(screen.getByText("Mobile Banking")).toBeInTheDocument();
   });
 });

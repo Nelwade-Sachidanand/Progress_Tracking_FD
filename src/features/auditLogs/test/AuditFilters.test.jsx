@@ -215,4 +215,125 @@ describe("AuditFilters", () => {
       }),
     ).toBeInTheDocument();
   });
+  it("renders with initial search value", () => {
+    render(<AuditFilters {...defaultProps} searchTerm="John" />);
+
+    expect(screen.getByDisplayValue("John")).toBeInTheDocument();
+  });
+
+  it("renders selected entity type", () => {
+    render(<AuditFilters {...defaultProps} entityType="PROJECT" />);
+
+    const selects = screen.getAllByRole("combobox");
+
+    expect(selects[0]).toHaveValue("PROJECT");
+  });
+
+  it("renders selected action type", () => {
+    render(<AuditFilters {...defaultProps} actionType="DELETE_PROJECT" />);
+
+    const selects = screen.getAllByRole("combobox");
+
+    expect(selects[1]).toHaveValue("DELETE_PROJECT");
+  });
+
+  it("renders selected date", () => {
+    render(<AuditFilters {...defaultProps} selectedDate="2026-01-10" />);
+
+    expect(document.querySelector('input[type="date"]')).toHaveValue(
+      "2026-01-10",
+    );
+  });
+
+  it("allows clearing search text", () => {
+    render(<AuditFilters {...defaultProps} searchTerm="Sachin" />);
+
+    fireEvent.change(
+      screen.getByPlaceholderText("Search entity name, user..."),
+      {
+        target: {
+          value: "",
+        },
+      },
+    );
+
+    expect(setSearchTerm).toHaveBeenCalledWith("");
+  });
+
+  it("allows clearing entity type", () => {
+    render(<AuditFilters {...defaultProps} entityType="USER" />);
+
+    const selects = screen.getAllByRole("combobox");
+
+    fireEvent.change(selects[0], {
+      target: {
+        value: "",
+      },
+    });
+
+    expect(setEntityType).toHaveBeenCalledWith("");
+  });
+
+  it("allows clearing action type", () => {
+    render(<AuditFilters {...defaultProps} actionType="CREATE_USER" />);
+
+    const selects = screen.getAllByRole("combobox");
+
+    fireEvent.change(selects[1], {
+      target: {
+        value: "",
+      },
+    });
+
+    expect(setActionType).toHaveBeenCalledWith("");
+  });
+
+  it("allows clearing selected date", () => {
+    render(<AuditFilters {...defaultProps} selectedDate="2026-06-20" />);
+
+    const input = document.querySelector('input[type="date"]');
+
+    fireEvent.change(input, {
+      target: {
+        value: "",
+      },
+    });
+
+    expect(setSelectedDate).toHaveBeenCalledWith("");
+  });
+
+  it("renders exactly two select boxes", () => {
+    render(<AuditFilters {...defaultProps} />);
+
+    expect(screen.getAllByRole("combobox")).toHaveLength(2);
+  });
+
+  it("renders exactly one search input", () => {
+    render(<AuditFilters {...defaultProps} />);
+
+    expect(
+      screen.getAllByPlaceholderText("Search entity name, user..."),
+    ).toHaveLength(1);
+  });
+
+  it("renders one date input", () => {
+    render(<AuditFilters {...defaultProps} />);
+
+    expect(document.querySelectorAll('input[type="date"]').length).toBe(1);
+  });
+
+  it("contains Search icon", () => {
+    const { container } = render(<AuditFilters {...defaultProps} />);
+
+    expect(container.querySelector("svg")).toBeInTheDocument();
+  });
+
+  it("does not call handlers on initial render", () => {
+    render(<AuditFilters {...defaultProps} />);
+
+    expect(setSearchTerm).not.toHaveBeenCalled();
+    expect(setEntityType).not.toHaveBeenCalled();
+    expect(setActionType).not.toHaveBeenCalled();
+    expect(setSelectedDate).not.toHaveBeenCalled();
+  });
 });

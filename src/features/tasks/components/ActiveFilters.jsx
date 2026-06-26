@@ -12,45 +12,35 @@ function ActiveFilters({
   setSelectedStatus,
 
   clearFilters,
-}){
+}) {
   const filters = [];
-if (
-  selectedPhase &&
-  selectedPhase !== "All Phases"
-) {
-  filters.push({
-    type: "phase",
-    label: `Phase: ${selectedPhase}`,
-  });
-}
-
-selectedMilestone.forEach((milestone) => {
-  filters.push({
-    type: "milestone",
-    value: milestone,
-    label: `Milestone: ${milestone}`,
-  });
-});
-  
-
-  if (
-    selectedTask &&
-    selectedTask !== "All Tasks"
-  ) {
-filters.push({
-  type: "task",
-  label: `Task: ${selectedTask}`
-});
+  if (selectedPhase && selectedPhase !== "All Phases") {
+    filters.push({
+      type: "phase",
+      label: `Phase: ${selectedPhase}`,
+    });
   }
 
-  if (
-    selectedStatus &&
-    selectedStatus !== "All Status"
-  ) {
-filters.push({
-  type: "status",
-  label: `Status: ${selectedStatus}`
-});
+  (selectedMilestone || []).forEach((milestone) => {
+    filters.push({
+      type: "milestone",
+      value: milestone,
+      label: `Milestone: ${milestone}`,
+    });
+  });
+
+  if (selectedTask && selectedTask !== "All Tasks") {
+    filters.push({
+      type: "task",
+      label: `Task: ${selectedTask}`,
+    });
+  }
+
+  if (selectedStatus && selectedStatus !== "All Status") {
+    filters.push({
+      type: "status",
+      label: `Status: ${selectedStatus}`,
+    });
   }
 
   if (filters.length === 0) return null;
@@ -68,27 +58,27 @@ filters.push({
             className="bg-[#F3F0FF] text-[#6D4AFF] px-3 py-1 rounded-full text-sm flex items-center gap-2"
           >
             {filter.label}
-  <X
-  size={14}
-  className="cursor-pointer"
-  onClick={() => {
-    if (filter.type === "phase") {
-      setSelectedPhase("All Phases");
-    }
+            <X
+              size={14}
+              className="cursor-pointer"
+              onClick={() => {
+                if (filter.type === "phase") {
+                  setSelectedPhase("All Phases");
+                }
 
-    if (filter.type === "milestone") {
-      setSelectedMilestone([]);
-    }
+                if (filter.type === "milestone") {
+                  setSelectedMilestone([]);
+                }
 
-    if (filter.type === "task") {
-      setSelectedTask("All Tasks");
-    }
+                if (filter.type === "task") {
+                  setSelectedTask("All Tasks");
+                }
 
-    if (filter.type === "status") {
-      setSelectedStatus("All Status");
-    }
-  }}
-/>
+                if (filter.type === "status") {
+                  setSelectedStatus("All Status");
+                }
+              }}
+            />
           </div>
         ))}
       </div>

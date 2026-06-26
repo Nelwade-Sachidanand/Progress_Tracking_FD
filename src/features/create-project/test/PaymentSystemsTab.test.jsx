@@ -10,8 +10,9 @@ describe("PaymentSystemsTab", () => {
     rtgs: true,
     neft: false,
     imps: false,
-    upi: true,
-    aml: false,
+    atmSwitch: false,
+    pos: false,
+    loanRecovery: false,
 
     dailyUpiTransactions: 1000,
     dailyImpsTransactions: 500,
@@ -42,7 +43,6 @@ describe("PaymentSystemsTab", () => {
     renderComponent();
 
     expect(screen.getByText("Enabled Payment Systems")).toBeInTheDocument();
-
     expect(screen.getByText("Transaction Statistics")).toBeInTheDocument();
   });
 
@@ -50,14 +50,11 @@ describe("PaymentSystemsTab", () => {
     renderComponent();
 
     expect(screen.getByText("RTGS")).toBeInTheDocument();
-
     expect(screen.getByText("NEFT")).toBeInTheDocument();
-
     expect(screen.getByText("IMPS")).toBeInTheDocument();
-
-    expect(screen.getByText("UPI")).toBeInTheDocument();
-
-    expect(screen.getByText("AML")).toBeInTheDocument();
+    expect(screen.getByText("ATM Switch")).toBeInTheDocument();
+    expect(screen.getByText("POS")).toBeInTheDocument();
+    expect(screen.getByText("Loan Recovery")).toBeInTheDocument();
   });
 
   test("toggles RTGS", () => {
@@ -67,35 +64,18 @@ describe("PaymentSystemsTab", () => {
 
     expect(mockUpdateSection).toHaveBeenCalledWith(
       "paymentSystems",
-      expect.objectContaining({
-        rtgs: false,
-      }),
+      expect.objectContaining({ rtgs: false }),
     );
   });
 
-  test("toggles UPI", () => {
+  test("toggles IMPS", () => {
     renderComponent();
 
-    fireEvent.click(screen.getByText("UPI"));
+    fireEvent.click(screen.getByText("IMPS"));
 
     expect(mockUpdateSection).toHaveBeenCalledWith(
       "paymentSystems",
-      expect.objectContaining({
-        upi: false,
-      }),
-    );
-  });
-
-  test("toggles AML", () => {
-    renderComponent();
-
-    fireEvent.click(screen.getByText("AML"));
-
-    expect(mockUpdateSection).toHaveBeenCalledWith(
-      "paymentSystems",
-      expect.objectContaining({
-        aml: true,
-      }),
+      expect.objectContaining({ imps: true }),
     );
   });
 
@@ -183,7 +163,6 @@ describe("PaymentSystemsTab", () => {
     renderComponent({});
 
     expect(screen.getByText("RTGS")).toBeInTheDocument();
-
-    expect(screen.getByText("UPI")).toBeInTheDocument();
+    expect(screen.getByText("NEFT")).toBeInTheDocument();
   });
 });

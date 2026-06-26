@@ -126,7 +126,7 @@ describe("dashboardUtils", () => {
 
   describe("calculateOverallProgress", () => {
     it("calculates average progress", () => {
-      expect(calculateOverallProgress(mockProjects)).toBe(63);
+      expect(calculateOverallProgress(mockProjects)).toBe(58);
     });
 
     it("returns 0 when no activities", () => {
@@ -239,10 +239,10 @@ describe("dashboardUtils", () => {
   describe("getBusinessImpactSummary", () => {
     it("returns business impact summary", () => {
       expect(getBusinessImpactSummary(mockProjects)).toEqual({
-        operationalEfficiency: 63,
-        customerSatisfaction: 68,
-        riskReduction: 73,
-        costOptimization: 71,
+        operationalEfficiency: 58,
+        customerSatisfaction: 63,
+        riskReduction: 68,
+        costOptimization: 66,
       });
     });
 

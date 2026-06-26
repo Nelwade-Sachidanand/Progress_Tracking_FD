@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-
+import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import EditTaskPage from "../pages/EditTaskPage";
 
@@ -11,33 +11,57 @@ vi.mock("react-router-dom", () => ({
 }));
 
 vi.mock("../components/EditTaskForm", () => ({
-  default: () => <div data-testid="edit-task-form">EditTaskForm</div>,
+  default: () => <div data-testid="edit-task-form">EditTaskForm Component</div>,
 }));
 
 describe("EditTaskPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+
+    sessionStorage.clear();
+
+    sessionStorage.setItem("selectedProjectName", "Implementation Dashboard");
   });
 
-  it("renders page title", () => {
+  test("renders page heading", () => {
     render(<EditTaskPage />);
 
     expect(screen.getByText("Edit Task")).toBeInTheDocument();
   });
 
-  it("renders subtitle", () => {
+  test("renders page description", () => {
     render(<EditTaskPage />);
 
     expect(screen.getByText("Update activity details")).toBeInTheDocument();
   });
 
-  it("renders EditTaskForm component", () => {
+  test("renders selected project label", () => {
+    render(<EditTaskPage />);
+
+    expect(screen.getByText("Selected Project")).toBeInTheDocument();
+  });
+
+  test("shows selected project from sessionStorage", () => {
+    render(<EditTaskPage />);
+
+    expect(screen.getByText("Implementation Dashboard")).toBeInTheDocument();
+  });
+
+  test("shows default project when sessionStorage is empty", () => {
+    sessionStorage.clear();
+
+    render(<EditTaskPage />);
+
+    expect(screen.getByText("No Project Selected")).toBeInTheDocument();
+  });
+
+  test("renders EditTaskForm", () => {
     render(<EditTaskPage />);
 
     expect(screen.getByTestId("edit-task-form")).toBeInTheDocument();
   });
 
-  it("navigates to tasks page when back button is clicked", () => {
+  test("back button navigates to tasks page", () => {
     render(<EditTaskPage />);
 
     const button = screen.getByRole("button");
@@ -49,9 +73,44 @@ describe("EditTaskPage", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/tasks");
   });
 
-  it("renders back button", () => {
+  test("clicking back button multiple times navigates each time", () => {
     render(<EditTaskPage />);
 
-    expect(screen.getByRole("button")).toBeInTheDocument();
+    const button = screen.getByRole("button");
+
+    fireEvent.click(button);
+    fireEvent.click(button);
+
+    expect(mockNavigate).toHaveBeenCalledTimes(2);
+  });
+
+  test("page contains only one button", () => {
+    render(<EditTaskPage />);
+
+    expect(screen.getAllByRole("button")).toHaveLength(1);
+  });
+
+  test("EditTaskForm is rendered below project information", () => {
+    render(<EditTaskPage />);
+
+    const project = screen.getByText("Implementation Dashboard");
+
+    const form = screen.getByTestId("edit-task-form");
+
+    expect(project).toBeInTheDocument();
+
+    expect(form).toBeInTheDocument();
+  });
+
+  test("renders project name only once", () => {
+    render(<EditTaskPage />);
+
+    expect(screen.getAllByText("Implementation Dashboard")).toHaveLength(1);
+  });
+
+  test("renders selected project section", () => {
+    render(<EditTaskPage />);
+
+    expect(screen.getByText("Selected Project")).toBeVisible();
   });
 });

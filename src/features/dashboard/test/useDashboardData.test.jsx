@@ -1,5 +1,6 @@
 import { renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
 import useDashboardData from "../hooks/useDashboardData";
 
 import {
@@ -36,9 +37,6 @@ describe("useDashboardData", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    localStorage.clear();
-
-    localStorage.setItem("projects", JSON.stringify(mockProjects));
 
     calculateOverallProgress.mockReturnValue(75);
 
@@ -64,10 +62,11 @@ describe("useDashboardData", () => {
   });
 
   it("returns dashboard data correctly", () => {
-    const { result } = renderHook(() => useDashboardData());
+    const { result } = renderHook(() => useDashboardData(mockProjects, false));
 
     expect(result.current).toEqual({
       projects: mockProjects,
+      loading: false,
       totalBanks: 4,
       totalProjects: 2,
       activeProjects: 7,
@@ -82,7 +81,7 @@ describe("useDashboardData", () => {
   });
 
   it("calls all utility functions with projects", () => {
-    renderHook(() => useDashboardData());
+    renderHook(() => useDashboardData(mockProjects, false));
 
     expect(calculateOverallProgress).toHaveBeenCalledWith(mockProjects);
 
@@ -100,8 +99,6 @@ describe("useDashboardData", () => {
   });
 
   it("handles empty projects list", () => {
-    localStorage.setItem("projects", JSON.stringify([]));
-
     calculateOverallProgress.mockReturnValue(0);
 
     getDelayedProjects.mockReturnValue([]);
@@ -120,10 +117,11 @@ describe("useDashboardData", () => {
 
     getTotalBanks.mockReturnValue(0);
 
-    const { result } = renderHook(() => useDashboardData());
+    const { result } = renderHook(() => useDashboardData([], false));
 
     expect(result.current).toEqual({
       projects: [],
+      loading: false,
       totalBanks: 0,
       totalProjects: 0,
       activeProjects: 0,
@@ -137,9 +135,7 @@ describe("useDashboardData", () => {
     });
   });
 
-  it("handles missing localStorage projects", () => {
-    localStorage.removeItem("projects");
-
+  it("handles undefined projects", () => {
     calculateOverallProgress.mockReturnValue(0);
 
     getDelayedProjects.mockReturnValue([]);
@@ -158,7 +154,7 @@ describe("useDashboardData", () => {
 
     getTotalBanks.mockReturnValue(0);
 
-    const { result } = renderHook(() => useDashboardData());
+    const { result } = renderHook(() => useDashboardData([], false));
 
     expect(result.current.projects).toEqual([]);
 
@@ -172,7 +168,7 @@ describe("useDashboardData", () => {
 
     getUpcomingGoLiveProjects.mockReturnValue([{}]);
 
-    const { result } = renderHook(() => useDashboardData());
+    const { result } = renderHook(() => useDashboardData(mockProjects, false));
 
     expect(result.current.delayedProjects).toBe(3);
 
@@ -181,14 +177,14 @@ describe("useDashboardData", () => {
     expect(result.current.upcomingGoLive).toBe(1);
   });
 
-  it("returns projects from localStorage", () => {
-    const { result } = renderHook(() => useDashboardData());
+  it("returns supplied projects", () => {
+    const { result } = renderHook(() => useDashboardData(mockProjects, false));
 
     expect(result.current.projects).toEqual(mockProjects);
   });
 
   it("returns total projects length", () => {
-    const { result } = renderHook(() => useDashboardData());
+    const { result } = renderHook(() => useDashboardData(mockProjects, false));
 
     expect(result.current.totalProjects).toBe(2);
   });

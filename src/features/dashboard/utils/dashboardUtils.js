@@ -56,7 +56,6 @@ export const calculateOverallProgress = (projects) => {
           task?.subTasks?.forEach((subTask) => {
             subTask?.activities?.forEach((activity) => {
               activityCount++;
-
               activityProgress += Number(activity.progress || 0);
             });
           });
@@ -65,20 +64,32 @@ export const calculateOverallProgress = (projects) => {
         const milestoneProgress =
           activityCount > 0 ? activityProgress / activityCount : 0;
 
-        const weightage = Number(milestone.weightage || 0);
+        // Default weightage = 1 when not provided
+        const weightage =
+          milestone.weightage !== undefined &&
+          milestone.weightage !== null &&
+          milestone.weightage !== ""
+            ? Number(milestone.weightage)
+            : 1;
 
         weightedProgressSum += milestoneProgress * weightage;
-
         totalWeightage += weightage;
       });
     });
   });
 
-  if (totalWeightage > 0) {
-    return Math.round(weightedProgressSum / totalWeightage);
+  if (totalWeightage === 0) {
+    const activities = getAllActivities(projects);
+    let totalProgress = 0;
+    let taotalActivities = 0;
+    activities?.forEach((activity) => {
+      totalProgress += activity.progress;
+      taotalActivities++;
+    });
+    return Math.round(totalProgress / taotalActivities);
   }
 
-  return 0;
+  return Math.round(weightedProgressSum / totalWeightage);
 };
 
 export const calculateProjectProgress = (project) => {

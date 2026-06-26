@@ -29,7 +29,6 @@ describe("UserFilters", () => {
     render(<UserFilters {...defaultProps} />);
 
     expect(screen.getByRole("combobox")).toBeInTheDocument();
-
     expect(screen.getByText("All Roles")).toBeInTheDocument();
   });
 
@@ -45,14 +44,11 @@ describe("UserFilters", () => {
     fireEvent.change(
       screen.getByPlaceholderText("Search by name or username..."),
       {
-        target: {
-          value: "john",
-        },
+        target: { value: "john" },
       },
     );
 
     expect(setSearchTerm).toHaveBeenCalledTimes(1);
-
     expect(setSearchTerm).toHaveBeenCalledWith("john");
   });
 
@@ -66,47 +62,26 @@ describe("UserFilters", () => {
     render(<UserFilters {...defaultProps} />);
 
     fireEvent.change(screen.getByRole("combobox"), {
-      target: {
-        value: "SUPER_ADMIN",
-      },
+      target: { value: "MANAGEMENT USER" },
     });
 
     expect(setRoleFilter).toHaveBeenCalledTimes(1);
-
-    expect(setRoleFilter).toHaveBeenCalledWith("SUPER_ADMIN");
+    expect(setRoleFilter).toHaveBeenCalledWith("MANAGEMENT USER");
   });
 
   it("renders all role options", () => {
     render(<UserFilters {...defaultProps} />);
 
     expect(
-      screen.getByRole("option", {
-        name: "All Roles",
-      }),
+      screen.getByRole("option", { name: "All Roles" }),
     ).toBeInTheDocument();
-
+    expect(screen.getByRole("option", { name: "Admin" })).toBeInTheDocument();
     expect(
-      screen.getByRole("option", {
-        name: "Admin",
-      }),
+      screen.getByRole("option", { name: "Bank User" }),
     ).toBeInTheDocument();
-
+    expect(screen.getByRole("option", { name: "Manager" })).toBeInTheDocument();
     expect(
-      screen.getByRole("option", {
-        name: "Super Admin",
-      }),
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByRole("option", {
-        name: "Manager",
-      }),
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByRole("option", {
-        name: "Implementation User",
-      }),
+      screen.getByRole("option", { name: "Implementation User" }),
     ).toBeInTheDocument();
   });
 

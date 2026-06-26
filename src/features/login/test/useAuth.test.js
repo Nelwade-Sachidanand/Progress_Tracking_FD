@@ -20,7 +20,7 @@ vi.mock("react-toastify", () => ({
 describe("useAuth", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    localStorage.clear();
+    sessionStorage.clear();
   });
 
   test("successful login", async () => {
@@ -51,11 +51,11 @@ describe("useAuth", () => {
 
     expect(toast.success).toHaveBeenCalledWith("Login Successful");
 
-    expect(JSON.parse(localStorage.getItem("user"))).toEqual({
+    expect(JSON.parse(sessionStorage.getItem("user"))).toEqual({
       username: "admin",
     });
 
-    expect(localStorage.getItem("accessToken")).toBe("access123");
+    expect(sessionStorage.getItem("accessToken")).toBe("access123");
 
     expect(response).toEqual(mockResponse);
 
@@ -80,7 +80,7 @@ describe("useAuth", () => {
 
     expect(response).toBeNull();
 
-    expect(localStorage.getItem("user")).toBeNull();
+    expect(sessionStorage.getItem("user")).toBeNull();
   });
 
   test("login throws exception", async () => {
@@ -108,8 +108,12 @@ describe("useAuth", () => {
 
     const { result } = renderHook(() => useAuth());
 
-    await expect(result.current.login("admin", "123")).rejects.toThrow();
+    await expect(result.current.login("admin", "123")).rejects.toThrow(
+      "Network",
+    );
 
-    expect(toast.error).toHaveBeenCalledWith("Login Failed");
+    expect(toast.error).toHaveBeenCalledWith("Backend is Not Responding");
+
+    expect(result.current.loading).toBe(false);
   });
 });

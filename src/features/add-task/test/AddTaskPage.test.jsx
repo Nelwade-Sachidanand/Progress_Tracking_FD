@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-
+import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import AddTaskPage from "../pages/AddTaskPage";
 
@@ -11,62 +11,96 @@ vi.mock("react-router-dom", () => ({
 }));
 
 vi.mock("../components/AddTaskForm", () => ({
-  default: () => <div data-testid="add-task-form">AddTaskForm</div>,
+  default: () => <div data-testid="add-task-form">AddTaskForm Component</div>,
 }));
 
 describe("AddTaskPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    localStorage.clear();
+
+    sessionStorage.clear();
+
+    sessionStorage.setItem("selectedProjectName", "Implementation Dashboard");
   });
 
-  it("renders page title", () => {
-    localStorage.setItem("selectedProjectName", "Progress Tracker");
-
+  test("renders page heading", () => {
     render(<AddTaskPage />);
 
     expect(screen.getByText("Add Task")).toBeInTheDocument();
   });
 
-  it("renders selected project name", () => {
-    localStorage.setItem("selectedProjectName", "Progress Tracker");
+  test("renders page description", () => {
+    render(<AddTaskPage />);
+
+    expect(
+      screen.getByText("Create and manage project task"),
+    ).toBeInTheDocument();
+  });
+
+  test("renders selected project label", () => {
+    render(<AddTaskPage />);
+
+    expect(screen.getByText("Selected Project")).toBeInTheDocument();
+  });
+
+  test("shows selected project from session storage", () => {
+    render(<AddTaskPage />);
+
+    expect(screen.getByText("Implementation Dashboard")).toBeInTheDocument();
+  });
+
+  test("shows default project when session storage is empty", () => {
+    sessionStorage.clear();
 
     render(<AddTaskPage />);
 
-    expect(screen.getAllByText("Progress Tracker").length).toBeGreaterThan(0);
+    expect(screen.getByText("No Project Selected")).toBeInTheDocument();
   });
 
-  it("renders fallback project name when localStorage is empty", () => {
-    render(<AddTaskPage />);
-
-    expect(screen.getAllByText("No Project Selected").length).toBeGreaterThan(
-      0,
-    );
-  });
-
-  it("renders AddTaskForm component", () => {
+  test("renders AddTaskForm", () => {
     render(<AddTaskPage />);
 
     expect(screen.getByTestId("add-task-form")).toBeInTheDocument();
   });
 
-  it("navigates to tasks page on back button click", () => {
+  test("back button navigates to tasks page", () => {
     render(<AddTaskPage />);
 
     const button = screen.getByRole("button");
 
     fireEvent.click(button);
 
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+
     expect(mockNavigate).toHaveBeenCalledWith("/tasks");
   });
 
-  it("shows selected project section", () => {
-    localStorage.setItem("selectedProjectName", "My Project");
-
+  test("clicking back button multiple times navigates each time", () => {
     render(<AddTaskPage />);
 
-    expect(screen.getByText("Selected Project")).toBeInTheDocument();
+    const button = screen.getByRole("button");
 
-    expect(screen.getAllByText("My Project").length).toBe(2);
+    fireEvent.click(button);
+    fireEvent.click(button);
+
+    expect(mockNavigate).toHaveBeenCalledTimes(2);
+  });
+
+  test("page contains only one back button", () => {
+    render(<AddTaskPage />);
+
+    expect(screen.getAllByRole("button")).toHaveLength(1);
+  });
+
+  test("AddTaskForm is rendered below project information", () => {
+    render(<AddTaskPage />);
+
+    const project = screen.getByText("Implementation Dashboard");
+
+    const form = screen.getByTestId("add-task-form");
+
+    expect(project).toBeInTheDocument();
+
+    expect(form).toBeInTheDocument();
   });
 });

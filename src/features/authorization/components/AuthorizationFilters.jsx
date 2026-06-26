@@ -21,6 +21,14 @@ export default function AuthorizationFilters({
     ...new Set(logs.map((log) => log.requestedBy).filter(Boolean)),
   ];
 
+  const formatAction = (value = "") => {
+    return value
+      .toLowerCase()
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join("_");
+  };
+
   return (
     <div
       className="
@@ -110,7 +118,7 @@ export default function AuthorizationFilters({
 
           {requestTypes.map((type) => (
             <option key={type} value={type}>
-              {type.replaceAll("_", " ")}
+              {formatAction(type)}
             </option>
           ))}
         </select>
@@ -143,7 +151,7 @@ export default function AuthorizationFilters({
 
           {statuses.map((item) => (
             <option key={item} value={item}>
-              {item}
+              {formatAction(item)}
             </option>
           ))}
         </select>
