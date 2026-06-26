@@ -141,9 +141,9 @@ leading-tight
               {project?.bankName}
             </h2>
 
-            <div className="inline-flex mt-4 px-4 py-2 rounded-full bg-[#EEF2FF] text-[#475569] text-sm font-medium">
+            {/* <div className="inline-flex mt-4 px-4 py-2 rounded-full bg-[#EEF2FF] text-[#475569] text-sm font-medium">
               {projectType}
-            </div>
+            </div> */}
 
 <div className="mt-5 lg:mt-8 flex items-start gap-3">
               <Users

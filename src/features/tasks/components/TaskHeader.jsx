@@ -17,18 +17,26 @@ export default function TaskHeader() {
       <div
   className="
   w-full
-  bg-white
+  
   border
   border-slate-200
   rounded-2xl
   px-6
   py-4
   shadow-sm
+  
+     
+  mb-2
+  bg-[#F8FAFF]
+  border
+  border-[#E2E8F0]
+  rounded-2xl
+  
   "
 >
   <p className="text-base">
     <span className="font-medium text-slate-600">
-      Selected Project :
+    Project :
     </span>{" "}
     <span className="font-semibold text-[#2563EB]">
       {selectedProject

@@ -43,14 +43,93 @@ const [modalTitle, setModalTitle] =
 
 const [modalData, setModalData] =
   useState([]);
+
  const today = new Date();
 
-const criticalRiskActivities =
-  activities.filter(
-    (activity) =>
-      activity.scheduleHealth ===
-      "Delayed"
+
+
+
+
+const criticalRiskActivities = activities.filter((activity) => {
+  if (
+    !activity.plannedEndDate ||
+    activity.executionStatus === "Completed"
+  ) {
+    return false;
+  }
+
+  const endDate = new Date(activity.plannedEndDate);
+
+  const delayedDays = Math.floor(
+    (today - endDate) / (1000 * 60 * 60 * 24)
   );
+
+  return (
+    delayedDays >= 7 &&
+    Number(activity.progress || 0) < 80
+  );
+});
+const getDelayDays = (plannedEndDate) => {
+  if (!plannedEndDate) return 0;
+
+  const endDate = new Date(plannedEndDate);
+
+  return Math.max(
+    0,
+    Math.floor(
+      (today - endDate) /
+      (1000 * 60 * 60 * 24)
+    )
+  );
+};
+
+const getRiskDetails = (activity) => {
+  const delay = getDelayDays(activity.plannedEndDate);
+  const progress = Number(activity.progress || 0);
+
+  if (activity.executionStatus === "Completed") {
+    return {
+      level: "On Track",
+      color: "bg-green-100 text-green-700",
+      reason: "Completed"
+    };
+  }
+
+  if (delay >= 14 && progress < 80) {
+    return {
+      level: "Critical",
+      color: "bg-red-100 text-red-700",
+      reason: `Delayed by ${delay} days`
+    };
+  }
+
+  if (delay > 0) {
+    return {
+      level: "High",
+      color: "bg-orange-100 text-orange-700",
+      reason: "End date crossed"
+    };
+  }
+
+  if (
+    activity.executionStatus === "Not Started" &&
+    activity.plannedStartDate &&
+    new Date(activity.plannedStartDate) < today
+  ) {
+    return {
+      level: "Pending Start",
+      color: "bg-yellow-100 text-yellow-700",
+      reason: "Start date crossed"
+    };
+  }
+
+  return {
+    level: "On Track",
+    color: "bg-green-100 text-green-700",
+    reason: "On schedule"
+  };
+};
+
 
 const escalationActivities =
   activities.filter(
@@ -63,24 +142,89 @@ const escalationActivities =
         "Completed"
   );
 
-const dependencyActivities =
-  activities.filter(
-    (activity) =>
-      activity.plannedStartDate &&
-      new Date(
-        activity.plannedStartDate
-      ) <= today &&
-      (activity.executionStatus ===
-        "Not Started" ||
-          !activity.executionStatus)
-  );
+const dependencyActivities = [];
 
-const openRiskActivities =
-  activities.filter(
-    (activity) =>
-      activity.executionStatus !==
-      "Completed"
+for (let i = 1; i < activities.length; i++) {
+  const previous = activities[i - 1];
+  const current = activities[i];
+
+  if (
+    previous.phaseName === current.phaseName &&
+    previous.milestoneName === current.milestoneName &&
+    previous.taskName === current.taskName &&
+    previous.subTaskName === current.subTaskName &&
+    previous.executionStatus !== "Completed" &&
+    (current.executionStatus === "Not Started" ||
+      !current.executionStatus)
+  ) {
+    dependencyActivities.push({
+      ...current,
+      blockedBy: previous.activityName,
+    });
+  }
+}
+const getDependencyDetails = (activity) => {
+  return {
+    status: "Blocked",
+    color: "bg-red-100 text-red-700",
+    action: activity.blockedBy
+      ? `Complete "${activity.blockedBy}"`
+      : "-"
+  };
+};
+
+const openRiskActivities = activities.filter((activity) => {
+  if (activity.executionStatus === "Completed") {
+    return false;
+  }
+
+  const plannedEndDate = activity.plannedEndDate
+    ? new Date(activity.plannedEndDate)
+    : null;
+
+  return (
+    activity.scheduleHealth === "Delayed" ||
+    (plannedEndDate && plannedEndDate < today)
   );
+});
+
+const getOpenRiskDetails = (activity) => {
+  const delay = getDelayDays(activity.plannedEndDate);
+
+  if (activity.executionStatus === "Completed") {
+    return {
+      status: "Closed",
+      color: "bg-green-100 text-green-700",
+      risk: "Completed",
+      action: "-"
+    };
+  }
+
+  if (delay >= 14) {
+    return {
+      status: "Open",
+      color: "bg-red-100 text-red-700",
+      risk: "Delayed",
+      action: "Review recovery plan"
+    };
+  }
+
+  if (delay > 0) {
+    return {
+      status: "Open",
+      color: "bg-orange-100 text-orange-700",
+      risk: "End date crossed",
+      action: "Follow up with owner"
+    };
+  }
+
+  return {
+    status: "Under Monitoring",
+    color: "bg-blue-100 text-blue-700",
+    risk: "On schedule",
+    action: "Continue monitoring"
+  };
+};
 const cards = [
   {
     value: criticalRiskActivities.length,
@@ -134,6 +278,7 @@ const cards = [
     linkColor: "#059669",
   },
 ];
+
   return (
     <div className="bg-white rounded-2xl border border-[#E5EAF2] p-5">
       {/* Header */}
@@ -457,22 +602,142 @@ border-slate-200
 >
                 Planned End
               </th>
+{modalTitle === "Critical Risks / Issues" && (
+  <>
+    <th className="
+px-4
+py-3
+text-left
+text-sm
+font-semibold
+text-[#334155]
+border-b
+border-slate-200
+">Risk Level</th>
+    <th className="
+px-4
+py-3
+text-left
+text-sm
+font-semibold
+text-[#334155]
+border-b
+border-slate-200
+">Reason</th>
+  </>
+)}
 
+ {modalTitle === "Dependencies" && (
+  <>
+    <th
+      className="
+      px-4
+      py-3
+      text-left
+      text-sm
+      font-semibold
+      text-[#334155]
+      border-b
+      border-slate-200
+      "
+    >
+      Blocked By
+    </th>
+
+    <th
+      className="
+      px-4
+      py-3
+      text-left
+      text-sm
+      font-semibold
+      text-[#334155]
+      border-b
+      border-slate-200
+      "
+    >
+      Dependency Status
+    </th>
+
+    <th
+      className="
+      px-4
+      py-3
+      text-left
+      text-sm
+      font-semibold
+      text-[#334155]
+      border-b
+      border-slate-200
+      "
+    >
+      Next Action
+    </th>
+  </>
+)}
+
+{modalTitle === "Open Risks" && (
+  <>
+    <th  className="
+      px-4
+      py-3
+      text-left
+      text-sm
+      font-semibold
+      text-[#334155]
+      border-b
+      border-slate-200
+      ">Risk Status</th>
+    <th  className="
+      px-4
+      py-3
+      text-left
+      text-sm
+      font-semibold
+      text-[#334155]
+      border-b
+      border-slate-200
+      ">Current Risk</th>
+    <th  className="
+      px-4
+      py-3
+      text-left
+      text-sm
+      font-semibold
+      text-[#334155]
+      border-b
+      border-slate-200
+      ">Recommended Action</th>
+  </>
+)}
             </tr>
 
           </thead>
 
-          <tbody>
+          {/* <tbody> */}
 
-            {modalData.map(
+            {/* {modalData.map(
               (
+                
                 activity,
                 index
               ) => (
                 <tr
                   key={index}
                  className="border-b border-slate-100 hover:bg-[#FAFAFA] transition"
-                >
+                > */}
+
+                <tbody>
+  {modalData.map((activity, index) => {
+
+    const risk = getRiskDetails(activity);
+const dependency = getDependencyDetails(activity);
+const openRisk = getOpenRiskDetails(activity);
+    return (
+      <tr
+        key={index}
+        className="border-b border-slate-100 hover:bg-[#FAFAFA] transition"
+      >
 
     <td className="px-4 py-3 text-sm text-[#475569]">
                     {
@@ -534,10 +799,65 @@ activity.executionStatus==="Completed"
                       activity.plannedEndDate
                     }
                   </td>
+          
+          {modalTitle === "Critical Risks / Issues" && (
+  <>
+    <td>
+      <span
+        className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${risk.color}`}
+      >
+        {risk.level}
+      </span>
+    </td>
 
-                </tr>
+    <td>{risk.reason}</td>
+  </>
+)}
+
+{modalTitle === "Dependencies" && (
+  <>
+    <td className="px-4 py-3 text-sm text-[#475569]">
+      {activity.blockedBy || "-"}
+    </td>
+
+    <td className="px-4 py-3">
+      <span
+        className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${dependency.color}`}
+      >
+        {dependency.status}
+      </span>
+    </td>
+
+    <td className="px-4 py-3 text-sm text-slate-600 font-medium">
+      {dependency.action}
+    </td>
+  </>
+)}
+
+{modalTitle === "Open Risks" && (
+  <>
+    <td>
+      <span
+        className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${openRisk.color}`}
+      >
+        {openRisk.status}
+      </span>
+    </td>
+
+    <td>{openRisk.risk}</td>
+
+    <td>{openRisk.action}</td>
+  </>
+)}
+
+                {/* </tr>
               )
-            )}
+            )} */}
+            </tr>
+    );
+  })}
+
+ 
 
           </tbody>
 

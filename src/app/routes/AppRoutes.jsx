@@ -16,7 +16,7 @@ import EditUserPage from "../../features/users/pages/EditUserPage";
 import UserManagementPage from "../../features/users/pages/UserManagementPage";
 import MainLayout from "../../layouts/MainLayout";
 import ProtectedRoute from "./ProtectedRoute ";
-
+import Documents from "../../features/documents/pages/Documents";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -41,6 +41,7 @@ const AppRoutes = () => {
           <Route path="/milestones" element={<MilestoneManagement />} />
           <Route path="/upload-excel" element={<UploadExcel />} />
           <Route path="/notifications" element={<NotificationPage />} />
+          <Route path="/documents" element={<Documents />} />   
         </Route>
       </Route>
 

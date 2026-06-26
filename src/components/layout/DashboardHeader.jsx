@@ -340,6 +340,16 @@ const DashboardHeader = ({
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",
     },
+
+        "/documents": {
+      title: "Documents",
+      subtitle: "Upload and manage signoff documents",
+      icon: <Users size={22} />,
+
+      titleClass: "text-[32px]",
+      subtitleClass: "text-[17px]",
+    },
+
   };
 
   const location = useLocation();
