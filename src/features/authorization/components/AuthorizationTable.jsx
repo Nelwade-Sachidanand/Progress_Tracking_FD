@@ -316,7 +316,7 @@ export default function AuthorizationTable({
                   "
                   >
                     <td className="w-[4%] px-3 xl:px-4 py-3 text-center">
-                      {log.status !== "ROLLED_BACK" && (
+                      {log.status === "PENDING" && (
                         <input
                           className="cursor-pointer 2xl:w-5 2xl:h-5"
                           type="checkbox"

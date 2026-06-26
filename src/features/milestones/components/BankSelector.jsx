@@ -1,13 +1,24 @@
-import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-export default function BankSelector({
-  banks,
-  selectedBank,
-  setSelectedBank,
-}) {
-  const [showBanks, setShowBanks] =
-    useState(false);
+export default function BankSelector({ banks, selectedBank, setSelectedBank }) {
+  const [showBanks, setShowBanks] = useState(false);
+
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowBanks(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div
@@ -49,6 +60,7 @@ export default function BankSelector({
         {/* Dropdown */}
 
         <div
+          ref={dropdownRef}
           className="
             relative
             w-full
@@ -58,9 +70,7 @@ export default function BankSelector({
           "
         >
           <button
-            onClick={() =>
-              setShowBanks(!showBanks)
-            }
+            onClick={() => setShowBanks((prev) => !prev)}
             className="
               w-full
               h-11
@@ -77,7 +87,7 @@ export default function BankSelector({
               text-[#0B1F59]
               font-medium
               cursor-pointer
-              hover:border-[#2563EB]
+              hover:border-blue-500
               transition
             "
           >
@@ -92,21 +102,14 @@ export default function BankSelector({
               "
               title={selectedBank}
             >
-              {selectedBank ||
-                "Select Bank"}
+              {selectedBank || "Select Bank"}
             </span>
 
             <ChevronDown
               size={18}
-              className={`
-                flex-shrink-0
-                transition-transform
-                ${
-                  showBanks
-                    ? "rotate-180"
-                    : ""
-                }
-              `}
+              className={`transition-transform ${
+                showBanks ? "rotate-180" : ""
+              }`}
             />
           </button>
 
@@ -133,12 +136,8 @@ export default function BankSelector({
                 <button
                   key={bank}
                   onClick={() => {
-                    setSelectedBank(
-                      bank
-                    );
-                    setShowBanks(
-                      false
-                    );
+                    setSelectedBank(bank);
+                    setShowBanks(false);
                   }}
                   title={bank}
                   className="

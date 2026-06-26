@@ -2,14 +2,14 @@ import axios from "axios";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("axios", () => {
-  const mockAxiosInstance = {
-    interceptors: {
-      request: {
-        use: vi.fn(),
-      },
-      response: {
-        use: vi.fn(),
-      },
+  const mockAxiosInstance = vi.fn();
+
+  mockAxiosInstance.interceptors = {
+    request: {
+      use: vi.fn(),
+    },
+    response: {
+      use: vi.fn(),
     },
   };
 
@@ -26,12 +26,14 @@ describe("apiClient", () => {
   let requestInterceptor;
   let responseSuccessInterceptor;
   let responseErrorInterceptor;
+  let mockAxiosInstance;
 
   beforeEach(async () => {
     vi.resetModules();
     vi.clearAllMocks();
 
     localStorage.clear();
+    sessionStorage.clear();
 
     Object.defineProperty(import.meta, "env", {
       value: {
@@ -44,19 +46,19 @@ describe("apiClient", () => {
 
     apiClient = module.default;
 
+    mockAxiosInstance = axios.create.mock.results[0].value;
+
     requestInterceptor =
-      axios.create.mock.results[0].value.interceptors.request.use.mock
-        .calls[0][0];
+      mockAxiosInstance.interceptors.request.use.mock.calls[0][0];
 
     responseSuccessInterceptor =
-      axios.create.mock.results[0].value.interceptors.response.use.mock
-        .calls[0][0];
+      mockAxiosInstance.interceptors.response.use.mock.calls[0][0];
 
     responseErrorInterceptor =
-      axios.create.mock.results[0].value.interceptors.response.use.mock
-        .calls[0][1];
+      mockAxiosInstance.interceptors.response.use.mock.calls[0][1];
 
     axios.post.mockClear();
+    mockAxiosInstance.mockClear();
   });
 
   it("creates axios instance", () => {
@@ -64,7 +66,7 @@ describe("apiClient", () => {
   });
 
   it("adds authorization header when token exists", async () => {
-    localStorage.setItem("accessToken", "test-token");
+    sessionStorage.setItem("accessToken", "test-token");
 
     const config = {
       headers: {},
@@ -107,11 +109,17 @@ describe("apiClient", () => {
   });
 
   it("refreshes token and retries request on 401", async () => {
-    localStorage.setItem("refreshToken", "refresh-token");
+    sessionStorage.setItem("refreshToken", "refresh-token");
 
     axios.post.mockResolvedValue({
       data: {
         details: "new-access-token",
+      },
+    });
+
+    mockAxiosInstance.mockResolvedValue({
+      data: {
+        success: true,
       },
     });
 
@@ -124,9 +132,7 @@ describe("apiClient", () => {
       },
     };
 
-    await expect(responseErrorInterceptor(error)).rejects.toBeDefined();
-
-    expect(axios.post).toHaveBeenCalledTimes(1);
+    const response = await responseErrorInterceptor(error);
 
     expect(axios.post).toHaveBeenCalledWith(
       "http://localhost:8080/user/refresh",
@@ -137,12 +143,21 @@ describe("apiClient", () => {
         },
       },
     );
+
+    expect(sessionStorage.getItem("accessToken")).toBe("new-access-token");
+
+    expect(mockAxiosInstance).toHaveBeenCalledTimes(1);
+
+    expect(response).toEqual({
+      data: {
+        success: true,
+      },
+    });
   });
 
   it("clears storage when refresh token fails", async () => {
-    localStorage.setItem("refreshToken", "bad-token");
-
-    localStorage.setItem("accessToken", "old-token");
+    sessionStorage.setItem("refreshToken", "bad-token");
+    sessionStorage.setItem("accessToken", "old-token");
 
     const dispatchSpy = vi.spyOn(window, "dispatchEvent");
 
@@ -152,21 +167,22 @@ describe("apiClient", () => {
       response: {
         status: 401,
       },
-      config: {},
+      config: {
+        headers: {},
+      },
     };
 
     await expect(responseErrorInterceptor(error)).rejects.toThrow(
       "Refresh Failed",
     );
 
-    expect(localStorage.getItem("accessToken")).toBeNull();
+    expect(sessionStorage.getItem("accessToken")).toBeNull();
+    expect(sessionStorage.getItem("refreshToken")).toBeNull();
 
-    expect(dispatchSpy).toHaveBeenCalled();
+    expect(dispatchSpy).toHaveBeenCalledWith(expect.any(Event));
   });
 
   it("does not retry request twice", async () => {
-    axios.post.mockClear();
-
     const error = {
       response: {
         status: 401,
@@ -178,6 +194,6 @@ describe("apiClient", () => {
 
     await expect(responseErrorInterceptor(error)).rejects.toEqual(error);
 
-    expect(axios.post).toHaveBeenCalledTimes(0);
+    expect(axios.post).not.toHaveBeenCalled();
   });
 });

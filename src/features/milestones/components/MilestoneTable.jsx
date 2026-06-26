@@ -1,7 +1,6 @@
 import { Save } from "lucide-react";
 
 // import {updateMilestoneWeightages} from "../services/milestoneService";
-import WeightageSummary from "./WeightageSummary";
 
 export default function MilestoneTable({
   milestones,
@@ -34,6 +33,8 @@ export default function MilestoneTable({
   );
 
   const isValidWeightage = totalWeightage === 100;
+
+  const user = JSON.parse(sessionStorage.getItem("user"));
 
   return (
     <div
@@ -86,10 +87,48 @@ export default function MilestoneTable({
           </p>
         </div>
 
-        <button
-          onClick={onUpdate}
-          disabled={loading}
-          className={`
+        <div
+          className="
+          flex
+          justify-end
+          mt-2
+        "
+        >
+          <div
+            className="
+            px-5
+            py-3
+          "
+          >
+            <h4
+              className="
+            text-[#0B1F59]
+            text-base
+            xl:text-lg
+            2xl:text-xl
+            font-semibold
+            tracking-wide
+          "
+            >
+              Total Weightage :
+              <span
+                className="
+                ml-2
+                text-blue-600
+                font-bold
+              "
+              >
+                {totalWeightage}%
+              </span>
+            </h4>
+          </div>
+        </div>
+
+        {user?.role !== "MANAGEMENT USER" && (
+          <button
+            onClick={onUpdate}
+            disabled={loading}
+            className={`
           h-11
           xl:h-12
           px-5
@@ -111,11 +150,12 @@ export default function MilestoneTable({
               : "bg-[#2563EB] hover:bg-[#1D4ED8] text-white cursor-pointer"
           }
         `}
-        >
-          <Save size={18} />
+          >
+            <Save size={18} />
 
-          {loading ? "Updating..." : "Update Weightage"}
-        </button>
+            {loading ? "Updating..." : "Update Weightage"}
+          </button>
+        )}
       </div>
 
       {/* Table */}
@@ -234,7 +274,7 @@ export default function MilestoneTable({
               );
             })}
 
-            <WeightageSummary milestones={milestones} />
+            {/* <WeightageSummary milestones={milestones} /> */}
           </tbody>
         </table>
       </div>

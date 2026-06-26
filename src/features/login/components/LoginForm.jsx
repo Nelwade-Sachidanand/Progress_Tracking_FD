@@ -44,24 +44,28 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await login(username, password);
+    try {
+      const response = await login(username, password);
 
-    if (response?.statusType === "S") {
-      const user = response.details.user;
-      // console.log(response.details.user);
+      if (response?.statusType === "S") {
+        const user = response.details.user;
+        // console.log(response.details.user);
 
-      const projects = await fetchProjects(user.id);
-      // console.log("In Login" + projects);
+        const projects = await fetchProjects(user.id);
+        // console.log("In Login" + projects);
 
-      if (user.role === "USER") {
-        if (projects.length > 0) {
-          sessionStorage.setItem("selectedProjectId", projects[0].id);
-          navigate("/project-details");
-        }
-      } else navigate("/dashboard");
-      setUsername("");
-      setPassword("");
-      setShowPassword(false);
+        if (user.role === "USER") {
+          if (projects.length > 0) {
+            sessionStorage.setItem("selectedProjectId", projects[0].id);
+            navigate("/project-details", { replace: true });
+          }
+        } else navigate("/dashboard", { replace: true });
+        setUsername("");
+        setPassword("");
+        setShowPassword(false);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

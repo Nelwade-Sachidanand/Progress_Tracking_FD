@@ -55,7 +55,7 @@ export const getProjectMetrics = (project) => {
                 const diff = (actualEnd - plannedEnd) / (1000 * 60 * 60 * 24);
 
                 if (diff > 0) {
-                  delayDays += Math.round(diff);
+                  delayDays = Math.max(delayDays, Math.round(diff));
                 }
               } else {
                 const today = new Date();
@@ -63,7 +63,7 @@ export const getProjectMetrics = (project) => {
                 if (progress < 100 && today > plannedEnd) {
                   const diff = (today - plannedEnd) / (1000 * 60 * 60 * 24);
 
-                  delayDays += Math.round(diff);
+                  delayDays = Math.max(delayDays, Math.round(diff));
                 }
               }
             }

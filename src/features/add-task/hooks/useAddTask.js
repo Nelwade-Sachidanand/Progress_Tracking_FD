@@ -7,6 +7,8 @@ export default function useAddTask() {
 
   const selectedProjectId = sessionStorage.getItem("selectedProjectId");
 
+  const user = JSON.parse(sessionStorage.getItem("user"));
+
   const selectedProject =
     projects.find(
       (project) => String(project.id) === String(selectedProjectId),

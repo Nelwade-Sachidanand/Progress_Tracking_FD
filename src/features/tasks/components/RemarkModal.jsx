@@ -47,7 +47,7 @@ export default function RemarkModal({ isOpen, onClose, task, onRemarkSaved }) {
 
         await fetchProjects(user.id);
 
-        onRemarkSaved?.(task?.id, remark);
+        onRemarkSaved?.(task?.id, latestRemark);
         setExistingRemark("");
         setLatestRemark("");
 
@@ -76,9 +76,12 @@ export default function RemarkModal({ isOpen, onClose, task, onRemarkSaved }) {
         </div>
 
         <div className="mb-4">
-          <label className="block mb-2 font-medium">Activity</label>
+          <label htmlFor="activity" className="block mb-2 font-medium">
+            Activity
+          </label>
 
           <input
+            id="activity"
             value={task?.activity || ""}
             disabled
             className="

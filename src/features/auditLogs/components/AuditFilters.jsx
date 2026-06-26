@@ -1,6 +1,7 @@
 import { Calendar, Search } from "lucide-react";
 
 export default function AuditFilters({
+  logs = [],
   searchTerm,
   setSearchTerm,
   entityType,
@@ -10,6 +11,22 @@ export default function AuditFilters({
   selectedDate,
   setSelectedDate,
 }) {
+  const entityTypes = [
+    ...new Set(logs.map((log) => log.entityType).filter(Boolean)),
+  ];
+
+  const actionTypes = [
+    ...new Set(logs.map((log) => log.actionType).filter(Boolean)),
+  ];
+
+  const formatAction = (value = "") => {
+    return value
+      .toLowerCase()
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join("_");
+  };
+
   return (
     <div
       className="
@@ -19,7 +36,7 @@ export default function AuditFilters({
       border-slate-200
       p-5
       mt-5
-      "
+    "
     >
       <div
         className="
@@ -28,7 +45,7 @@ export default function AuditFilters({
         md:grid-cols-2
         xl:grid-cols-5
         gap-4
-        "
+      "
       >
         {/* Search */}
 
@@ -36,13 +53,11 @@ export default function AuditFilters({
           <Search
             size={18}
             className="
-            absolute
-            left-4
-            top-1/2
-            -translate-y-1/2
-            text-slate-400
-            2xl:h-5
-            2xl:w-5
+              absolute
+              left-4
+              top-1/2
+              -translate-y-1/2
+              text-slate-400
             "
           />
 
@@ -51,18 +66,18 @@ export default function AuditFilters({
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search entity name, user..."
             className="
-            w-full
-            h-12
-            pl-11
-            pr-4
-            rounded-xl
-            border
-            border-slate-300
-            outline-none
-            focus:border-blue-500
-            2xl:text-[17px]
-            2xl:font-medium
-            2xl:tracking-wide
+              w-full
+              h-12
+              pl-11
+              pr-4
+              rounded-xl
+              border
+              border-slate-300
+              outline-none
+              focus:border-blue-500
+              2xl:text-[17px]
+              2xl:font-medium
+              2xl:tracking-wide
             "
           />
         </div>
@@ -73,28 +88,26 @@ export default function AuditFilters({
           value={entityType}
           onChange={(e) => setEntityType(e.target.value)}
           className="
-          h-12
-          px-4
-          rounded-xl
-          border
-          border-slate-300
-          outline-none
-          focus:border-blue-500
-          cursor-pointer
-          2xl:text-[17px]
-          2xl:font-medium
-          2xl:tracking-wide
+            h-12
+            px-4
+            rounded-xl
+            border
+            border-slate-300
+            outline-none
+            focus:border-blue-500
+            cursor-pointer
+            2xl:text-[17px]
+            2xl:font-medium
+            2xl:tracking-wide
           "
         >
           <option value="">All Entity Types</option>
 
-          <option value="USER">USER</option>
-
-          <option value="PROJECT">PROJECT</option>
-
-          <option value="TASK">TASK</option>
-
-          <option value="ACTIVITY">ACTIVITY</option>
+          {entityTypes.map((type) => (
+            <option key={type} value={type}>
+              {formatAction(type)}
+            </option>
+          ))}
         </select>
 
         {/* Action Type */}
@@ -103,34 +116,26 @@ export default function AuditFilters({
           value={actionType}
           onChange={(e) => setActionType(e.target.value)}
           className="
-          h-12
-          px-4
-          rounded-xl
-          border
-          border-slate-300
-          outline-none
-          focus:border-blue-500
-          cursor-pointer
-          2xl:text-[17px]
-          2xl:font-medium
-          2xl:tracking-wide
+            h-12
+            px-4
+            rounded-xl
+            border
+            border-slate-300
+            outline-none
+            focus:border-blue-500
+            cursor-pointer
+            2xl:text-[17px]
+            2xl:font-medium
+            2xl:tracking-wide
           "
         >
           <option value="">All Actions</option>
 
-          <option value="CREATE_USER">CREATE_USER</option>
-
-          <option value="UPDATE_USER">UPDATE_USER</option>
-
-          <option value="DELETE_USER">DELETE_USER</option>
-
-          <option value="CREATE_PROJECT">CREATE_PROJECT</option>
-
-          <option value="UPDATE_PROJECT">UPDATE_PROJECT</option>
-
-          <option value="DELETE_PROJECT">DELETE_PROJECT</option>
-
-          <option value="Export_Excel">Export_Excel</option>
+          {actionTypes.map((action) => (
+            <option key={action} value={action}>
+              {formatAction(action)}
+            </option>
+          ))}
         </select>
 
         {/* Date */}
@@ -139,13 +144,11 @@ export default function AuditFilters({
           <Calendar
             size={18}
             className="
-            absolute
-            left-4
-            top-1/2
-            -translate-y-1/2
-            text-slate-400
-            2xl:h-5
-            2xl:w-5
+              absolute
+              left-4
+              top-1/2
+              -translate-y-1/2
+              text-slate-400
             "
           />
 
@@ -154,18 +157,18 @@ export default function AuditFilters({
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
             className="
-            w-full
-            h-12
-            pl-11
-            pr-4
-            rounded-xl
-            border
-            border-slate-300
-            outline-none
-            focus:border-blue-500
-            2xl:text-[17px]
-            2xl:font-medium
-            2xl:tracking-wide
+              w-full
+              h-12
+              pl-11
+              pr-4
+              rounded-xl
+              border
+              border-slate-300
+              outline-none
+              focus:border-blue-500
+              2xl:text-[17px]
+              2xl:font-medium
+              2xl:tracking-wide
             "
           />
         </div>

@@ -1,15 +1,22 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import DashboardToolbar from "../components/DashboardToolbar";
+
+const mockUser = {
+  role: "ADMIN",
+};
+
+beforeEach(() => {
+  sessionStorage.clear();
+  sessionStorage.setItem("user", JSON.stringify(mockUser));
+});
 
 describe("DashboardToolbar", () => {
   it("renders Filters button", () => {
     render(<DashboardToolbar onCreateProject={vi.fn()} />);
 
     expect(
-      screen.getByRole("button", {
-        name: /filters/i,
-      }),
+      screen.getByRole("button", { name: /filters/i }),
     ).toBeInTheDocument();
   });
 
@@ -17,9 +24,7 @@ describe("DashboardToolbar", () => {
     render(<DashboardToolbar onCreateProject={vi.fn()} />);
 
     expect(
-      screen.getByRole("button", {
-        name: /create project/i,
-      }),
+      screen.getByRole("button", { name: /create project/i }),
     ).toBeInTheDocument();
   });
 
@@ -28,11 +33,7 @@ describe("DashboardToolbar", () => {
 
     render(<DashboardToolbar onCreateProject={onCreateProject} />);
 
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: /create project/i,
-      }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: /create project/i }));
 
     expect(onCreateProject).toHaveBeenCalledTimes(1);
   });
@@ -42,11 +43,7 @@ describe("DashboardToolbar", () => {
 
     render(<DashboardToolbar onCreateProject={onCreateProject} />);
 
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: /filters/i,
-      }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: /filters/i }));
 
     expect(onCreateProject).not.toHaveBeenCalled();
   });
@@ -62,10 +59,14 @@ describe("DashboardToolbar", () => {
   it("handles missing onCreateProject gracefully", () => {
     render(<DashboardToolbar />);
 
+    // still should render Filters always
     expect(
-      screen.getByRole("button", {
-        name: /create project/i,
-      }),
+      screen.getByRole("button", { name: /filters/i }),
+    ).toBeInTheDocument();
+
+    // Create Project depends on ADMIN → should exist due to mock
+    expect(
+      screen.getByRole("button", { name: /create project/i }),
     ).toBeInTheDocument();
   });
 });

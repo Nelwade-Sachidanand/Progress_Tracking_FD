@@ -6,8 +6,6 @@ import AuditTable from "../components/AuditTable";
 import { useAuditLogs } from "../hooks/useAuditLogs";
 
 const AuditLogsPage = () => {
- // const [selectedLog, setSelectedLog] = useState(null);
-
   const { auditLogs, loading } = useAuditLogs();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,11 +33,9 @@ const AuditLogsPage = () => {
     return searchMatch && entityMatch && actionMatch && dateMatch;
   });
 
-const [showAuditModal, setShowAuditModal] =
-  useState(false);
+  const [showAuditModal, setShowAuditModal] = useState(false);
 
-const [selectedLog, setSelectedLog] =
-  useState(null);
+  const [selectedLog, setSelectedLog] = useState(null);
   return (
     <div
       className="
@@ -55,14 +51,15 @@ const [selectedLog, setSelectedLog] =
     >
       {/* Main Content */}
       <div
-  className="
+        className="
   w-full
   overflow-y-auto
   "
->
+      >
         <AuditSummaryCards auditLogs={filteredLogs} />
 
         <AuditFilters
+          logs={auditLogs}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           entityType={entityType}
@@ -73,27 +70,27 @@ const [selectedLog, setSelectedLog] =
           setSelectedDate={setSelectedDate}
         />
 
- <AuditTable
-  logs={filteredLogs}
-  loading={loading}
-  onView={(log) => {
-    setSelectedLog(log);
-    setShowAuditModal(true);
-  }}
-/>
+        <AuditTable
+          logs={filteredLogs}
+          loading={loading}
+          onView={(log) => {
+            setSelectedLog(log);
+            setShowAuditModal(true);
+          }}
+        />
       </div>
 
       {/* Right Drawer */}
-     {/* Audit Modal */}
-{showAuditModal && (
-  <AuditDetailsModal
-    log={selectedLog}
-    onClose={() => {
-      setShowAuditModal(false);
-      setSelectedLog(null);
-    }}
-  />
-)}
+      {/* Audit Modal */}
+      {showAuditModal && (
+        <AuditDetailsModal
+          log={selectedLog}
+          onClose={() => {
+            setShowAuditModal(false);
+            setSelectedLog(null);
+          }}
+        />
+      )}
     </div>
   );
 };

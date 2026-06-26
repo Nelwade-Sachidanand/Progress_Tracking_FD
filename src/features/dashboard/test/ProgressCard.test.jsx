@@ -30,8 +30,10 @@ describe("ProgressCard", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    sessionStorage.clear();
 
     getProjectMetrics.mockReturnValue({
+      projectStartDate: "2026-01-01",
       overallProgress: 75,
       status: "On Track",
       goLiveDate: "2026-12-31",
@@ -56,6 +58,12 @@ describe("ProgressCard", () => {
     expect(screen.getByText("No Projects Found")).toBeInTheDocument();
   });
 
+  test("renders projects heading", () => {
+    renderComponent();
+
+    expect(screen.getByText("Projects")).toBeInTheDocument();
+  });
+
   test("renders project title", () => {
     renderComponent();
 
@@ -74,6 +82,33 @@ describe("ProgressCard", () => {
     expect(screen.getByText("1 Project")).toBeInTheDocument();
   });
 
+  test("renders multiple project count", () => {
+    renderComponent([
+      mockProject,
+      {
+        id: "2",
+        projectName: "Project Beta",
+        bankName: "ICICI Bank",
+      },
+    ]);
+
+    expect(screen.getByText("2 Projects")).toBeInTheDocument();
+  });
+
+  test("renders multiple project cards", () => {
+    renderComponent([
+      mockProject,
+      {
+        id: "2",
+        projectName: "Project Beta",
+        bankName: "ICICI Bank",
+      },
+    ]);
+
+    expect(screen.getByText("Project Alpha")).toBeInTheDocument();
+    expect(screen.getByText("Project Beta")).toBeInTheDocument();
+  });
+
   test("renders progress percentage", () => {
     renderComponent();
 
@@ -83,9 +118,7 @@ describe("ProgressCard", () => {
   test("renders project status", () => {
     renderComponent();
 
-    const statuses = screen.getAllByText("On Track");
-
-    expect(statuses.length).toBeGreaterThan(0);
+    expect(screen.getAllByText("On Track")[0]).toBeInTheDocument();
   });
 
   test("renders current phase", () => {
@@ -106,6 +139,18 @@ describe("ProgressCard", () => {
     expect(screen.getByText("80%")).toBeInTheDocument();
   });
 
+  test("renders project start date", () => {
+    renderComponent();
+
+    expect(screen.getByText("01/01/2026")).toBeInTheDocument();
+  });
+
+  test("renders go live date", () => {
+    renderComponent();
+
+    expect(screen.getByText("31/12/2026")).toBeInTheDocument();
+  });
+
   test("renders days remaining", () => {
     renderComponent();
 
@@ -118,45 +163,40 @@ describe("ProgressCard", () => {
     expect(screen.getByText("2 Days")).toBeInTheDocument();
   });
 
-  test("renders formatted go live date", () => {
-    renderComponent();
-
-    expect(screen.getByText("31/12/2026")).toBeInTheDocument();
-  });
-
   test("calls getProjectMetrics", () => {
     renderComponent();
 
     expect(getProjectMetrics).toHaveBeenCalledWith(mockProject);
   });
 
+  test("renders view project details button", () => {
+    renderComponent();
+
+    expect(
+      screen.getByRole("button", {
+        name: /view project details/i,
+      }),
+    ).toBeInTheDocument();
+  });
+
   test("navigates to project details", () => {
     renderComponent();
 
-    fireEvent.click(screen.getByText("View Project Details"));
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /view project details/i,
+      }),
+    );
 
-    expect(localStorage.getItem("selectedProjectId")).toBe("1");
-
-    expect(localStorage.getItem("selectedProjectName")).toBe("Project Alpha");
+    expect(sessionStorage.getItem("selectedProjectId")).toBe("1");
+    expect(sessionStorage.getItem("selectedProjectName")).toBe("Project Alpha");
 
     expect(mockNavigate).toHaveBeenCalledWith("/project-details");
   });
 
-  test("renders multiple projects count", () => {
-    renderComponent([
-      mockProject,
-      {
-        id: "2",
-        projectName: "Project Beta",
-        bankName: "ICICI",
-      },
-    ]);
-
-    expect(screen.getByText("2 Projects")).toBeInTheDocument();
-  });
-
   test("renders delayed status", () => {
     getProjectMetrics.mockReturnValue({
+      projectStartDate: "2026-01-01",
       overallProgress: 40,
       status: "Delayed",
       goLiveDate: "2026-12-31",
@@ -170,10 +210,12 @@ describe("ProgressCard", () => {
     renderComponent();
 
     expect(screen.getAllByText("Delayed")[0]).toBeInTheDocument();
+    expect(screen.getByText("25 Days")).toBeInTheDocument();
   });
 
   test("renders at risk status", () => {
     getProjectMetrics.mockReturnValue({
+      projectStartDate: "2026-01-01",
       overallProgress: 60,
       status: "At Risk",
       goLiveDate: "2026-12-31",
@@ -187,5 +229,114 @@ describe("ProgressCard", () => {
     renderComponent();
 
     expect(screen.getAllByText("At Risk")[0]).toBeInTheDocument();
+    expect(screen.getByText("8 Days")).toBeInTheDocument();
+  });
+
+  test("renders unknown status", () => {
+    getProjectMetrics.mockReturnValue({
+      projectStartDate: "2026-01-01",
+      overallProgress: 50,
+      status: "Unknown",
+      goLiveDate: "",
+      daysRemaining: 0,
+      delayDays: 0,
+      currentPhase: "-",
+      currentMilestone: "-",
+      readiness: 50,
+    });
+
+    renderComponent();
+
+    expect(screen.getAllByText("Unknown")[0]).toBeInTheDocument();
+  });
+
+  test("shows dash when project start date missing", () => {
+    getProjectMetrics.mockReturnValue({
+      projectStartDate: null,
+      overallProgress: 70,
+      status: "On Track",
+      goLiveDate: "2026-12-31",
+      daysRemaining: 25,
+      delayDays: 2,
+      currentPhase: "Testing",
+      currentMilestone: "UAT",
+      readiness: 80,
+    });
+
+    renderComponent();
+
+    expect(screen.getAllByText("-").length).toBeGreaterThan(0);
+  });
+
+  test("shows dash when go live date missing", () => {
+    getProjectMetrics.mockReturnValue({
+      projectStartDate: "2026-01-01",
+      overallProgress: 70,
+      status: "On Track",
+      goLiveDate: null,
+      daysRemaining: 25,
+      delayDays: 2,
+      currentPhase: "Testing",
+      currentMilestone: "UAT",
+      readiness: 80,
+    });
+
+    renderComponent();
+
+    expect(screen.getAllByText("-").length).toBeGreaterThan(0);
+  });
+
+  test("renders green delay", () => {
+    getProjectMetrics.mockReturnValue({
+      projectStartDate: "2026-01-01",
+      overallProgress: 85,
+      status: "On Track",
+      goLiveDate: "2026-12-31",
+      daysRemaining: 120,
+      delayDays: 2,
+      currentPhase: "Testing",
+      currentMilestone: "UAT",
+      readiness: 90,
+    });
+
+    renderComponent();
+
+    expect(screen.getByText("2 Days")).toBeInTheDocument();
+  });
+
+  test("renders yellow delay", () => {
+    getProjectMetrics.mockReturnValue({
+      projectStartDate: "2026-01-01",
+      overallProgress: 60,
+      status: "At Risk",
+      goLiveDate: "2026-12-31",
+      daysRemaining: 30,
+      delayDays: 10,
+      currentPhase: "SIT",
+      currentMilestone: "Execution",
+      readiness: 65,
+    });
+
+    renderComponent();
+
+    expect(screen.getByText("10 Days")).toBeInTheDocument();
+  });
+
+  test("renders red delay", () => {
+    getProjectMetrics.mockReturnValue({
+      projectStartDate: "2026-01-01",
+      overallProgress: 25,
+      status: "Delayed",
+      goLiveDate: "2026-12-31",
+      daysRemaining: 5,
+      delayDays: 30,
+      currentPhase: "Development",
+      currentMilestone: "Coding",
+      readiness: 35,
+    });
+
+    renderComponent();
+
+    expect(screen.getByText("30 Days")).toBeInTheDocument();
   });
 });

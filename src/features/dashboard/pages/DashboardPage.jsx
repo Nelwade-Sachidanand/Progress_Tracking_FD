@@ -79,7 +79,7 @@ export default function DashboardPage() {
   });
 
   const dashboardData = useMemo(() => {
-    const projects = filteredProjects;
+    const projects = filteredProjects || [];
 
     const overallProgress = calculateOverallProgress(projects);
 

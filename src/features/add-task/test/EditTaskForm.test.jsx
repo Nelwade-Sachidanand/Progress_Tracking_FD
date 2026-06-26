@@ -1,27 +1,38 @@
+import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
+
 import EditTaskForm from "../components/EditTaskForm";
 
 const mockHandleChange = vi.fn();
-const mockResetForm = vi.fn();
 const mockHandleUpdate = vi.fn();
 
 vi.mock("../hooks/useEditTask", () => ({
   default: () => ({
+    selectedProject: {
+      projectName: "Project A",
+    },
+
     formData: {
-      phaseName: "",
-      milestoneName: "",
-      taskName: "",
-      subTaskName: "",
-      activityName: "",
-      owner: "",
+      phaseName: "Phase 1",
+      milestoneName: "Milestone 1",
+      taskName: "Task 1",
+      subTaskName: "Sub Task 1",
+      activityName: "Activity 1",
+      owner: "Sachin",
+
       plannedStartDate: "",
       plannedEndDate: "",
       actualStartDate: "",
       actualEndDate: "",
+
       estimatedPeriodWeek: "",
-      progress: 0,
+
+      progress: 20,
+
       executionStatus: "",
+
+      changeReason: "",
     },
 
     phases: [],
@@ -30,7 +41,6 @@ vi.mock("../hooks/useEditTask", () => ({
     subTasks: [],
 
     handleChange: mockHandleChange,
-    resetForm: mockResetForm,
     handleUpdate: mockHandleUpdate,
   }),
 }));
@@ -50,70 +60,34 @@ describe("EditTaskForm", () => {
     expect(screen.getByText("Progress & Status")).toBeInTheDocument();
   });
 
-  test("updates phase", () => {
+  test("phase field is disabled", () => {
     render(<EditTaskForm />);
 
-    fireEvent.change(screen.getByPlaceholderText("Enter Phase"), {
-      target: {
-        value: "Phase A",
-      },
-    });
-
-    expect(mockHandleChange).toHaveBeenCalledWith("phaseName", "Phase A");
+    expect(screen.getByDisplayValue("Phase 1")).toBeDisabled();
   });
 
-  test("updates milestone", () => {
+  test("milestone field is disabled", () => {
     render(<EditTaskForm />);
 
-    fireEvent.change(screen.getByPlaceholderText("Enter Milestone"), {
-      target: {
-        value: "Milestone A",
-      },
-    });
-
-    expect(mockHandleChange).toHaveBeenCalledWith(
-      "milestoneName",
-      "Milestone A",
-    );
+    expect(screen.getByDisplayValue("Milestone 1")).toBeDisabled();
   });
 
-  test("updates task", () => {
+  test("task field is disabled", () => {
     render(<EditTaskForm />);
 
-    fireEvent.change(screen.getByPlaceholderText("Enter Task"), {
-      target: {
-        value: "Task A",
-      },
-    });
-
-    expect(mockHandleChange).toHaveBeenCalledWith("taskName", "Task A");
+    expect(screen.getByDisplayValue("Task 1")).toBeDisabled();
   });
 
-  test("updates sub task", () => {
+  test("sub task field is disabled", () => {
     render(<EditTaskForm />);
 
-    fireEvent.change(screen.getByPlaceholderText("Enter Sub Task"), {
-      target: {
-        value: "Sub Task A",
-      },
-    });
-
-    expect(mockHandleChange).toHaveBeenCalledWith("subTaskName", "Sub Task A");
+    expect(screen.getByDisplayValue("Sub Task 1")).toBeDisabled();
   });
 
-  test("updates activity", () => {
+  test("activity field is disabled", () => {
     render(<EditTaskForm />);
 
-    fireEvent.change(screen.getByPlaceholderText("Enter Activity"), {
-      target: {
-        value: "Testing Activity",
-      },
-    });
-
-    expect(mockHandleChange).toHaveBeenCalledWith(
-      "activityName",
-      "Testing Activity",
-    );
+    expect(screen.getByDisplayValue("Activity 1")).toBeDisabled();
   });
 
   test("updates owner", () => {
@@ -121,11 +95,11 @@ describe("EditTaskForm", () => {
 
     fireEvent.change(screen.getByPlaceholderText("Enter Owner"), {
       target: {
-        value: "Sachin",
+        value: "Rahul",
       },
     });
 
-    expect(mockHandleChange).toHaveBeenCalledWith("owner", "Sachin");
+    expect(mockHandleChange).toHaveBeenCalledWith("owner", "Rahul");
   });
 
   test("updates estimated weeks", () => {
@@ -133,33 +107,96 @@ describe("EditTaskForm", () => {
 
     fireEvent.change(screen.getByPlaceholderText("Enter Estimated Weeks"), {
       target: {
-        value: "8",
+        value: "12",
       },
     });
 
-    expect(mockHandleChange).toHaveBeenCalledWith("estimatedPeriodWeek", "8");
+    expect(mockHandleChange).toHaveBeenCalledWith("estimatedPeriodWeek", "12");
   });
 
+  test("renders progress slider", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByRole("slider")).toBeInTheDocument();
+  });
+
+  test("renders status dropdown", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByRole("combobox")).toBeInTheDocument();
+  });
   test("updates planned start date", () => {
     render(<EditTaskForm />);
 
-    const inputs = screen.getAllByDisplayValue("");
+    const dates = document.querySelectorAll('input[type="date"]');
 
-    fireEvent.change(inputs[6], {
+    fireEvent.change(dates[0], {
       target: {
-        value: "2026-01-01",
+        value: "2026-06-01",
       },
     });
 
-    expect(mockHandleChange).toHaveBeenCalled();
+    expect(mockHandleChange).toHaveBeenCalledWith(
+      "plannedStartDate",
+      "2026-06-01",
+    );
+  });
+
+  test("updates planned end date", () => {
+    render(<EditTaskForm />);
+
+    const dates = document.querySelectorAll('input[type="date"]');
+
+    fireEvent.change(dates[1], {
+      target: {
+        value: "2026-06-15",
+      },
+    });
+
+    expect(mockHandleChange).toHaveBeenCalledWith(
+      "plannedEndDate",
+      "2026-06-15",
+    );
+  });
+
+  test("updates actual start date", () => {
+    render(<EditTaskForm />);
+
+    const dates = document.querySelectorAll('input[type="date"]');
+
+    fireEvent.change(dates[2], {
+      target: {
+        value: "2026-06-03",
+      },
+    });
+
+    expect(mockHandleChange).toHaveBeenCalledWith(
+      "actualStartDate",
+      "2026-06-03",
+    );
+  });
+
+  test("updates actual end date", () => {
+    render(<EditTaskForm />);
+
+    const dates = document.querySelectorAll('input[type="date"]');
+
+    fireEvent.change(dates[3], {
+      target: {
+        value: "2026-06-18",
+      },
+    });
+
+    expect(mockHandleChange).toHaveBeenCalledWith(
+      "actualEndDate",
+      "2026-06-18",
+    );
   });
 
   test("updates progress slider", () => {
     render(<EditTaskForm />);
 
-    const slider = screen.getByRole("slider");
-
-    fireEvent.change(slider, {
+    fireEvent.change(screen.getByRole("slider"), {
       target: {
         value: "80",
       },
@@ -168,12 +205,10 @@ describe("EditTaskForm", () => {
     expect(mockHandleChange).toHaveBeenCalledWith("progress", "80");
   });
 
-  test("updates status", () => {
+  test("updates execution status", () => {
     render(<EditTaskForm />);
 
-    const select = screen.getByRole("combobox");
-
-    fireEvent.change(select, {
+    fireEvent.change(screen.getByRole("combobox"), {
       target: {
         value: "Completed",
       },
@@ -185,15 +220,7 @@ describe("EditTaskForm", () => {
     );
   });
 
-  test("calls resetForm", () => {
-    render(<EditTaskForm />);
-
-    fireEvent.click(screen.getByText("Reset"));
-
-    expect(mockResetForm).toHaveBeenCalledTimes(1);
-  });
-
-  test("calls handleUpdate", () => {
+  test("update button calls handleUpdate", () => {
     render(<EditTaskForm />);
 
     fireEvent.click(screen.getByText("Update Task"));
@@ -201,7 +228,7 @@ describe("EditTaskForm", () => {
     expect(mockHandleUpdate).toHaveBeenCalledTimes(1);
   });
 
-  test("calls browser back", () => {
+  test("back button calls browser history", () => {
     const backSpy = vi.fn();
 
     window.history.back = backSpy;
@@ -211,5 +238,152 @@ describe("EditTaskForm", () => {
     fireEvent.click(screen.getByText("← Back"));
 
     expect(backSpy).toHaveBeenCalledTimes(1);
+  });
+
+  test("update button exists", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByText("Update Task")).toBeInTheDocument();
+  });
+
+  test("back button exists", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByText("← Back")).toBeInTheDocument();
+  });
+
+  test("estimated weeks input exists", () => {
+    render(<EditTaskForm />);
+
+    expect(
+      screen.getByPlaceholderText("Enter Estimated Weeks"),
+    ).toBeInTheDocument();
+  });
+
+  test("owner input exists", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByPlaceholderText("Enter Owner")).toBeInTheDocument();
+  });
+
+  test("renders four date inputs", () => {
+    render(<EditTaskForm />);
+
+    expect(document.querySelectorAll('input[type="date"]').length).toBe(4);
+  });
+
+  test("progress slider displays initial value", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByText("20%")).toBeInTheDocument();
+  });
+  test("does not show reason for change initially", () => {
+    render(<EditTaskForm />);
+
+    expect(
+      screen.queryByPlaceholderText("Enter reason for changing planned dates"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("renders owner with initial value", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByDisplayValue("Sachin")).toBeInTheDocument();
+  });
+
+  test("renders phase value", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByDisplayValue("Phase 1")).toBeInTheDocument();
+  });
+
+  test("renders milestone value", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByDisplayValue("Milestone 1")).toBeInTheDocument();
+  });
+
+  test("renders task value", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByDisplayValue("Task 1")).toBeInTheDocument();
+  });
+
+  test("renders sub task value", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByDisplayValue("Sub Task 1")).toBeInTheDocument();
+  });
+
+  test("renders activity value", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByDisplayValue("Activity 1")).toBeInTheDocument();
+  });
+
+  test("owner input is editable", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByPlaceholderText("Enter Owner")).not.toBeDisabled();
+  });
+
+  test("estimated weeks input is editable", () => {
+    render(<EditTaskForm />);
+
+    expect(
+      screen.getByPlaceholderText("Enter Estimated Weeks"),
+    ).not.toBeDisabled();
+  });
+
+  test("status dropdown contains completed option", () => {
+    render(<EditTaskForm />);
+
+    expect(
+      screen.getByRole("option", {
+        name: "Completed",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  test("status dropdown contains delayed option", () => {
+    render(<EditTaskForm />);
+
+    expect(
+      screen.getByRole("option", {
+        name: "Delayed",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  test("status dropdown contains in progress option", () => {
+    render(<EditTaskForm />);
+
+    expect(
+      screen.getByRole("option", {
+        name: "In Progress",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  test("status dropdown contains not started option", () => {
+    render(<EditTaskForm />);
+
+    expect(
+      screen.getByRole("option", {
+        name: "Not Started",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  test("progress slider has correct max value", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByRole("slider")).toHaveAttribute("max", "100");
+  });
+
+  test("progress slider has correct min value", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByRole("slider")).toHaveAttribute("min", "0");
   });
 });

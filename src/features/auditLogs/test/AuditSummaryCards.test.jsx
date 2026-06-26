@@ -121,4 +121,158 @@ describe("AuditSummaryCards", () => {
 
     expect(screen.getByText("Project Logs")).toBeInTheDocument();
   });
+  it("handles TASK logs only", () => {
+    render(
+      <AuditSummaryCards
+        auditLogs={[
+          {
+            entityType: "TASK",
+            modifiedDate: today,
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getByText("Total Logs")).toBeInTheDocument();
+    expect(screen.getByText("Today Logs")).toBeInTheDocument();
+
+    expect(screen.getAllByText("1").length).toBeGreaterThan(0);
+  });
+
+  it("handles ACTIVITY logs only", () => {
+    render(
+      <AuditSummaryCards
+        auditLogs={[
+          {
+            entityType: "ACTIVITY",
+            modifiedDate: today,
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getByText("Total Logs")).toBeInTheDocument();
+
+    expect(screen.getAllByText("1").length).toBeGreaterThan(0);
+  });
+
+  it("does not count yesterday logs as today logs", () => {
+    render(
+      <AuditSummaryCards
+        auditLogs={[
+          {
+            entityType: "USER",
+            modifiedDate: yesterday,
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getByText("Today Logs")).toBeInTheDocument();
+
+    expect(screen.getAllByText("0").length).toBeGreaterThan(0);
+  });
+
+  it("counts multiple project logs", () => {
+    render(
+      <AuditSummaryCards
+        auditLogs={[
+          {
+            entityType: "PROJECT",
+            modifiedDate: today,
+          },
+          {
+            entityType: "PROJECT",
+            modifiedDate: today,
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getAllByText("2").length).toBeGreaterThan(0);
+  });
+
+  it("renders exactly four card titles", () => {
+    render(<AuditSummaryCards auditLogs={mockLogs} />);
+
+    expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(4);
+  });
+
+  it("renders four numeric values", () => {
+    render(<AuditSummaryCards auditLogs={mockLogs} />);
+
+    const headings = screen.getAllByRole("heading");
+
+    expect(headings.length).toBeGreaterThanOrEqual(4);
+  });
+
+  it("renders icons for every card", () => {
+    const { container } = render(<AuditSummaryCards auditLogs={mockLogs} />);
+
+    expect(container.querySelectorAll("svg")).toHaveLength(4);
+  });
+
+  it("handles invalid modifiedDate gracefully", () => {
+    render(
+      <AuditSummaryCards
+        auditLogs={[
+          {
+            entityType: "USER",
+            modifiedDate: "invalid-date",
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getByText("Today Logs")).toBeInTheDocument();
+
+    expect(screen.getAllByText("0").length).toBeGreaterThan(0);
+  });
+
+  it("handles null modifiedDate", () => {
+    render(
+      <AuditSummaryCards
+        auditLogs={[
+          {
+            entityType: "USER",
+            modifiedDate: null,
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getByText("Today Logs")).toBeInTheDocument();
+  });
+
+  it("handles unknown entity type", () => {
+    render(
+      <AuditSummaryCards
+        auditLogs={[
+          {
+            entityType: "UNKNOWN",
+            modifiedDate: today,
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getByText("Total Logs")).toBeInTheDocument();
+
+    expect(screen.getAllByText("1").length).toBeGreaterThan(0);
+  });
+
+  it("renders card container", () => {
+    const { container } = render(<AuditSummaryCards auditLogs={mockLogs} />);
+
+    expect(container.firstChild).toBeInTheDocument();
+  });
+
+  it("renders all cards even with no logs", () => {
+    render(<AuditSummaryCards auditLogs={[]} />);
+
+    expect(screen.getByText("Total Logs")).toBeInTheDocument();
+    expect(screen.getByText("User Logs")).toBeInTheDocument();
+    expect(screen.getByText("Project Logs")).toBeInTheDocument();
+    expect(screen.getByText("Today Logs")).toBeInTheDocument();
+  });
 });

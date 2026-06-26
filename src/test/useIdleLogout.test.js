@@ -1,5 +1,5 @@
 import { renderHook } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import useIdleLogout from "../services/useIdleLogout";
 
 const mockNavigate = vi.fn();
@@ -11,11 +11,14 @@ vi.mock("react-router-dom", () => ({
 describe("useIdleLogout", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    localStorage.clear();
+
+    sessionStorage.clear();
+
     vi.useFakeTimers();
   });
 
   afterEach(() => {
+    vi.runOnlyPendingTimers();
     vi.useRealTimers();
   });
 
@@ -28,13 +31,13 @@ describe("useIdleLogout", () => {
   });
 
   it("logs out user after idle timeout", () => {
-    localStorage.setItem("accessToken", "token");
+    sessionStorage.setItem("accessToken", "token");
 
     renderHook(() => useIdleLogout());
 
     vi.advanceTimersByTime(5 * 60 * 1000);
 
-    expect(localStorage.getItem("accessToken")).toBeNull();
+    expect(sessionStorage.getItem("accessToken")).toBeNull();
 
     expect(mockNavigate).toHaveBeenCalledWith("/", {
       replace: true,
@@ -46,7 +49,7 @@ describe("useIdleLogout", () => {
   });
 
   it("resets timer on mousemove", () => {
-    localStorage.setItem("accessToken", "token");
+    sessionStorage.setItem("accessToken", "token");
 
     renderHook(() => useIdleLogout());
 
@@ -64,7 +67,7 @@ describe("useIdleLogout", () => {
   });
 
   it("resets timer on keydown", () => {
-    localStorage.setItem("accessToken", "token");
+    sessionStorage.setItem("accessToken", "token");
 
     renderHook(() => useIdleLogout());
 
@@ -82,7 +85,7 @@ describe("useIdleLogout", () => {
   });
 
   it("cleans up event listeners on unmount", () => {
-    localStorage.setItem("accessToken", "token");
+    sessionStorage.setItem("accessToken", "token");
 
     const removeSpy = vi.spyOn(window, "removeEventListener");
 
@@ -90,11 +93,11 @@ describe("useIdleLogout", () => {
 
     unmount();
 
-    expect(removeSpy).toHaveBeenCalled();
+    expect(removeSpy).toHaveBeenCalledTimes(6);
   });
 
   it("clears timeout on unmount", () => {
-    localStorage.setItem("accessToken", "token");
+    sessionStorage.setItem("accessToken", "token");
 
     const clearSpy = vi.spyOn(global, "clearTimeout");
 

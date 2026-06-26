@@ -1,10 +1,9 @@
-import { ArrowLeft, Save, UserPlus, X } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Save, UserPlus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useProjects } from "../../../context/ProjectContext";
 import { useUsers } from "../hooks/useUsers";
-import { Eye, EyeOff } from "lucide-react";
 
 const UserForm = ({ mode = "add", userData = null }) => {
   const navigate = useNavigate();
@@ -142,7 +141,6 @@ const UserForm = ({ mode = "add", userData = null }) => {
       }
     } catch (error) {
       console.error(error);
-      // alert(error?.response?.data?.message || "Failed to create user");
     } finally {
       setLoading(false);
     }
@@ -391,11 +389,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
       cursor-pointer
     "
               >
-                {showPassword ? (
-                  <EyeOff size={18} />
-                ) : (
-                  <Eye size={18} />
-                )}
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
@@ -518,6 +512,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
             {selectedProjects.map((project) => (
               <div
                 key={project.id}
+                data-testid={`selected-project-${project.projectName.replace(/\s/g, "")}`}
                 className="
                 px-4
                 py-2

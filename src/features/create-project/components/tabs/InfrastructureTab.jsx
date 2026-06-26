@@ -2,10 +2,10 @@ import { Database, Plus, Trash2 } from "lucide-react";
 import BackButton from "./BackButton";
 
 export default function InfrastructureTab({
-  infrastructure,
-  hardwareDetails,
-  updateSection,
-  updateArraySection,
+  infrastructure = {},
+  hardwareDetails = [],
+  updateSection = () => {},
+  updateArraySection = () => {},
 }) {
   const serverOptions = [
     "DB Server",
@@ -151,6 +151,7 @@ export default function InfrastructureTab({
               />
 
               <input
+                data-testid="current-database"
                 type="text"
                 name="currentDatabase"
                 value={infrastructure.currentDatabase || ""}

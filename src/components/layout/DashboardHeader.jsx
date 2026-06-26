@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   ChevronDown,
   ClipboardList,
+  FileSpreadsheet,
   FolderOpen,
   LayoutDashboard,
   List,
@@ -21,7 +22,7 @@ import {
   Users,
   XCircle,
 } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useProjects } from "../../context/ProjectContext";
 import {
@@ -39,6 +40,8 @@ const DashboardHeader = ({
   setSidebarOpen,
 }) => {
   const navigate = useNavigate();
+  const profileDropdownRef = useRef(null);
+  const bankDropdownRef = useRef(null);
 
   const notificationRef = useRef(null);
   const notificationButtonRef = useRef(null);
@@ -84,7 +87,7 @@ const DashboardHeader = ({
   const handleLogout = () => {
     setProjects([]);
     sessionStorage.clear();
-    navigate("/");
+    navigate("/", { replace: true });
   };
 
   useEffect(() => {
@@ -100,6 +103,30 @@ const DashboardHeader = ({
 
     return () =>
       window.removeEventListener("dashboardSearch", handleSearchChange);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(event.target)
+      ) {
+        setOpen(false);
+      }
+
+      if (
+        bankDropdownRef.current &&
+        !bankDropdownRef.current.contains(event.target)
+      ) {
+        setShowBanks(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const loadNotifications = async () => {
@@ -133,12 +160,19 @@ const DashboardHeader = ({
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const formatAction = (value = "") => {
+    return value
+      .split(/([_\s])/)
+      .map((part) => {
+        if (part === "_" || part === " ") return part;
+        return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+      })
+      .join("");
+  };
 
   const getNotificationIcon = (type) => {
     switch (type) {
@@ -341,6 +375,7 @@ const DashboardHeader = ({
       subtitleClass: "text-[12px]",
     },
 
+<<<<<<< HEAD
         "/documents": {
       title: "Documents",
       subtitle: "Upload and manage signoff documents",
@@ -350,6 +385,16 @@ const DashboardHeader = ({
       subtitleClass: "text-[17px]",
     },
 
+=======
+    "/upload-excel": {
+      title: "Upload Excel",
+      // subtitle: "Upload Excel files to create or update project information",
+      icon: <FileSpreadsheet size={24} />,
+
+      titleClass: "text-[26px]",
+      subtitleClass: "text-[12px]",
+    },
+>>>>>>> c6f5d9576d4e81178253d82a3ed24a2b7bbd7d59
   };
 
   const location = useLocation();
@@ -363,7 +408,7 @@ const DashboardHeader = ({
     <header className="bg-white border-b border-[#EAEFF5] px-3 sm:px-4 lg:px-8 py-3 lg:py-4">
       <div className="flex flex-col gap-4">
         {/* Top Row */}
-        <div className="flex items-start lg:items-center justify-between gap-4">
+        <div className="flex items-start lg:items-center justify-between gap-4 ">
           {/* Left */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <button
@@ -451,6 +496,8 @@ const DashboardHeader = ({
                   xl:w-[220px]
                   2xl:w-[260px]
                   flex-shrink-0
+                  hover:border-blue-500
+                  cursor-pointer
                 "
                 >
                   <Building2
@@ -458,7 +505,10 @@ const DashboardHeader = ({
                     className="text-[#64748B] flex-shrink-0"
                   />
 
-                  <div className="relative flex-1 min-w-0">
+                  <div
+                    className="relative flex-1 min-w-0"
+                    ref={bankDropdownRef}
+                  >
                     <button
                       onClick={() => setShowBanks(!showBanks)}
                       className="
@@ -560,6 +610,8 @@ const DashboardHeader = ({
                 2xl:h-12
                 2xl:px-5
                 2xl:gap-3
+              outline-none
+              focus-within:border-blue-500
               "
                 >
                   <Search
@@ -596,9 +648,7 @@ const DashboardHeader = ({
                 <button
                   ref={notificationButtonRef}
                   data-testid="notification-button"
-                  onClick={() =>
-                    setShowNotifications(!showNotifications)
-                  }
+                  onClick={() => setShowNotifications(!showNotifications)}
                   className="
                   relative
                   w-10
@@ -635,7 +685,7 @@ const DashboardHeader = ({
 
                 {showNotifications && (
                   <div
-                  ref={notificationRef}
+                    ref={notificationRef}
                     className="
                   absolute
                   right-0
@@ -679,9 +729,12 @@ const DashboardHeader = ({
 
                       <button
                         onClick={async () => {
-                          await markAllRead();
-
-                          loadNotifications();
+                          try {
+                            await markAllRead();
+                            loadNotifications();
+                          } catch (error) {
+                            console.error(error);
+                          }
                         }}
                         className="
                       text-[#2563EB]
@@ -821,7 +874,7 @@ const DashboardHeader = ({
               </div>
             )}
             {/* User */}
-            <div className="relative">
+            <div className="relative" ref={profileDropdownRef}>
               <button
                 onClick={() => setOpen(!open)}
                 className="
@@ -882,7 +935,7 @@ const DashboardHeader = ({
                     2xl:max-w-[220px]
                   "
                   >
-                    {role.replaceAll("_", " ")}
+                    {formatAction(role)}
                   </p>
                 </div>
 
