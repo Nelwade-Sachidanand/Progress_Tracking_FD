@@ -23,7 +23,10 @@ export default function NotificationPage() {
 
       const response = await getNotifications();
 
-      setNotifications(response.details || []);
+      setNotifications(response?.details || []);
+    } catch (error) {
+      console.error(error);
+      setNotifications([]);
     } finally {
       setLoading(false);
     }
@@ -49,8 +52,12 @@ export default function NotificationPage() {
         search={search}
         setSearch={setSearch}
         onMarkAll={async () => {
-          await markAllRead();
-          loadNotifications();
+          try {
+            await markAllRead();
+            await loadNotifications();
+          } catch (error) {
+            console.error(error);
+          }
         }}
       />
 

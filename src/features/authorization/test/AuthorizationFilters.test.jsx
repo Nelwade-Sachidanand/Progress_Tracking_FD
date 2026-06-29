@@ -14,18 +14,18 @@ describe("AuthorizationFilters", () => {
 
   const mockLogs = [
     {
-      requestSource: "CREATE_USER",
-      status: "PENDING",
+      requestSource: "Create_User",
+      status: "Pending",
       requestedBy: "Sachin",
     },
     {
-      requestSource: "UPDATE_USER",
-      status: "APPROVED",
+      requestSource: "Update_User",
+      status: "Approved",
       requestedBy: "Admin",
     },
     {
-      requestSource: "CREATE_USER",
-      status: "PENDING",
+      requestSource: "Create_User",
+      status: "Pending",
       requestedBy: "Sachin",
     },
   ];
@@ -81,11 +81,11 @@ describe("AuthorizationFilters", () => {
 
     fireEvent.change(selects[0], {
       target: {
-        value: "CREATE_USER",
+        value: "Create_User",
       },
     });
 
-    expect(setRequestType).toHaveBeenCalledWith("CREATE_USER");
+    expect(setRequestType).toHaveBeenCalledWith("Create_User");
   });
 
   it("calls setStatus on change", () => {
@@ -95,11 +95,11 @@ describe("AuthorizationFilters", () => {
 
     fireEvent.change(selects[1], {
       target: {
-        value: "PENDING",
+        value: "Pending",
       },
     });
 
-    expect(setStatus).toHaveBeenCalledWith("PENDING");
+    expect(setStatus).toHaveBeenCalledWith("Pending");
   });
 
   it("calls setRequestedBy on change", () => {
@@ -121,13 +121,13 @@ describe("AuthorizationFilters", () => {
 
     expect(
       screen.getByRole("option", {
-        name: "CREATE USER",
+        name: "Create_User",
       }),
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
-        name: "UPDATE USER",
+        name: "Update_User",
       }),
     ).toBeInTheDocument();
   });
@@ -137,13 +137,13 @@ describe("AuthorizationFilters", () => {
 
     expect(
       screen.getByRole("option", {
-        name: "PENDING",
+        name: "Pending",
       }),
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
-        name: "APPROVED",
+        name: "Approved",
       }),
     ).toBeInTheDocument();
   });
@@ -169,17 +169,17 @@ describe("AuthorizationFilters", () => {
       <AuthorizationFilters
         {...defaultProps}
         search="abc"
-        requestType="CREATE_USER"
-        status="PENDING"
+        requestType="Create_User"
+        status="Pending"
         requestedBy="Sachin"
       />,
     );
 
     expect(screen.getByDisplayValue("abc")).toBeInTheDocument();
 
-    expect(screen.getByDisplayValue("CREATE USER")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Create_User")).toBeInTheDocument();
 
-    expect(screen.getByDisplayValue("PENDING")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Pending")).toBeInTheDocument();
 
     expect(screen.getByDisplayValue("Sachin")).toBeInTheDocument();
   });
@@ -210,11 +210,11 @@ describe("AuthorizationFilters", () => {
     render(<AuthorizationFilters {...defaultProps} />);
 
     const createUserOptions = screen.getAllByRole("option", {
-      name: "CREATE USER",
+      name: "Create_User",
     });
 
     const pendingOptions = screen.getAllByRole("option", {
-      name: "PENDING",
+      name: "Pending",
     });
 
     const sachinOptions = screen.getAllByRole("option", {

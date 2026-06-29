@@ -1,8 +1,6 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-
-import { fireEvent, render, screen } from "@testing-library/react";
-
 import "@testing-library/jest-dom";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import AuditFilters from "../components/AuditFilters";
 
@@ -12,7 +10,39 @@ describe("AuditFilters", () => {
   const setActionType = vi.fn();
   const setSelectedDate = vi.fn();
 
+  const mockLogs = [
+    {
+      entityType: "USER",
+      actionType: "CREATE_USER",
+    },
+    {
+      entityType: "PROJECT",
+      actionType: "UPDATE_PROJECT",
+    },
+    {
+      entityType: "TASK",
+      actionType: "DELETE_USER",
+    },
+    {
+      entityType: "ACTIVITY",
+      actionType: "EXPORT_EXCEL",
+    },
+    {
+      entityType: "PROJECT",
+      actionType: "CREATE_PROJECT",
+    },
+    {
+      entityType: "USER",
+      actionType: "UPDATE_USER",
+    },
+    {
+      entityType: "PROJECT",
+      actionType: "DELETE_PROJECT",
+    },
+  ];
+
   const defaultProps = {
+    logs: mockLogs,
     searchTerm: "",
     setSearchTerm,
     entityType: "",
@@ -133,11 +163,12 @@ describe("AuditFilters", () => {
 
     expect(screen.getByDisplayValue("Sachin")).toBeInTheDocument();
 
-    expect(screen.getByDisplayValue("USER")).toBeInTheDocument();
+    // Displayed label, not option value
+    expect(screen.getByDisplayValue("User")).toBeInTheDocument();
 
-    expect(screen.getByDisplayValue("CREATE_USER")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Create_User")).toBeInTheDocument();
 
-    expect(document.querySelector('input[type="date"]').value).toBe(
+    expect(document.querySelector('input[type="date"]')).toHaveValue(
       "2026-06-20",
     );
   });
@@ -147,25 +178,25 @@ describe("AuditFilters", () => {
 
     expect(
       screen.getByRole("option", {
-        name: "USER",
+        name: "User",
       }),
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
-        name: "PROJECT",
+        name: "Project",
       }),
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
-        name: "TASK",
+        name: "Task",
       }),
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
-        name: "ACTIVITY",
+        name: "Activity",
       }),
     ).toBeInTheDocument();
   });
@@ -175,37 +206,37 @@ describe("AuditFilters", () => {
 
     expect(
       screen.getByRole("option", {
-        name: "CREATE_USER",
+        name: "Create_User",
       }),
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
-        name: "UPDATE_USER",
+        name: "Update_User",
       }),
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
-        name: "DELETE_USER",
+        name: "Delete_User",
       }),
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
-        name: "CREATE_PROJECT",
+        name: "Create_Project",
       }),
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
-        name: "UPDATE_PROJECT",
+        name: "Update_Project",
       }),
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
-        name: "DELETE_PROJECT",
+        name: "Delete_Project",
       }),
     ).toBeInTheDocument();
 
@@ -215,6 +246,7 @@ describe("AuditFilters", () => {
       }),
     ).toBeInTheDocument();
   });
+
   it("renders with initial search value", () => {
     render(<AuditFilters {...defaultProps} searchTerm="John" />);
 
@@ -287,7 +319,6 @@ describe("AuditFilters", () => {
 
     expect(setActionType).toHaveBeenCalledWith("");
   });
-
   it("allows clearing selected date", () => {
     render(<AuditFilters {...defaultProps} selectedDate="2026-06-20" />);
 
@@ -319,7 +350,7 @@ describe("AuditFilters", () => {
   it("renders one date input", () => {
     render(<AuditFilters {...defaultProps} />);
 
-    expect(document.querySelectorAll('input[type="date"]').length).toBe(1);
+    expect(document.querySelectorAll('input[type="date"]')).toHaveLength(1);
   });
 
   it("contains Search icon", () => {

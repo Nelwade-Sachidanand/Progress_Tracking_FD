@@ -55,22 +55,20 @@ describe("AuditDetailsModal", () => {
   test("renders project names", () => {
     render(<AuditDetailsModal log={log} onClose={onClose} />);
 
-    expect(screen.getByText("Project A")).toBeInTheDocument();
-
-    expect(screen.getByText("Project B")).toBeInTheDocument();
+    expect(screen.getByText('"Project A"')).toBeInTheDocument();
+    expect(screen.getByText('"Project B"')).toBeInTheDocument();
   });
 
   test("renders owner", () => {
     render(<AuditDetailsModal log={log} onClose={onClose} />);
 
-    expect(screen.getAllByText("Sachin")).toHaveLength(2);
+    expect(screen.getAllByText('"Sachin"')).toHaveLength(2);
   });
 
   test("renders boolean values", () => {
     render(<AuditDetailsModal log={log} onClose={onClose} />);
 
     expect(screen.getByText("true")).toBeInTheDocument();
-
     expect(screen.getByText("false")).toBeInTheDocument();
   });
 
@@ -78,7 +76,6 @@ describe("AuditDetailsModal", () => {
     render(<AuditDetailsModal log={log} onClose={onClose} />);
 
     expect(screen.getByText("5")).toBeInTheDocument();
-
     expect(screen.getByText("10")).toBeInTheDocument();
   });
 
@@ -104,6 +101,7 @@ describe("AuditDetailsModal", () => {
     );
 
     expect(screen.getByText("Updated Data")).toBeInTheDocument();
+    expect(screen.getByText("No Previous Data")).toBeInTheDocument();
   });
 
   test("handles missing newData", () => {
@@ -120,8 +118,8 @@ describe("AuditDetailsModal", () => {
     );
 
     expect(screen.getByText("Previous Data")).toBeInTheDocument();
+    expect(screen.getByText("No Updated Data")).toBeInTheDocument();
   });
-
   test("renders nested object", () => {
     render(
       <AuditDetailsModal
@@ -141,7 +139,11 @@ describe("AuditDetailsModal", () => {
       />,
     );
 
-    expect(screen.getAllByText("[object Object]")).toHaveLength(2);
+    expect(screen.getAllByText('"address"')).toHaveLength(2);
+    expect(screen.getAllByText('"city"')).toHaveLength(2);
+
+    expect(screen.getByText('"Pune"')).toBeInTheDocument();
+    expect(screen.getByText('"Mumbai"')).toBeInTheDocument();
   });
 
   test("renders array", () => {
@@ -159,7 +161,10 @@ describe("AuditDetailsModal", () => {
       />,
     );
 
-    expect(screen.getAllByText("A,B")).toBeTruthy();
+    expect(screen.getAllByText('"items"')).toHaveLength(2);
+    expect(screen.getAllByText('"A"')).toHaveLength(2);
+    expect(screen.getByText('"B"')).toBeInTheDocument();
+    expect(screen.getByText('"C"')).toBeInTheDocument();
   });
 
   test("renders contact card object", () => {
@@ -183,7 +188,15 @@ describe("AuditDetailsModal", () => {
       />,
     );
 
-    expect(screen.getAllByText("[object Object]")).toHaveLength(2);
+    expect(screen.getAllByText('"contact"')).toHaveLength(2);
+    expect(screen.getAllByText('"name"')).toHaveLength(2);
+    expect(screen.getAllByText('"contactNumber"')).toHaveLength(2);
+
+    expect(screen.getByText('"Sachin"')).toBeInTheDocument();
+    expect(screen.getByText('"Rahul"')).toBeInTheDocument();
+
+    expect(screen.getByText('"9999999999"')).toBeInTheDocument();
+    expect(screen.getByText('"8888888888"')).toBeInTheDocument();
   });
 
   test("renders null values", () => {
@@ -201,6 +214,6 @@ describe("AuditDetailsModal", () => {
       />,
     );
 
-    expect(screen.getAllByText("-")).toHaveLength(2);
+    expect(screen.getAllByText("null")).toHaveLength(2);
   });
 });

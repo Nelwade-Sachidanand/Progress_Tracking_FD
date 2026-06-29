@@ -7,13 +7,17 @@ export default function NotificationRow({ notification, reload }) {
   const navigate = useNavigate();
 
   const openNotification = async () => {
-    if (!notification.read) {
-      await markAsRead(notification.id);
-      reload();
-    }
+    try {
+      if (!notification.read) {
+        await markAsRead(notification.id);
+        reload();
+      }
 
-    if (notification.redirectUrl) {
-      navigate(notification.redirectUrl);
+      if (notification.redirectUrl) {
+        navigate(notification.redirectUrl);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 

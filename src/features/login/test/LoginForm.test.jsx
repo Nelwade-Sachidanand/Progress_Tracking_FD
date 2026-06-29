@@ -213,7 +213,10 @@ describe("LoginForm", () => {
 
     await waitFor(() => {
       expect(mockFetchProjects).toHaveBeenCalledWith("100");
-      expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
+
+      expect(mockNavigate).toHaveBeenCalledWith("/dashboard", {
+        replace: true,
+      });
     });
   });
 
@@ -464,9 +467,13 @@ describe("LoginForm", () => {
       details: {
         user: {
           id: "100",
+          username: "admin",
+          role: "ADMIN",
         },
       },
     });
+
+    mockFetchProjects.mockResolvedValue([]);
 
     renderComponent();
 
@@ -490,6 +497,10 @@ describe("LoginForm", () => {
 
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledTimes(1);
+
+      expect(mockNavigate).toHaveBeenCalledWith("/dashboard", {
+        replace: true,
+      });
     });
   });
 });
