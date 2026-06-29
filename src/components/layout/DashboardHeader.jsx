@@ -375,6 +375,17 @@ const DashboardHeader = ({
       subtitleClass: "text-[12px]",
     },
 
+<<<<<<< HEAD
+        "/documents": {
+      title: "Documents",
+      subtitle: "Upload and manage signoff documents",
+      icon: <Users size={22} />,
+
+      titleClass: "text-[32px]",
+      subtitleClass: "text-[17px]",
+    },
+
+=======
     "/upload-excel": {
       title: "Upload Excel",
       // subtitle: "Upload Excel files to create or update project information",
@@ -383,6 +394,7 @@ const DashboardHeader = ({
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",
     },
+>>>>>>> c6f5d9576d4e81178253d82a3ed24a2b7bbd7d59
   };
 
   const location = useLocation();
