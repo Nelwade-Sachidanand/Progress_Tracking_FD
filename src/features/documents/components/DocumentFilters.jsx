@@ -509,7 +509,7 @@ export default function DocumentFilters({
   justify-between
   "
 >
-
+{/* 
   <button
     onClick={onExportExcel}
     className="
@@ -525,7 +525,7 @@ export default function DocumentFilters({
     "
   >
     Export Excel
-  </button>
+  </button> */}
 
   <button
     onClick={clearFilters}
