@@ -44,7 +44,7 @@ const [modalTitle, setModalTitle] =
 const [modalData, setModalData] =
   useState([]);
 
- const today = new Date();
+const today = new Date();
 
 
 
@@ -320,7 +320,7 @@ const cards = [
           return (
             <div
   key={card.title}
- className="
+className="
 rounded-2xl
 border
 p-4
@@ -335,7 +335,7 @@ flex-col
     borderColor: card.border,
   }}
 >
-  
+
   {/* Icon + Value */}
   <div className="flex items-center gap-4 mb-5">
     <div
@@ -435,7 +435,7 @@ lg:text-[13px]
         })}
       </div>
       {isModalOpen && (
- <div
+<div
 className="
 fixed
 inset-0
@@ -464,7 +464,7 @@ overflow-hidden
 "
 >
 
- <div
+<div
 className="
 px-6
 py-4
@@ -539,7 +539,7 @@ border-slate-200
                 Activity
               </th>
 
-             
+
 <th
 className="
 px-4
@@ -555,7 +555,7 @@ border-slate-200
                 Milestone
               </th>
 
-              
+
   <th
 className="
 px-4
@@ -571,7 +571,7 @@ border-slate-200
                 Progress
               </th>
 
-              
+
     <th
 className="
 px-4
@@ -587,7 +587,7 @@ border-slate-200
                 Status
               </th>
 
-              
+
         <th
 className="
 px-4
@@ -627,7 +627,7 @@ border-slate-200
   </>
 )}
 
- {modalTitle === "Dependencies" && (
+{modalTitle === "Dependencies" && (
   <>
     <th
       className="
@@ -718,7 +718,7 @@ border-slate-200
 
             {/* {modalData.map(
               (
-                
+
                 activity,
                 index
               ) => (
@@ -755,7 +755,7 @@ const openRisk = getOpenRiskDetails(activity);
                    <span className="font-semibold text-[#2563EB]">
 {activity.progress}%
 </span>
-                    
+
                   </td>
 <td className="px-4 py-3 text-sm text-[#475569]">
 
@@ -799,7 +799,7 @@ activity.executionStatus==="Completed"
                       activity.plannedEndDate
                     }
                   </td>
-          
+
           {modalTitle === "Critical Risks / Issues" && (
   <>
     <td>
@@ -857,7 +857,7 @@ activity.executionStatus==="Completed"
     );
   })}
 
- 
+
 
           </tbody>
 
