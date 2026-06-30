@@ -1,5 +1,6 @@
-import { ChevronLeft, ChevronRight, Eye } from "lucide-react";
+import { Eye } from "lucide-react";
 import { useState } from "react";
+import Pagination from "../../../components/layout/Pagination";
 
 const RECORDS_PER_PAGE = 10;
 
@@ -454,74 +455,11 @@ export default function AuthorizationTable({
           {Math.min(endIndex, logs.length)} of {logs.length} requests
         </span>
 
-        <div className="flex gap-2">
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
-            className="
-            w-10
-            h-10
-            rounded-xl
-            border
-            border-[#E2E8F0]
-            flex
-            items-center
-            justify-center
-            disabled:opacity-50
-            disabled:cursor-not-allowed
-            2xl:w-12
-            2xl:h-12
-            2xl:text-lg
-            2xl:font-medium
-            2xl:rounded-2xl
-            2xl:border-2
-            2xl:border-slate-300
-            cursor-pointer
-          "
-          >
-            <ChevronLeft size={16} />
-          </button>
-
-          <span
-            className="
-            px-4
-            flex
-            items-center
-            text-sm
-            font-medium
-            2xl:text-base
-          "
-          >
-            {currentPage} / {totalPages}
-          </span>
-
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(currentPage + 1)}
-            className="
-            w-10
-            h-10
-            rounded-xl
-            border
-            border-[#E2E8F0]
-            flex
-            items-center
-            justify-center
-            disabled:opacity-50
-            disabled:cursor-not-allowed
-            2xl:w-12
-            2xl:h-12
-            2xl:text-lg
-            2xl:font-medium
-            2xl:rounded-2xl
-            2xl:border-2
-            2xl:border-slate-300
-            cursor-pointer
-          "
-          >
-            <ChevronRight size={16} />
-          </button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       {showApproveModal && (
