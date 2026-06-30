@@ -5,8 +5,6 @@ import { toast } from "react-toastify";
 import { useProjects } from "../../../context/ProjectContext";
 import { exportExcelReport } from "../../add-task/api/exportExcelApi";
 import GenerateReportModal from "../components/GenerateReportModal";
-<<<<<<< HEAD
-import { useState } from "react";
 import { saveAs } from "file-saver";
 import { WidthType } from "docx";
 
@@ -20,8 +18,6 @@ import {
   HeadingLevel,
 } from "docx";
 
-=======
->>>>>>> c6f5d9576d4e81178253d82a3ed24a2b7bbd7d59
 
 import PrintReport from "../components//PrintReport";
 
@@ -274,7 +270,6 @@ export default function TaskActions({
 
     printWindow.document.close();
 
-<<<<<<< HEAD
   setTimeout(() => {
     printWindow.print();
     printWindow.close();
@@ -536,67 +531,6 @@ const filteredActivities = allActivities.filter((activity) => {
  return (
   <div
     className="
-=======
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 500);
-  };
-  const handleGenerateCsv = () => {
-    const rows = [
-      [
-        "Phase",
-        "Milestone",
-        "Task",
-        "Sub Task",
-        "Activity",
-        "Owner",
-        "Progress",
-        "Status",
-        "Schedule Health",
-      ],
-    ];
-
-    filteredActivities.forEach((activity) => {
-      rows.push([
-        activity.phase,
-        activity.milestone,
-        activity.task,
-        activity.subTask,
-        activity.activityName,
-        activity.owner,
-        activity.progress,
-        activity.executionStatus,
-        activity.scheduleHealth,
-      ]);
-    });
-
-    const csv = rows.map((row) => row.join(",")).join("\n");
-
-    const blob = new Blob([csv], {
-      type: "text/csv;charset=utf-8;",
-    });
-
-    const link = document.createElement("a");
-
-    link.href = URL.createObjectURL(blob);
-
-    link.download = `${project.projectName}.csv`;
-
-    link.click();
-
-    URL.revokeObjectURL(link.href);
-
-    toast.success("CSV downloaded successfully");
-  };
-
-  const handleGenerateWord = () => {
-    // call Word generator
-  };
-  return (
-    <div
-      className="
->>>>>>> c6f5d9576d4e81178253d82a3ed24a2b7bbd7d59
     flex
     flex-col
     lg:flex-row
@@ -616,19 +550,11 @@ const filteredActivities = allActivities.filter((activity) => {
       w-full
       lg:w-auto
       "
-<<<<<<< HEAD
     >
       <button
   onClick={() => setShowReportModal(true)}
   className="
     bg-[#35aa35]
-=======
-      >
-        <button
-          onClick={() => setShowReportModal(true)}
-          className="
-    bg-[#6D4AFF]
->>>>>>> c6f5d9576d4e81178253d82a3ed24a2b7bbd7d59
     hover:bg-[#5B3DF4]
     text-white
     px-4

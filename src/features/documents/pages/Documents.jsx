@@ -8,13 +8,16 @@ import PreviewDocumentModal from "../components/PreviewDocumentModal";
 import HistoryModal from "../components/HistoryModal";
 
 import useDocumentFilters from "../hooks/useDocumentFilters";
-
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 export default function Documents() {
+  
   const { projects, fetchProjects } = useProjects();
 
   const user = JSON.parse(sessionStorage.getItem("user"));
 
   const selectedProjectId = sessionStorage.getItem("selectedProjectId");
+  
 
   const selectedProject = useMemo(
     () =>
@@ -40,6 +43,8 @@ export default function Documents() {
   const [showHistoryModal, setShowHistoryModal] =
     useState(false);
 
+   
+
   useEffect(() => {
     if (user?.id) {
       fetchProjects(user.id);
@@ -64,14 +69,14 @@ export default function Documents() {
                * Only Sign-Off Activities
                */
 
-              if (
-                !activity.activityName
-                  ?.toLowerCase()
-                  .includes("sign")
-              ) {
-                return;
-              }
-
+     if (
+  !task.taskName
+    ?.toLowerCase()
+    .includes("sign-off")
+) {
+  return;
+}
+  
               docs.push({
                 id: activity.id,
 
@@ -137,94 +142,75 @@ export default function Documents() {
     setDocuments(docs);
 
   }, [selectedProject]);
-    const {
-    selectedPhase,
-    setSelectedPhase,
+const {
+  phases,
+  milestones,
+  tasks,
+  subTasks,
+  activities,
 
-    selectedMilestone,
-    setSelectedMilestone,
+  selectedPhase,
+  setSelectedPhase,
 
-    selectedTask,
-    setSelectedTask,
+  selectedMilestone,
+  setSelectedMilestone,
 
-    selectedSubTask,
-    setSelectedSubTask,
+  selectedTask,
+  setSelectedTask,
 
-    selectedActivity,
-    setSelectedActivity,
+  selectedSubTask,
+  setSelectedSubTask,
 
-    selectedStatus,
-    setSelectedStatus,
+  selectedActivity,
+  setSelectedActivity,
 
-    searchTerm,
-    setSearchTerm,
+  selectedStatus,
+  setSelectedStatus,
 
-    filteredDocuments,
+  searchTerm,
+  setSearchTerm,
 
-    handleMilestoneChange,
-  } = useDocumentFilters(documents);
+  filteredDocuments,
 
+  handlePhaseChange,
+  handleMilestoneChange,
+  handleTaskChange,
+  handleSubTaskChange,
+} = useDocumentFilters(documents);
+console.log("Documents:", documents);
   /*
    * Dropdown Options
    */
 
-  const phases = [
-    ...new Set(
-      documents.map((doc) => doc.phase)
-    ),
-  ];
+ 
 
-  const milestones = [
-    ...new Set(
-      documents
-        .filter(
-          (doc) =>
-            selectedPhase === "All Phases" ||
-            doc.phase === selectedPhase
-        )
-        .map((doc) => doc.milestone)
-    ),
-  ];
+  // const milestones = [
+  //   ...new Set(
+  //     documents
+  //       .filter(
+  //         (doc) =>
+  //           selectedPhase === "All Phases" ||
+  //           doc.phase === selectedPhase
+  //       )
+  //       .map((doc) => doc.milestone)
+  //   ),
+  // ];
 
-  const tasks = [
-    ...new Set(
-      documents
-        .filter(
-          (doc) =>
-            selectedMilestone.length === 0 ||
-            selectedMilestone.includes(
-              doc.milestone
-            )
-        )
-        .map((doc) => doc.task)
-    ),
-  ];
 
-  const subTasks = [
-    ...new Set(
-      documents
-        .filter(
-          (doc) =>
-            selectedTask === "All Tasks" ||
-            doc.task === selectedTask
-        )
-        .map((doc) => doc.subTask)
-    ),
-  ];
 
-  const activities = [
-    ...new Set(
-      documents
-        .filter(
-          (doc) =>
-            selectedSubTask ===
-              "All Sub Tasks" ||
-            doc.subTask ===
-              selectedSubTask
-        )
-        .map((doc) => doc.activity)
-    ),
-  ];
+  // const activities = [
+  //   ...new Set(
+  //     documents
+  //       .filter(
+  //         (doc) =>
+  //           selectedSubTask ===
+  //             "All Sub Tasks" ||
+  //           doc.subTask ===
+  //             selectedSubTask
+  //       )
+  //       .map((doc) => doc.activity)
+  //   ),
+  // ];
 
   /*
    * Summary
@@ -303,35 +289,65 @@ export default function Documents() {
     setShowHistoryModal(true);
   };
 
-  /*
-   * Clear Filters
-   */
+  /*Clear Filters*/
+const clearFilters = () => {
+  setSelectedPhase("All Phases");
 
-  const clearFilters = () => {
-    setSelectedPhase(
-      "All Phases"
-    );
+  setSelectedMilestone([]);
 
-    setSelectedMilestone([]);
+  setSelectedTask("All Tasks");
 
-    setSelectedTask(
-      "All Tasks"
-    );
+  setSelectedSubTask("All Sub Tasks");
 
-    setSelectedSubTask(
-      "All Sub Tasks"
-    );
+  setSelectedActivity("All Activities");
 
-    setSelectedActivity(
-      "All Activities"
-    );
+  setSelectedStatus("All Status");
 
-    setSelectedStatus(
-      "All Status"
-    );
+  setSearchTerm("");
+};
 
-    setSearchTerm("");
-  };
+const handleExportExcel = () => {
+  const exportData = filteredDocuments.map((doc) => ({
+    Project: doc.projectName,
+    Bank: doc.bankName,
+    Phase: doc.phase,
+    Milestone: doc.milestone,
+    Task: doc.task,
+    "Sub Task": doc.subTask,
+    Activity: doc.activity,
+    "Uploaded By": doc.uploadedBy,
+    "Upload Date": doc.uploadedDate,
+    Status: doc.uploadStatus,
+    File: doc.fileName,
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+  const workbook = XLSX.utils.book_new();
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    worksheet,
+    "Sign-Off Documents"
+  );
+
+  const excelBuffer = XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "array",
+  });
+
+  const file = new Blob([excelBuffer], {
+    type:
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+
+  saveAs(
+    file,
+    `SignOff_Documents_${new Date()
+      .toISOString()
+      .slice(0, 10)}.xlsx`
+  );
+};
     return (
     <div className="w-full p-4 lg:p-6 bg-[#F8FAFC] min-h-screen">
 
@@ -341,7 +357,7 @@ export default function Documents() {
 
         <div>
 
-          <h1 className="text-2xl xl:text-3xl font-bold text-[#0B1F59]">
+          <h1 className="text-2xl xl:text-2xl font-bold text-[#0B1F59]">
             Sign Off Documents
           </h1>
 
@@ -355,7 +371,7 @@ export default function Documents() {
 
       {/* Selected Project */}
 
-      <div
+      {/* <div
         className="
         bg-white
         rounded-2xl
@@ -365,7 +381,26 @@ export default function Documents() {
         p-5
         mb-6
         "
-      >
+      > */} <div
+  className="
+  w-full
+  
+  border
+  border-slate-200
+  rounded-2xl
+  px-6
+  py-4
+  shadow-sm
+  
+     
+  mb-4
+  bg-[#F8FAFF]
+  border
+  border-[#E2E8F0]
+  rounded-2xl
+  
+  "
+>
 
         <div className="flex flex-wrap items-center gap-3 text-[15px]">
 
@@ -379,7 +414,7 @@ export default function Documents() {
               : "No Project Selected"}
           </span>
 
-          {selectedProject && (
+          {/* {selectedProject && (
 
             <>
 
@@ -401,7 +436,7 @@ export default function Documents() {
 
             </>
 
-          )}
+          )} */}
 
         </div>
 
@@ -507,51 +542,34 @@ export default function Documents() {
 
       {/* Filters */}
 
-      <DocumentFilters
+<DocumentFilters
+  phases={phases}
+  milestones={milestones}
+  tasks={tasks}
+  subTasks={subTasks}
+  activities={activities}
 
-        phases={phases}
+  selectedPhase={selectedPhase}
+  selectedMilestone={selectedMilestone}
+  selectedTask={selectedTask}
+  selectedSubTask={selectedSubTask}
+  selectedActivity={selectedActivity}
+  selectedStatus={selectedStatus}
+  searchTerm={searchTerm}
 
-        milestones={milestones}
+  setSelectedStatus={setSelectedStatus}
+  setSearchTerm={setSearchTerm}
+  setSelectedActivity={setSelectedActivity}
 
-        tasks={tasks}
+  handlePhaseChange={handlePhaseChange}
+  handleMilestoneChange={handleMilestoneChange}
+  handleTaskChange={handleTaskChange}
+  handleSubTaskChange={handleSubTaskChange}
 
-        subTasks={subTasks}
+  clearFilters={clearFilters}
 
-        activities={activities}
-
-        selectedPhase={selectedPhase}
-
-        selectedMilestone={selectedMilestone}
-
-        selectedTask={selectedTask}
-
-        selectedSubTask={selectedSubTask}
-
-        selectedActivity={selectedActivity}
-
-        selectedStatus={selectedStatus}
-
-        searchTerm={searchTerm}
-
-        setSelectedPhase={setSelectedPhase}
-
-        setSelectedMilestone={setSelectedMilestone}
-
-        setSelectedTask={setSelectedTask}
-
-        setSelectedSubTask={setSelectedSubTask}
-
-        setSelectedActivity={setSelectedActivity}
-
-        setSelectedStatus={setSelectedStatus}
-
-        setSearchTerm={setSearchTerm}
-
-        handleMilestoneChange={handleMilestoneChange}
-
-        clearFilters={clearFilters}
-
-      />
+  onExportExcel={handleExportExcel}
+/>
 
      <div className="mt-6">
 
@@ -769,31 +787,34 @@ export default function Documents() {
             {/* Upload Document Modal */}
 
       <UploadDocumentModal
-        isOpen={showUploadModal}
-        document={selectedDocument}
-        onClose={() => {
-          setShowUploadModal(false);
-          setSelectedDocument(null);
-        }}
-        onUpload={(file) => {
-          console.log(
-            "Upload File:",
-            file,
-            selectedDocument
-          );
+  isOpen={showUploadModal}
+  document={selectedDocument}
+  onClose={() => {
+    setShowUploadModal(false);
+    setSelectedDocument(null);
+  }}
+ onUpload={(file) => {
+  setDocuments((prev) =>
+    prev.map((doc) =>
+      doc.activity === selectedDocument.activity &&
+      doc.milestone === selectedDocument.milestone &&
+      doc.task === selectedDocument.task
+        ? {
+            ...doc,
+            fileName: file.name,
+            fileUrl: URL.createObjectURL(file),
+            uploadStatus: "Uploaded",
+            uploadedBy: user?.username || "Admin",
+            uploadedDate: new Date().toLocaleDateString(),
+          }
+        : doc
+    )
+  );
 
-          /*
-           Backend API
-
-           uploadDocument(
-               selectedDocument.id,
-               file
-           )
-          */
-
-          setShowUploadModal(false);
-        }}
-      />
+  setShowUploadModal(false);
+  setSelectedDocument(null);
+}}
+/>
 
       {/* Preview Modal */}
 

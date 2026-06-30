@@ -1,10 +1,4 @@
-import {
-  X,
-  Download,
-  ExternalLink,
-  FileText,
-  Image,
-} from "lucide-react";
+import { X, Download } from "lucide-react";
 
 export default function PreviewDocumentModal({
   isOpen,
@@ -13,151 +7,119 @@ export default function PreviewDocumentModal({
 }) {
   if (!isOpen || !document) return null;
 
-  const fileUrl = document.fileUrl;
-  const fileName = document.fileName || "Document";
-
-  const extension = fileName
-    ?.split(".")
-    ?.pop()
-    ?.toLowerCase();
-
-  const isImage = ["png", "jpg", "jpeg"].includes(extension);
-
-  const isPdf = extension === "pdf";
-
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
 
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-5xl h-[90vh] flex flex-col overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden">
 
         {/* Header */}
-
-        <div className="flex items-center justify-between border-b px-6 py-4">
+        <div className="flex items-center justify-between px-6 py-4 border-b">
 
           <div>
-
             <h2 className="text-xl font-bold text-[#0B1F59]">
-              Preview Document
+              Document Details
             </h2>
 
             <p className="text-sm text-slate-500 mt-1">
-              {fileName}
+              {document.activity}
             </p>
-
           </div>
 
-          <div className="flex items-center gap-2">
-
-            {fileUrl && (
-
-              <>
-
-                <button
-                  onClick={() =>
-                    window.open(fileUrl, "_blank")
-                  }
-                  className="w-10 h-10 rounded-lg hover:bg-slate-100 flex items-center justify-center"
-                  title="Open"
-                >
-                  <ExternalLink size={18} />
-                </button>
-
-                <button
-                  onClick={() =>
-                    window.open(fileUrl)
-                  }
-                  className="w-10 h-10 rounded-lg hover:bg-slate-100 flex items-center justify-center"
-                  title="Download"
-                >
-                  <Download size={18} />
-                </button>
-
-              </>
-
-            )}
-
-            <button
-              onClick={onClose}
-              className="w-10 h-10 rounded-lg hover:bg-slate-100 flex items-center justify-center"
-            >
-              <X size={18} />
-            </button>
-
-          </div>
+          <button
+            onClick={onClose}
+            className="w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center"
+          >
+            <X size={18} />
+          </button>
 
         </div>
 
-        {/* Preview */}
+        {/* Table */}
+        <div className="overflow-x-auto">
 
-        <div className="flex-1 bg-slate-100 overflow-auto">
+          <table className="w-full">
 
-          {!fileUrl ? (
+            <thead className="bg-slate-50 border-b">
 
-            <div className="h-full flex flex-col items-center justify-center">
+              <tr>
+                <th className="px-5 py-4 text-left">File Name</th>
+                <th className="px-5 py-4 text-left">Uploaded By</th>
+                <th className="px-5 py-4 text-left">Upload Date</th>
+                {/* <th className="px-5 py-4 text-left">Version</th> */}
+                <th className="px-5 py-4 text-center">Actions</th>
+              </tr>
 
-              <FileText
-                size={70}
-                className="text-slate-400"
-              />
+            </thead>
 
-              <h3 className="mt-5 text-lg font-semibold">
+            <tbody>
 
-                No Document Uploaded
+              <tr className="border-b hover:bg-slate-50">
 
-              </h3>
+                {/* File Name */}
+                <td className="px-5 py-4 font-medium text-[#0F172A]">
+                  {document.fileName}
+                </td>
 
-              <p className="text-slate-500 mt-2">
+                {/* Uploaded By */}
+                <td className="px-5 py-4">
+                  {document.uploadedBy || "-"}
+                </td>
 
-                Upload a document to preview it.
+                {/* Upload Date */}
+                <td className="px-5 py-4">
+                  {document.uploadedDate || "-"}
+                </td>
 
-              </p>
+                {/* Version */}
+                {/* <td className="px-5 py-4">
+                  V{document.version || 1}
+                </td> */}
 
-            </div>
+                {/* Actions */}
+                <td className="px-5 py-4 text-center">
 
-          ) : isImage ? (
+                  <button
+                    onClick={() =>
+                      window.open(document.fileUrl, "_blank")
+                    }
+                    disabled={!document.fileUrl}
+                    className="
+                      w-9 h-9
+                      rounded-lg
+                      bg-[#ECFDF5]
+                      text-green-600
+                      hover:bg-[#D1FAE5]
+                      flex
+                      items-center
+                      justify-center
+                      mx-auto
+                      disabled:opacity-40
+                      disabled:cursor-not-allowed
+                    "
+                    title="Download"
+                  >
+                    <Download size={17} />
+                  </button>
 
-            <div className="h-full flex items-center justify-center p-6">
+                </td>
 
-              <img
-                src={fileUrl}
-                alt={fileName}
-                className="max-h-full rounded-xl shadow-lg"
-              />
+              </tr>
 
-            </div>
+            </tbody>
 
-          ) : isPdf ? (
+          </table>
 
-            <iframe
-              src={fileUrl}
-              title="PDF Preview"
-              className="w-full h-full"
-            />
+        </div>
 
-          ) : (
+        {/* Footer */}
+        <div className="border-t px-6 py-4 flex justify-end">
 
-            <div className="h-full flex flex-col items-center justify-center">
-
-              <Image
-                size={70}
-                className="text-slate-400"
-              />
-
-              <h3 className="mt-5 text-lg font-semibold">
-
-                Preview Not Available
-
-              </h3>
-
-              <p className="text-slate-500 mt-2">
-
-                Click Download or Open to view this document.
-
-              </p>
-
-            </div>
-
-          )}
+          <button
+            onClick={onClose}
+            className="px-6 py-2 rounded-lg border hover:bg-slate-100"
+          >
+            Close
+          </button>
 
         </div>
 

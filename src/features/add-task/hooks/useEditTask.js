@@ -44,7 +44,7 @@ export default function useEditTask() {
 
     progress: task?.progress || 0,
 
-    executionStatus: task?.executionStatus || "Not Started",
+    executionStatus: task?.executionStatus || "",
 
     scheduleHealth: task?.scheduleHealth || "",
     changeReason: "",

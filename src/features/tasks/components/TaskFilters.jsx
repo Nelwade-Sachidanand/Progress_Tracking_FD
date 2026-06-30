@@ -150,9 +150,9 @@ export default function TaskFilters({
       top-full
       left-0
       mt-2
-w-full
-min-w-[280px]
-max-w-[350px]
+      w-full
+      min-w-[280px]
+      max-w-[350px]
       bg-white
       border
       border-[#DCE3EE]
@@ -328,7 +328,7 @@ lg:w-[220px]
           <option>All Status</option>
           <option>Completed</option>
           <option>In Progress</option>
-          <option>Delayed</option>
+          {/* <option>Delayed</option> */}
           <option>Not Started</option>
         </select>
 

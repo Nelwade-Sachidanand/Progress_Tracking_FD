@@ -289,6 +289,9 @@ export default function DocumentTable({
     "
   >
 
+<td className="px-5 py-5">
+  <div className="flex items-center justify-center gap-2">
+
     {/* Upload */}
 
     <button
@@ -332,56 +335,10 @@ export default function DocumentTable({
       title="View Document"
     >
       <Eye size={17} />
-    </button>
+    </button> 
 
-    {/* Download */}
-
-    <button
-      disabled={!document.fileUrl}
-      onClick={() => {
-        if (document.fileUrl) {
-          window.open(document.fileUrl, "_blank");
-        }
-      }}
-      className="
-      w-9
-      h-9
-      rounded-lg
-      bg-[#FFF7ED]
-      hover:bg-[#FFEDD5]
-      text-orange-600
-      flex
-      items-center
-      justify-center
-      transition
-      disabled:opacity-40
-      disabled:cursor-not-allowed
-      "
-      title="Download"
-    >
-      <Download size={17} />
-    </button>
-
-    {/* History */}
-
-    <button
-      onClick={() => onHistory(document)}
-      className="
-      w-9
-      h-9
-      rounded-lg
-      bg-slate-100
-      hover:bg-slate-200
-      text-slate-600
-      flex
-      items-center
-      justify-center
-      transition
-      "
-      title="Version History"
-    >
-      <History size={17} />
-    </button>
+  </div>
+</td>
 
   </div>
 

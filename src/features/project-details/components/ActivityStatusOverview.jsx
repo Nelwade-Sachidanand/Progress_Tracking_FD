@@ -107,32 +107,32 @@ flex-col
 "
 >
 
-         <div
+        
+          <div
   className="
   flex
-  items-start
+  items-center
   justify-between
-  gap-3
   px-4
   py-3
+  bg-[#EFF6FF]
+  border-b
+  border-[#DBEAFE]
   "
 >
-            <div className="flex items-center gap-3">
+  <div className="flex items-center gap-3">
 
-              <Building2
-                size={15}
-                className="text-[#2563EB]"
-/>
+    <Building2
+      size={15}
+      className="text-[#2563EB]"
+    />
 
-              <span className="text-[14px] font-semibold text-[#334155]">
-                Upcoming Activities (
-                {upcomingActivities.length}
-                )
-              </span>
+    <span className="text-[14px] font-semibold text-[#2563EB]">
+      Upcoming Activities ({upcomingActivities.length})
+    </span>
 
-            </div>
-
-          </div>
+  </div>
+</div>
 
           <div
   className="
