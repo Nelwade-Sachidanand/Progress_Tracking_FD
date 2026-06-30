@@ -6,31 +6,49 @@ const LoginPage = () => {
     <div
       className="
         min-h-screen
-        bg-[#f4f6fb]
+        bg-[#F4F6FB]
+
         flex
         flex-col
+
         lg:grid
-        lg:grid-cols-[60%_40%]
-        xl:grid-cols-[62%_38%]
+        lg:grid-cols-[58%_42%]
+
+        xl:grid-cols-[60%_40%]
+
+        2xl:grid-cols-[58%_42%]
       "
     >
-      <div className="h-[35vh] lg:h-screen">
+      {/* Left Side */}
+
+      <div
+        className="
+          hidden
+          lg:block
+          lg:min-h-screen
+        "
+      >
         <AuthHero />
       </div>
+
+      {/* Right Side */}
 
       <div
         className="
           flex
           items-center
           justify-center
-          p-5
-          sm:p-8
-          lg:p-10
+
+          min-h-screen
+
+          px-5
+          sm:px-8
+          lg:px-8
+          xl:px-10
+          2xl:px-12
         "
       >
-        <div className="w-full max-w-[600px]">
-          <LoginForm />
-        </div>
+        <LoginForm />
       </div>
     </div>
   );

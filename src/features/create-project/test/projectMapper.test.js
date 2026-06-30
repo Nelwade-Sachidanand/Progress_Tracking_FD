@@ -74,13 +74,7 @@ describe("mapProjectPayload", () => {
 
       digitalChannels: {
         mobileBanking: true,
-        internetBanking: true,
         tabletBanking: false,
-        whatsAppBanking: true,
-        missedCallBanking: false,
-        smsBanking: true,
-        eStatement: true,
-        debitCardServices: true,
 
         mobileUsers: "1000",
         internetUsers: "800",
@@ -92,15 +86,7 @@ describe("mapProjectPayload", () => {
         rtgs: true,
         neft: true,
         imps: true,
-        upi: true,
-        nach: true,
-        bbps: true,
-        aeps: false,
-        rupay: true,
         atmSwitch: true,
-        pos: true,
-        reconciliation: true,
-        aml: true,
 
         dailyUpiTransactions: "1000",
         dailyImpsTransactions: "500",

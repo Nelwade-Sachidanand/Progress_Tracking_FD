@@ -3,13 +3,13 @@ import useProjectForm from "../hooks/useProjectForm";
 import ProjectNavigation from "../components/ProjectNavigation";
 import ProjectStepper from "../components/ProjectStepper";
 
-import { useProjects } from "../../../context/ProjectContext";
 import BankDetailsTab from "../components/tabs/BankDetailsTab";
 import CBSBusinessDetailsTab from "../components/tabs/CBSBusinessDetailsTab";
 import DigitalChannelsTab from "../components/tabs/DigitalChannelsTab";
 import InfrastructureTab from "../components/tabs/InfrastructureTab";
 import ManagementDetailsTab from "../components/tabs/ManagementDetailsTab";
 import PaymentSystemsTab from "../components/tabs/PaymentSystemsTab";
+import useProjectInformation from "../hooks/useProjectInformation";
 
 import { Check, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -27,7 +27,12 @@ export default function CreateProjectPage() {
     resetForm,
   } = useProjectForm();
 
-  const { projects } = useProjects();
+  const { projectInformation, loadProjectInformation } =
+    useProjectInformation();
+
+  useEffect(() => {
+    loadProjectInformation();
+  }, []);
 
   const [selectedProjectId, setSelectedProjectId] = useState("");
 
@@ -165,7 +170,7 @@ export default function CreateProjectPage() {
               >
                 <span className="truncate">
                   {selectedProjectId
-                    ? projects.find(
+                    ? projectInformation.find(
                         (p) => String(p.id) === String(selectedProjectId),
                       )?.bankName
                     : "➕ New Project"}
@@ -228,7 +233,7 @@ export default function CreateProjectPage() {
 
                   {/* Banks */}
 
-                  {projects.map((project) => (
+                  {projectInformation.map((project) => (
                     <button
                       key={project.id}
                       type="button"
@@ -294,6 +299,8 @@ export default function CreateProjectPage() {
           setCurrentStep={setCurrentStep}
           formData={formData}
           resetForm={resetForm}
+          setSelectedProjectId={setSelectedProjectId}
+          loadProjectInformation={loadProjectInformation}
         />
       </div>
     </div>

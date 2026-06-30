@@ -9,6 +9,7 @@ import AuditLogsPage from "../../features/auditLogs/pages/AuditLogsPage";
 import AuthorizationRequestsPage from "../../features/authorization/pages/AuthorizationRequestsPage";
 import CreateProjectPage from "../../features/create-project/pages/CreateProjectPage";
 import DashboardPage from "../../features/dashboard/pages/DashboardPage";
+import Documents from "../../features/documents/pages/Documents";
 import LoginPage from "../../features/login/pages/LoginPage";
 import MilestoneManagement from "../../features/milestones/pages/MilestoneManagement";
 import NotificationPage from "../../features/notifications/pages/NotificationPage";
