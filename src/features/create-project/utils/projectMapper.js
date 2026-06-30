@@ -103,15 +103,7 @@ export const mapProjectPayload = (formData) => ({
 
     tabletBanking: formData.digitalChannels.tabletBanking,
 
-    whatsAppBanking: formData.digitalChannels.whatsAppBanking,
-
-    missedCallBanking: formData.digitalChannels.missedCallBanking,
-
-    smsBanking: formData.digitalChannels.smsBanking,
-
-    eStatement: formData.digitalChannels.eStatement,
-
-    debitCardServices: formData.digitalChannels.debitCardServices,
+    pigmyBanking: formData.digitalChannels.pigmyBanking,
 
     mobileUsers: Number(formData.digitalChannels.mobileUsers || 0),
 
@@ -131,26 +123,14 @@ export const mapProjectPayload = (formData) => ({
 
     imps: formData.paymentSystems.imps,
 
-    upi: formData.paymentSystems.upi,
-
-    nach: formData.paymentSystems.nach,
-
-    bbps: formData.paymentSystems.bbps,
-
-    aeps: formData.paymentSystems.aeps,
-
-    rupay: formData.paymentSystems.rupay,
-
     atmSwitch: formData.paymentSystems.atmSwitch,
 
     pos: formData.paymentSystems.pos,
 
-    reconciliation: formData.paymentSystems.reconciliation,
+    loanRecovery: formData.paymentSystems.loanRecovery,
 
-    aml: formData.paymentSystems.aml,
-
-    dailyUpiTransactions: Number(
-      formData.paymentSystems.dailyUpiTransactions || 0,
+    dailyAtmTransactions: Number(
+      formData.paymentSystems.dailyAtmTransactions || 0,
     ),
 
     dailyImpsTransactions: Number(

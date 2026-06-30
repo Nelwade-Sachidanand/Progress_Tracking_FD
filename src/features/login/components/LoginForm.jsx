@@ -8,28 +8,21 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
 import { useProjects } from "../../../context/ProjectContext";
 import { useAuth } from "../../login/hooks/useAuth";
 
 const LoginForm = () => {
   const { fetchProjects } = useProjects();
+
   const location = useLocation();
   const navigate = useNavigate();
 
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    if (location.state?.showSessionModal) {
-      setShowSessionModal(true);
-      setMessage(location.state.message);
-      navigate("/", {
-        replace: true,
-        state: null,
-      });
-    }
-  }, [location, navigate]);
-
   const [showSessionModal, setShowSessionModal] = useState(false);
+
+  const [showForgotModal, setShowForgotModal] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -39,7 +32,18 @@ const LoginForm = () => {
 
   const { login, loading } = useAuth();
 
-  const [showForgotModal, setShowForgotModal] = useState(false);
+  useEffect(() => {
+    if (location.state?.showSessionModal) {
+      setShowSessionModal(true);
+
+      setMessage(location.state.message);
+
+      navigate("/", {
+        replace: true,
+        state: null,
+      });
+    }
+  }, [location, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,17 +53,23 @@ const LoginForm = () => {
 
       if (response?.statusType === "S") {
         const user = response.details.user;
-        // console.log(response.details.user);
 
         const projects = await fetchProjects(user.id);
-        // console.log("In Login" + projects);
 
         if (user.role === "USER") {
           if (projects.length > 0) {
             sessionStorage.setItem("selectedProjectId", projects[0].id);
-            navigate("/project-details", { replace: true });
+
+            navigate("/project-details", {
+              replace: true,
+            });
           }
-        } else navigate("/dashboard", { replace: true });
+        } else {
+          navigate("/dashboard", {
+            replace: true,
+          });
+        }
+
         setUsername("");
         setPassword("");
         setShowPassword(false);
@@ -73,12 +83,17 @@ const LoginForm = () => {
     <div
       className="
         w-full
-        max-w-[460px]
-        xl:max-w-[520px] px-5
-        2xl:max-w-[560px]
+
+        max-w-[400px]
+        lg:max-w-[420px]
+        xl:max-w-[450px]
+        2xl:max-w-[500px]
+
+        mx-auto
       "
     >
       {/* Card */}
+
       <div
         className="
           bg-white
@@ -90,24 +105,27 @@ const LoginForm = () => {
 
           px-8
           xl:px-10
-          2xl:px-10
+          2xl:px-12
 
-          py-10
-          xl:py-12
-          2xl:py-14
+          py-9
+          xl:py-10
+          2xl:py-12
         "
       >
         {/* Heading */}
+
         <h1
           className="
             text-center
 
             font-bold
+
             text-[#081D5C]
 
-            text-[42px]
+            text-[38px]
+            lg:text-[40px]
             xl:text-[42px]
-            2xl:text-[54px]
+            2xl:text-[52px]
 
             leading-none
           "
@@ -118,6 +136,7 @@ const LoginForm = () => {
         <h2
           className="
             text-center
+
             text-[#081D5C]
 
             font-medium
@@ -133,6 +152,7 @@ const LoginForm = () => {
         </h2>
 
         {/* Divider */}
+
         <div
           className="
             flex
@@ -150,6 +170,7 @@ const LoginForm = () => {
 
               w-5
               h-5
+
               xl:w-6
               xl:h-6
             "
@@ -159,8 +180,10 @@ const LoginForm = () => {
         </div>
 
         {/* Form */}
+
         <form className="mt-6" onSubmit={handleSubmit}>
           {/* Username */}
+
           <label
             className="
               block
@@ -201,7 +224,7 @@ const LoginForm = () => {
               className="
                 w-full
 
-                h-12
+                h-11
                 xl:h-11
 
                 rounded-xl
@@ -219,12 +242,17 @@ const LoginForm = () => {
 
                 outline-none
 
-                focus:border-blue-500
+                transition-all
+
+                focus:border-[#2563EB]
+                focus:ring-2
+                focus:ring-blue-100
               "
             />
           </div>
 
           {/* Password */}
+
           <label
             className="
               block
@@ -266,7 +294,7 @@ const LoginForm = () => {
               className="
                 w-full
 
-                h-12
+                h-11
                 xl:h-11
 
                 rounded-xl
@@ -284,7 +312,11 @@ const LoginForm = () => {
 
                 outline-none
 
-                focus:border-blue-500
+                transition-all
+
+                focus:border-[#2563EB]
+                focus:ring-2
+                focus:ring-blue-100
               "
             />
 
@@ -299,20 +331,31 @@ const LoginForm = () => {
                 -translate-y-1/2
 
                 text-gray-400
+
+                hover:text-[#2563EB]
+
+                transition
+
+                cursor-pointer
               "
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
 
-          {/* Remember */}
+          {/* Remember + Forgot */}
+
           <div
             className="
               flex
-              justify-between
               items-center
+              justify-between
+
+              gap-3
 
               mt-5
+
+              flex-wrap
             "
           >
             <label
@@ -327,12 +370,20 @@ const LoginForm = () => {
                 xl:text-[15px]
               "
             >
-              <input type="checkbox" className="w-3 h-3" />
+              <input
+                type="checkbox"
+                className="
+                  w-4
+                  h-4
+                  accent-[#2563EB]
+                "
+              />
               Remember me
             </label>
 
-            {/* <button
+            <button
               type="button"
+              onClick={() => setShowForgotModal(true)}
               className="
                 text-[#2563EB]
 
@@ -342,34 +393,25 @@ const LoginForm = () => {
                 xl:text-[15px]
 
                 hover:underline
+
+                transition
+
+                cursor-pointer
               "
-            >
-              Forgot Password?
-            </button> */}
-            <button
-              type="button"
-              onClick={() => setShowForgotModal(true)}
-              className="
-    text-[#2563EB]
-    font-semibold
-    text-[14px]
-    xl:text-[15px]
-    hover:underline
-    cursor-pointer
-  "
             >
               Forgot Password?
             </button>
           </div>
 
           {/* Login Button */}
+
           <button
             disabled={loading}
             className="
               w-full
 
-              h-14
-              xl:h-13
+              h-12
+              xl:h-12
 
               mt-8
 
@@ -389,7 +431,10 @@ const LoginForm = () => {
               shadow-md
 
               hover:opacity-95
-              transition
+              transition-all
+
+              disabled:opacity-60
+              disabled:cursor-not-allowed
 
               cursor-pointer
             "
@@ -400,12 +445,14 @@ const LoginForm = () => {
       </div>
 
       {/* Footer */}
+
       <p
         className="
           text-center
           text-[#667085]
 
-          mt-8
+          mt-6
+          xl:mt-8
 
           text-[14px]
           xl:text-[15px]
@@ -415,74 +462,95 @@ const LoginForm = () => {
         © 2026 Novillex Technologies. All rights reserved.
       </p>
 
+      {/* Session Expired Modal */}
+
       {showSessionModal && (
         <div
           className="
-          fixed
-          inset-0
-          z-[9999]
-          flex
-          items-center
-          justify-center
-          bg-black/50
-          backdrop-blur-sm
-          px-4
+            fixed
+            inset-0
+            z-[9999]
+
+            flex
+            items-center
+            justify-center
+
+            bg-black/50
+            backdrop-blur-sm
+
+            px-4
           "
         >
           <div
             className="
-            bg-white
-            rounded-3xl
-            shadow-2xl
+              bg-white
 
-            w-full
-            max-w-[340px]
-            sm:max-w-[420px]
-            xl:max-w-[500px]
-            2xl:max-w-[580px]
+              rounded-3xl
 
-            p-6
-            xl:p-8
-            2xl:p-10
+              shadow-2xl
 
-            text-center
+              w-full
+              max-w-[340px]
+              sm:max-w-[420px]
+              xl:max-w-[500px]
+              2xl:max-w-[580px]
+
+              p-6
+              xl:p-8
+              2xl:p-10
+
+              text-center
             "
           >
             <div
               className="
-              mx-auto
-              flex
-              items-center
-              justify-center
+                mx-auto
 
-              w-14 h-14
-              xl:w-16 xl:h-16
-              2xl:w-20 2xl:h-20
+                flex
+                items-center
+                justify-center
 
-              rounded-full
-              bg-red-100
-             "
+                w-14
+                h-14
+
+                xl:w-16
+                xl:h-16
+
+                2xl:w-20
+                2xl:h-20
+
+                rounded-full
+
+                bg-red-100
+              "
             >
               <AlertTriangle
                 className="
-                text-red-600
+                  text-red-600
 
-                w-7 h-7
-                xl:w-8 xl:h-8
-                2xl:w-10 2xl:h-10
+                  w-7
+                  h-7
+
+                  xl:w-8
+                  xl:h-8
+
+                  2xl:w-10
+                  2xl:h-10
                 "
               />
             </div>
 
             <h2
               className="
-              mt-5
-              font-bold
-              text-[#081D5C]
+                mt-5
 
-              text-xl
-              xl:text-2xl
-              2xl:text-3xl
+                font-bold
+
+                text-[#081D5C]
+
+                text-xl
+                xl:text-2xl
+                2xl:text-3xl
               "
             >
               Session Expired
@@ -490,12 +558,15 @@ const LoginForm = () => {
 
             <p
               className="
-              mt-3
-              text-slate-600
+                mt-3
 
-              text-sm
-              xl:text-base
-              2xl:text-lg
+                text-slate-600
+
+                text-sm
+                xl:text-base
+                2xl:text-lg
+
+                leading-7
               "
             >
               {message}
@@ -506,7 +577,8 @@ const LoginForm = () => {
               className="
                 mt-6
 
-                w-[60px]
+                w-[70px]
+
                 h-11
                 xl:h-12
                 2xl:h-14
@@ -517,6 +589,7 @@ const LoginForm = () => {
                 hover:bg-[#1D4ED8]
 
                 text-white
+
                 font-semibold
 
                 text-sm
@@ -524,55 +597,107 @@ const LoginForm = () => {
                 2xl:text-lg
 
                 transition-all
+
                 cursor-pointer
-                "
+              "
             >
               OK
             </button>
           </div>
         </div>
       )}
+
+      {/* Forgot Password Modal */}
+
       {showForgotModal && (
         <div
           className="
-    fixed
-    inset-0
-    bg-black/50
-    flex
-    items-center
-    justify-center
-    z-[9999]
-    "
+            fixed
+            inset-0
+
+            z-[9999]
+
+            flex
+            items-center
+            justify-center
+
+            bg-black/50
+            backdrop-blur-sm
+
+            px-4
+          "
         >
           <div
             className="
-      bg-white
-      rounded-2xl
-      p-6
-      w-full
-      max-w-md
-      shadow-xl
-      "
+              bg-white
+
+              rounded-2xl
+
+              shadow-2xl
+
+              w-full
+              max-w-[340px]
+              sm:max-w-[420px]
+              xl:max-w-[460px]
+
+              p-6
+              xl:p-8
+            "
           >
-            <h2 className="text-xl font-bold text-[#081D5C] mb-3">
+            <h2
+              className="
+                text-xl
+                xl:text-2xl
+
+                font-bold
+
+                text-[#081D5C]
+              "
+            >
               Forgot Password
             </h2>
 
-            <p className="text-slate-600 text-sm leading-6">
+            <p
+              className="
+                mt-4
+
+                text-slate-600
+
+                text-sm
+                xl:text-base
+
+                leading-7
+              "
+            >
               Please contact your administrator to reset your password.
             </p>
 
-            <div className="mt-6 flex justify-end">
+            <div
+              className="
+                mt-8
+
+                flex
+                justify-end
+              "
+            >
               <button
                 onClick={() => setShowForgotModal(false)}
                 className="
-          px-5
-          py-2
-          bg-[#2563EB]
-          text-white
-          rounded-lg
-          cursor-pointer
-          "
+                  px-6
+                  py-2.5
+
+                  rounded-lg
+
+                  bg-[#2563EB]
+                  hover:bg-[#1D4ED8]
+
+                  text-white
+                  font-semibold
+
+                  transition-all
+
+                  cursor-pointer
+                "
               >
                 OK
               </button>

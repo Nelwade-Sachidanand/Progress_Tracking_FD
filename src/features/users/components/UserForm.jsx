@@ -14,6 +14,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
   const [id, setId] = useState("");
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("USER");
   const [status, setStatus] = useState("ACTIVE");
@@ -30,7 +31,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
       setFullName(userData.fullname || "");
       setUsername(userData.username || "");
       setRole(userData.role || "USER");
-
+      setEmail(userData.email || "");
       setStatus(userData.active ? "ACTIVE" : "INACTIVE");
 
       const assignedProjects = availableProjects.filter((project) =>
@@ -88,6 +89,18 @@ const UserForm = ({ mode = "add", userData = null }) => {
       return false;
     }
 
+    if (!email.trim()) {
+      toast.error("Email is required");
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      toast.error("Please enter a valid email address");
+      return false;
+    }
+
     // Password validation only for Add User
     if (mode === "add") {
       if (!password.trim()) {
@@ -125,6 +138,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
         userId: id,
         fullname: fullName,
         username,
+        email,
         password,
         role,
         status: status === "ACTIVE" ? true : false,
@@ -330,6 +344,39 @@ const UserForm = ({ mode = "add", userData = null }) => {
               2xl:text-[17px]
               2xl:font-medium
               2xl:tracking-wide
+              "
+            />
+          </div>
+
+          {/* Email */}
+
+          <div>
+            <label
+              className="
+              block
+              px-1
+              mb-2
+              font-semibold
+              text-slate-700
+              "
+            >
+              Email
+            </label>
+
+            <input
+              type="email"
+              placeholder="Enter email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="
+              w-full
+              h-10
+              px-4
+              rounded-xl
+              border
+              border-slate-300
+              focus:border-blue-500
+              outline-none
               "
             />
           </div>

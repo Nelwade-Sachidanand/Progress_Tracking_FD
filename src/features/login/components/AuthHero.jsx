@@ -1,9 +1,4 @@
-import {
-  Shield,
-  Users,
-  BarChart3,
-  Lock,
-} from "lucide-react";
+import { BarChart3, Lock, Shield, Users } from "lucide-react";
 
 import logo from "../../../assets/images/Novillex-Logo.png";
 import bgImage from "../../../assets/images/login-bg.jpg";
@@ -107,9 +102,7 @@ const AuthHero = () => {
         <br />
         Stronger Governance.
         <br />
-        <span className="text-[#1da1ff]">
-          Successful Go-Live.
-        </span>
+        <span className="text-[#1da1ff]">Successful Go-Live.</span>
       </h1>
 
       {/* BLUE LINE */}
@@ -142,9 +135,8 @@ const AuthHero = () => {
           text-gray-200
         "
       >
-        A centralized platform to manage and monitor
-        banking software implementation projects with
-        complete transparency and control.
+        A centralized platform to manage and monitor banking software
+        implementation projects with complete transparency and control.
       </p>
 
       {/* FEATURES */}
@@ -163,10 +155,7 @@ const AuthHero = () => {
       >
         {/* FEATURE 1 */}
         <div className="pr-2 xl:pr-4">
-          <Shield
-            size={32}
-            className="text-[#1da1ff]"
-          />
+          <Shield size={32} className="text-[#1da1ff]" />
 
           <h3
             className="
@@ -193,8 +182,7 @@ const AuthHero = () => {
               text-gray-300
             "
           >
-            Monitor risks, issues and milestones
-            in real time.
+            Monitor risks, issues and milestones in real time.
           </p>
         </div>
 
@@ -209,10 +197,7 @@ const AuthHero = () => {
             border-white/10
           "
         >
-          <Users
-            size={32}
-            className="text-[#1da1ff]"
-          />
+          <Users size={32} className="text-[#1da1ff]" />
 
           <h3
             className="
@@ -239,17 +224,13 @@ const AuthHero = () => {
               text-gray-300
             "
           >
-            Align teams, track deliverables and
-            drive accountability.
+            Align teams, track deliverables and drive accountability.
           </p>
         </div>
 
         {/* FEATURE 3 */}
         <div className="pl-2 xl:pl-4">
-          <BarChart3
-            size={32}
-            className="text-[#1da1ff]"
-          />
+          <BarChart3 size={32} className="text-[#1da1ff]" />
 
           <h3
             className="
@@ -276,8 +257,7 @@ const AuthHero = () => {
               text-gray-300
             "
           >
-            Ensure quality delivery and successful
-            go-live.
+            Ensure quality delivery and successful go-live.
           </p>
         </div>
       </div>
@@ -352,8 +332,7 @@ const AuthHero = () => {
                 text-gray-300
               "
             >
-              Your data is protected with
-              enterprise-grade security.
+              Your data is protected with enterprise-grade security.
             </p>
           </div>
         </div>
