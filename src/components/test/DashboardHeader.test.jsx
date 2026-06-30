@@ -71,7 +71,7 @@ describe("DashboardHeader", () => {
       JSON.stringify({
         fullname: "Sachin Nelwade",
         username: "sachin",
-        role: "ADMIN",
+        role: "Admin",
       }),
     );
 
@@ -125,7 +125,7 @@ describe("DashboardHeader", () => {
   test("renders user role", () => {
     renderComponent();
 
-    expect(screen.getByText("ADMIN")).toBeInTheDocument();
+    expect(screen.getByText("Admin")).toBeInTheDocument();
   });
 
   test("renders default user when sessionStorage is empty", () => {
@@ -133,7 +133,9 @@ describe("DashboardHeader", () => {
 
     renderComponent();
 
-    expect(screen.getByText("Admin")).toBeInTheDocument();
+    const admins = screen.getAllByText("Admin");
+
+    expect(admins.length).toBeGreaterThan(0);
   });
 
   test("loads notifications on mount", async () => {
@@ -350,7 +352,9 @@ describe("DashboardHeader", () => {
 
     expect(mockSetProjects).toHaveBeenCalledWith([]);
 
-    expect(mockNavigate).toHaveBeenCalledWith("/");
+    expect(mockNavigate).toHaveBeenCalledWith("/", {
+      replace: true,
+    });
   });
 
   test("opens bank dropdown", () => {

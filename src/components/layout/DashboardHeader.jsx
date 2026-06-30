@@ -1,13 +1,10 @@
 import {
-  AlertTriangle,
   ArrowRight,
   Bell,
   Building2,
-  CheckCircle2,
   ChevronDown,
   ClipboardList,
   FileSpreadsheet,
-  FolderOpen,
   LayoutDashboard,
   List,
   LogOut,
@@ -15,13 +12,13 @@ import {
   Pencil,
   Plus,
   Search,
-  Shield,
   ShieldCheck,
   User,
-  UserRound,
   Users,
   XCircle,
+  FileText,
 } from "lucide-react";
+
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useProjects } from "../../context/ProjectContext";
@@ -174,59 +171,6 @@ const DashboardHeader = ({
       .join("");
   };
 
-  const getNotificationIcon = (type) => {
-    switch (type) {
-      case "RISK":
-        return (
-          <div className="w-10 h-10 shrink-0 rounded-2xl bg-red-50 flex items-center justify-center">
-            <AlertTriangle size={24} className="text-red-500" />
-          </div>
-        );
-
-      case "PROJECT":
-        return (
-          <div className="w-10 h-10 shrink-0 rounded-2xl bg-orange-50 flex items-center justify-center">
-            <FolderOpen size={24} className="text-orange-500" />
-          </div>
-        );
-
-      case "MILESTONE":
-        return (
-          <div className="w-10 h-10 shrink-0 rounded-2xl bg-green-50 flex items-center justify-center">
-            <CheckCircle2 size={24} className="text-green-500" />
-          </div>
-        );
-
-      case "ACTIVITY_UPDATE":
-        return (
-          <div className="w-10 h-10 shrink-0 rounded-2xl bg-blue-50 flex items-center justify-center">
-            <UserRound size={20} className="text-blue-500" />
-          </div>
-        );
-
-      case "ACTIVITY_APPROVED":
-        return (
-          <div className="w-10 h-10 shrink-0 rounded-2xl bg-green-50 flex items-center justify-center">
-            <ShieldCheck size={20} className="text-green-600" />
-          </div>
-        );
-
-      case "ACTIVITY_REJECTED":
-        return (
-          <div className="w-10 h-10 shrink-0 rounded-2xl bg-red-50 flex items-center justify-center">
-            <XCircle size={20} className="text-red-600" />
-          </div>
-        );
-
-      default:
-        return (
-          <div className="w-10 h-10 shrink-0 rounded-2xl bg-purple-50 flex items-center justify-center">
-            <Shield size={24} className="text-purple-500" />
-          </div>
-        );
-    }
-  };
-
   const handleMarkAllRead = async () => {
     try {
       await markAllRead();
@@ -365,6 +309,14 @@ const DashboardHeader = ({
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",
     },
+        "/documents": {
+      title: "Documents",
+      subtitle: "Manage project sign-off documents ",
+       icon: <FileText size={24} />,
+
+      titleClass: "text-[26px]",
+      subtitleClass: "text-[12px]",
+    },
 
     "/notifications": {
       title: "Notifications",
@@ -374,6 +326,16 @@ const DashboardHeader = ({
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",
     },
+
+        "/documents": {
+      title: "Documents",
+      subtitle: "Upload and manage signoff documents",
+      icon: <Users size={22} />,
+
+      titleClass: "text-[32px]",
+      subtitleClass: "text-[17px]",
+    },
+
 
     "/upload-excel": {
       title: "Upload Excel",
@@ -750,7 +712,6 @@ const DashboardHeader = ({
                             onClick={async () => {
                               if (!notification.read) {
                                 await markAsRead(notification.id);
-
                                 loadNotifications();
                               }
 
@@ -763,27 +724,40 @@ const DashboardHeader = ({
                             className="
                             flex
                             gap-3
-                             p-4
+                            p-4
                             border-b
                             cursor-pointer
-                             hover:bg-slate-50
-                             transition
-                             overflow-hidden
-                               "
+                            hover:bg-slate-50
+                            transition
+                            overflow-hidden
+                          "
                           >
-                            {getNotificationIcon(notification.type)}
+                            <div
+                              className="
+                              w-11
+                              h-11
+                              rounded-xl
+                              bg-[#EEF2FF]
+                              flex
+                              items-center
+                              justify-center
+                              flex-shrink-0
+                            "
+                            >
+                              <Bell size={20} className="text-[#4F46E5]" />
+                            </div>
 
                             <div className="flex-1 min-w-0">
                               <div className="flex justify-between">
                                 <h4
                                   className="
                                   font-bold
-                                   text-[14px]
-                                   lg:text-[15px]
-                                   text-[#0B1F59]
+                                  text-[14px]
+                                  lg:text-[15px]
+                                  text-[#0B1F59]
                                   break-words
-                                   leading-5
-                                      "
+                                  leading-5
+                                "
                                 >
                                   {notification.title}
                                 </h4>
@@ -791,11 +765,11 @@ const DashboardHeader = ({
                                 {!notification.read && (
                                   <div
                                     className="
-                                  w-3
-                                  h-3
-                                  rounded-full
-                                  bg-red-500
-                                  mt-1
+                                    w-3
+                                    h-3
+                                    rounded-full
+                                    bg-red-500
+                                    mt-1
                                   "
                                   />
                                 )}
@@ -804,22 +778,22 @@ const DashboardHeader = ({
                               <p
                                 className="
                                 text-[#475569]
-                                 text-[12px]
+                                text-[12px]
                                 lg:text-[13px]
-                                  mt-1
-                                  leading-5
-                                 break-words
-                                 whitespace-normal
-                                  "
+                                mt-1
+                                leading-5
+                                break-words
+                                whitespace-normal
+                              "
                               >
                                 {notification.message}
                               </p>
 
                               <p
                                 className="
-                              text-[#94A3B8]
-                              text-sm
-                              mt-2
+                                text-[#94A3B8]
+                                text-sm
+                                mt-2
                               "
                               >
                                 {formatTimeAgo(notification.createdAt)}

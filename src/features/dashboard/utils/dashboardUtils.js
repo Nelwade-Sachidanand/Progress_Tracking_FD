@@ -80,13 +80,18 @@ export const calculateOverallProgress = (projects) => {
 
   if (totalWeightage === 0) {
     const activities = getAllActivities(projects);
+
+    if (activities.length === 0) {
+      return 0;
+    }
+
     let totalProgress = 0;
-    let taotalActivities = 0;
-    activities?.forEach((activity) => {
-      totalProgress += activity.progress;
-      taotalActivities++;
+
+    activities.forEach((activity) => {
+      totalProgress += Number(activity.progress || 0);
     });
-    return Math.round(totalProgress / taotalActivities);
+
+    return Math.round(totalProgress / activities.length);
   }
 
   return Math.round(weightedProgressSum / totalWeightage);

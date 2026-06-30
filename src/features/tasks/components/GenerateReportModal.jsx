@@ -1,5 +1,15 @@
 import { X, FileText, FileSpreadsheet, FileType } from "lucide-react";
+import { saveAs } from "file-saver";
 
+import {
+  Document,
+  Packer,
+  Paragraph,
+  Table,
+  TableRow,
+  TableCell,
+ HeadingLevel,
+} from "docx";
 export default function GenerateReportModal({
   isOpen,
   onClose,
@@ -138,8 +148,8 @@ export default function GenerateReportModal({
 
           <div>
 
-            <label className="block text-sm font-semibold mb-3">
-              Date Range (Optional)
+            <label className="block text-sm  font-semibold mb-3">
+              Date
             </label>
 
             <div className="grid grid-cols-2 gap-4">
@@ -158,14 +168,14 @@ export default function GenerateReportModal({
                       e.target.value
                     )
                   }
-                  className="w-full mt-1 border rounded-lg p-2.5"
+                  className="w-full mt-1 border rounded-lg p-2.5 cursor-pointer"
                 />
 
               </div>
 
               <div>
 
-                <label className="text-xs text-slate-500">
+                <label className="text-xs  text-slate-500">
                   To Date
                 </label>
 
@@ -177,7 +187,7 @@ export default function GenerateReportModal({
                       e.target.value
                     )
                   }
-                  className="w-full mt-1 border rounded-lg p-2.5"
+                  className="w-full mt-1 border rounded-lg p-2.5 cursor-pointer"
                 />
 
               </div>
@@ -253,18 +263,18 @@ export default function GenerateReportModal({
 
         {/* Footer */}
 
-        <div className="px-6 py-4 border-t flex justify-end gap-3">
+        <div className="px-6 py-4 border-t flex justify-end gap-3 ">
 
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-lg border"
+            className="px-5 py-2 rounded-lg border cursor-pointer"
           >
             Cancel
           </button>
 
           <button
             onClick={onGenerate}
-            className="px-6 py-2 rounded-lg bg-[#6D4AFF] text-white"
+            className="px-6 py-2 rounded-lg bg-[#6D4AFF] text-white cursor-pointer"
           >
             Generate Report
           </button>

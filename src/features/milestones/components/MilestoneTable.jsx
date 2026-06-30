@@ -127,7 +127,7 @@ export default function MilestoneTable({
         {user?.role !== "MANAGEMENT USER" && (
           <button
             onClick={onUpdate}
-            disabled={loading}
+            disabled={loading || !isValidWeightage}
             className={`
           h-11
           xl:h-12

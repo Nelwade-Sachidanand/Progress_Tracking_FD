@@ -9,6 +9,7 @@ import AuditLogsPage from "../../features/auditLogs/pages/AuditLogsPage";
 import AuthorizationRequestsPage from "../../features/authorization/pages/AuthorizationRequestsPage";
 import CreateProjectPage from "../../features/create-project/pages/CreateProjectPage";
 import DashboardPage from "../../features/dashboard/pages/DashboardPage";
+import Documents from "../../features/documents/pages/Documents";
 import LoginPage from "../../features/login/pages/LoginPage";
 import MilestoneManagement from "../../features/milestones/pages/MilestoneManagement";
 import NotificationPage from "../../features/notifications/pages/NotificationPage";
@@ -17,8 +18,9 @@ import AllTasksPage from "../../features/tasks/pages/AllTasksPage";
 import AddUserPage from "../../features/users/pages/AddUserPage";
 import EditUserPage from "../../features/users/pages/EditUserPage";
 import UserManagementPage from "../../features/users/pages/UserManagementPage";
+import Documents from "../../features/documents/pages/Documents";
 
-import ProtectedRoute from "./ProtectedRoute ";
+import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 
 const AppRoutes = () => {
@@ -48,6 +50,7 @@ const AppRoutes = () => {
           <Route path="/project-details" element={<ProjectDetailPage />} />
           <Route path="/tasks" element={<AllTasksPage />} />
           <Route path="/notifications" element={<NotificationPage />} />
+          <Route path="/documents" element={<Documents />} />
         </Route>
       </Route>
 

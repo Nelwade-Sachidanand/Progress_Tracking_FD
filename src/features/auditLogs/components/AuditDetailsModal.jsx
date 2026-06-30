@@ -6,8 +6,43 @@ export default function AuditDetailsModal({ log, onClose }) {
   const oldData = log.oldData ? JSON.parse(log.oldData) : null;
   const newData = log.newData ? JSON.parse(log.newData) : null;
 
-  const renderJson = (current, compare, isOld, level = 0) => {
+  const renderJson = (current, compare, isOld, level = 0,keyName = "") => {
+
+
+    const hiddenFields = ["password", "projectIds", "projectId"];
+
+  if (hiddenFields.includes(keyName)) {
+    if (keyName === "projectIds") {
+      return (
+        <span className="text-slate-400 italic">
+          [{current?.length || 0} projects hidden]
+        </span>
+      );
+    }
+
+    return (
+      <span className="text-slate-400 italic">
+        ****** (hidden)
+      </span>
+    );
+  }
     // Primitive values
+
+//      if (keyName === "password") {
+//     return (
+//       <span className="text-slate-400 italic">
+//         ****** (encrypted)
+//       </span>
+//     );
+//   }
+
+//   if (keyName === "projectIds") {
+//   return (
+//     <span className="text-slate-400 italic">
+//       [{current.length} projects hidden]
+//     </span>
+//   );
+// }
     if (
       current === null ||
       typeof current === "string" ||
@@ -55,8 +90,29 @@ export default function AuditDetailsModal({ log, onClose }) {
     return (
       <>
         <span>{"{"}</span>
-
         <div className="pl-6">
+  {Object.entries(current).map(([key, value], index, arr) => (
+    <div key={key}>
+      <span className="text-blue-700 font-medium">
+        "{key}"
+      </span>
+
+      <span>: </span>
+
+      {renderJson(
+        value,
+        compare?.[key],
+        isOld,
+        level + 1,
+        key
+      )}
+
+      {index < arr.length - 1 && ","}
+    </div>
+  ))}
+</div>
+
+        {/* <div className="pl-6">
           {Object.entries(current).map(([key, value], index, arr) => (
             <div key={key}>
               <span className="text-blue-700 font-medium">"{key}"</span>
@@ -68,7 +124,7 @@ export default function AuditDetailsModal({ log, onClose }) {
               {index < arr.length - 1 && ","}
             </div>
           ))}
-        </div>
+        </div> */}
 
         <span>{"}"}</span>
       </>

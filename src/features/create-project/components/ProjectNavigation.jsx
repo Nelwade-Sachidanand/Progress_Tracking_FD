@@ -6,15 +6,21 @@ export default function ProjectNavigation({
   setCurrentStep,
   formData,
   resetForm,
+  setSelectedProjectId,
+  loadProjectInformation,
 }) {
   const { saveProject, loading } = useCreateProject();
 
   const handleCreateProject = async () => {
     const payload = mapProjectPayload(formData);
 
+    // console.log("payload : ", JSON.stringify(payload, null, 2));
+
     const response = await saveProject(payload);
     if (response.statusType === "S") {
       resetForm();
+      setSelectedProjectId("");
+      await loadProjectInformation();
     }
   };
 

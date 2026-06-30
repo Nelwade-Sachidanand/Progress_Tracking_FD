@@ -1,31 +1,43 @@
 import { FileSpreadsheet, UploadCloud, X } from "lucide-react";
 import { useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { useExcel } from "../hooks/useExcel";
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
 const UploadExcel = () => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
+
   const { uploadExcel } = useExcel();
 
   const fileInputRef = useRef(null);
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (!file) {
+      toast.error("Please select an Excel file.");
+      return;
+    }
 
     try {
       setLoading(true);
 
-      // console.log("Uploading:", file);
-
       const response = await uploadExcel(file);
 
-      if (response.statusType === "S") setFile(null);
+      if (response?.statusType === "S") {
+        toast.success("Excel uploaded successfully.");
 
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
+        setFile(null);
+
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+      } else {
+        toast.error(response?.message || "Failed to upload Excel.");
       }
     } catch (error) {
       console.error(error);
+      toast.error("Something went wrong while uploading.");
     } finally {
       setLoading(false);
     }
@@ -39,10 +51,35 @@ const UploadExcel = () => {
     }
   };
 
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files?.[0];
+
+    if (!selectedFile) {
+      return;
+    }
+
+    const fileName = selectedFile.name.toLowerCase();
+
+    if (!fileName.endsWith(".xlsx") && !fileName.endsWith(".xls")) {
+      toast.error("Only Excel files (.xlsx or .xls) are allowed.");
+      e.target.value = "";
+      return;
+    }
+
+    if (selectedFile.size > MAX_FILE_SIZE) {
+      toast.error("File size should not exceed 10 MB.");
+      e.target.value = "";
+      return;
+    }
+
+    setFile(selectedFile);
+  };
+
   return (
     <div className="max-w-3xl mx-auto mt-10">
       <div className="bg-white border border-slate-200 rounded-3xl shadow-sm p-8">
         {/* Header */}
+
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-slate-800">
             Upload Project Excel
@@ -54,6 +91,7 @@ const UploadExcel = () => {
         </div>
 
         {/* Upload Area */}
+
         <label
           htmlFor="excel-upload"
           className="
@@ -83,7 +121,7 @@ const UploadExcel = () => {
             </p>
 
             <p className="text-sm text-slate-500 mt-1">
-              Supported formats: XLSX, XLS
+              Supported formats: XLSX, XLS (Maximum 10 MB)
             </p>
           </div>
 
@@ -93,17 +131,12 @@ const UploadExcel = () => {
             type="file"
             accept=".xlsx,.xls"
             className="hidden"
-            onChange={(e) => {
-              const selectedFile = e.target.files?.[0];
-
-              if (selectedFile) {
-                setFile(selectedFile);
-              }
-            }}
+            onChange={handleFileChange}
           />
         </label>
 
         {/* Selected File */}
+
         {file && (
           <div
             className="
@@ -148,6 +181,7 @@ const UploadExcel = () => {
         )}
 
         {/* Upload Button */}
+
         <div className="flex justify-end mt-6">
           <button
             onClick={handleUpload}

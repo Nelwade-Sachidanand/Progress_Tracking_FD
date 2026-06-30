@@ -5,6 +5,19 @@ import { toast } from "react-toastify";
 import { useProjects } from "../../../context/ProjectContext";
 import { exportExcelReport } from "../../add-task/api/exportExcelApi";
 import GenerateReportModal from "../components/GenerateReportModal";
+import { saveAs } from "file-saver";
+import { WidthType } from "docx";
+
+import {
+  Document,
+  Packer,
+  Paragraph,
+  Table,
+  TableRow,
+  TableCell,
+  HeadingLevel,
+} from "docx";
+
 
 import PrintReport from "../components//PrintReport";
 

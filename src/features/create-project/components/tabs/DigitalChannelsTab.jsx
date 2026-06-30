@@ -53,31 +53,6 @@ export default function DigitalChannelsTab({ data, updateSection }) {
       title: "PigMy Banking",
       icon: PiggyBank,
     },
-    // {
-    //   key: "whatsAppBanking",
-    //   title: "WhatsApp Banking",
-    //   icon: MessageCircle,
-    // },
-    // {
-    //   key: "missedCallBanking",
-    //   title: "Missed Call Banking",
-    //   icon: Phone,
-    // },
-    // {
-    //   key: "smsBanking",
-    //   title: "SMS Banking",
-    //   icon: Mail,
-    // },
-    // {
-    //   key: "eStatement",
-    //   title: "E-Statement",
-    //   icon: Mail,
-    // },
-    // {
-    //   key: "debitCardServices",
-    //   title: "Debit Card Services",
-    //   icon: CreditCard,
-    // },
   ];
 
   return (

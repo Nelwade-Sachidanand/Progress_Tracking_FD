@@ -29,8 +29,7 @@ export default function EditTaskForm() {
     formData.plannedStartDate !== originalDates.plannedStartDate ||
     formData.plannedEndDate !== originalDates.plannedEndDate;
 
-  // const inputClass =
-  //     "w-full border border-[#E5E7EB] rounded-xl p-3 text-sm";
+  
 
   const inputClass =
     "w-full h-11 px-4 text-sm bg-white border border-[#DCE3EE] rounded-xl outline-none transition-all duration-200 focus:border-[#6D4AFF] focus:ring-4 focus:ring-[#6D4AFF]/10";
@@ -43,6 +42,17 @@ export default function EditTaskForm() {
 
   const dropdownItemClass =
     "w-full px-4 py-3 text-left text-sm hover:bg-slate-50";
+ 
+const getStatus = (p) => {
+  const progress = Number(p || 0);
+
+  if (progress === 0) return "Not Started";
+  if (progress === 100) return "Completed";
+  if (progress > 0 && progress < 100) return "In Progress";
+
+  return "Not Started";
+};
+
 
   useEffect(() => {
     if (formData.plannedStartDate || formData.plannedEndDate) {
@@ -52,6 +62,8 @@ export default function EditTaskForm() {
       });
     }
   }, []);
+
+ 
   return (
     <div className="space-y-6  mx-auto w-full">
       {/* Basic Information */}
@@ -86,18 +98,7 @@ export default function EditTaskForm() {
               Phase <span className="text-red-500">*</span>
             </label>
 
-            {/* <input
-    type="text"
-    placeholder="Enter Phase"
-    className={inputClass}
-    value={formData.phaseName}
-    onChange={(e) =>
-      handleChange(
-        "phaseName",
-        e.target.value
-      )
-    }
-  /> */}
+        
             <input
               value={formData.phaseName}
               readOnly
@@ -110,18 +111,7 @@ export default function EditTaskForm() {
               Milestone <span className="text-red-500">*</span>
             </label>
 
-            {/* <input
-    type="text"
-    placeholder="Enter Milestone"
-    className={inputClass}
-    value={formData.milestoneName}
-    onChange={(e) =>
-      handleChange(
-        "milestoneName",
-        e.target.value
-      )
-    }
-  /> */}
+          
             <input
               value={formData.milestoneName}
               readOnly
@@ -134,18 +124,7 @@ export default function EditTaskForm() {
               Task <span className="text-red-500">*</span>
             </label>
 
-            {/* <input
-    type="text"
-    placeholder="Enter Task"
-    className={inputClass}
-    value={formData.taskName}
-    onChange={(e) =>
-      handleChange(
-        "taskName",
-        e.target.value
-      )
-    }
-  /> */}
+          
             <input
               value={formData.taskName}
               readOnly
@@ -158,18 +137,7 @@ export default function EditTaskForm() {
               Sub Task <span className="text-red-500">*</span>
             </label>
 
-            {/* <input
-    type="text"
-    placeholder="Enter Sub Task"
-    className={inputClass}
-    value={formData.subTaskName}
-    onChange={(e) =>
-      handleChange(
-        "subTaskName",
-        e.target.value
-      )
-    }
-  /> */}
+       
             <input
               value={formData.subTaskName}
               readOnly
@@ -185,17 +153,7 @@ export default function EditTaskForm() {
               Activity <span className="text-red-500">*</span>
             </label>
 
-            {/* <input
-                            placeholder="Enter Activity"
-                            className={inputClass}
-                            value={formData.activityName}
-                            onChange={(e) =>
-                                handleChange(
-                                    "activityName",
-                                    e.target.value
-                                )
-                            }
-                        /> */}
+            
             <input
               value={formData.activityName}
               readOnly
@@ -402,6 +360,9 @@ export default function EditTaskForm() {
                 max="100"
                 value={formData.progress}
                 onChange={(e) => handleChange("progress", e.target.value)}
+               // onChange={(e) => handleChange("progress", Number(value || 0))}
+                 //onChange={(e) => handleChange("progress", Number(e.target.value))}
+                  
                 className="
                                 w-full
                                 accent-[#6D4AFF]
@@ -421,73 +382,34 @@ export default function EditTaskForm() {
           </div>
 
           {/* Status */}
+<div>
+  <label className="block mb-2 text-sm font-medium text-slate-700">
+    Status
+  </label>
+<div className="
+  w-full
+  h-11
+  px-4
+  flex
+  items-center
+  text-sm
+  bg-slate-50
+  border
+  border-slate-200
+  rounded-xl
+">
+  {getStatus(formData.progress)}
+</div>
 
-          <div>
-            <label className="block mb-2 ml-1 text-sm font-medium text-slate-700">
-              Status
-            </label>
-
-            <select
-              className="
-                             w-full
-                             h-11
-                             px-4
-                             text-sm
-                              bg-white
-                             border
-                             border-[#DCE3EE]
-                             rounded-xl
-                            outline-none
-                            focus:border-[#6D4AFF]
-                            focus:ring-4
-                            focus:ring-[#6D4AFF]/10
-                             cursor-pointer
-                               "
-              value={formData.executionStatus}
-              onChange={(e) => handleChange("executionStatus", e.target.value)}
-            >
-              <option value="">Select Status</option>
-
-              <option value="Not Started">Not Started</option>
-
-              <option value="In Progress">In Progress</option>
-
-              <option value="Completed">Completed</option>
-
-              <option value="Delayed">Delayed</option>
-            </select>
-          </div>
+</div>
+          
         </div>
       </div>
 
       {/* Buttons */}
 
       <div className="flex justify-end items-center gap-3 mt-6">
-        {/* Reset */}
-        {/* <button
-                    type="button"
-                    onClick={resetForm}
-                    className="
-      h-11
-      px-6
-      rounded-xl
-      border
-      border-orange-300
-      bg-white
-      text-orange-500
-      text-sm
-      font-medium
-      flex
-      items-center
-      gap-2
-      hover:bg-orange-50
-      transition-all
-      cursor-pointer
-    "
-                >
-                    <RotateCcw size={15} />
-                    Reset
-                </button> */}
+       
 
         {/* Back */}
         <button

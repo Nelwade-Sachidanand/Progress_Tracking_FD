@@ -42,11 +42,6 @@ export default function PaymentSystemsTab({ data, updateSection }) {
     { key: "rtgs", title: "RTGS", icon: Landmark },
     { key: "neft", title: "NEFT", icon: Landmark },
     { key: "imps", title: "IMPS", icon: Smartphone },
-    // { key: "upi", title: "UPI", icon: Smartphone },
-    // { key: "nach", title: "NACH", icon: Receipt },
-    // { key: "bbps", title: "BBPS", icon: Receipt },
-    // { key: "aeps", title: "AEPS", icon: Wallet },
-    // { key: "rupay", title: "RuPay", icon: CreditCard },
     { key: "atmSwitch", title: "ATM Switch", icon: Building2 },
     { key: "pos", title: "POS", icon: CreditCard },
     {
@@ -54,8 +49,6 @@ export default function PaymentSystemsTab({ data, updateSection }) {
       title: "Loan Recovery",
       icon: HandCoins,
     },
-    // { key: "reconciliation", title: "Reconciliation", icon: CheckCircle },
-    // { key: "aml", title: "AML", icon: ShieldCheck },
   ];
 
   return (
@@ -167,14 +160,14 @@ export default function PaymentSystemsTab({ data, updateSection }) {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           <div>
             <label className="block mb-2 text-sm font-medium text-slate-700">
-              Daily UPI Transactions
+              Daily ATM Transactions
             </label>
 
             <input
               type="number"
               min="0"
-              name="dailyUpiTransactions"
-              value={data.dailyUpiTransactions || ""}
+              name="dailyAtmTransactions"
+              value={data.dailyAtmTransactions || ""}
               onChange={handleChange}
               onKeyDown={(e) => {
                 if (e.key === "-" || e.key === "e" || e.key === "+") {

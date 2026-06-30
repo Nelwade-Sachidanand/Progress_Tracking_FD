@@ -1,0 +1,372 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ProjectOverview > matches snapshot 1`] = `
+<div>
+  <div
+    class="
+  bg-white
+  rounded-2xl
+  border
+  border-[#E5EAF2]
+  p-4
+  md:p-5
+  lg:p-6
+  "
+  >
+          
+    <div
+      class="flex items-center gap-3 mb-6"
+    >
+      <div
+        class="w-8 h-8 rounded-full bg-[#2563EB] text-white flex items-center justify-center text-sm font-bold"
+      >
+        1
+      </div>
+      <h2
+        class="text-[20px] font-bold text-[#0B1F59]"
+      >
+        Project Overview
+      </h2>
+    </div>
+    <div
+      class="
+  grid
+  grid-cols-1
+  xl:grid-cols-2
+  gap-6
+  xl:gap-8
+  "
+    >
+      <div
+        class="
+  flex
+  flex-col
+  sm:flex-row
+  gap-4
+  sm:gap-5
+  "
+      >
+        <div
+          class="
+  w-16
+  h-16
+  sm:w-20
+  sm:h-20
+  rounded-2xl
+  bg-[#F3EEFF]
+  flex
+  items-center
+  justify-center
+  shrink-0
+  "
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-building2 lucide-building-2 text-[#6D4AFF]"
+            fill="none"
+            height="32"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="32"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10 12h4"
+            />
+            <path
+              d="M10 8h4"
+            />
+            <path
+              d="M14 21v-3a2 2 0 0 0-4 0v3"
+            />
+            <path
+              d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"
+            />
+            <path
+              d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"
+            />
+          </svg>
+        </div>
+        <div>
+          <h3
+            class="
+text-[18px]
+sm:text-[20px]
+lg:text-[21px]
+font-bold
+text-[#6D4AFF]
+leading-tight
+"
+          >
+            CBS Implementation
+          </h3>
+          <h2
+            class="
+mt-2
+text-[16px]
+sm:text-[18px]
+lg:text-[20px]
+font-[690]
+text-[#0B1F59]
+leading-tight
+"
+          >
+            HDFC Bank
+          </h2>
+          <div
+            class="inline-flex mt-4 px-4 py-2 rounded-full bg-[#EEF2FF] text-[#475569] text-sm font-medium"
+          >
+            CBS Implementation
+          </div>
+          <div
+            class="mt-5 lg:mt-8 flex items-start gap-3"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-users text-[#2563EB] mt-1"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+              />
+              <path
+                d="M16 3.128a4 4 0 0 1 0 7.744"
+              />
+              <path
+                d="M22 21v-2a4 4 0 0 0-3-3.87"
+              />
+              <circle
+                cx="9"
+                cy="7"
+                r="4"
+              />
+            </svg>
+            <div>
+              <p
+                class="text-sm text-[#64748B]"
+              >
+                Project Manager
+              </p>
+              <p
+                class="font-semibold text-[#0B1F59]"
+              >
+                John Doe
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="
+  grid
+  grid-cols-1
+  sm:grid-cols-2
+  gap-5
+  lg:gap-x-12
+  lg:gap-y-6
+  "
+      >
+        <div
+          class="flex gap-4"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-calendar-days text-[#7C3AED] w-5 h-5 lg:w-6 lg:h-6"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M8 2v4"
+            />
+            <path
+              d="M16 2v4"
+            />
+            <rect
+              height="18"
+              rx="2"
+              width="18"
+              x="3"
+              y="4"
+            />
+            <path
+              d="M3 10h18"
+            />
+            <path
+              d="M8 14h.01"
+            />
+            <path
+              d="M12 14h.01"
+            />
+            <path
+              d="M16 14h.01"
+            />
+            <path
+              d="M8 18h.01"
+            />
+            <path
+              d="M12 18h.01"
+            />
+            <path
+              d="M16 18h.01"
+            />
+          </svg>
+          <div>
+            <p
+              class="text-sm text-[#64748B]"
+            >
+              Start Date
+            </p>
+            <p
+              class="font-semibold text-[#0B1F59] text-base"
+            >
+              2025-01-01
+            </p>
+          </div>
+        </div>
+        <div
+          class="flex gap-4"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-flag text-[#EF4444]"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528"
+            />
+          </svg>
+          <div>
+            <p
+              class="text-sm text-[#64748B]"
+            >
+              Target Go-Live
+            </p>
+            <p
+              class="font-semibold text-[#0B1F59] text-base"
+            >
+              2025-07-15
+            </p>
+          </div>
+        </div>
+        <div
+          class="flex gap-4"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-briefcase text-[#2563EB]"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"
+            />
+            <rect
+              height="14"
+              rx="2"
+              width="20"
+              x="2"
+              y="6"
+            />
+          </svg>
+          <div>
+            <p
+              class="text-sm text-[#64748B]"
+            >
+              Project Type
+            </p>
+            <p
+              class="font-semibold text-[#0B1F59]"
+            >
+              CBS Implementation
+            </p>
+          </div>
+        </div>
+        <div
+          class="flex gap-4"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-triangle-alert text-[#F59E0B]"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"
+            />
+            <path
+              d="M12 9v4"
+            />
+            <path
+              d="M12 17h.01"
+            />
+          </svg>
+          <div>
+            <p
+              class="text-sm text-[#64748B]"
+            >
+              Project Status
+            </p>
+            <span
+              class="
+inline-flex
+mt-2
+px-3
+lg:px-4
+py-1.5
+rounded-full
+bg-[#FEE2E2]
+text-[#EF4444]
+text-[12px]
+lg:text-[13px]
+font-semibold
+"
+            >
+              At Risk
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
