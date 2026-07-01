@@ -44,9 +44,11 @@ const [modalTitle, setModalTitle] =
 const [modalData, setModalData] =
   useState([]);
 
- const today = new Date();
+const today = new Date();
 
 
+const user = JSON.parse(sessionStorage.getItem("user"));
+const role = user?.role;
 
 
 
@@ -225,6 +227,59 @@ const getOpenRiskDetails = (activity) => {
     action: "Continue monitoring"
   };
 };
+// const cards = [
+//   {
+//     value: criticalRiskActivities.length,
+//     title: "Critical Risks / Issues",
+//     subtitle: "Require immediate attention",
+//     activities: criticalRiskActivities,
+//     icon: AlertTriangle,
+//     iconBg: "#EF4444",
+//     textColor: "#DC2626",
+//     bg: "#FFF8F8",
+//     border: "#FEE2E2",
+//     linkColor: "#DC2626",
+//   },
+
+//   {
+//     value: escalationActivities.length,
+//     title: "Escalations",
+//     subtitle: "Past due activities",
+//     activities: escalationActivities,
+//     icon: CircleAlert,
+//     iconBg: "#F59E0B",
+//     textColor: "#B45309",
+//     bg: "#FFFDF7",
+//     border: "#FDE7C3",
+//     linkColor: "#B45309",
+//   },
+
+//   {
+//     value: dependencyActivities.length,
+//     title: "Dependencies",
+//     subtitle: "Pending dependencies",
+//     activities: dependencyActivities,
+//     icon: Link2,
+//     iconBg: "#2563EB",
+//     textColor: "#2563EB",
+//     bg: "#F8FAFF",
+//     border: "#E3EBFF",
+//     linkColor: "#2563EB",
+//   },
+
+//   {
+//     value: openRiskActivities.length,
+//     title: "Open Risks",
+//     subtitle: "Active open risks",
+//     activities: openRiskActivities,
+//     icon: Flag,
+//     iconBg: "#10B981",
+//     textColor: "#059669",
+//     bg: "#F8FFFC",
+//     border: "#DDF7EC",
+//     linkColor: "#059669",
+//   },
+// ];
 const cards = [
   {
     value: criticalRiskActivities.length,
@@ -239,18 +294,22 @@ const cards = [
     linkColor: "#DC2626",
   },
 
-  {
-    value: escalationActivities.length,
-    title: "Escalations",
-    subtitle: "Past due activities",
-    activities: escalationActivities,
-    icon: CircleAlert,
-    iconBg: "#F59E0B",
-    textColor: "#B45309",
-    bg: "#FFFDF7",
-    border: "#FDE7C3",
-    linkColor: "#B45309",
-  },
+  ...(role === "ADMIN"
+    ? [
+        {
+          value: escalationActivities.length,
+          title: "Escalations",
+          subtitle: "Past due activities",
+          activities: escalationActivities,
+          icon: CircleAlert,
+          iconBg: "#F59E0B",
+          textColor: "#B45309",
+          bg: "#FFFDF7",
+          border: "#FDE7C3",
+          linkColor: "#B45309",
+        },
+      ]
+    : []),
 
   {
     value: dependencyActivities.length,
@@ -278,7 +337,6 @@ const cards = [
     linkColor: "#059669",
   },
 ];
-
   return (
     <div className="bg-white rounded-2xl border border-[#E5EAF2] p-5">
       {/* Header */}
@@ -320,7 +378,7 @@ const cards = [
           return (
             <div
   key={card.title}
- className="
+className="
 rounded-2xl
 border
 p-4
@@ -335,7 +393,7 @@ flex-col
     borderColor: card.border,
   }}
 >
-  
+
   {/* Icon + Value */}
   <div className="flex items-center gap-4 mb-5">
     <div
@@ -435,7 +493,7 @@ lg:text-[13px]
         })}
       </div>
       {isModalOpen && (
- <div
+<div
 className="
 fixed
 inset-0
@@ -464,7 +522,7 @@ overflow-hidden
 "
 >
 
- <div
+<div
 className="
 px-6
 py-4
@@ -539,7 +597,7 @@ border-slate-200
                 Activity
               </th>
 
-             
+
 <th
 className="
 px-4
@@ -555,7 +613,7 @@ border-slate-200
                 Milestone
               </th>
 
-              
+
   <th
 className="
 px-4
@@ -571,7 +629,7 @@ border-slate-200
                 Progress
               </th>
 
-              
+
     <th
 className="
 px-4
@@ -587,7 +645,7 @@ border-slate-200
                 Status
               </th>
 
-              
+
         <th
 className="
 px-4
@@ -627,7 +685,7 @@ border-slate-200
   </>
 )}
 
- {modalTitle === "Dependencies" && (
+{modalTitle === "Dependencies" && (
   <>
     <th
       className="
@@ -718,7 +776,7 @@ border-slate-200
 
             {/* {modalData.map(
               (
-                
+
                 activity,
                 index
               ) => (
@@ -755,7 +813,7 @@ const openRisk = getOpenRiskDetails(activity);
                    <span className="font-semibold text-[#2563EB]">
 {activity.progress}%
 </span>
-                    
+
                   </td>
 <td className="px-4 py-3 text-sm text-[#475569]">
 
@@ -799,7 +857,7 @@ activity.executionStatus==="Completed"
                       activity.plannedEndDate
                     }
                   </td>
-          
+
           {modalTitle === "Critical Risks / Issues" && (
   <>
     <td>
@@ -857,7 +915,7 @@ activity.executionStatus==="Completed"
     );
   })}
 
- 
+
 
           </tbody>
 

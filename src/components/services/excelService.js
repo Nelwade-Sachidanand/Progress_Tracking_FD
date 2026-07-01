@@ -9,7 +9,7 @@ export const uploadExcel = async (file) => {
         "/excel/upload",
         formData,
         {
-            headers: {
+            headers: { 
                 "Content-Type": "multipart/form-data",
             },
         }

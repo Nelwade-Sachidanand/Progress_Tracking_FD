@@ -1,186 +1,80 @@
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
 export default function Pagination({
   currentPage,
   totalPages,
   setCurrentPage,
   totalItems = 0,
   pageSize = 10,
+  className = "",
 }) {
-  const pages = [];
-
-  for (let i = 1; i <= totalPages; i++) {
-    pages.push(i);
+  useEffect(() => {
+  if (currentPage > totalPages) {
+    setCurrentPage(totalPages || 1);
   }
-
+}, [totalPages]);
   return (
-   <div
-  className="
-  flex
-  flex-col
-  lg:flex-row
-  lg:items-center
-  lg:justify-between
-  gap-4
-  mt-4
-  px-2
-  "
->
-      {/* Left */}
-      <p
-  className="
-  text-[12px]
-  lg:text-[13px]
-  text-[#475569]
-  font-medium
-  text-center
-  lg:text-left
-  "
->
+    <div className={`flex flex-col lg:flex-row items-center justify-between gap-4 mt-4 ${className}`}>
+      
+      {/* Left Info */}
+      <p className="text-sm text-slate-600 font-medium">
         Showing{" "}
-        {(currentPage - 1) * pageSize + 1}
-        {" "}to{" "}
-        {Math.min(currentPage * pageSize, totalItems)}
-        {" "}of{" "}
-        {totalItems}
-        {" "}tasks
+        {(currentPage - 1) * pageSize + 1} to{" "}
+        {Math.min(currentPage * pageSize, totalItems)} of{" "}
+        {totalItems} tasks
       </p>
 
-      {/* Right */}
-     <div
-  className="
-  flex
-  flex-wrap
-  items-center
-  justify-center
-  lg:justify-end
-  gap-2
-  "
->
+      {/* Right Controls */}
+      <div className="flex items-center gap-3">
 
         {/* Previous */}
         <button
           disabled={currentPage === 1}
-          onClick={() =>
-            setCurrentPage(currentPage - 1)
-          }
+         
+          onClick={() => {
+  if (currentPage > 1) {
+    setCurrentPage(currentPage - 1);
+  }
+}}
           className="
-           w-9 h-9
-lg:w-10
-lg:h-10
-            rounded-lg
+            w-10 h-10
+            rounded-xl
             border
             border-[#E2E8F0]
-            flex
-            items-center
-            justify-center
-            text-[#2563EB]
+            flex items-center justify-center
             disabled:opacity-40
-            cursor-pointer
+            disabled:cursor-not-allowed
           "
         >
-          ‹
+          <ChevronLeft size={18} />
         </button>
 
-        {/* Page Numbers */}
-        {pages
-  .slice(
-    0,
-    window.innerWidth < 640 ? 3 : 5
-  )
-  .map((page) => (
-          <button
-            key={page}
-            onClick={() =>
-              setCurrentPage(page)
-            }
-            className={`
-              w-10 h-10
-              rounded-lg
-              text-sm
-              font-medium
-              border
-              cursor-pointer
-              ${
-                currentPage === page
-                  ? "bg-[#2563EB] text-white border-[#2563EB]"
-                  : "bg-white text-[#334155] border-[#E2E8F0]"
-              }
-            `}
-          >
-            {page}
-          </button>
-        ))}
-
-        {totalPages > 5 && (
-          <>
-            <span className="px-2 text-[#64748B]">
-              ...
-            </span>
-
-            <button
-              onClick={() =>
-                setCurrentPage(totalPages)
-              }
-              className="
-                w-10 h-10
-                rounded-lg
-                border
-                border-[#E2E8F0]
-                text-[#334155]
-                cursor-pointer
-              "
-            >
-              {totalPages}
-            </button>
-          </>
-        )}
+        {/* Page Info */}
+        <span className="text-sm font-medium text-slate-600">
+          {currentPage} / {totalPages}
+        </span>
 
         {/* Next */}
         <button
-          disabled={
-            currentPage === totalPages
-          }
-          onClick={() =>
-            setCurrentPage(currentPage + 1)
-          }
+          disabled={currentPage === totalPages}
+          
+          onClick={() => {
+  if (currentPage < totalPages) {
+    setCurrentPage(currentPage + 1);
+  }
+}}
           className="
             w-10 h-10
-            rounded-lg
+            rounded-xl
             border
             border-[#E2E8F0]
-            flex
-            items-center
-            justify-center
-            text-[#2563EB]
+            flex items-center justify-center
             disabled:opacity-40
-            cursor-pointer
+            disabled:cursor-not-allowed
           "
         >
-          ›
+          <ChevronRight size={18} />
         </button>
-
-        {/* Page Size */}
-        <select
-          className="
-           lg:ml-2
-           w-full
-sm:w-auto
-            h-10
-            px-3
-            rounded-lg
-            border
-            border-[#E2E8F0]
-            text-[14px]
-            text-[#334155]
-            outline-none
-            cursor-pointer
-          "
-          value={pageSize}
-          readOnly
-        >
-          <option>
-            {pageSize} / page
-          </option>
-        </select>
 
       </div>
     </div>

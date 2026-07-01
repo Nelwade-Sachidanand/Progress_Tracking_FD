@@ -274,7 +274,7 @@ export default function DocumentTable({
 
               </td>
 
-              {/* Actions */}
+              
 
               {/* Actions */}
 

@@ -26,19 +26,19 @@ apiClient.interceptors.response.use(
   (response) => response,
 
   async (error) => {
-    console.log("Response Error:", error.response?.status);
+    // console.log("Response Error:", error.response?.status);
 
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
-      console.log("Trying refresh token...");
+      // console.log("Trying refresh token...");
 
       originalRequest._retry = true;
 
       try {
         const refreshToken = sessionStorage.getItem("refreshToken");
 
-        console.log("Refresh Token:", refreshToken);
+        // console.log("Refresh Token:", refreshToken);
 
         const refreshResponse = await axios.post(
           `${import.meta.env.VITE_API_BASE_URL}/user/refresh`,
@@ -50,9 +50,9 @@ apiClient.interceptors.response.use(
           },
         );
 
-        console.log("Refresh Success");
+        // console.log("Refresh Success");
 
-        console.log("Refresh Response:", refreshResponse.data);
+        // console.log("Refresh Response:", refreshResponse.data);
 
         const newAccessToken = refreshResponse.data.details;
 
@@ -66,7 +66,7 @@ apiClient.interceptors.response.use(
           },
         });
       } catch (e) {
-        console.log("Refresh Failed", e);
+        // console.log("Refresh Failed", e);
 
         sessionStorage.clear();
 

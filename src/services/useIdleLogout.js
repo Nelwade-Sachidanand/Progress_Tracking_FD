@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-const IDLE_TIME = 5 * 60 * 1000; // 1 minute for testing
+const IDLE_TIME = 30 * 60 * 1000; // 1 minute for testing
 
 export default function useIdleLogout() {
   const navigate = useNavigate();

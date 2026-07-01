@@ -1,12 +1,33 @@
 import { X, Download } from "lucide-react";
-
+import { documentApi } from "../api/documentApi";
 export default function PreviewDocumentModal({
   isOpen,
   document,
   onClose,
-}) {
-  if (!isOpen || !document) return null;
+}){
+if (!isOpen || !document) return null;
 
+
+const handleDownload = async (id) => {
+  try {
+    const res = await documentApi.downloadDocument(id);
+
+    const blob = new Blob([res.data]);
+    const url = window.URL.createObjectURL(blob);
+
+    const link = window.document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "document");
+
+    window.document.body.appendChild(link);
+    link.click();
+
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Download failed", error);
+  }
+};
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-3 sm:p-4">
 
@@ -107,9 +128,20 @@ export default function PreviewDocumentModal({
                 {/* Action */}
                 <td className="px-4 sm:px-5 py-4 text-center">
                   <button
-                    onClick={() =>
-                      window.open(document.fileUrl, "_blank")
-                    }
+                    // onClick={() =>
+                    //   window.open(document.fileUrl, "_blank")
+                    // }
+onClick={() => {
+  console.log("DOC:", document);
+  console.log("ID:", document?.id);
+
+  if (!document?.id) {
+    alert("Document ID is missing!");
+    return;
+  }
+
+  handleDownload(document.id);
+}}
                     disabled={!document.fileUrl}
                     className="
                       w-9 h-9

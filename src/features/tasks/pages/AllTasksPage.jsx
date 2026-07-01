@@ -124,10 +124,14 @@ export default function AllTasksPage() {
 
   const totalPages = Math.ceil(filteredTasks.length / ITEMS_PER_PAGE);
 
+  
+  const safeCurrentPage =
+  currentPage > totalPages ? totalPages : currentPage || 1;
+
   const paginatedTasks = filteredTasks.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE,
-  );
+  (safeCurrentPage - 1) * ITEMS_PER_PAGE,
+  safeCurrentPage * ITEMS_PER_PAGE,
+);
 
   const clearFilters = () => {
     setSelectedPhase("All Phases");
@@ -218,6 +222,17 @@ export default function AllTasksPage() {
 
     setTasks(allActivities);
   }, [projects]);
+  useEffect(() => {
+  setCurrentPage(1);
+}, [
+  selectedPhase,
+  selectedMilestone,
+  selectedTask,
+  selectedSubTask,
+  selectedActivity,
+  selectedStatus,
+  searchTerm
+]);
   return (
     // <div className="p-6 bg-[#F5F7FB] min-h-screen ">
     <div className="p-6 w-full w-[1200px]">
@@ -286,13 +301,14 @@ export default function AllTasksPage() {
         }}
       />
 
+   
       <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        setCurrentPage={setCurrentPage}
-        totalItems={filteredTasks.length}
-        pageSize={10}
-      />
+  currentPage={safeCurrentPage}
+  totalPages={totalPages}
+  setCurrentPage={setCurrentPage}
+  totalItems={filteredTasks.length}
+  pageSize={10}
+/>
       <RemarkModal
         isOpen={showRemarkModal}
         task={selectedRemarkTask}

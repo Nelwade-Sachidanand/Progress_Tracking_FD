@@ -3,47 +3,37 @@ import { useProjects } from "../../../context/ProjectContext";
 
 import DocumentFilters from "../components/DocumentFilters";
 import DocumentTable from "../components/DocumentTable";
-import UploadDocumentModal from "../components/UploadDocumentModal";
-import PreviewDocumentModal from "../components/PreviewDocumentModal";
 import HistoryModal from "../components/HistoryModal";
+import PreviewDocumentModal from "../components/PreviewDocumentModal";
+import UploadDocumentModal from "../components/UploadDocumentModal";
 
 import useDocumentFilters from "../hooks/useDocumentFilters";
-import * as XLSX from "xlsx";
+
 import { saveAs } from "file-saver";
 export default function Documents() {
-  
   const { projects, fetchProjects } = useProjects();
 
   const user = JSON.parse(sessionStorage.getItem("user"));
 
   const selectedProjectId = sessionStorage.getItem("selectedProjectId");
-  
 
   const selectedProject = useMemo(
     () =>
       projects.find(
-        (project) =>
-          String(project.id) ===
-          String(selectedProjectId)
+        (project) => String(project.id) === String(selectedProjectId),
       ),
-    [projects, selectedProjectId]
+    [projects, selectedProjectId],
   );
 
   const [documents, setDocuments] = useState([]);
 
-  const [selectedDocument, setSelectedDocument] =
-    useState(null);
+  const [selectedDocument, setSelectedDocument] = useState(null);
 
-  const [showUploadModal, setShowUploadModal] =
-    useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(false);
 
-  const [showPreviewModal, setShowPreviewModal] =
-    useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
 
-  const [showHistoryModal, setShowHistoryModal] =
-    useState(false);
-
-   
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
 
   useEffect(() => {
     if (user?.id) {
@@ -64,74 +54,45 @@ export default function Documents() {
         milestone.tasks?.forEach((task) => {
           task.subTasks?.forEach((subTask) => {
             subTask.activities?.forEach((activity) => {
+              
+              
 
-              /*
-               * Only Sign-Off Activities
-               */
+              if (!task.taskName?.toLowerCase().includes("sign-off")) {
+                return;
+              }
 
-     if (
-  !task.taskName
-    ?.toLowerCase()
-    .includes("sign-off")
-) {
-  return;
-}
-  
               docs.push({
                 id: activity.id,
 
-                projectName:
-                  selectedProject.projectName,
+                projectName: selectedProject.projectName,
 
-                bankName:
-                  selectedProject.bankName,
+                bankName: selectedProject.bankName,
 
-                phase:
-                  phase.phaseName,
+                phase: phase.phaseName,
 
-                milestone:
-                  milestone.milestoneName,
+                milestone: milestone.milestoneName,
 
-                task:
-                  task.taskName,
+                task: task.taskName,
 
-                subTask:
-                  subTask.subTaskName,
+                subTask: subTask.subTaskName,
 
-                activity:
-                  activity.activityName,
+                activity: activity.activityName,
 
-                owner:
-                  activity.owner,
+                owner: activity.owner,
 
-                uploadStatus:
-                  activity.document
-                    ? "Uploaded"
-                    : "Pending",
+                uploadStatus: activity.document ? "Uploaded" : "Pending",
 
-                uploadedBy:
-                  activity.document
-                    ?.uploadedBy || "-",
+                uploadedBy: activity.document?.uploadedBy || "-",
 
-                uploadedDate:
-                  activity.document
-                    ?.uploadedDate || "-",
+                uploadedDate: activity.document?.uploadedDate || "-",
 
-                version:
-                  activity.document
-                    ?.version || 0,
+                version: activity.document?.version || 0,
 
-                fileName:
-                  activity.document
-                    ?.fileName || "",
+                fileName: activity.document?.fileName || "",
 
-                fileUrl:
-                  activity.document
-                    ?.fileUrl || "",
+                fileUrl: activity.document?.fileUrl || "",
 
-                history:
-                  activity.document
-                    ?.history || [],
+                history: activity.document?.history || [],
               });
             });
           });
@@ -140,98 +101,54 @@ export default function Documents() {
     });
 
     setDocuments(docs);
-
   }, [selectedProject]);
-const {
-  phases,
-  milestones,
-  tasks,
-  subTasks,
-  activities,
+  const {
+    phases,
+    milestones,
+    tasks,
+    subTasks,
+    activities,
 
-  selectedPhase,
-  setSelectedPhase,
+    selectedPhase,
+    setSelectedPhase,
 
-  selectedMilestone,
-  setSelectedMilestone,
+    selectedMilestone,
+    setSelectedMilestone,
 
-  selectedTask,
-  setSelectedTask,
+    selectedTask,
+    setSelectedTask,
 
-  selectedSubTask,
-  setSelectedSubTask,
+    selectedSubTask,
+    setSelectedSubTask,
 
-  selectedActivity,
-  setSelectedActivity,
+    selectedActivity,
+    setSelectedActivity,
 
-  selectedStatus,
-  setSelectedStatus,
+    selectedStatus,
+    setSelectedStatus,
 
-  searchTerm,
-  setSearchTerm,
+    searchTerm,
+    setSearchTerm,
 
-  filteredDocuments,
+    filteredDocuments,
 
-  handlePhaseChange,
-  handleMilestoneChange,
-  handleTaskChange,
-  handleSubTaskChange,
-} = useDocumentFilters(documents);
-console.log("Documents:", documents);
-  /*
-   * Dropdown Options
-   */
-
- 
-
-  // const milestones = [
-  //   ...new Set(
-  //     documents
-  //       .filter(
-  //         (doc) =>
-  //           selectedPhase === "All Phases" ||
-  //           doc.phase === selectedPhase
-  //       )
-  //       .map((doc) => doc.milestone)
-  //   ),
-  // ];
+    handlePhaseChange,
+    handleMilestoneChange,
+    handleTaskChange,
+    handleSubTaskChange,
+  } = useDocumentFilters(documents);
+  console.log("Documents:", documents);
 
 
+  const total = filteredDocuments.length;
 
-  // const activities = [
-  //   ...new Set(
-  //     documents
-  //       .filter(
-  //         (doc) =>
-  //           selectedSubTask ===
-  //             "All Sub Tasks" ||
-  //           doc.subTask ===
-  //             selectedSubTask
-  //       )
-  //       .map((doc) => doc.activity)
-  //   ),
-  // ];
+  const uploaded = filteredDocuments.filter(
+    (doc) => doc.uploadStatus === "Uploaded",
+  ).length;
 
-  /*
-   * Summary
-   */
-
-  const total =
-    filteredDocuments.length;
-
-  const uploaded =
-    filteredDocuments.filter(
-      (doc) =>
-        doc.uploadStatus ===
-        "Uploaded"
-    ).length;
-
-  const pending =
-    filteredDocuments.filter(
-      (doc) =>
-        doc.uploadStatus ===
-        "Pending"
-    ).length;
+  const pending = filteredDocuments.filter(
+    (doc) => doc.uploadStatus === "Pending",
+  ).length;
 
   /*
    * Pagination
@@ -239,124 +156,61 @@ console.log("Documents:", documents);
 
   const ITEMS_PER_PAGE = 10;
 
-  const [currentPage, setCurrentPage] =
-    useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const totalPages = Math.ceil(
-    filteredDocuments.length /
-      ITEMS_PER_PAGE
+  const totalPages = Math.ceil(filteredDocuments.length / ITEMS_PER_PAGE);
+
+  const paginatedDocuments = filteredDocuments.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE,
   );
-
-  const paginatedDocuments =
-    filteredDocuments.slice(
-      (currentPage - 1) *
-        ITEMS_PER_PAGE,
-      currentPage *
-        ITEMS_PER_PAGE
-    );
 
   /*
    * Modal Actions
    */
 
-  const handleUpload = (
-    document
-  ) => {
-    setSelectedDocument(
-      document
-    );
+  const handleUpload = (document) => {
+    setSelectedDocument(document);
 
     setShowUploadModal(true);
   };
 
-  const handlePreview = (
-    document
-  ) => {
-    setSelectedDocument(
-      document
-    );
+  const handlePreview = (document) => {
+    console.log(document);
+    setSelectedDocument(document);
 
     setShowPreviewModal(true);
   };
 
-  const handleHistory = (
-    document
-  ) => {
-    setSelectedDocument(
-      document
-    );
+  const handleHistory = (document) => {
+    setSelectedDocument(document);
 
     setShowHistoryModal(true);
   };
 
   /*Clear Filters*/
-const clearFilters = () => {
-  setSelectedPhase("All Phases");
+  const clearFilters = () => {
+    setSelectedPhase("All Phases");
 
-  setSelectedMilestone([]);
+    setSelectedMilestone([]);
 
-  setSelectedTask("All Tasks");
+    setSelectedTask("All Tasks");
 
-  setSelectedSubTask("All Sub Tasks");
+    setSelectedSubTask("All Sub Tasks");
 
-  setSelectedActivity("All Activities");
+    setSelectedActivity("All Activities");
 
-  setSelectedStatus("All Status");
+    setSelectedStatus("All Status");
 
-  setSearchTerm("");
-};
+    setSearchTerm("");
+  };
 
-const handleExportExcel = () => {
-  const exportData = filteredDocuments.map((doc) => ({
-    Project: doc.projectName,
-    Bank: doc.bankName,
-    Phase: doc.phase,
-    Milestone: doc.milestone,
-    Task: doc.task,
-    "Sub Task": doc.subTask,
-    Activity: doc.activity,
-    "Uploaded By": doc.uploadedBy,
-    "Upload Date": doc.uploadedDate,
-    Status: doc.uploadStatus,
-    File: doc.fileName,
-  }));
-
-  const worksheet = XLSX.utils.json_to_sheet(exportData);
-
-  const workbook = XLSX.utils.book_new();
-
-  XLSX.utils.book_append_sheet(
-    workbook,
-    worksheet,
-    "Sign-Off Documents"
-  );
-
-  const excelBuffer = XLSX.write(workbook, {
-    bookType: "xlsx",
-    type: "array",
-  });
-
-  const file = new Blob([excelBuffer], {
-    type:
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  });
-
-  saveAs(
-    file,
-    `SignOff_Documents_${new Date()
-      .toISOString()
-      .slice(0, 10)}.xlsx`
-  );
-};
-    return (
+  
+  return (
     <div className="w-full p-4 lg:p-6 bg-[#F8FAFC] min-h-screen">
-
       {/* Header */}
-
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-
         <div>
-
           <h1 className="text-2xl xl:text-2xl font-bold text-[#0B1F59]">
             Sign Off Documents
           </h1>
@@ -364,13 +218,9 @@ const handleExportExcel = () => {
           <p className="text-slate-500 mt-1">
             Upload and manage project sign-off documents.
           </p>
-
         </div>
-
       </div>
-
       {/* Selected Project */}
-
       {/* <div
         className="
         bg-white
@@ -381,8 +231,9 @@ const handleExportExcel = () => {
         p-5
         mb-6
         "
-      > */} <div
-  className="
+      > */}{" "}
+      <div
+        className="
   w-full
   
   border
@@ -400,10 +251,8 @@ const handleExportExcel = () => {
   rounded-2xl
   
   "
->
-
+      >
         <div className="flex flex-wrap items-center gap-3 text-[15px]">
-
           <span className="font-semibold text-[#0B1F59]">
             Selected Project :
           </span>
@@ -414,36 +263,10 @@ const handleExportExcel = () => {
               : "No Project Selected"}
           </span>
 
-          {/* {selectedProject && (
-
-            <>
-
-              <span className="text-slate-300">
-                |
-              </span>
-
-              <span className="text-slate-600">
-
-                Bank :
-
-                <span className="ml-2 font-medium text-[#0F172A]">
-
-                  {selectedProject.bankName}
-
-                </span>
-
-              </span>
-
-            </>
-
-          )} */}
-
+         
         </div>
-
       </div>
-
       {/* Summary */}
-
       <div
         className="
         grid
@@ -453,7 +276,6 @@ const handleExportExcel = () => {
         mb-6
         "
       >
-
         <div
           className="
           bg-white
@@ -464,10 +286,7 @@ const handleExportExcel = () => {
           shadow-sm
           "
         >
-
-          <p className="text-slate-500 text-sm">
-            Total Documents
-          </p>
+          <p className="text-slate-500 text-sm">Total Documents</p>
 
           <h2
             className="
@@ -479,7 +298,6 @@ const handleExportExcel = () => {
           >
             {total}
           </h2>
-
         </div>
 
         <div
@@ -492,10 +310,7 @@ const handleExportExcel = () => {
           shadow-sm
           "
         >
-
-          <p className="text-slate-500 text-sm">
-            Uploaded
-          </p>
+          <p className="text-slate-500 text-sm">Uploaded</p>
 
           <h2
             className="
@@ -507,7 +322,6 @@ const handleExportExcel = () => {
           >
             {uploaded}
           </h2>
-
         </div>
 
         <div
@@ -520,10 +334,7 @@ const handleExportExcel = () => {
           shadow-sm
           "
         >
-
-          <p className="text-slate-500 text-sm">
-            Pending
-          </p>
+          <p className="text-slate-500 text-sm">Pending</p>
 
           <h2
             className="
@@ -535,48 +346,36 @@ const handleExportExcel = () => {
           >
             {pending}
           </h2>
-
         </div>
-
       </div>
-
       {/* Filters */}
-
-<DocumentFilters
-  phases={phases}
-  milestones={milestones}
-  tasks={tasks}
-  subTasks={subTasks}
-  activities={activities}
-
-  selectedPhase={selectedPhase}
-  selectedMilestone={selectedMilestone}
-  selectedTask={selectedTask}
-  selectedSubTask={selectedSubTask}
-  selectedActivity={selectedActivity}
-  selectedStatus={selectedStatus}
-  searchTerm={searchTerm}
-
-  setSelectedStatus={setSelectedStatus}
-  setSearchTerm={setSearchTerm}
-  setSelectedActivity={setSelectedActivity}
-
-  handlePhaseChange={handlePhaseChange}
-  handleMilestoneChange={handleMilestoneChange}
-  handleTaskChange={handleTaskChange}
-  handleSubTaskChange={handleSubTaskChange}
-
-  clearFilters={clearFilters}
-
-  onExportExcel={handleExportExcel}
-/>
-
-     <div className="mt-6">
-
-  {filteredDocuments.length === 0 ? (
-
-        <div
-          className="
+      <DocumentFilters
+        phases={phases}
+        milestones={milestones}
+        tasks={tasks}
+        subTasks={subTasks}
+        activities={activities}
+        selectedPhase={selectedPhase}
+        selectedMilestone={selectedMilestone}
+        selectedTask={selectedTask}
+        selectedSubTask={selectedSubTask}
+        selectedActivity={selectedActivity}
+        selectedStatus={selectedStatus}
+        searchTerm={searchTerm}
+        setSelectedStatus={setSelectedStatus}
+        setSearchTerm={setSearchTerm}
+        setSelectedActivity={setSelectedActivity}
+        handlePhaseChange={handlePhaseChange}
+        handleMilestoneChange={handleMilestoneChange}
+        handleTaskChange={handleTaskChange}
+        handleSubTaskChange={handleSubTaskChange}
+        clearFilters={clearFilters}
+       
+      />
+      <div className="mt-6">
+        {filteredDocuments.length === 0 ? (
+          <div
+            className="
           bg-white
           rounded-2xl
           border
@@ -585,10 +384,9 @@ const handleExportExcel = () => {
           text-center
           shadow-sm
           "
-        >
-
-          <div
-            className="
+          >
+            <div
+              className="
             w-20
             h-20
             mx-auto
@@ -598,56 +396,41 @@ const handleExportExcel = () => {
             items-center
             justify-center
             "
-          >
+            >
+              📄
+            </div>
 
-            📄
-
-          </div>
-
-          <h2
-            className="
+            <h2
+              className="
             mt-6
             text-xl
             font-semibold
             text-[#0B1F59]
             "
-          >
-            No Sign-Off Documents Found
-          </h2>
+            >
+              No Sign-Off Documents Found
+            </h2>
 
-          <p
-            className="
+            <p
+              className="
             mt-2
             text-slate-500
             "
-          >
-            No activities match the selected filters.
-          </p>
-
-        </div>
-
-      ) : (
-
-        <DocumentTable
-
-          documents={paginatedDocuments}
-
-          onUpload={handleUpload}
-
-          onPreview={handlePreview}
-
-          onHistory={handleHistory}
-
-        />
-
-      )}
-
+            >
+              No activities match the selected filters.
+            </p>
+          </div>
+        ) : (
+          <DocumentTable
+            documents={paginatedDocuments}
+            onUpload={handleUpload}
+            onPreview={handlePreview}
+            onHistory={handleHistory}
+          />
+        )}
       </div>
-
       {/* Pagination */}
-
       {filteredDocuments.length > 0 && (
-
         <div
           className="
           mt-8
@@ -659,46 +442,25 @@ const handleExportExcel = () => {
           gap-4
           "
         >
-
           <p
             className="
             text-sm
             text-slate-500
             "
           >
-
             Showing
-
             <span className="font-semibold px-1">
-
-              {(currentPage - 1) *
-                ITEMS_PER_PAGE +
-                1}
-
+              {(currentPage - 1) * ITEMS_PER_PAGE + 1}
             </span>
-
             -
-
             <span className="font-semibold px-1">
-
-              {Math.min(
-                currentPage *
-                  ITEMS_PER_PAGE,
-                filteredDocuments.length
-              )}
-
+              {Math.min(currentPage * ITEMS_PER_PAGE, filteredDocuments.length)}
             </span>
-
             of
-
             <span className="font-semibold px-1">
-
               {filteredDocuments.length}
-
             </span>
-
             documents
-
           </p>
 
           <div
@@ -708,19 +470,9 @@ const handleExportExcel = () => {
             gap-2
             "
           >
-
             <button
-
-              disabled={
-                currentPage === 1
-              }
-
-              onClick={() =>
-                setCurrentPage(
-                  currentPage - 1
-                )
-              }
-
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
               className="
               px-4
               py-2
@@ -729,11 +481,8 @@ const handleExportExcel = () => {
               disabled:opacity-50
               hover:bg-slate-50
               "
-
             >
-
               Previous
-
             </button>
 
             <div
@@ -746,24 +495,12 @@ const handleExportExcel = () => {
               font-semibold
               "
             >
-
               {currentPage}
-
             </div>
 
             <button
-
-              disabled={
-                currentPage ===
-                totalPages
-              }
-
-              onClick={() =>
-                setCurrentPage(
-                  currentPage + 1
-                )
-              }
-
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
               className="
               px-4
               py-2
@@ -772,20 +509,42 @@ const handleExportExcel = () => {
               disabled:opacity-50
               hover:bg-slate-50
               "
-
             >
-
               Next
-
             </button>
-
           </div>
-
         </div>
-
       )}
-            {/* Upload Document Modal */}
+      {/* Upload Document Modal */}
+      {/* <UploadDocumentModal
+        isOpen={showUploadModal}
+        document={selectedDocument}
+        onClose={() => {
+          setShowUploadModal(false);
+          setSelectedDocument(null);
+        }}
+        onUpload={(file) => {
+          setDocuments((prev) =>
+            prev.map((doc) =>
+              doc.activity === selectedDocument.activity &&
+              doc.milestone === selectedDocument.milestone &&
+              doc.task === selectedDocument.task
+                ? {
+                    ...doc,
+                    fileName: file.name,
+                    fileUrl: URL.createObjectURL(file),
+                    uploadStatus: "Uploaded",
+                    uploadedBy: user?.username || "Admin",
+                    uploadedDate: new Date().toLocaleDateString(),
+                  }
+                : doc,
+            ),
+          );
 
+          setShowUploadModal(false);
+          setSelectedDocument(null);
+        }}
+      /> */}
       <UploadDocumentModal
   isOpen={showUploadModal}
   document={selectedDocument}
@@ -793,52 +552,26 @@ const handleExportExcel = () => {
     setShowUploadModal(false);
     setSelectedDocument(null);
   }}
- onUpload={(file) => {
-  setDocuments((prev) =>
-    prev.map((doc) =>
-      doc.activity === selectedDocument.activity &&
-      doc.milestone === selectedDocument.milestone &&
-      doc.task === selectedDocument.task
-        ? {
-            ...doc,
-            fileName: file.name,
-            fileUrl: URL.createObjectURL(file),
-            uploadStatus: "Uploaded",
-            uploadedBy: user?.username || "Admin",
-            uploadedDate: new Date().toLocaleDateString(),
-          }
-        : doc
-    )
-  );
-
-  setShowUploadModal(false);
-  setSelectedDocument(null);
-}}
+  onUpload={handleUpload}
 />
-
       {/* Preview Modal */}
-
-      <PreviewDocumentModal
+      {/* <PreviewDocumentModal
         isOpen={showPreviewModal}
         document={selectedDocument}
         onClose={() => {
           setShowPreviewModal(false);
           setSelectedDocument(null);
         }}
-      />
-
+      /> */}
       {/* Version History */}
-
-      <HistoryModal
+      {/* <HistoryModal
         isOpen={showHistoryModal}
         document={selectedDocument}
         onClose={() => {
           setShowHistoryModal(false);
           setSelectedDocument(null);
         }}
-      />
-
+      /> */}
     </div>
-    
   );
 }
