@@ -83,8 +83,8 @@ export default function AuthorizationFilters({
             outline-none
             focus:border-blue-500
             2xl:text-[17px]
-                  2xl:font-medium
-                  2xl:tracking-wide
+            2xl:font-medium
+            2xl:tracking-wide
             "
           />
         </div>

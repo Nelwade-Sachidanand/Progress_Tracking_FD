@@ -75,6 +75,7 @@ export default function AuditFilters({
               border-slate-300
               outline-none
               focus:border-blue-500
+              text-sm
               2xl:text-[17px]
               2xl:font-medium
               2xl:tracking-wide
@@ -96,6 +97,7 @@ export default function AuditFilters({
             outline-none
             focus:border-blue-500
             cursor-pointer
+            text-sm
             2xl:text-[17px]
             2xl:font-medium
             2xl:tracking-wide
@@ -124,6 +126,7 @@ export default function AuditFilters({
             outline-none
             focus:border-blue-500
             cursor-pointer
+            text-sm
             2xl:text-[17px]
             2xl:font-medium
             2xl:tracking-wide
@@ -166,6 +169,7 @@ export default function AuditFilters({
               border-slate-300
               outline-none
               focus:border-blue-500
+              text-sm
               2xl:text-[17px]
               2xl:font-medium
               2xl:tracking-wide

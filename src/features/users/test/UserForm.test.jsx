@@ -89,6 +89,10 @@ describe("UserForm", () => {
       target: { value: "sachin" },
     });
 
+    fireEvent.change(screen.getByPlaceholderText("Enter email address"), {
+      target: { value: "sachin@test.com" },
+    });
+
     fireEvent.change(screen.getByPlaceholderText("Enter password"), {
       target: { value: "Password123" },
     });
@@ -111,8 +115,10 @@ describe("UserForm", () => {
       <UserForm
         mode="edit"
         userData={{
+          id: "1",
           fullname: "John",
           username: "john",
+          email: "john@test.com",
           role: "ADMIN",
           active: true,
           projectNames: ["Project A"],

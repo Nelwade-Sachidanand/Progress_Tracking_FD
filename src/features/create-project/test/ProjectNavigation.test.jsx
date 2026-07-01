@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 
 const mockSaveProject = vi.fn();
 
@@ -20,6 +20,8 @@ import { mapProjectPayload } from "../utils/projectMapper";
 describe("ProjectNavigation", () => {
   const mockSetCurrentStep = vi.fn();
   const mockResetForm = vi.fn();
+  const mockSetSelectedProjectId = vi.fn();
+  const mockLoadProjectInformation = vi.fn();
 
   const defaultProps = {
     currentStep: 1,
@@ -28,10 +30,14 @@ describe("ProjectNavigation", () => {
       projectName: "Test Project",
     },
     resetForm: mockResetForm,
+    setSelectedProjectId: mockSetSelectedProjectId,
+    loadProjectInformation: mockLoadProjectInformation,
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    mockLoadProjectInformation.mockResolvedValue(undefined);
   });
 
   test("renders navigation buttons", () => {
@@ -195,6 +201,8 @@ describe("ProjectNavigation", () => {
 
     await waitFor(() => {
       expect(mockResetForm).toHaveBeenCalledTimes(1);
+      expect(mockSetSelectedProjectId).toHaveBeenCalledWith("");
+      expect(mockLoadProjectInformation).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -217,6 +225,8 @@ describe("ProjectNavigation", () => {
 
     await waitFor(() => {
       expect(mockResetForm).not.toHaveBeenCalled();
+      expect(mockSetSelectedProjectId).not.toHaveBeenCalled();
+      expect(mockLoadProjectInformation).not.toHaveBeenCalled();
     });
   });
 

@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { useProjects } from "../../../context/ProjectContext";
 
+import Pagination from "../../../components/layout/Pagination";
 import DocumentFilters from "../components/DocumentFilters";
 import DocumentTable from "../components/DocumentTable";
-import HistoryModal from "../components/HistoryModal";
 import PreviewDocumentModal from "../components/PreviewDocumentModal";
 import UploadDocumentModal from "../components/UploadDocumentModal";
+import { getAllDocuments } from "../services/documentService";
 
 import useDocumentFilters from "../hooks/useDocumentFilters";
 
-import { saveAs } from "file-saver";
 export default function Documents() {
   const { projects, fetchProjects } = useProjects();
 
@@ -27,6 +27,8 @@ export default function Documents() {
 
   const [documents, setDocuments] = useState([]);
 
+  const [documentsDetails, setDocumentsDetails] = useState([]);
+
   const [selectedDocument, setSelectedDocument] = useState(null);
 
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -35,9 +37,27 @@ export default function Documents() {
 
   const [showHistoryModal, setShowHistoryModal] = useState(false);
 
+  const loadDocuments = async () => {
+    try {
+      const response = await getAllDocuments();
+
+      // console.log("Documents Response:", response.details);
+
+      if (response.statusType === "S") {
+        setDocumentsDetails(response.details);
+      } else {
+        setDocumentsDetails([]);
+      }
+    } catch (error) {
+      console.error("Failed to load documents", error);
+      setDocuments([]);
+    }
+  };
+
   useEffect(() => {
     if (user?.id) {
       fetchProjects(user.id);
+      loadDocuments();
     }
   }, []);
 
@@ -54,15 +74,14 @@ export default function Documents() {
         milestone.tasks?.forEach((task) => {
           task.subTasks?.forEach((subTask) => {
             subTask.activities?.forEach((activity) => {
-              
-              
-
               if (!task.taskName?.toLowerCase().includes("sign-off")) {
                 return;
               }
 
               docs.push({
                 id: activity.id,
+
+                projectId: selectedProject.id,
 
                 projectName: selectedProject.projectName,
 
@@ -102,6 +121,26 @@ export default function Documents() {
 
     setDocuments(docs);
   }, [selectedProject]);
+
+  const mergedDocuments = useMemo(() => {
+    return documents.map((doc) => {
+      const matched = documentsDetails.find(
+        (d) =>
+          d.projectId === doc.projectId &&
+          d.phaseName === doc.phase &&
+          d.milestoneName === doc.milestone &&
+          d.taskName === doc.task &&
+          d.subTaskName === doc.subTask &&
+          d.activityName === doc.activity,
+      );
+
+      return {
+        ...doc,
+        documents: matched?.documents || [],
+      };
+    });
+  }, [documents, documentsDetails]);
+
   const {
     phases,
     milestones,
@@ -136,9 +175,9 @@ export default function Documents() {
     handleMilestoneChange,
     handleTaskChange,
     handleSubTaskChange,
-  } = useDocumentFilters(documents);
-  console.log("Documents:", documents);
+  } = useDocumentFilters(mergedDocuments);
 
+  // console.log("Documents:", documents);
 
   const total = filteredDocuments.length;
 
@@ -176,7 +215,7 @@ export default function Documents() {
   };
 
   const handlePreview = (document) => {
-    console.log(document);
+    // console.log(document);
     setSelectedDocument(document);
 
     setShowPreviewModal(true);
@@ -205,7 +244,6 @@ export default function Documents() {
     setSearchTerm("");
   };
 
-  
   return (
     <div className="w-full p-4 lg:p-6 bg-[#F8FAFC] min-h-screen">
       {/* Header */}
@@ -220,18 +258,6 @@ export default function Documents() {
           </p>
         </div>
       </div>
-      {/* Selected Project */}
-      {/* <div
-        className="
-        bg-white
-        rounded-2xl
-        border
-        border-slate-200
-        shadow-sm
-        p-5
-        mb-6
-        "
-      > */}{" "}
       <div
         className="
   w-full
@@ -262,8 +288,6 @@ export default function Documents() {
               ? selectedProject.projectName
               : "No Project Selected"}
           </span>
-
-         
         </div>
       </div>
       {/* Summary */}
@@ -370,7 +394,6 @@ export default function Documents() {
         handleTaskChange={handleTaskChange}
         handleSubTaskChange={handleSubTaskChange}
         clearFilters={clearFilters}
-       
       />
       <div className="mt-6">
         {filteredDocuments.length === 0 ? (
@@ -430,139 +453,37 @@ export default function Documents() {
         )}
       </div>
       {/* Pagination */}
+
       {filteredDocuments.length > 0 && (
-        <div
-          className="
-          mt-8
-          flex
-          flex-col
-          md:flex-row
-          items-center
-          justify-between
-          gap-4
-          "
-        >
-          <p
-            className="
-            text-sm
-            text-slate-500
-            "
-          >
-            Showing
-            <span className="font-semibold px-1">
-              {(currentPage - 1) * ITEMS_PER_PAGE + 1}
-            </span>
-            -
-            <span className="font-semibold px-1">
-              {Math.min(currentPage * ITEMS_PER_PAGE, filteredDocuments.length)}
-            </span>
-            of
-            <span className="font-semibold px-1">
-              {filteredDocuments.length}
-            </span>
-            documents
-          </p>
-
-          <div
-            className="
-            flex
-            items-center
-            gap-2
-            "
-          >
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(currentPage - 1)}
-              className="
-              px-4
-              py-2
-              rounded-lg
-              border
-              disabled:opacity-50
-              hover:bg-slate-50
-              "
-            >
-              Previous
-            </button>
-
-            <div
-              className="
-              px-4
-              py-2
-              rounded-lg
-              bg-[#2563EB]
-              text-white
-              font-semibold
-              "
-            >
-              {currentPage}
-            </div>
-
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(currentPage + 1)}
-              className="
-              px-4
-              py-2
-              rounded-lg
-              border
-              disabled:opacity-50
-              hover:bg-slate-50
-              "
-            >
-              Next
-            </button>
-          </div>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalRecords={filteredDocuments.length}
+          recordsPerPage={10}
+          label="documents"
+          onPageChange={setCurrentPage}
+        />
       )}
-      {/* Upload Document Modal */}
-      {/* <UploadDocumentModal
+
+      <UploadDocumentModal
         isOpen={showUploadModal}
         document={selectedDocument}
         onClose={() => {
           setShowUploadModal(false);
           setSelectedDocument(null);
         }}
-        onUpload={(file) => {
-          setDocuments((prev) =>
-            prev.map((doc) =>
-              doc.activity === selectedDocument.activity &&
-              doc.milestone === selectedDocument.milestone &&
-              doc.task === selectedDocument.task
-                ? {
-                    ...doc,
-                    fileName: file.name,
-                    fileUrl: URL.createObjectURL(file),
-                    uploadStatus: "Uploaded",
-                    uploadedBy: user?.username || "Admin",
-                    uploadedDate: new Date().toLocaleDateString(),
-                  }
-                : doc,
-            ),
-          );
-
-          setShowUploadModal(false);
-          setSelectedDocument(null);
-        }}
-      /> */}
-      <UploadDocumentModal
-  isOpen={showUploadModal}
-  document={selectedDocument}
-  onClose={() => {
-    setShowUploadModal(false);
-    setSelectedDocument(null);
-  }}
-  onUpload={handleUpload}
-/>
+        onUpload={handleUpload}
+        onSuccess={loadDocuments}
+      />
       {/* Preview Modal */}
-      {/* <PreviewDocumentModal
+      <PreviewDocumentModal
         isOpen={showPreviewModal}
         document={selectedDocument}
         onClose={() => {
           setShowPreviewModal(false);
           setSelectedDocument(null);
         }}
-      /> */}
+      />
       {/* Version History */}
       {/* <HistoryModal
         isOpen={showHistoryModal}

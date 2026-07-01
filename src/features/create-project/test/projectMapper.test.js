@@ -74,7 +74,9 @@ describe("mapProjectPayload", () => {
 
       digitalChannels: {
         mobileBanking: true,
+        internetBanking: true,
         tabletBanking: false,
+        pigmyBanking: false,
 
         mobileUsers: "1000",
         internetUsers: "800",
@@ -87,8 +89,10 @@ describe("mapProjectPayload", () => {
         neft: true,
         imps: true,
         atmSwitch: true,
+        pos: true,
+        loanRecovery: false,
 
-        dailyUpiTransactions: "1000",
+        dailyAtmTransactions: "1000",
         dailyImpsTransactions: "500",
         dailyNeftTransactions: "300",
         dailyRtgsTransactions: "100",
@@ -115,7 +119,7 @@ describe("mapProjectPayload", () => {
 
     expect(result.digitalChannels.mobileUsers).toBe(1000);
 
-    expect(result.paymentSystems.dailyUpiTransactions).toBe(1000);
+    expect(result.paymentSystems.dailyAtmTransactions).toBe(1000);
 
     expect(result.paymentSystems.rtgs).toBe(true);
   });
@@ -173,11 +177,7 @@ describe("mapProjectPayload", () => {
         mobileBanking: false,
         internetBanking: false,
         tabletBanking: false,
-        whatsAppBanking: false,
-        missedCallBanking: false,
-        smsBanking: false,
-        eStatement: false,
-        debitCardServices: false,
+        pigmyBanking: false,
 
         mobileUsers: "",
         internetUsers: "",
@@ -189,17 +189,11 @@ describe("mapProjectPayload", () => {
         rtgs: false,
         neft: false,
         imps: false,
-        upi: false,
-        nach: false,
-        bbps: false,
-        aeps: false,
-        rupay: false,
         atmSwitch: false,
         pos: false,
-        reconciliation: false,
-        aml: false,
+        loanRecovery: false,
 
-        dailyUpiTransactions: "",
+        dailyAtmTransactions: "",
         dailyImpsTransactions: "",
         dailyNeftTransactions: "",
         dailyRtgsTransactions: "",
@@ -276,11 +270,7 @@ describe("mapProjectPayload", () => {
         mobileBanking: true,
         internetBanking: false,
         tabletBanking: true,
-        whatsAppBanking: false,
-        missedCallBanking: true,
-        smsBanking: false,
-        eStatement: true,
-        debitCardServices: false,
+        pigmyBanking: false,
 
         mobileUsers: "",
         internetUsers: "",
@@ -292,17 +282,11 @@ describe("mapProjectPayload", () => {
         rtgs: true,
         neft: false,
         imps: true,
-        upi: false,
-        nach: true,
-        bbps: false,
-        aeps: true,
-        rupay: false,
         atmSwitch: true,
         pos: false,
-        reconciliation: true,
-        aml: false,
+        loanRecovery: true,
 
-        dailyUpiTransactions: "",
+        dailyAtmTransactions: "",
         dailyImpsTransactions: "",
         dailyNeftTransactions: "",
         dailyRtgsTransactions: "",

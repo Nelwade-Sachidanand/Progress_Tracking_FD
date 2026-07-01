@@ -2,14 +2,18 @@ import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
-import { useProjects } from "../../../context/ProjectContext";
 import useProjectForm from "../hooks/useProjectForm";
 import CreateProjectPage from "../pages/CreateProjectPage";
 import { getProjectInformation } from "../services/createProjectService";
 
 vi.mock("../hooks/useProjectForm");
-vi.mock("../../../context/ProjectContext", () => ({
-  useProjects: vi.fn(),
+const mockLoadProjectInformation = vi.fn();
+
+vi.mock("../hooks/useProjectInformation", () => ({
+  default: () => ({
+    projectInformation: mockProjects,
+    loadProjectInformation: mockLoadProjectInformation,
+  }),
 }));
 
 vi.mock("../services/createProjectService", () => ({
@@ -112,10 +116,6 @@ describe("CreateProjectPage", () => {
 
     useProjectForm.mockReturnValue(baseHookData);
 
-    useProjects.mockReturnValue({
-      projects: mockProjects,
-    });
-
     getProjectInformation.mockResolvedValue({
       statusType: "S",
       details: {
@@ -133,6 +133,12 @@ describe("CreateProjectPage", () => {
     render(<CreateProjectPage />);
 
     expect(screen.getByTestId("project-navigation")).toBeInTheDocument();
+  });
+
+  test("loads project information on mount", () => {
+    render(<CreateProjectPage />);
+
+    expect(mockLoadProjectInformation).toHaveBeenCalledTimes(1);
   });
 
   test("renders bank selector", () => {
@@ -366,10 +372,6 @@ describe("CreateProjectPage", () => {
   });
 
   test("renders dropdown even when no projects exist", () => {
-    useProjects.mockReturnValue({
-      projects: [],
-    });
-
     render(<CreateProjectPage />);
 
     expect(

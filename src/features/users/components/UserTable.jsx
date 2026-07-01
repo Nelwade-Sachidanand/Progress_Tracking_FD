@@ -1,10 +1,7 @@
-import {
-  Pencil,
-  Trash2,
-  KeyRound,
-} from "lucide-react";
+import { KeyRound, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Pagination from "../../../components/layout/Pagination";
 
 const USERS_PER_PAGE = 5;
 
@@ -39,7 +36,7 @@ const getRoleStyle = (role) => {
   }
 };
 
-const UserTable = ({ users = [], loading, onDelete, onResetPassword,}) => {
+const UserTable = ({ users = [], loading, onDelete, onResetPassword }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
@@ -214,10 +211,11 @@ const UserTable = ({ users = [], loading, onDelete, onResetPassword,}) => {
                     2xl:text-lg
                       whitespace-nowrap
                       2xl:whitespace-normal
-                    ${user.status
+                    ${
+                      user.status
                         ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-600"
-                      }
+                    }
                   `}
                   >
                     ● {user.status === true ? "Active" : "Inactive"}
@@ -229,7 +227,7 @@ const UserTable = ({ users = [], loading, onDelete, onResetPassword,}) => {
                   <div className="flex justify-center gap-2">
                     <button
                       onClick={() =>
-                        navigate("/users/edit", {state: { user },})
+                        navigate("/users/edit", { state: { user } })
                       }
                       className="
                     w-8 h-8
@@ -247,12 +245,10 @@ const UserTable = ({ users = [], loading, onDelete, onResetPassword,}) => {
                     >
                       <Pencil size={14} className="text-[#2563EB]" />
                     </button>
-<button
-  onClick={() =>
-    onResetPassword?.(user)
-  }
-  title="Reset Password"
-  className="
+                    <button
+                      onClick={() => onResetPassword?.(user)}
+                      title="Reset Password"
+                      className="
   w-8 h-8
   md:w-10 md:h-10
   rounded-xl
@@ -263,12 +259,9 @@ const UserTable = ({ users = [], loading, onDelete, onResetPassword,}) => {
   cursor-pointer
   2xl:w-12 2xl:h-12
   "
->
-  <KeyRound
-    size={14}
-    className="text-amber-600"
-  />
-</button>
+                    >
+                      <KeyRound size={14} className="text-amber-600" />
+                    </button>
                     <button
                       onClick={() => onDelete(user.id)}
                       className="
@@ -296,28 +289,14 @@ const UserTable = ({ users = [], loading, onDelete, onResetPassword,}) => {
       </div>
 
       {/* Footer */}
-      <div
-        className="
-      flex
-      flex-col
-      md:flex-row
-      md:items-center
-      md:justify-between
-      gap-4
-      px-4
-      md:px-6
-      py-4
-      "
-      >
-        <span className="text-sm text-[#64748B] 2xl:text-[17px] 2xl:font-medium 2xl:tracking-wide">
-          Showing {users.length === 0 ? 0 : startIndex + 1} to{" "}
-          {Math.min(endIndex, users.length)} of {users.length} users
-        </span>
-
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Your existing pagination buttons remain unchanged */}
-        </div>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalRecords={paginatedUsers.length}
+        recordsPerPage={10}
+        label="users"
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 };

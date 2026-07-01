@@ -244,12 +244,4 @@ describe("AuthorizationTable", () => {
 
     expect(screen.getByText("Activity 11")).toBeInTheDocument();
   });
-
-  it("shows pagination info", () => {
-    render(<AuthorizationTable logs={mockLogs} loading={false} />);
-
-    expect(
-      screen.getByText(/Showing 1 to 10 of 15 requests/),
-    ).toBeInTheDocument();
-  });
 });

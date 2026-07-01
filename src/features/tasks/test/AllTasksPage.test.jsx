@@ -90,7 +90,7 @@ vi.mock("../components/TaskSummaryCards", () => ({
   default: ({ total }) => <div>Summary Total: {total}</div>,
 }));
 
-vi.mock("../components/Pagination", () => ({
+vi.mock("../../../components/layout/Pagination", () => ({
   default: () => <div>Pagination</div>,
 }));
 

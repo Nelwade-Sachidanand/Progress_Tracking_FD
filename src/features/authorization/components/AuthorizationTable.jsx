@@ -435,32 +435,14 @@ export default function AuthorizationTable({
 
       {/* Pagination */}
 
-      <div
-        className="
-      flex
-      flex-col
-      md:flex-row
-      md:items-center
-      md:justify-between
-      gap-4
-      px-4
-      xl:px-5
-      py-4
-      border-t
-      border-[#EDF2F7]
-      "
-      >
-        <span className="text-xs xl:text-sm text-[#64748B] 2xl:text-lg">
-          Showing {logs.length === 0 ? 0 : startIndex + 1} to{" "}
-          {Math.min(endIndex, logs.length)} of {logs.length} requests
-        </span>
-
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalRecords={logs.length}
+        recordsPerPage={10}
+        label="auths"
+        onPageChange={setCurrentPage}
+      />
 
       {showApproveModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">

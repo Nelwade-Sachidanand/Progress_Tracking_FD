@@ -1,11 +1,4 @@
-import {
-  Upload,
-  Eye,
-  Download,
-  History,
-  CheckCircle2,
-  Clock3,
-} from "lucide-react";
+import { CheckCircle2, Clock3, Eye, Upload } from "lucide-react";
 
 export default function DocumentTable({
   documents,
@@ -71,24 +64,20 @@ export default function DocumentTable({
       "
     >
       <div className="overflow-x-auto">
-
         <table className="w-full">
-
           <thead
             className="
             bg-slate-50
             border-b
             "
           >
-
             <tr>
-
               <th
                 className="
                 px-5
                 py-4
-                text-left
-                text-sm
+                text-center
+                text-base
                 font-semibold
                 text-[#0B1F59]
                 "
@@ -100,8 +89,8 @@ export default function DocumentTable({
                 className="
                 px-5
                 py-4
-                text-left
-                text-sm
+                text-center
+                text-base
                 font-semibold
                 text-[#0B1F59]
                 "
@@ -113,8 +102,8 @@ export default function DocumentTable({
                 className="
                 px-5
                 py-4
-                text-left
-                text-sm
+                text-center
+                text-base
                 font-semibold
                 text-[#0B1F59]
                 "
@@ -126,8 +115,8 @@ export default function DocumentTable({
                 className="
                 px-5
                 py-4
-                text-left
-                text-sm
+                text-center
+                text-base
                 font-semibold
                 text-[#0B1F59]
                 whitespace-nowrap
@@ -140,8 +129,8 @@ export default function DocumentTable({
                 className="
                 px-5
                 py-4
-                text-left
-                text-sm
+                text-center
+                text-base
                 font-semibold
                 text-[#0B1F59]
                 "
@@ -154,225 +143,114 @@ export default function DocumentTable({
                 px-5
                 py-4
                 text-center
-                text-sm
+                text-base
                 font-semibold
                 text-[#0B1F59]
                 "
               >
                 Actions
               </th>
-
             </tr>
-
           </thead>
 
           <tbody>
-                      {documents.map((document) => (
+            {documents.map((document) => {
+              const latestDocument =
+                document.documents?.length > 0
+                  ? document.documents[document.documents.length - 1]
+                  : null;
 
-            <tr
-              key={document.id}
-              className="
-              border-b
-              last:border-0
-              hover:bg-slate-50
-              transition
-              "
-            >
-
-              {/* Activity */}
-
-              <td className="px-5 py-5">
-
-                <div>
-
-                  <h3
-                    className="
-                    text-[15px]
-                    font-semibold
-                    text-[#0B1F59]
-                    "
-                  >
-                    {document.activity}
-                  </h3>
-
-                  <p
-                    className="
-                    mt-1
-                    text-xs
-                    text-slate-500
-                    "
-                  >
-                    {document.phase} →
-                    {" "}
-                    {document.milestone}
-                  </p>
-
-                </div>
-
-              </td>
-
-              {/* File */}
-
-              <td className="px-5 py-5">
-
-                {document.fileName ? (
-
-                  <div>
-
-                    <p
-                      className="
-                      font-medium
-                      text-[#0F172A]
-                      "
-                    >
-                      {document.fileName}
-                    </p>
-
-                  </div>
-
-                ) : (
-
-                  <span className="text-slate-400">
-
-                    No File
-
-                  </span>
-
-                )}
-
-              </td>
-
-              {/* Uploaded By */}
-
-              <td className="px-5 py-5">
-
-                {document.uploadedBy || "-"}
-
-              </td>
-
-              {/* Upload Date */}
-
-              <td
-                className="
-                px-5
-                py-5
-                whitespace-nowrap
-                "
-              >
-
-                {document.uploadedDate || "-"}
-
-              </td>
-
-              {/* Status */}
-
-              <td className="px-5 py-5">
-
-                {getStatusBadge(
-                  document.uploadStatus
-                )}
-
-              </td>
-
-              
-
-              {/* Actions */}
-
-<td className="px-5 py-5">
-
-  <div
-    className="
-    flex
-    items-center
-    justify-center
-    gap-2
-    "
-  >
-
-<td className="px-5 py-5">
-  <div className="flex items-center justify-center gap-2">
-
-    {/* Upload */}
-
-    <button
-      onClick={() => onUpload(document)}
-      className="
-      w-9
-      h-9
-      rounded-lg
-      bg-[#EEF2FF]
-      hover:bg-[#DBEAFE]
-      text-[#2563EB]
-      flex
-      items-center
-      justify-center
-      transition
+              return (
+                <tr
+                  key={document.id}
+                  className="
+        border-b
+        last:border-0
+        hover:bg-slate-50
+        transition
       "
-      title="Upload Document"
-    >
-      <Upload size={17} />
-    </button>
+                >
+                  {/* Activity */}
+                  <td className="px-5 py-5">
+                    <div>
+                      <h3 className="text-base font-semibold text-[#0B1F59]">
+                        {document.activity}
+                      </h3>
 
-    {/* View */}
+                      <p className="mt-1 text-sm text-slate-500">
+                        {document.phase} → {document.milestone}
+                      </p>
+                    </div>
+                  </td>
 
-    <button
-      disabled={!document.fileUrl}
-      onClick={() => onPreview(document)}
-      className="
-      w-9
-      h-9
-      rounded-lg
-      bg-[#ECFDF5]
-      hover:bg-[#D1FAE5]
-      text-green-600
-      flex
-      items-center
-      justify-center
-      transition
-      disabled:opacity-40
-      disabled:cursor-not-allowed
-      "
-      title="View Document"
-    >
-      <Eye size={17} />
-    </button> 
+                  {/* File */}
+                  <td className="px-5 py-5 text-center">
+                    {latestDocument ? (
+                      <p className="font-medium text-[#0F172A]">
+                        {latestDocument.fileName}
+                      </p>
+                    ) : (
+                      <span className="text-slate-400">No File</span>
+                    )}
+                  </td>
 
-  </div>
-</td>
+                  {/* Uploaded By */}
+                  <td className="px-5 py-5 text-center">
+                    {latestDocument?.uploadedBy || "-"}
+                  </td>
 
-  </div>
+                  {/* Upload Date */}
+                  <td className="px-5 py-5 whitespace-nowrap">
+                    {latestDocument
+                      ? new Date(latestDocument.uploadedDate).toLocaleString()
+                      : "-"}
+                  </td>
 
-</td>
+                  {/* Status */}
+                  <td className="px-5 py-5">
+                    {getStatusBadge(latestDocument ? "Uploaded" : "Pending")}
+                  </td>
 
-            </tr>
+                  {/* Actions */}
+                  <td className="px-5 py-5">
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => onUpload(document)}
+                        className="w-9 h-9 rounded-lg bg-[#EEF2FF] hover:bg-[#DBEAFE] text-[#2563EB] flex items-center justify-center"
+                      >
+                        <Upload size={17} />
+                      </button>
 
-          ))}
+                      <button
+                        disabled={!latestDocument}
+                        onClick={() => onPreview(latestDocument)}
+                        className="w-9 h-9 rounded-lg bg-[#ECFDF5] hover:bg-[#D1FAE5] text-green-600 flex items-center justify-center disabled:opacity-40"
+                      >
+                        <Eye size={17} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
 
-          {documents.length === 0 && (
-
-            <tr>
-
-              <td
-                colSpan={6}
-                className="
+            {documents.length === 0 && (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="
                 py-12
                 text-center
                 text-slate-500
                 "
-              >
-                No documents found.
-              </td>
-
-            </tr>
-
-          )}
-
+                >
+                  No documents found.
+                </td>
+              </tr>
+            )}
           </tbody>
-
         </table>
-
       </div>
-
     </div>
   );
 }

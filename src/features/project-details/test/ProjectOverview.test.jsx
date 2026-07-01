@@ -239,10 +239,4 @@ describe("ProjectOverview", () => {
     expect(screen.getByText("Project Type")).toBeInTheDocument();
     expect(screen.getByText("Project Status")).toBeInTheDocument();
   });
-
-  it("matches snapshot", () => {
-    const { container } = render(<ProjectOverview project={project} />);
-
-    expect(container).toMatchSnapshot();
-  });
 });

@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import EditTaskForm from "../components/EditTaskForm";
 
@@ -32,6 +32,8 @@ vi.mock("../hooks/useEditTask", () => ({
 
       executionStatus: "",
 
+      scheduleHealth: "",
+
       changeReason: "",
     },
 
@@ -50,47 +52,45 @@ describe("EditTaskForm", () => {
     vi.clearAllMocks();
   });
 
-  test("renders all sections", () => {
+  it("renders all sections", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByText("Basic Information")).toBeInTheDocument();
-
     expect(screen.getByText("Dates & Estimate")).toBeInTheDocument();
-
     expect(screen.getByText("Progress & Status")).toBeInTheDocument();
   });
 
-  test("phase field is disabled", () => {
+  it("phase field is disabled", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByDisplayValue("Phase 1")).toBeDisabled();
   });
 
-  test("milestone field is disabled", () => {
+  it("milestone field is disabled", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByDisplayValue("Milestone 1")).toBeDisabled();
   });
 
-  test("task field is disabled", () => {
+  it("task field is disabled", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByDisplayValue("Task 1")).toBeDisabled();
   });
 
-  test("sub task field is disabled", () => {
+  it("sub task field is disabled", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByDisplayValue("Sub Task 1")).toBeDisabled();
   });
 
-  test("activity field is disabled", () => {
+  it("activity field is disabled", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByDisplayValue("Activity 1")).toBeDisabled();
   });
 
-  test("updates owner", () => {
+  it("updates owner", () => {
     render(<EditTaskForm />);
 
     fireEvent.change(screen.getByPlaceholderText("Enter Owner"), {
@@ -102,7 +102,7 @@ describe("EditTaskForm", () => {
     expect(mockHandleChange).toHaveBeenCalledWith("owner", "Rahul");
   });
 
-  test("updates estimated weeks", () => {
+  it("updates estimated weeks", () => {
     render(<EditTaskForm />);
 
     fireEvent.change(screen.getByPlaceholderText("Enter Estimated Weeks"), {
@@ -114,18 +114,19 @@ describe("EditTaskForm", () => {
     expect(mockHandleChange).toHaveBeenCalledWith("estimatedPeriodWeek", "12");
   });
 
-  test("renders progress slider", () => {
+  it("renders progress slider", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByRole("slider")).toBeInTheDocument();
   });
 
-  test("renders status dropdown", () => {
+  it("shows calculated status as In Progress", () => {
     render(<EditTaskForm />);
 
-    expect(screen.getByRole("combobox")).toBeInTheDocument();
+    expect(screen.getByText("In Progress")).toBeInTheDocument();
   });
-  test("updates planned start date", () => {
+
+  it("updates planned start date", () => {
     render(<EditTaskForm />);
 
     const dates = document.querySelectorAll('input[type="date"]');
@@ -142,7 +143,7 @@ describe("EditTaskForm", () => {
     );
   });
 
-  test("updates planned end date", () => {
+  it("updates planned end date", () => {
     render(<EditTaskForm />);
 
     const dates = document.querySelectorAll('input[type="date"]');
@@ -159,7 +160,7 @@ describe("EditTaskForm", () => {
     );
   });
 
-  test("updates actual start date", () => {
+  it("updates actual start date", () => {
     render(<EditTaskForm />);
 
     const dates = document.querySelectorAll('input[type="date"]');
@@ -176,7 +177,7 @@ describe("EditTaskForm", () => {
     );
   });
 
-  test("updates actual end date", () => {
+  it("updates actual end date", () => {
     render(<EditTaskForm />);
 
     const dates = document.querySelectorAll('input[type="date"]');
@@ -193,7 +194,7 @@ describe("EditTaskForm", () => {
     );
   });
 
-  test("updates progress slider", () => {
+  it("updates progress slider", () => {
     render(<EditTaskForm />);
 
     fireEvent.change(screen.getByRole("slider"), {
@@ -205,22 +206,7 @@ describe("EditTaskForm", () => {
     expect(mockHandleChange).toHaveBeenCalledWith("progress", "80");
   });
 
-  test("updates execution status", () => {
-    render(<EditTaskForm />);
-
-    fireEvent.change(screen.getByRole("combobox"), {
-      target: {
-        value: "Completed",
-      },
-    });
-
-    expect(mockHandleChange).toHaveBeenCalledWith(
-      "executionStatus",
-      "Completed",
-    );
-  });
-
-  test("update button calls handleUpdate", () => {
+  it("update button calls handleUpdate", () => {
     render(<EditTaskForm />);
 
     fireEvent.click(screen.getByText("Update Task"));
@@ -228,7 +214,7 @@ describe("EditTaskForm", () => {
     expect(mockHandleUpdate).toHaveBeenCalledTimes(1);
   });
 
-  test("back button calls browser history", () => {
+  it("back button calls browser history", () => {
     const backSpy = vi.fn();
 
     window.history.back = backSpy;
@@ -240,19 +226,19 @@ describe("EditTaskForm", () => {
     expect(backSpy).toHaveBeenCalledTimes(1);
   });
 
-  test("update button exists", () => {
+  it("update button exists", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByText("Update Task")).toBeInTheDocument();
   });
 
-  test("back button exists", () => {
+  it("back button exists", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByText("← Back")).toBeInTheDocument();
   });
 
-  test("estimated weeks input exists", () => {
+  it("estimated weeks input exists", () => {
     render(<EditTaskForm />);
 
     expect(
@@ -260,24 +246,25 @@ describe("EditTaskForm", () => {
     ).toBeInTheDocument();
   });
 
-  test("owner input exists", () => {
+  it("owner input exists", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByPlaceholderText("Enter Owner")).toBeInTheDocument();
   });
 
-  test("renders four date inputs", () => {
+  it("renders four date inputs", () => {
     render(<EditTaskForm />);
 
-    expect(document.querySelectorAll('input[type="date"]').length).toBe(4);
+    expect(document.querySelectorAll('input[type="date"]')).toHaveLength(4);
   });
 
-  test("progress slider displays initial value", () => {
+  it("progress slider displays initial value", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByText("20%")).toBeInTheDocument();
   });
-  test("does not show reason for change initially", () => {
+
+  it("does not show reason for change initially", () => {
     render(<EditTaskForm />);
 
     expect(
@@ -285,49 +272,49 @@ describe("EditTaskForm", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("renders owner with initial value", () => {
+  it("renders owner with initial value", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByDisplayValue("Sachin")).toBeInTheDocument();
   });
 
-  test("renders phase value", () => {
+  it("renders phase value", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByDisplayValue("Phase 1")).toBeInTheDocument();
   });
 
-  test("renders milestone value", () => {
+  it("renders milestone value", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByDisplayValue("Milestone 1")).toBeInTheDocument();
   });
 
-  test("renders task value", () => {
+  it("renders task value", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByDisplayValue("Task 1")).toBeInTheDocument();
   });
 
-  test("renders sub task value", () => {
+  it("renders sub task value", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByDisplayValue("Sub Task 1")).toBeInTheDocument();
   });
 
-  test("renders activity value", () => {
+  it("renders activity value", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByDisplayValue("Activity 1")).toBeInTheDocument();
   });
 
-  test("owner input is editable", () => {
+  it("owner input is editable", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByPlaceholderText("Enter Owner")).not.toBeDisabled();
   });
 
-  test("estimated weeks input is editable", () => {
+  it("estimated weeks input is editable", () => {
     render(<EditTaskForm />);
 
     expect(
@@ -335,55 +322,57 @@ describe("EditTaskForm", () => {
     ).not.toBeDisabled();
   });
 
-  test("status dropdown contains completed option", () => {
+  it("shows status label", () => {
     render(<EditTaskForm />);
 
-    expect(
-      screen.getByRole("option", {
-        name: "Completed",
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Status")).toBeInTheDocument();
   });
 
-  test("status dropdown contains delayed option", () => {
+  it("shows calculated status as In Progress", () => {
     render(<EditTaskForm />);
 
-    expect(
-      screen.getByRole("option", {
-        name: "Delayed",
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByText("In Progress")).toBeInTheDocument();
   });
 
-  test("status dropdown contains in progress option", () => {
+  it("does not render status dropdown", () => {
     render(<EditTaskForm />);
 
-    expect(
-      screen.getByRole("option", {
-        name: "In Progress",
-      }),
-    ).toBeInTheDocument();
+    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
   });
 
-  test("status dropdown contains not started option", () => {
-    render(<EditTaskForm />);
-
-    expect(
-      screen.getByRole("option", {
-        name: "Not Started",
-      }),
-    ).toBeInTheDocument();
-  });
-
-  test("progress slider has correct max value", () => {
+  it("progress slider has correct max value", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByRole("slider")).toHaveAttribute("max", "100");
   });
 
-  test("progress slider has correct min value", () => {
+  it("progress slider has correct min value", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByRole("slider")).toHaveAttribute("min", "0");
+  });
+
+  it("progress slider has correct current value", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByRole("slider")).toHaveValue("20");
+  });
+
+  it("shows progress percentage", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByText("20%")).toBeInTheDocument();
+  });
+
+  it("shows progress lower bound", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByText("0%")).toBeInTheDocument();
+  });
+
+  it("shows progress upper bound", () => {
+    render(<EditTaskForm />);
+
+    expect(screen.getByText("100%")).toBeInTheDocument();
   });
 });

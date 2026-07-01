@@ -14,7 +14,7 @@ describe("PaymentSystemsTab", () => {
     pos: false,
     loanRecovery: false,
 
-    dailyUpiTransactions: 1000,
+    dailyAtmTransactions: 1000,
     dailyImpsTransactions: 500,
     dailyNeftTransactions: 300,
     dailyRtgsTransactions: 100,
@@ -79,12 +79,12 @@ describe("PaymentSystemsTab", () => {
     );
   });
 
-  test("updates daily upi transactions", () => {
+  test("updates daily Atm transactions", () => {
     renderComponent();
 
     fireEvent.change(screen.getByDisplayValue("1000"), {
       target: {
-        name: "dailyUpiTransactions",
+        name: "dailyAtmTransactions",
         value: "2000",
       },
     });
@@ -92,7 +92,7 @@ describe("PaymentSystemsTab", () => {
     expect(mockUpdateSection).toHaveBeenCalledWith(
       "paymentSystems",
       expect.objectContaining({
-        dailyUpiTransactions: "2000",
+        dailyAtmTransactions: "2000",
       }),
     );
   });

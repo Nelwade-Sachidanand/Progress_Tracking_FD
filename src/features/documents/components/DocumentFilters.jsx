@@ -1,4 +1,4 @@
-import { Search, ChevronDown } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 export default function DocumentFilters({
@@ -27,8 +27,7 @@ export default function DocumentFilters({
   onExportExcel,
   clearFilters,
 }) {
-  const [showMilestoneDropdown, setShowMilestoneDropdown] =
-    useState(false);
+  const [showMilestoneDropdown, setShowMilestoneDropdown] = useState(false);
 
   const milestoneRef = useRef(null);
 
@@ -42,16 +41,9 @@ export default function DocumentFilters({
       }
     };
 
-    document.addEventListener(
-      "mousedown",
-      handleClickOutside
-    );
+    document.addEventListener("mousedown", handleClickOutside);
 
-    return () =>
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -91,9 +83,7 @@ export default function DocumentFilters({
 
           <select
             value={selectedPhase}
-            onChange={(e) =>
-              handlePhaseChange(e.target.value)
-            }
+            onChange={(e) => handlePhaseChange(e.target.value)}
             className="
             w-full
             h-11
@@ -103,17 +93,13 @@ export default function DocumentFilters({
             px-3
             outline-none
             focus:border-[#2563EB]
+            text-sm
             "
           >
-            <option value="All Phases">
-              All Phases
-            </option>
+            <option value="All Phases">All Phases</option>
 
             {phases.map((phase) => (
-              <option
-                key={phase}
-                value={phase}
-              >
+              <option key={phase} value={phase}>
                 {phase}
               </option>
             ))}
@@ -122,10 +108,7 @@ export default function DocumentFilters({
 
         {/* Milestone */}
 
-        <div
-          className="relative"
-          ref={milestoneRef}
-        >
+        <div className="relative" ref={milestoneRef}>
           <label
             className="
             block
@@ -139,11 +122,7 @@ export default function DocumentFilters({
 
           <button
             type="button"
-            onClick={() =>
-              setShowMilestoneDropdown(
-                !showMilestoneDropdown
-              )
-            }
+            onClick={() => setShowMilestoneDropdown(!showMilestoneDropdown)}
             className="
             w-full
             h-11
@@ -157,6 +136,7 @@ export default function DocumentFilters({
             bg-white
             hover:border-[#2563EB]
             cursor-pointer
+            text-sm
             "
           >
             <span className="truncate">
@@ -199,20 +179,14 @@ export default function DocumentFilters({
                 >
                   <input
                     type="checkbox"
-                    checked={selectedMilestone.includes(
-                      milestone
-                    )}
-                    onChange={() =>
-                      handleMilestoneChange(
-                        milestone
-                      )
-                    }
+                    checked={selectedMilestone.includes(milestone)}
+                    onChange={() => handleMilestoneChange(milestone)}
                   />
 
                   <span>{milestone}</span>
                 </label>
               ))}
-                     <div
+              <div
                 className="
         border-t
         border-[#EEF2F7]
@@ -221,13 +195,13 @@ export default function DocumentFilters({
         justify-end
         "
               >
-               <button
-  type="button"
-  onClick={() => {
-    setSelectedMilestone([]);
-    setShowMilestoneDropdown(false);
-  }}
-  className="
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedMilestone([]);
+                    setShowMilestoneDropdown(false);
+                  }}
+                  className="
     px-4
     py-2
     border
@@ -239,17 +213,16 @@ export default function DocumentFilters({
     border-red-200
     cursor-pointer
   "
->
-  Clear
-</button>
-</div>
+                >
+                  Clear
+                </button>
+              </div>
             </div>
           )}
         </div>
-                {/* Task */}
+        {/* Task */}
 
         <div>
-
           <label
             className="
             block
@@ -263,9 +236,7 @@ export default function DocumentFilters({
 
           <select
             value={selectedTask}
-            onChange={(e) =>
-              handleTaskChange(e.target.value)
-            }
+            onChange={(e) => handleTaskChange(e.target.value)}
             className="
             w-full
             h-11
@@ -275,28 +246,22 @@ export default function DocumentFilters({
             px-3
             outline-none
             focus:border-[#2563EB]
+            text-sm
             "
           >
-            <option value="All Tasks">
-              All Tasks
-            </option>
+            <option value="All Tasks">All Tasks</option>
 
             {tasks.map((task) => (
-              <option
-                key={task}
-                value={task}
-              >
+              <option key={task} value={task}>
                 {task}
               </option>
             ))}
           </select>
-
         </div>
 
         {/* Sub Task */}
 
         <div>
-
           <label
             className="
             block
@@ -310,11 +275,7 @@ export default function DocumentFilters({
 
           <select
             value={selectedSubTask}
-            onChange={(e) =>
-              handleSubTaskChange(
-                e.target.value
-              )
-            }
+            onChange={(e) => handleSubTaskChange(e.target.value)}
             className="
             w-full
             h-11
@@ -324,29 +285,22 @@ export default function DocumentFilters({
             px-3
             outline-none
             focus:border-[#2563EB]
+            text-sm
             "
           >
-            <option value="All Sub Tasks">
-              All Sub Tasks
-            </option>
+            <option value="All Sub Tasks">All Sub Tasks</option>
 
             {subTasks.map((subTask) => (
-              <option
-                key={subTask}
-                value={subTask}
-              >
+              <option key={subTask} value={subTask}>
                 {subTask}
               </option>
             ))}
-
           </select>
-
         </div>
 
         {/* Activity */}
 
         <div>
-
           <label
             className="
             block
@@ -360,11 +314,7 @@ export default function DocumentFilters({
 
           <select
             value={selectedActivity}
-            onChange={(e) =>
-              setSelectedActivity(
-                e.target.value
-              )
-            }
+            onChange={(e) => setSelectedActivity(e.target.value)}
             className="
             w-full
             h-11
@@ -374,29 +324,22 @@ export default function DocumentFilters({
             px-3
             outline-none
             focus:border-[#2563EB]
+            text-sm
             "
           >
-            <option value="All Activities">
-              All Activities
-            </option>
+            <option value="All Activities">All Activities</option>
 
             {activities.map((activity) => (
-              <option
-                key={activity}
-                value={activity}
-              >
+              <option key={activity} value={activity}>
                 {activity}
               </option>
             ))}
-
           </select>
-
         </div>
 
         {/* Upload Status */}
 
         <div>
-
           <label
             className="
             block
@@ -410,11 +353,7 @@ export default function DocumentFilters({
 
           <select
             value={selectedStatus}
-            onChange={(e) =>
-              setSelectedStatus(
-                e.target.value
-              )
-            }
+            onChange={(e) => setSelectedStatus(e.target.value)}
             className="
             w-full
             h-11
@@ -424,59 +363,48 @@ export default function DocumentFilters({
             px-3
             outline-none
             focus:border-[#2563EB]
+            text-sm
             "
           >
-            <option value="All Status">
-              All Status
-            </option>
+            <option value="All Status">All Status</option>
 
-            <option value="Uploaded">
-              Uploaded
-            </option>
+            <option value="Uploaded">Uploaded</option>
 
-            <option value="Pending">
-              Pending
-            </option>
-
+            <option value="Pending">Pending</option>
           </select>
-
         </div>
-{/* Search */}
+        {/* Search */}
 
-<div>
-
-  <label
-    className="
+        <div>
+          <label
+            className="
     block
     text-sm
     font-medium
     mb-2
     "
-  >
-    Search
-  </label>
+          >
+            Search
+          </label>
 
-  <div className="relative">
-
-    <Search
-      size={18}
-      className="
+          <div className="relative">
+            <Search
+              size={18}
+              className="
       absolute
       left-4
       top-1/2
       -translate-y-1/2
       text-slate-400
       "
-    />
+            />
 
-    <input
-      type="text"
-      placeholder="Search Activity / File..."
-      value={searchTerm}
-      onChange={(e) =>
-        setSearchTerm(e.target.value)
-      }
-      className="
+            <input
+              type="text"
+              placeholder="Search Activity / File..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="
       w-full
       h-11
       pl-11
@@ -486,74 +414,47 @@ export default function DocumentFilters({
       border-slate-300
       outline-none
       focus:border-[#2563EB]
+      text-sm
       "
-    />
+            />
+          </div>
+        </div>
 
-  </div>
-
-</div>
-
+        <div
+          className="
+          pt-5
+          px-20
+          border-slate-200
+          flex
+          items-end
+          justify-between
+          "
+        >
+          <button
+            onClick={clearFilters}
+            className="
+            px-5
+            py-3
+            rounded-xl
+            border
+            border-slate-300
+            
+            hover:bg-slate-50
+            font-medium
+            transition
+            cursor-pointer
+            
+            
+            text-red-600
+            border-red-200
+            cursor-pointer
+            rounded-xl 
+            text-sm"
+          >
+            Clear Filters
+          </button>
+        </div>
       </div>
-      
-          
-
-      {/* Bottom Actions */}
-
-      <div
-  className="
-  mt-6
-  pt-5
-  border-t
-  border-slate-200
-  flex
-  items-center
-  justify-between
-  "
->
-{/* 
-  <button
-    onClick={onExportExcel}
-    className="
-    px-5
-    py-2.5
-    rounded-xl
-    bg-green-600
-    hover:bg-green-700
-    text-white
-    font-medium
-    transition
-    cursor-pointer
-    "
-  >
-    Export Excel
-  </button> */}
-
-  <button
-    onClick={clearFilters}
-    className="
-    px-5
-    py-2.5
-    rounded-xl
-    border
-    border-slate-300
-    
-    hover:bg-slate-50
-    font-medium
-    transition
-    cursor-pointer
-    
-    
-    text-red-600
-    border-red-200
-    cursor-pointer
-    rounded-xl 
-    text-sm"
-  >
-    Clear Filters
-  </button>
-
-</div>
-
     </div>
   );
 }

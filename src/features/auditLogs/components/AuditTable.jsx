@@ -368,40 +368,14 @@ export default function AuditTable({ logs = [], loading, onView }) {
 
       {/* Footer */}
 
-      <div
-        className="
-        flex
-        flex-col
-        sm:flex-row
-        items-center
-        justify-between
-        gap-4
-
-        px-6
-        py-4
-
-        border-t
-        border-slate-200
-        "
-      >
-        <span
-          className="
-          text-sm
-          text-slate-500
-          2xl:text-base
-          "
-        >
-          Showing {logs.length === 0 ? 0 : startIndex + 1} to{" "}
-          {Math.min(startIndex + RECORDS_PER_PAGE, logs.length)} of{" "}
-          {logs.length} logs
-        </span>
-
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalRecords={logs.length}
+        recordsPerPage={10}
+        label="logs"
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 }

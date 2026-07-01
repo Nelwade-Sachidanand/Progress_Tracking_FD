@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Pagination from "../../../components/layout/Pagination";
 import { useProjects } from "../../../context/ProjectContext";
 import ActiveFilters from "../components/ActiveFilters";
-import Pagination from "../components/Pagination";
 import RemarkModal from "../components/RemarkModal";
 import TaskActions from "../components/TaskActions";
 import TaskFilters from "../components/TaskFilters";
+import TaskHeader from "../components/TaskHeader";
 import TaskSummaryCards from "../components/TaskSummaryCards";
 import TaskTable from "../components/TaskTable";
 import useTaskFilters from "../hooks/useTaskFilters";
-import TaskHeader from "../components/TaskHeader";
 
 export default function AllTasksPage() {
   const { fetchProjects, projects } = useProjects();
@@ -124,14 +124,13 @@ export default function AllTasksPage() {
 
   const totalPages = Math.ceil(filteredTasks.length / ITEMS_PER_PAGE);
 
-  
   const safeCurrentPage =
-  currentPage > totalPages ? totalPages : currentPage || 1;
+    currentPage > totalPages ? totalPages : currentPage || 1;
 
   const paginatedTasks = filteredTasks.slice(
-  (safeCurrentPage - 1) * ITEMS_PER_PAGE,
-  safeCurrentPage * ITEMS_PER_PAGE,
-);
+    (safeCurrentPage - 1) * ITEMS_PER_PAGE,
+    safeCurrentPage * ITEMS_PER_PAGE,
+  );
 
   const clearFilters = () => {
     setSelectedPhase("All Phases");
@@ -223,20 +222,20 @@ export default function AllTasksPage() {
     setTasks(allActivities);
   }, [projects]);
   useEffect(() => {
-  setCurrentPage(1);
-}, [
-  selectedPhase,
-  selectedMilestone,
-  selectedTask,
-  selectedSubTask,
-  selectedActivity,
-  selectedStatus,
-  searchTerm
-]);
+    setCurrentPage(1);
+  }, [
+    selectedPhase,
+    selectedMilestone,
+    selectedTask,
+    selectedSubTask,
+    selectedActivity,
+    selectedStatus,
+    searchTerm,
+  ]);
   return (
     // <div className="p-6 bg-[#F5F7FB] min-h-screen ">
     <div className="p-6 w-full w-[1200px]">
-      <TaskHeader/>
+      <TaskHeader />
 
       <TaskActions
         selectedPhase={selectedPhase}
@@ -301,14 +300,15 @@ export default function AllTasksPage() {
         }}
       />
 
-   
       <Pagination
-  currentPage={safeCurrentPage}
-  totalPages={totalPages}
-  setCurrentPage={setCurrentPage}
-  totalItems={filteredTasks.length}
-  pageSize={10}
-/>
+        currentPage={safeCurrentPage}
+        totalPages={totalPages}
+        totalRecords={filteredTasks.length}
+        recordsPerPage={ITEMS_PER_PAGE}
+        label="tasks"
+        onPageChange={setCurrentPage}
+      />
+
       <RemarkModal
         isOpen={showRemarkModal}
         task={selectedRemarkTask}

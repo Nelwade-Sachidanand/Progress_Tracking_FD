@@ -14,15 +14,14 @@ import {
   Settings,
   ShieldAlert,
   ShieldCheck,
+  Upload,
   Users,
   X,
-  Upload,
 } from "lucide-react";
 import { useState } from "react";
 
 import { NavLink } from "react-router-dom";
 import logo from "../../assets/images/Novillex-Logo.png";
-
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
@@ -41,118 +40,123 @@ export default function Sidebar() {
       title: "PORTFOLIO",
       items: isUser
         ? [
-          {
-            name: "Dashboard",
-            icon: LayoutDashboard,
-            path: "/project-details",
-          },
-          {
-            name: "Tasks",
-            icon: CheckSquare,
-            path: "/tasks",
-          },
-        ]
-        : [
-          {
-            name: "Dashboard",
-            icon: LayoutDashboard,
-            path: "/dashboard",
-          },
-          {
-            name: "Banks / Clients",
-            icon: Building2,
-            path: "/banks",
-          },
-          {
-            name: "Products",
-            icon: Package,
-            path: "/products",
-          },
-          {
-            name: "Projects",
-            icon: FolderKanban,
-            path: "/projects",
-          },
-          ...(canUploadExcel
-            ? [
-              {
-                name: "Upload Excel",
-                icon: Upload,
-                path: "/upload-excel",
-              },
-            ]
-            : []),
-          {
-            name: "Milestones",
-            icon: Flag,
-            path: "/milestones",
-          },
-          {
-            name: "Tasks",
-            icon: CheckSquare,
-            path: "/tasks",
-          },
-        ],
-    },
-
-    ...(isAdmin || isManagement || isImplementation
-      ? [
-        {
-          title: "MONITORING",
-          items: [
             {
-              name: "Issues",
-              icon: AlertTriangle,
-              path: "/issues",
+              name: "Dashboard",
+              icon: LayoutDashboard,
+              path: "/project-details",
             },
             {
-              name: "Risks",
-              icon: ShieldAlert,
-              path: "/risks",
-            },
-            {
-              name: "Reports",
-              icon: FileBarChart,
-              path: "/reports",
+              name: "Tasks",
+              icon: CheckSquare,
+              path: "/tasks",
             },
             {
               name: "Documents",
               icon: FileText,
               path: "/documents",
             },
+          ]
+        : [
+            {
+              name: "Dashboard",
+              icon: LayoutDashboard,
+              path: "/dashboard",
+            },
+            {
+              name: "Banks / Clients",
+              icon: Building2,
+              path: "/banks",
+            },
+            {
+              name: "Products",
+              icon: Package,
+              path: "/products",
+            },
+            {
+              name: "Projects",
+              icon: FolderKanban,
+              path: "/projects",
+            },
+            ...(canUploadExcel
+              ? [
+                  {
+                    name: "Upload Excel",
+                    icon: Upload,
+                    path: "/upload-excel",
+                  },
+                ]
+              : []),
+            {
+              name: "Milestones",
+              icon: Flag,
+              path: "/milestones",
+            },
+            {
+              name: "Tasks",
+              icon: CheckSquare,
+              path: "/tasks",
+            },
           ],
-        },
-      ]
+    },
+
+    ...(isAdmin || isManagement || isImplementation
+      ? [
+          {
+            title: "MONITORING",
+            items: [
+              {
+                name: "Issues",
+                icon: AlertTriangle,
+                path: "/issues",
+              },
+              {
+                name: "Risks",
+                icon: ShieldAlert,
+                path: "/risks",
+              },
+              {
+                name: "Reports",
+                icon: FileBarChart,
+                path: "/reports",
+              },
+              {
+                name: "Documents",
+                icon: FileText,
+                path: "/documents",
+              },
+            ],
+          },
+        ]
       : []),
 
     ...(isAdmin
       ? [
-        {
-          title: "ADMINISTRATION",
-          items: [
-            {
-              name: "Users",
-              icon: Users,
-              path: "/users",
-            },
-            {
-              name: "Settings",
-              icon: Settings,
-              path: "/settings",
-            },
-            {
-              name: "Audit Logs",
-              icon: ClipboardList,
-              path: "/audits",
-            },
-            {
-              name: "Authorization",
-              icon: ShieldCheck,
-              path: "/authorization",
-            },
-          ],
-        },
-      ]
+          {
+            title: "ADMINISTRATION",
+            items: [
+              {
+                name: "Users",
+                icon: Users,
+                path: "/users",
+              },
+              {
+                name: "Settings",
+                icon: Settings,
+                path: "/settings",
+              },
+              {
+                name: "Audit Logs",
+                icon: ClipboardList,
+                path: "/audits",
+              },
+              {
+                name: "Authorization",
+                icon: ShieldCheck,
+                path: "/authorization",
+              },
+            ],
+          },
+        ]
       : []),
   ];
 
@@ -234,9 +238,10 @@ export default function Sidebar() {
                     to={item.path}
                     onClick={() => setOpen(false)}
                     className={({ isActive }) =>
-                      `flex items-center gap-3 px-4 py-3 rounded-xl mb-1 transition-all 2xl:text-base 2xl:font-medium 2xl:tracking-wide ${isActive
-                        ? "bg-[#2563EB] shadow-lg"
-                        : "hover:bg-[#143A8A]"
+                      `flex items-center gap-3 px-4 py-3 rounded-xl mb-1 transition-all 2xl:text-base 2xl:font-medium 2xl:tracking-wide ${
+                        isActive
+                          ? "bg-[#2563EB] shadow-lg"
+                          : "hover:bg-[#143A8A]"
                       }`
                     }
                   >
