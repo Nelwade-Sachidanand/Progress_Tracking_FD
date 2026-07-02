@@ -216,7 +216,7 @@ export default function DocumentTable({
                     <div className="flex items-center justify-center gap-2">
                       <button
                         onClick={() => onUpload(document)}
-                        className="w-9 h-9 rounded-lg bg-[#EEF2FF] hover:bg-[#DBEAFE] text-[#2563EB] flex items-center justify-center"
+                        className="w-9 h-9 rounded-lg bg-[#EEF2FF] hover:bg-[#DBEAFE] text-[#2563EB] flex items-center justify-center cursor-pointer"
                       >
                         <Upload size={17} />
                       </button>
@@ -224,7 +224,7 @@ export default function DocumentTable({
                       <button
                         disabled={!latestDocument}
                         onClick={() => onPreview(latestDocument)}
-                        className="w-9 h-9 rounded-lg bg-[#ECFDF5] hover:bg-[#D1FAE5] text-green-600 flex items-center justify-center disabled:opacity-40"
+                        className="w-9 h-9 rounded-lg bg-[#ECFDF5] hover:bg-[#D1FAE5] text-green-600 flex items-center justify-center disabled:opacity-40 cursor-pointer"
                       >
                         <Eye size={17} />
                       </button>

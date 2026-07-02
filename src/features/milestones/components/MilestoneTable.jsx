@@ -234,7 +234,7 @@ export default function MilestoneTable({
                         onChange={(e) =>
                           onWeightageChange(index, e.target.value)
                         }
-                        className="
+onWheel={(e) => e.target.blur()}                        className="
                                                     w-[80px]
                                                     xl:w-[100px]
                                                     2xl:w-[120px]

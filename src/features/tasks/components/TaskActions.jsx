@@ -5,8 +5,7 @@ import { toast } from "react-toastify";
 import { useProjects } from "../../../context/ProjectContext";
 import { exportExcelReport } from "../../add-task/api/exportExcelApi";
 import GenerateReportModal from "../components/GenerateReportModal";
-import { saveAs } from "file-saver";
-import { WidthType } from "docx";
+
 
 import {
   Document,
@@ -16,12 +15,15 @@ import {
   TableRow,
   TableCell,
   HeadingLevel,
+  WidthType,
 } from "docx";
+
 
 
 import PrintReport from "../components//PrintReport";
 
 export default function TaskActions({
+   activities = [],
   selectedPhase,
   selectedMilestone,
   selectedTask,
@@ -46,32 +48,133 @@ export default function TaskActions({
   const project = projects.find(
     (p) => String(p.id) === String(selectedProjectId),
   );
+ const allActivities =
+  project?.phases?.flatMap((phase) =>
+    phase.milestones?.flatMap((milestone) =>
+      milestone.tasks?.flatMap((task) =>
+        task.subTasks?.flatMap((subTask) =>
+          subTask.activities?.map((activity) => ({
+            ...activity,
+            phase: phase.phaseName,
+            milestone: milestone.milestoneName,
+            task: task.taskName,
+            subTask: subTask.subTaskName,
+          })) || []
+        ) || []
+      ) || []
+    ) || []
+  ) || [];
 
-  const handleGenerate = () => {
-    switch (reportType) {
-      case "pdf":
-        handleGeneratePdf();
-        break;
+const filteredActivities = allActivities.filter((activity) => {
+  const phaseMatch =
+    !selectedPhase ||
+    selectedPhase === "All Phases" ||
+    activity.phase === selectedPhase;
 
-      case "excel":
-        handleExportExcel();
-        break;
+  const milestoneMatch =
+    !selectedMilestone ||
+    selectedMilestone.length === 0 ||
+    selectedMilestone.includes(activity.milestone);
 
-      case "csv":
-        handleGenerateCsv();
-        break;
+  const taskMatch =
+    !selectedTask ||
+    selectedTask === "All Tasks" ||
+    activity.task === selectedTask;
 
-      case "word":
-        handleGenerateWord();
-        break;
+  const subTaskMatch =
+    !selectedSubTask ||
+    selectedSubTask === "All Sub Tasks" ||
+    activity.subTask === selectedSubTask;
 
-      default:
-        toast.error("Please select report format");
-        return;
-    }
+  const activityMatch =
+    !selectedActivity ||
+    selectedActivity === "All Activities" ||
+    activity.activityName === selectedActivity;
 
-    setShowReportModal(false);
-  };
+  const statusMatch =
+    !selectedStatus ||
+    selectedStatus === "All Status" ||
+    activity.executionStatus === selectedStatus;
+
+  const dateMatch =
+    (!fromDate ||
+      new Date(activity.plannedStartDate) >= new Date(fromDate)) &&
+    (!toDate ||
+      new Date(activity.plannedEndDate) <= new Date(toDate));
+
+  return (
+    phaseMatch &&
+    milestoneMatch &&
+    taskMatch &&
+    subTaskMatch &&
+    activityMatch &&
+    statusMatch &&
+    dateMatch
+  );
+});
+
+  // const handleGenerate = () => {
+  //   switch (reportType) {
+  //     case "pdf":
+  //       handleGeneratePdf();
+  //       break;
+
+  //     case "excel":
+  //       handleExportExcel();
+  //       break;
+
+  //     case "csv":
+  //       handleGenerateCsv();
+  //       break;
+
+  //     case "word":
+  //       handleGenerateWord();
+  //       break;
+
+  //     default:
+  //       toast.error("Please select report format");
+  //       return;
+  //   }
+
+  //   setShowReportModal(false);
+  // };
+const handleGenerate = () => {
+  // ✅ 1. CHECK PROJECT FIRST
+  if (!project || !selectedProjectId) {
+    toast.error("No project selected. No permission to generate report.");
+    return;
+  }
+
+  // (optional extra safety)
+  if (!project.projectName) {
+    toast.error("Invalid project selection.");
+    return;
+  }
+
+  switch (reportType) {
+    case "pdf":
+      handleGeneratePdf();
+      break;
+
+    case "excel":
+      handleExportExcel();
+      break;
+
+    case "csv":
+      handleGenerateCsv();
+      break;
+
+    case "word":
+      handleGenerateWord();
+      break;
+
+    default:
+      toast.error("Please select report format");
+      return;
+  }
+
+  setShowReportModal(false);
+};
   const handleExportExcel = async () => {
     try {
       const selectedProjectId = sessionStorage.getItem("selectedProjectId");
@@ -275,7 +378,65 @@ export default function TaskActions({
       printWindow.close();
     }, 500);
   };
-  const handleGenerateCsv = () => {
+  // const handleGenerateCsv = () => {
+  //   const rows = [
+  //     [
+  //       "Phase",
+  //       "Milestone",
+  //       "Task",
+  //       "Sub Task",
+  //       "Activity",
+  //       "Owner",
+  //       "Progress",
+  //       "Status",
+  //       "Schedule Health",
+  //     ],
+  //   ];
+
+  //   filteredActivities.forEach((activity) => {
+  //     rows.push([
+  //       activity.phase,
+  //       activity.milestone,
+  //       activity.task,
+  //       activity.subTask,
+  //       activity.activityName,
+  //       activity.owner,
+  //       activity.progress,
+  //       activity.executionStatus,
+  //       activity.scheduleHealth,
+  //     ]);
+  //   });
+
+  //   const csv = rows.map((row) => row.join(",")).join("\n");
+
+  //   const blob = new Blob([csv], {
+  //     type: "text/csv;charset=utf-8;",
+  //   });
+
+  //   const link = document.createElement("a");
+
+  //   link.href = URL.createObjectURL(blob);
+
+  //   link.download = `${project.projectName}.csv`;
+
+  //   link.click();
+
+  //   URL.revokeObjectURL(link.href);
+
+  //   toast.success("CSV downloaded successfully");
+  // };
+const handleGenerateCsv = () => {
+  try {
+    if (!project) {
+      toast.error("No project selected");
+      return;
+    }
+
+    if (!filteredActivities || filteredActivities.length === 0) {
+      toast.error("No activities found for selected filters");
+      return;
+    }
+
     const rows = [
       [
         "Phase",
@@ -287,26 +448,40 @@ export default function TaskActions({
         "Progress",
         "Status",
         "Schedule Health",
+        "Planned Start",
+        "Planned End",
+        "Actual Start",
+        "Actual End",
       ],
     ];
 
     filteredActivities.forEach((activity) => {
       rows.push([
-        activity.phase,
-        activity.milestone,
-        activity.task,
-        activity.subTask,
-        activity.activityName,
-        activity.owner,
-        activity.progress,
-        activity.executionStatus,
-        activity.scheduleHealth,
+        activity.phase ?? "",
+        activity.milestone ?? "",
+        activity.task ?? "",
+        activity.subTask ?? "",
+        activity.activityName ?? "",
+        activity.owner ?? "",
+        `${activity.progress ?? 0}%`,
+        activity.executionStatus ?? "",
+        activity.scheduleHealth ?? "",
+        activity.plannedStartDate ?? "",
+        activity.plannedEndDate ?? "",
+        activity.actualStartDate ?? "",
+        activity.actualEndDate ?? "",
       ]);
     });
 
-    const csv = rows.map((row) => row.join(",")).join("\n");
+    const csvContent = rows
+      .map((row) =>
+        row
+          .map((cell) => `"${String(cell).replace(/"/g, '""')}"`)
+          .join(",")
+      )
+      .join("\n");
 
-    const blob = new Blob([csv], {
+    const blob = new Blob([csvContent], {
       type: "text/csv;charset=utf-8;",
     });
 
@@ -314,18 +489,130 @@ export default function TaskActions({
 
     link.href = URL.createObjectURL(blob);
 
-    link.download = `${project.projectName}.csv`;
+    link.download = `${project.projectName}_Report.csv`;
+
+    document.body.appendChild(link);
 
     link.click();
 
+    document.body.removeChild(link);
+
     URL.revokeObjectURL(link.href);
 
-    toast.success("CSV downloaded successfully");
-  };
+    toast.success("CSV report downloaded successfully");
+  } catch (error) {
+    console.error("CSV Generation Error:", error);
 
-  const handleGenerateWord = () => {
-    // call Word generator
-  };
+    toast.error("Failed to generate CSV report");
+  }
+};
+ 
+// const handleGenerateWord = () => {
+  //   // call Word generator
+    
+  // };
+ const handleGenerateWord = async () => {
+  try {
+    if (!project) {
+      toast.error("No project selected");
+      return;
+    }
+
+    if (!filteredActivities || filteredActivities.length === 0) {
+      toast.error("No activities found for selected filters");
+      return;
+    }
+
+    const tableRows = [
+      new TableRow({
+        children: [
+          "Phase",
+          "Milestone",
+          "Task",
+          "Sub Task",
+          "Activity",
+          "Owner",
+          "Progress",
+          "Status",
+        ].map(
+          (value) =>
+            new TableCell({
+              children: [new Paragraph(String(value))],
+            })
+        ),
+      }),
+
+      ...filteredActivities.map(
+        (activity) =>
+          new TableRow({
+            children: [
+              activity.phase,
+              activity.milestone,
+              activity.task,
+              activity.subTask,
+              activity.activityName,
+              activity.owner,
+              `${activity.progress}%`,
+              activity.executionStatus,
+            ].map(
+              (value) =>
+                new TableCell({
+                  children: [
+                    new Paragraph(String(value ?? "")),
+                  ],
+                })
+            ),
+          })
+      ),
+    ];
+
+    const doc = new Document({
+      sections: [
+        {
+          children: [
+            new Paragraph({
+              text: "PROJECT PROGRESS REPORT",
+              heading: HeadingLevel.HEADING_1,
+            }),
+
+            new Paragraph(""),
+
+            new Paragraph(
+              `Project : ${project.projectName}`
+            ),
+
+            new Paragraph(
+              `Bank : ${project.bankName}`
+            ),
+
+            new Paragraph(
+              `Generated : ${new Date().toLocaleString()}`
+            ),
+
+            new Paragraph(""),
+
+            new Table({
+              rows: tableRows,
+            }),
+          ],
+        },
+      ],
+    });
+
+    const blob = await Packer.toBlob(doc);
+
+    saveAs(
+      blob,
+      `${project.projectName}_Report.docx`
+    );
+
+    toast.success("Word report downloaded successfully");
+  } catch (error) {
+    console.error("Word Generation Error:", error);
+
+    toast.error("Failed to generate Word report");
+  }
+};
   return (
     <div
       className="

@@ -99,6 +99,7 @@ export default function PreviewDocumentModal({
               flex
               items-center
               justify-center
+              cursor-pointer
             "
           >
             <X size={18} />
@@ -160,6 +161,7 @@ export default function PreviewDocumentModal({
                       mx-auto
                       disabled:opacity-40
                       disabled:cursor-not-allowed
+                      cursor-pointer
                     "
                     title="Download"
                   >
@@ -184,6 +186,7 @@ export default function PreviewDocumentModal({
               border-slate-300
               bg-white
               hover:bg-slate-100
+              cursor-pointer
             "
           >
             Close

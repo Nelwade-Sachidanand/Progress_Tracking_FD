@@ -25,45 +25,45 @@ export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
         <table className="w-full min-w-[900px] lg:min-w-full">
           <thead className="bg-[#F8FAFC] border-b">
             <tr>
-              <th className="p-4 text-left">#</th>
+              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0B1F59]">Sr No</th>
 
-              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
+              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0B1F59]">
                 ACTIVITY / TASK
               </th>
 
-              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
+              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0B1F59]">
                 PHASE
               </th>
 
-              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
+              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0B1F59]">
                 MILESTONE
               </th>
 
-              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A] min-w-[120px]">
+              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0B1F59] min-w-[120px]">
                 START DATE
               </th>
 
-              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A] min-w-[120px]">
+              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0B1F59] min-w-[120px]">
                 END DATE
               </th>
 
-              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
+              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0B1F59]">
                 PROGRESS
               </th>
 
-              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
+              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0B1F59]">
                 STATUS
               </th>
 
               {["ADMIN", "MANAGEMENT USER", "IMPLEMENTATION USER"].includes(
                 user?.role,
               ) && (
-                <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
+                <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0B1F59]">
                   ACTIONS
                 </th>
               )}
 
-              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
+              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0B1F59]">
                 REMARK
               </th>
             </tr>
