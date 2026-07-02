@@ -18,6 +18,7 @@ export default function BackButton({
           gap-2
           text-[#2563EB]
           hover:text-[#1D4ED8]
+          text-lg
           font-medium
           cursor-pointer
           transition-colors

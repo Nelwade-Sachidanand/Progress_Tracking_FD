@@ -1,5 +1,4 @@
 import { Database, Plus, Trash2 } from "lucide-react";
-import BackButton from "./BackButton";
 
 export default function InfrastructureTab({
   infrastructure = {},
@@ -83,8 +82,6 @@ export default function InfrastructureTab({
 
   return (
     <div className="space-y-8">
-      <BackButton />
-
       {/* Header */}
       <div>
         <h2 className="text-lg xl:text-xl font-semibold text-[#0B1F59]">
@@ -276,7 +273,9 @@ export default function InfrastructureTab({
                           border-blue-200
                           rounded-md
                           outline-none
+                          focus:border-[#2563EB]
                           cursor-pointer
+                          focus
                         "
                     >
                       <option value="">Select</option>
@@ -303,6 +302,8 @@ export default function InfrastructureTab({
                           border
                           border-blue-200
                           rounded-md
+                          outline-none
+                          focus:border-[#2563EB]
                         "
                     />
                   </td>
@@ -321,6 +322,8 @@ export default function InfrastructureTab({
                           border
                           border-blue-200
                           rounded-md
+                          outline-none
+                          focus:border-[#2563EB]
                         "
                     />
                   </td>
@@ -339,6 +342,8 @@ export default function InfrastructureTab({
                           border
                           border-blue-200
                           rounded-md
+                          outline-none
+                          focus:border-[#2563EB]
                         "
                     />
                   </td>
@@ -357,6 +362,8 @@ export default function InfrastructureTab({
                           border
                           border-blue-200
                           rounded-md
+                          outline-none
+                          focus:border-[#2563EB]
                         "
                     />
                   </td>
@@ -372,6 +379,7 @@ export default function InfrastructureTab({
                           hover:bg-red-50
                           hover:text-red-700
                           transition-all
+                          cursor-pointer
                         "
                     >
                       <Trash2 size={18} />

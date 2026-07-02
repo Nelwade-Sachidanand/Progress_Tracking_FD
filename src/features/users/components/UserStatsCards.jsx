@@ -3,14 +3,14 @@ import { Check, Shield, UserRound, Users } from "lucide-react";
 const UserStatsCards = ({ users = [] }) => {
   const totalUsers = users.length;
 
-  const activeUsers = users.filter((user) => user.active).length;
+  const activeUsers = users.filter((user) => user.status).length;
 
   const admins = users.filter(
     (user) => user.role === "ADMIN" || user.role === "SUPER_ADMIN",
   ).length;
 
   const implementationUsers = users.filter(
-    (user) => user.role === "IMPLEMENTATION_USER",
+    (user) => user.role === "IMPLEMENTATION USER",
   ).length;
 
   const stats = [

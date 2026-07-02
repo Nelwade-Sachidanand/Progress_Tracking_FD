@@ -5,7 +5,6 @@ import {
   Landmark,
   Smartphone,
 } from "lucide-react";
-import BackButton from "./BackButton";
 
 export default function PaymentSystemsTab({ data, updateSection }) {
   const handleToggle = (field) => {
@@ -53,8 +52,6 @@ export default function PaymentSystemsTab({ data, updateSection }) {
 
   return (
     <div className="space-y-8">
-      <BackButton />
-
       {/* Header */}
       <div>
         <h2 className="text-lg xl:text-xl font-semibold text-[#0B1F59]">
@@ -174,6 +171,7 @@ export default function PaymentSystemsTab({ data, updateSection }) {
                   e.preventDefault();
                 }
               }}
+              onWheel={(e) => e.target.blur()}
               className={inputClass}
             />
           </div>
@@ -194,6 +192,7 @@ export default function PaymentSystemsTab({ data, updateSection }) {
                   e.preventDefault();
                 }
               }}
+              onWheel={(e) => e.target.blur()}
               className={inputClass}
             />
           </div>
@@ -214,6 +213,7 @@ export default function PaymentSystemsTab({ data, updateSection }) {
                   e.preventDefault();
                 }
               }}
+              onWheel={(e) => e.target.blur()}
               className={inputClass}
             />
           </div>
@@ -234,6 +234,7 @@ export default function PaymentSystemsTab({ data, updateSection }) {
                   e.preventDefault();
                 }
               }}
+              onWheel={(e) => e.target.blur()}
               className={inputClass}
             />
           </div>
