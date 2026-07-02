@@ -231,9 +231,20 @@ export default function MilestoneTable({
                         min="0"
                         max="100"
                         value={milestone.weightage}
+                        onFocus={() => {
+                          if (milestone.weightage === 0) {
+                            onWeightageChange(index, "");
+                          }
+                        }}
+                        onBlur={() => {
+                          if (milestone.weightage === "") {
+                            onWeightageChange(index, "0");
+                          }
+                        }}
                         onChange={(e) =>
                           onWeightageChange(index, e.target.value)
                         }
+                        onWheel={(e) => e.target.blur()}
                         className="
                                                     w-[80px]
                                                     xl:w-[100px]

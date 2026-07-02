@@ -3,6 +3,7 @@ import useProjectForm from "../hooks/useProjectForm";
 import ProjectNavigation from "../components/ProjectNavigation";
 import ProjectStepper from "../components/ProjectStepper";
 
+import BackButton from "../components/tabs/BackButton";
 import BankDetailsTab from "../components/tabs/BankDetailsTab";
 import CBSBusinessDetailsTab from "../components/tabs/CBSBusinessDetailsTab";
 import DigitalChannelsTab from "../components/tabs/DigitalChannelsTab";
@@ -129,7 +130,8 @@ export default function CreateProjectPage() {
         xl:p-8
       "
       >
-        <div className="mb-6 flex items-center gap-4">
+        <BackButton />
+        <div className="mb-6 flex items-center gap-4 mt-5">
           <div className="w-full max-w-md">
             <label
               className="

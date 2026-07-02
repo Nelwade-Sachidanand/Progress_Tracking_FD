@@ -1,5 +1,4 @@
 import { Building2, Calendar } from "lucide-react";
-import BackButton from "./BackButton";
 
 export default function CBSBusinessDetailsTab({
   cbsInformation,
@@ -52,8 +51,6 @@ export default function CBSBusinessDetailsTab({
 
   return (
     <div className="space-y-8">
-      <BackButton />
-
       <div>
         <h2 className="text-lg xl:text-xl font-semibold text-[#0B1F59]">
           CBS & Business Details
@@ -271,6 +268,7 @@ function InputField({ label, name, value, onChange, type = "text" }) {
             e.preventDefault();
           }
         }}
+        onWheel={(e) => e.target.blur()}
         className="
           w-full
           h-11

@@ -17,7 +17,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("USER");
-  const [status, setStatus] = useState("ACTIVE");
+  const [status, setStatus] = useState(true);
   const [selectedProjects, setSelectedProjects] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -32,7 +32,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
       setUsername(userData.username || "");
       setRole(userData.role || "USER");
       setEmail(userData.email || "");
-      setStatus(userData.active ? "ACTIVE" : "INACTIVE");
+      setStatus(userData.status);
 
       const assignedProjects = availableProjects.filter((project) =>
         userData.projectNames?.includes(project.projectName),
@@ -145,7 +145,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
         projectIds: selectedProjects.map((project) => project.id),
       };
 
-      // console.log(payload);
+      console.log(payload);
 
       const response =
         mode === "add" ? await createUser(payload) : await updateUser(payload);
@@ -470,6 +470,8 @@ const UserForm = ({ mode = "add", userData = null }) => {
               rounded-xl
               border
               border-slate-300
+              outline-none
+              focus:border-blue-500
               cursor-pointer
               text-sm
               2xl:text-[17px]
@@ -502,8 +504,8 @@ const UserForm = ({ mode = "add", userData = null }) => {
             </label>
 
             <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
+              value={status === true ? "ACTIVE" : "INACTIVE"}
+              onChange={(e) => setStatus(e.target.value === "ACTIVE")}
               className="
               w-full
               h-10
@@ -512,6 +514,8 @@ const UserForm = ({ mode = "add", userData = null }) => {
               rounded-xl
               border
               border-slate-300
+              outline-none
+              focus:border-blue-500
               text-sm
               cursor-pointer
               2xl:text-[17px]
@@ -519,8 +523,8 @@ const UserForm = ({ mode = "add", userData = null }) => {
               2xl:tracking-wide
               "
             >
-              <option>ACTIVE</option>
-              <option>INACTIVE</option>
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="INACTIVE">INACTIVE</option>
             </select>
           </div>
         </div>

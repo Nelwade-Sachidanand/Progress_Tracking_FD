@@ -1,6 +1,5 @@
 import { Phone, User } from "lucide-react";
 import { toast } from "react-toastify";
-import BackButton from "./BackButton";
 
 export default function ManagementDetailsTab({ data, updateSection }) {
   const contacts = [
@@ -68,8 +67,6 @@ export default function ManagementDetailsTab({ data, updateSection }) {
 
   return (
     <div className="space-y-6">
-      <BackButton />
-
       {/* Header */}
       <div>
         <h2

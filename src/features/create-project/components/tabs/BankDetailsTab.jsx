@@ -2,7 +2,6 @@ import { Briefcase, Building2, MapPin, Phone } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import BackButton from "./BackButton";
 
 export default function BankDetailsTab({ data, updateRootFields }) {
   const navigate = useNavigate();
@@ -64,7 +63,6 @@ export default function BankDetailsTab({ data, updateRootFields }) {
   return (
     <div className="space-y-6">
       {/* Back Button */}
-      <BackButton />
 
       {/* Header */}
       <div>
