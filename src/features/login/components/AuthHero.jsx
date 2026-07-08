@@ -1,7 +1,7 @@
 import { BarChart3, Lock, Shield, Users } from "lucide-react";
 
-import logo from "../../../assets/images/Novillex-Logo.png";
 import bgImage from "../../../assets/images/login-bg.jpg";
+import logo from "../../../assets/images/suite1.png";
 
 const AuthHero = () => {
   return (
@@ -17,8 +17,8 @@ const AuthHero = () => {
         2xl:px-16
 
         pt-6
-        xl:pt-8
-        2xl:pt-10
+        xl:pt-1
+        2xl:pt-3
 
         pb-6
 
@@ -39,37 +39,41 @@ const AuthHero = () => {
       }}
     >
       {/* LOGO */}
-      <div className="overflow-visible">
+      {/* <div className="relative flex items-center">
         <img
           src={logo}
           alt="Novillex"
           className="
-            object-contain
-            origin-left
+          object-contain
+          origin-left
 
-            w-[180px]
-            xl:w-[240px]
-            2xl:w-[280px]
+          w-[180px]
+          xl:w-[240px]
+          2xl:w-[280px]
 
-            scale-105
-            xl:scale-120
-            2xl:scale-130
-            -ml-1
+          scale-100
+          xl:scale-110
+          2xl:scale-120
 
-            xl:mt-[-20px] ml-[-30px]
-            2xl:mt-[-20px]  ml-[-70px]
-          "
+          ml-0
+"
         />
-      </div>
+      </div> */}
+
+      <img
+        src={logo}
+        alt="Logo"
+        className="w-[200px] object-contain ml-[-15px]"
+      />
 
       {/* PORTAL TEXT */}
       <p
         className="
           mt-4
-          xl:mt-[-20px]
+          xl:mt-[-30px]
           2xl:mt-[-20px]
 
-          text-cyan-400
+          text-[#1da1ff]
           font-bold
           tracking-wide
 
@@ -85,7 +89,7 @@ const AuthHero = () => {
       <h1
         className="
           mt-3
-          xl:mt-3
+          xl:mt-1
           2xl:mt-4
 
           font-bold
@@ -98,7 +102,7 @@ const AuthHero = () => {
           max-w-[760px]
         "
       >
-        End-to-End Visibility.
+        End-To-End Visibility.
         <br />
         Stronger Governance.
         <br />
@@ -119,7 +123,7 @@ const AuthHero = () => {
       />
 
       {/* DESCRIPTION */}
-      <p
+      {/* <p
         className="
           mt-3
           xl:mt-4
@@ -137,7 +141,7 @@ const AuthHero = () => {
       >
         A centralized platform to manage and monitor banking software
         implementation projects with complete transparency and control.
-      </p>
+      </p> */}
 
       {/* FEATURES */}
       <div
@@ -168,10 +172,10 @@ const AuthHero = () => {
               leading-6
             "
           >
-            Govern with Confidence
+            Govern With Confidence
           </h3>
 
-          <p
+          {/* <p
             className="
               mt-2
 
@@ -183,7 +187,7 @@ const AuthHero = () => {
             "
           >
             Monitor risks, issues and milestones in real time.
-          </p>
+          </p> */}
         </div>
 
         {/* FEATURE 2 */}
@@ -213,7 +217,7 @@ const AuthHero = () => {
             Collaborate Seamlessly
           </h3>
 
-          <p
+          {/* <p
             className="
               mt-2
 
@@ -225,7 +229,7 @@ const AuthHero = () => {
             "
           >
             Align teams, track deliverables and drive accountability.
-          </p>
+          </p> */}
         </div>
 
         {/* FEATURE 3 */}
@@ -243,10 +247,10 @@ const AuthHero = () => {
               leading-6
             "
           >
-            Deliver with Excellence
+            Deliver With Excellence
           </h3>
 
-          <p
+          {/* <p
             className="
               mt-2
 
@@ -258,16 +262,16 @@ const AuthHero = () => {
             "
           >
             Ensure quality delivery and successful go-live.
-          </p>
+          </p> */}
         </div>
       </div>
 
       {/* SECURITY CARD */}
-      <div className="mt-6 xl:mt-8">
+      <div className="mt-6 xl:mt-14">
         <div
           className="
             max-w-[500px]
-            xl:max-w-[640px]
+            xl:max-w-[500px]
 
             bg-white/5
             backdrop-blur-md
@@ -281,7 +285,7 @@ const AuthHero = () => {
             py-3
 
             xl:px-6
-            xl:py-4
+            xl:py-3
 
             flex
             items-center
@@ -332,7 +336,7 @@ const AuthHero = () => {
                 text-gray-300
               "
             >
-              Your data is protected with enterprise-grade security.
+              Your Data Is Protected With Enterprise-Grade Security.
             </p>
           </div>
         </div>

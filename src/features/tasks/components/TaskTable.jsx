@@ -1,5 +1,4 @@
 import { MessageSquare, Pencil } from "lucide-react";
-
 export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
   const getStatusColor = (status) => {
     switch (status) {
@@ -19,182 +18,232 @@ export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
 
   const user = JSON.parse(sessionStorage.getItem("user"));
 
+  const formatDate = (date) => {
+    if (!date) return "-";
+
+    return new Date(date).toLocaleDateString("en-GB").replace(/\//g, "-");
+  };
+
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-      <div className="overflow-x-auto lg:overflow-x-hidden">
-        <table className="w-full min-w-[900px] lg:min-w-full">
-          <thead className="bg-[#F8FAFC] border-b">
-            <tr>
-              <th className="p-4 text-left">#</th>
+    <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <table className="w-full table-fixed">
+        <thead>
+          <tr className="border-b border-slate-200 bg-slate-100">
+            <th className="w-[60px] px-3 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
+              Sr. No.
+            </th>
 
-              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
-                ACTIVITY / TASK
+            <th className="w-[26%] px-4 py-4 text-left text-base font-semibold text-slate-600">
+              Activity / Task
+            </th>
+
+            <th className="w-[25%] px-4 py-4 text-left text-base font-semibold text-slate-600">
+              Phase / Milestone
+            </th>
+
+            <th className="w-[12%] px-4 py-4 text-left text-base font-semibold text-slate-600">
+              Duration
+            </th>
+
+            <th className="w-[14%] px-4 py-4 text-left text-base font-semibold text-slate-600">
+              Progress
+            </th>
+
+            <th className="w-[10%] px-4 py-4 text-left text-base font-semibold text-slate-600">
+              Status
+            </th>
+
+            {["ADMIN", "MANAGEMENT USER", "IMPLEMENTATION USER"].includes(
+              user?.role,
+            ) && (
+              <th className="w-[90px] px-4 py-4 text-center text-base font-semibold text-slate-600">
+                Edit
               </th>
+            )}
 
-              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
-                PHASE
-              </th>
+            <th className="w-[90px] px-4 py-4 text-center text-base font-semibold text-slate-600">
+              Remark
+            </th>
+          </tr>
+        </thead>
 
-              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
-                MILESTONE
-              </th>
+        <tbody>
+          {tasks.length > 0 ? (
+            tasks.map((task, index) => (
+              <tr
+                key={`${task.activity}-${index}`}
+                className="
+          border-b
+          border-slate-200
+          hover:bg-slate-50
+          transition-colors
+        "
+              >
+                {/* Sr */}
+                <td className="px-5 py-3">
+                  <span className="text-sm font-medium text-slate-700">
+                    {index + 1}
+                  </span>
+                </td>
 
-              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A] min-w-[120px]">
-                START DATE
-              </th>
-
-              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A] min-w-[120px]">
-                END DATE
-              </th>
-
-              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
-                PROGRESS
-              </th>
-
-              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
-                STATUS
-              </th>
-
-              {["ADMIN", "MANAGEMENT USER", "IMPLEMENTATION USER"].includes(
-                user?.role,
-              ) && (
-                <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
-                  ACTIONS
-                </th>
-              )}
-
-              <th className="px-4 py-3 text-left text-[12px] lg:text-[14px] font-bold text-[#0F172A]">
-                REMARK
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {tasks.length > 0 ? (
-              tasks.map((task, index) => (
-                <tr
-                  key={`${task.activity}-${index}`}
-                  // key={task.id}
-                  className="
-                border-t
-                border-[#EAEFF5]
-                hover:bg-[#F8FAFC]
-                "
-                >
-                  <td className="p-4">{index + 1}</td>
-
-                  <td className="p-4">
-                    <div>
-                      <p className="text-[12px] lg:text-[13px] font-semibold text-[#0F172A]">
-                        {task.activity}
-                      </p>
-
-                      <p className="text-[10px] lg:text-[11px] text-[#5a6371] font-semibold mt-1">
-                        {task.task}
-                      </p>
-                    </div>
-                  </td>
-
-                  <td className="p-4">
-                    <p className="text-[13px] font-semibold text-[#0F172A]">
-                      {task.phase}
-                    </p>
-                  </td>
-
-                  <td className="p-4">
-                    <p className="text-[13px] font-semibold text-[#0F172A]">
-                      {task.milestone}
-                    </p>
-                  </td>
-
-                  <td className="p-4 whitespace-nowrap">
-                    <p className="text-[13px] font-semibold text-[#0F172A]">
-                      {task.startDate}
-                    </p>
-                  </td>
-
-                  <td className="p-4 whitespace-nowrap">
-                    <p className="text-[13px] font-semibold text-[#0F172A]">
-                      {task.endDate}
-                    </p>
-                  </td>
-
-                  {/* Progress */}
-                  <td className="p-4 min-w-[160px] lg:min-w-[180px]">
-                    <div className="flex items-center gap-3">
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                          className="bg-[#6D4AFF] h-2 rounded-full"
-                          style={{
-                            width: `${task.progress}%`,
-                          }}
-                        />
-                      </div>
-
-                      <span className="text-sm font-medium">
-                        {task.progress}%
-                      </span>
-                    </div>
-                  </td>
-
-                  {/* Status */}
-                  <td className="p-4">
-                    <span
-                      className={`
-                    inline-block
-                    min-w-[95px]
-                    text-center
-                    px-3
-                    py-1
-                    rounded-full
-                    text-[10px] lg:text-xs
-                    font-semibold
-                    whitespace-nowrap
-                    ${getStatusColor(task.status)}
-                  `}
+                {/* Activity */}
+                <td className="px-4 py-3">
+                  <div>
+                    <p
+                      className="truncate text-sm font-semibold text-slate-700"
+                      title={task.activity}
                     >
-                      {task.status}
-                    </span>
-                  </td>
-                  {/* Actions */}
-                  {["ADMIN", "MANAGEMENT USER", "IMPLEMENTATION USER"].includes(
-                    user?.role,
-                  ) && (
-                    <td className="p-4">
-                      <div className="flex justify-center gap-2">
-                        <button
-                          onClick={() => onEdit?.(task)}
-                          className="p-2 rounded-lg bg-blue-50 hover:bg-blue-100 cursor-pointer"
-                        >
-                          <Pencil size={14} className="text-blue-600" />
-                        </button>
-                      </div>
-                    </td>
-                  )}
+                      {task.activity}
+                    </p>
 
-                  {/* Remark */}
-                  <td className="p-4">
+                    <p
+                      className="truncate text-sm text-slate-500"
+                      title={task.task}
+                    >
+                      {task.task}
+                    </p>
+                  </div>
+                </td>
+
+                {/* Phase + Milestone */}
+                <td className="px-4 py-3">
+                  <p
+                    className="truncate text-sm font-medium text-slate-700"
+                    title={task.phase}
+                  >
+                    {task.phase}
+                  </p>
+
+                  <p
+                    className="truncate text-sm text-slate-500"
+                    title={task.milestone}
+                  >
+                    {task.milestone}
+                  </p>
+                </td>
+
+                {/* Dates */}
+                <td className="px-4 py-3">
+                  <div className="text-sm text-slate-700">
+                    <div>{formatDate(task.startDate)}</div>
+
+                    <div className="text-sm text-slate-500">
+                      {formatDate(task.endDate)}
+                    </div>
+                  </div>
+                </td>
+
+                {/* Progress */}
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 flex-1 rounded-full bg-slate-200">
+                      <div
+                        className="h-2 rounded-full bg-[#6D4AFF]"
+                        style={{
+                          width: `${task.progress}%`,
+                        }}
+                      />
+                    </div>
+
+                    <span className="w-8 text-right text-sm font-semibold text-slate-700">
+                      {task.progress}%
+                    </span>
+                  </div>
+                </td>
+
+                {/* Status */}
+                <td className="px-4 py-3 text-center">
+                  <span
+                    className={`
+              inline-flex
+              items-center
+              justify-center
+              rounded-full
+              px-3
+              py-1
+              text-xs
+              font-semibold
+              whitespace-nowrap
+              ${getStatusColor(task.status)}
+            `}
+                  >
+                    {task.status}
+                  </span>
+                </td>
+
+                {/* Edit */}
+                {["ADMIN", "MANAGEMENT USER", "IMPLEMENTATION USER"].includes(
+                  user?.role,
+                ) && (
+                  <td className="px-4 py-3">
                     <div className="flex justify-center">
                       <button
-                        onClick={() => onRemark?.(task)}
-                        className="p-2 rounded-lg bg-purple-50 hover:bg-purple-100 cursor-pointer"
+                        onClick={() => onEdit?.(task)}
+                        title="Edit"
+                        className="
+                  flex
+                  h-8
+                  w-8
+                  items-center
+                  justify-center
+                  rounded-lg
+                  bg-blue-50
+                  text-blue-600
+                  transition
+                  hover:bg-blue-100
+                  cursor-pointer
+                "
                       >
-                        <MessageSquare size={16} className="text-[#6D4AFF]" />
+                        <Pencil size={15} />
                       </button>
                     </div>
                   </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="10" className="text-center p-10 text-gray-500">
-                  No Tasks Found
+                )}
+
+                {/* Remark */}
+                <td className="px-4 py-3">
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() => onRemark?.(task)}
+                      title="Remark"
+                      className="
+                flex
+                h-8
+                w-8
+                items-center
+                justify-center
+                rounded-lg
+                bg-purple-50
+                text-purple-600
+                transition
+                hover:bg-purple-100
+                cursor-pointer
+              "
+                    >
+                      <MessageSquare size={15} />
+                    </button>
+                  </div>
                 </td>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            ))
+          ) : (
+            <tr>
+              <td
+                colSpan={
+                  ["ADMIN", "MANAGEMENT USER", "IMPLEMENTATION USER"].includes(
+                    user?.role,
+                  )
+                    ? 8
+                    : 7
+                }
+                className="py-14 text-center text-sm text-slate-500"
+              >
+                No Tasks Found
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 }

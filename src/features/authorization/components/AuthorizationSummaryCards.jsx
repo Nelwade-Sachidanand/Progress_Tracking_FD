@@ -1,4 +1,10 @@
-import { CheckCircle2, ClipboardList, Clock3, XCircle } from "lucide-react";
+import {
+  CheckCircle2,
+  ClipboardList,
+  Clock3,
+  RotateCcw,
+  XCircle,
+} from "lucide-react";
 
 export default function AuthorizationSummaryCards({ auths = [] }) {
   const totalRequests = auths.length;
@@ -13,6 +19,10 @@ export default function AuthorizationSummaryCards({ auths = [] }) {
 
   const rejectedRequests = auths.filter(
     (auth) => auth.status === "REJECTED",
+  ).length;
+
+  const rolledBackRequests = auths.filter(
+    (auth) => auth.status === "ROLLED_BACK",
   ).length;
 
   const cards = [
@@ -44,17 +54,26 @@ export default function AuthorizationSummaryCards({ auths = [] }) {
       bg: "bg-red-100",
       text: "text-red-600",
     },
+    {
+      title: "Rolled Back",
+      value: rolledBackRequests,
+      icon: RotateCcw,
+      bg: "bg-yellow-100",
+      text: "text-yellow-600",
+    },
   ];
 
   return (
     <div
       className="
       grid
+      gap-4
       grid-cols-1
       sm:grid-cols-2
-      xl:grid-cols-4
-      gap-5
-      "
+      lg:grid-cols-2
+      xl:grid-cols-5
+      mt-[5px]
+    "
     >
       {cards.map((card) => {
         const Icon = card.icon;
@@ -64,41 +83,70 @@ export default function AuthorizationSummaryCards({ auths = [] }) {
             key={card.title}
             className="
             bg-white
-            rounded-3xl
+            rounded-2xl
             border
             border-slate-200
-            p-6
             shadow-sm
-            "
+
+            p-3
+            min-h-[120px]
+
+            flex
+            flex-col
+          "
           >
-            <div className="flex items-center gap-4">
-              <div
-                className={`
-                h-14
-                w-14
-                rounded-2xl
-                flex
-                items-center
-                justify-center
-                ${card.bg}
-                `}
+            {/* Icon */}
+            <div
+              className={`
+              h-11
+              w-11
+              rounded-xl
+              flex
+              items-center
+              justify-center
+              ${card.bg}
+            `}
+            >
+              <Icon size={24} className={card.text} />
+            </div>
+
+            {/* Value & Title */}
+            <div
+              className="
+              relative
+              mt-[-20px]
+              flex-1
+              flex
+              flex-col
+              items-center
+              justify-center
+              text-center
+            "
+            >
+              <h2
+                className="
+                text-3xl
+                xl:text-[35px]
+                font-bold
+                text-[#142850]
+                leading-none
+              "
               >
-                <Icon size={28} className={card.text} />
-              </div>
+                {card.value}
+              </h2>
 
-              <div>
-                <h2 className="text-3xl font-bold text-[#142850]">
-                  {card.value}
-                </h2>
-
-                <p
-                  className="text-slate-500 2xl:text-[17px]
-                  2xl:font-medium
-                  2xl:tracking-wide"
-                >
-                  {card.title}
-                </p>
-              </div>
+              <p
+                className="
+                mt-2
+                text-sm
+                xl:text-[16px]
+                font-medium
+                text-slate-500
+                leading-snug
+              "
+              >
+                {card.title}
+              </p>
             </div>
           </div>
         );

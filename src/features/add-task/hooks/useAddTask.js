@@ -17,18 +17,35 @@ export default function useAddTask() {
   //const selectedProject = projects[0];
 
   const [formData, setFormData] = useState({
+    phaseId: "",
     phaseName: "",
+    newPhase: false,
+
+    milestoneId: "",
     milestoneName: "",
+    newMilestone: false,
+
+    taskId: "",
     taskName: "",
+    newTask: false,
+
+    subTaskId: "",
     subTaskName: "",
+    newSubTask: false,
+
     activityName: "",
     owner: "",
+
     estimatedPeriodWeek: "",
+
     plannedStartDate: "",
     plannedEndDate: "",
+
     actualStartDate: "",
     actualEndDate: "",
+
     progress: 0,
+
     executionStatus: "",
     scheduleHealth: "",
   });
@@ -63,15 +80,22 @@ export default function useAddTask() {
 
       const payload = {
         projectId: selectedProject?.id,
-        projectName: selectedProject?.projectName,
 
+        phaseId: formData.phaseId || null,
         phaseName: formData.phaseName,
+        newPhase: formData.newPhase,
 
+        milestoneId: formData.milestoneId || null,
         milestoneName: formData.milestoneName,
+        newMilestone: formData.newMilestone,
 
+        taskId: formData.taskId || null,
         taskName: formData.taskName,
+        newTask: formData.newTask,
 
+        subTaskId: formData.subTaskId || null,
         subTaskName: formData.subTaskName,
+        newSubTask: formData.newSubTask,
 
         activityName: formData.activityName,
 
@@ -80,11 +104,9 @@ export default function useAddTask() {
         estimatedPeriodWeek: Number(formData.estimatedPeriodWeek),
 
         plannedStartDate: formData.plannedStartDate || null,
-
         plannedEndDate: formData.plannedEndDate || null,
 
         actualStartDate: formData.actualStartDate || null,
-
         actualEndDate: formData.actualEndDate || null,
 
         progress: Number(formData.progress),
@@ -114,66 +136,101 @@ export default function useAddTask() {
   };
   const resetForm = () => {
     setFormData({
+      phaseId: "",
       phaseName: "",
+      newPhase: false,
+
+      milestoneId: "",
       milestoneName: "",
+      newMilestone: false,
+
+      taskId: "",
       taskName: "",
+      newTask: false,
+
+      subTaskId: "",
       subTaskName: "",
+      newSubTask: false,
+
       activityName: "",
       owner: "",
+
       estimatedPeriodWeek: "",
+
       plannedStartDate: "",
       plannedEndDate: "",
+
       actualStartDate: "",
       actualEndDate: "",
+
       progress: 0,
-      executionStatus: " ",
+
+      executionStatus: "",
       scheduleHealth: "",
     });
   };
 
   const phases = useMemo(() => {
-    return selectedProject?.phases?.map((p) => p.phaseName) || [];
+    return (
+      selectedProject?.phases?.map((phase) => ({
+        id: phase.phaseId,
+        name: phase.phaseName,
+      })) || []
+    );
   }, [selectedProject]);
 
   const milestones = useMemo(() => {
     const phase = selectedProject?.phases?.find(
-      (p) => p.phaseName === formData.phaseName,
+      (p) => p.phaseId === formData.phaseId,
     );
 
-    return phase?.milestones?.map((m) => m.milestoneName) || [];
-  }, [selectedProject, formData.phaseName]);
+    return (
+      phase?.milestones?.map((milestone) => ({
+        id: milestone.milestoneId,
+        name: milestone.milestoneName,
+      })) || []
+    );
+  }, [selectedProject, formData.phaseId]);
 
   const taskOptions = useMemo(() => {
     const phase = selectedProject?.phases?.find(
-      (p) => p.phaseName === formData.phaseName,
+      (p) => p.phaseId === formData.phaseId,
     );
 
     const milestone = phase?.milestones?.find(
-      (m) => m.milestoneName === formData.milestoneName,
+      (m) => m.milestoneId === formData.milestoneId,
     );
 
-    return milestone?.tasks?.map((t) => t.taskName) || [];
-  }, [selectedProject, formData.phaseName, formData.milestoneName]);
+    return (
+      milestone?.tasks?.map((task) => ({
+        id: task.taskId,
+        name: task.taskName,
+      })) || []
+    );
+  }, [selectedProject, formData.phaseId, formData.milestoneId]);
 
   const subTasks = useMemo(() => {
     const phase = selectedProject?.phases?.find(
-      (p) => p.phaseName === formData.phaseName,
+      (p) => p.phaseId === formData.phaseId,
     );
 
     const milestone = phase?.milestones?.find(
-      (m) => m.milestoneName === formData.milestoneName,
+      (m) => m.milestoneId === formData.milestoneId,
     );
 
-    const task = milestone?.tasks?.find(
-      (t) => t.taskName === formData.taskName,
-    );
+    const task = milestone?.tasks?.find((t) => t.taskId === formData.taskId);
 
-    return task?.subTasks?.map((s) => s.subTaskName) || [];
+    return (
+      task?.subTasks?.map((subTask) => ({
+        id: subTask.subTaskId,
+        name: subTask.subTaskName,
+      })) || []
+    );
   }, [
     selectedProject,
-    formData.phaseName,
-    formData.milestoneName,
-    formData.taskName,
+    formData.phaseId,
+    formData.milestoneId,
+    formData.taskId,
   ]);
 
   const handleChange = (field, value) => {
@@ -183,19 +240,37 @@ export default function useAddTask() {
         [field]: value,
       };
 
-      if (field === "phaseName") {
+      // Phase changed
+      if (field === "phaseId" || field === "phaseName") {
+        updated.milestoneId = "";
         updated.milestoneName = "";
+        updated.newMilestone = false;
+
+        updated.taskId = "";
         updated.taskName = "";
+        updated.newTask = false;
+
+        updated.subTaskId = "";
         updated.subTaskName = "";
+        updated.newSubTask = false;
       }
 
-      if (field === "milestoneName") {
+      // Milestone changed
+      if (field === "milestoneId" || field === "milestoneName") {
+        updated.taskId = "";
         updated.taskName = "";
+        updated.newTask = false;
+
+        updated.subTaskId = "";
         updated.subTaskName = "";
+        updated.newSubTask = false;
       }
 
-      if (field === "taskName") {
+      // Task changed
+      if (field === "taskId" || field === "taskName") {
+        updated.subTaskId = "";
         updated.subTaskName = "";
+        updated.newSubTask = false;
       }
 
       return updated;

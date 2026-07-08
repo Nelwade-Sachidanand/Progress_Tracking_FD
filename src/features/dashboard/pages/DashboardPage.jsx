@@ -40,13 +40,19 @@ export default function DashboardPage() {
     navigate("/create-project");
   };
 
-  const [selectedBank, setSelectedBank] = useState(
-    sessionStorage.getItem("selectedBank") || "All Banks",
-  );
+  const [selectedBanks, setSelectedBanks] = useState(() => {
+    const saved = sessionStorage.getItem("selectedBanks");
+    return saved ? JSON.parse(saved) : [];
+  });
 
   useEffect(() => {
-    const handleBankChange = () => {
-      setSelectedBank(sessionStorage.getItem("selectedBank") || "All Banks");
+    const handleBankChange = (event) => {
+      if (event.detail) {
+        setSelectedBanks(event.detail);
+      } else {
+        const saved = sessionStorage.getItem("selectedBanks");
+        setSelectedBanks(saved ? JSON.parse(saved) : []);
+      }
     };
 
     window.addEventListener("bankChanged", handleBankChange);
@@ -68,7 +74,7 @@ export default function DashboardPage() {
 
   const filteredProjects = (data.projects || []).filter((project) => {
     const bankMatch =
-      selectedBank === "All Banks" || project.bankName === selectedBank;
+      selectedBanks.length === 0 || selectedBanks.includes(project.bankName);
 
     const searchMatch =
       !searchText ||

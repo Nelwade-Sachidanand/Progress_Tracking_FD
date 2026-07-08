@@ -2,10 +2,10 @@ import {
   AlertTriangle,
   ArrowRight,
   Building2,
+  Calendar,
   CalendarDays,
   Clock3,
   Flag,
-  Calendar
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getProjectMetrics } from "../utils/projectMetrics";
@@ -41,7 +41,7 @@ export default function ProgressCard({ projects = [] }) {
       <div
         className="
         bg-white
-        rounded-3xl
+        rounded-2xl
         border
         border-slate-200
         p-10
@@ -55,7 +55,7 @@ export default function ProgressCard({ projects = [] }) {
   }
 
   return (
-    <div>
+    <div className="mt-[-10px]">
       <div className="flex items-center justify-between mb-6">
         <h2
           className="
@@ -87,6 +87,7 @@ export default function ProgressCard({ projects = [] }) {
         xl:grid-cols-3
         2xl:grid-cols-4
         gap-6
+        mt-[-10px]
       "
       >
         {projects.map((project) => {
@@ -105,7 +106,7 @@ export default function ProgressCard({ projects = [] }) {
               className="
               group
               bg-white
-              rounded-3xl
+              rounded-2xl
               border
               border-slate-200
               shadow-sm
@@ -169,12 +170,13 @@ export default function ProgressCard({ projects = [] }) {
                   2xl-text-sm
                   font-semibold
                   shrink-0
-                  ${metrics.status === "On Track"
+                  ${
+                    metrics.status === "On Track"
                       ? "bg-green-100 text-green-700"
                       : metrics.status === "At Risk"
                         ? "bg-yellow-100 text-yellow-700"
                         : "bg-red-100 text-red-700"
-                    }
+                  }
                 `}
                 >
                   {metrics.status}
@@ -251,9 +253,9 @@ export default function ProgressCard({ projects = [] }) {
 
                     <span className="ml-auto font-semibold text-slate-700">
                       {metrics.projectStartDate
-                        ? new Date(
-                          metrics.projectStartDate
-                        ).toLocaleDateString("en-GB")
+                        ? new Date(metrics.projectStartDate)
+                            .toLocaleDateString("en-GB")
+                            .replace(/\//g, "-")
                         : "-"}
                     </span>
                   </div>
@@ -266,9 +268,9 @@ export default function ProgressCard({ projects = [] }) {
 
                     <span className="ml-auto font-semibold text-slate-700">
                       {metrics.goLiveDate
-                        ? new Date(metrics.goLiveDate).toLocaleDateString(
-                          "en-GB",
-                        )
+                        ? new Date(metrics.goLiveDate)
+                            .toLocaleDateString("en-GB")
+                            .replace(/\//g, "-")
                         : "-"}
                     </span>
                   </div>
@@ -296,15 +298,16 @@ export default function ProgressCard({ projects = [] }) {
                       className={`
                       ml-auto
                       font-semibold
-                      ${metrics.delayDays > 15
+                      ${
+                        metrics.delayWeeks > 3
                           ? "text-red-600"
-                          : metrics.delayDays > 5
+                          : metrics.delayWeeks > 1
                             ? "text-yellow-600"
                             : "text-green-600"
-                        }
+                      }
                     `}
                     >
-                      {metrics.delayDays} Days
+                      {metrics.delayWeeks} weeks
                     </span>
                   </div>
                 </div>

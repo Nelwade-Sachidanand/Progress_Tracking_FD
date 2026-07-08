@@ -5,18 +5,16 @@ import {
   ChevronDown,
   ClipboardList,
   FileSpreadsheet,
+  FileText,
   LayoutDashboard,
   List,
   LogOut,
   Menu,
   Pencil,
   Plus,
-  Search,
   ShieldCheck,
   User,
   Users,
-  XCircle,
-  FileText,
 } from "lucide-react";
 
 import { useEffect, useRef, useState } from "react";
@@ -28,6 +26,7 @@ import {
   markAllRead,
   markAsRead,
 } from "../../services/notificationService";
+import MultiSelectDropdown from "../common/MultiSelectDropdown";
 
 const DashboardHeader = ({
   title,
@@ -38,7 +37,6 @@ const DashboardHeader = ({
 }) => {
   const navigate = useNavigate();
   const profileDropdownRef = useRef(null);
-  const bankDropdownRef = useRef(null);
 
   const notificationRef = useRef(null);
   const notificationButtonRef = useRef(null);
@@ -51,20 +49,28 @@ const DashboardHeader = ({
 
   const [unreadCount, setUnreadCount] = useState(0);
 
-  const [selectedBank, setSelectedBank] = useState(
-    sessionStorage.getItem("selectedBank") || "All Banks",
-  );
-
-  const [showBanks, setShowBanks] = useState(false);
+  const [selectedBanks, setSelectedBanks] = useState(() => {
+    const saved = sessionStorage.getItem("selectedBanks");
+    return saved ? JSON.parse(saved) : [];
+  });
 
   const [searchText, setSearchText] = useState("");
 
   const { projects, setProjects } = useProjects();
 
   const banks = [
-    "All Banks",
     ...new Set(projects.map((p) => p.bankName).filter(Boolean)),
-  ];
+  ].sort((a, b) => a.localeCompare(b));
+
+  useEffect(() => {
+    sessionStorage.setItem("selectedBanks", JSON.stringify(selectedBanks));
+
+    window.dispatchEvent(
+      new CustomEvent("bankChanged", {
+        detail: selectedBanks,
+      }),
+    );
+  }, [selectedBanks]);
 
   const user = JSON.parse(sessionStorage.getItem("user"));
 
@@ -109,13 +115,6 @@ const DashboardHeader = ({
         !profileDropdownRef.current.contains(event.target)
       ) {
         setOpen(false);
-      }
-
-      if (
-        bankDropdownRef.current &&
-        !bankDropdownRef.current.contains(event.target)
-      ) {
-        setShowBanks(false);
       }
     };
 
@@ -203,7 +202,7 @@ const DashboardHeader = ({
   const pageConfig = {
     "/dashboard": {
       title: "Implementation Command Center",
-      subtitle: "Real-time visibility across all banks and products",
+      subtitle: "Real-Time Visibility Across All Banks And Products",
       icon: <LayoutDashboard size={24} />,
       showFilters: true,
 
@@ -213,7 +212,7 @@ const DashboardHeader = ({
 
     "/milestones": {
       title: "Milestone Management ",
-      subtitle: "Manage milestone weightages for selected bank",
+      subtitle: "Manage Milestone Weightages For Selected Bank",
       icon: <LayoutDashboard size={24} />,
       showFilters: true,
 
@@ -223,7 +222,7 @@ const DashboardHeader = ({
 
     "/tasks": {
       title: "All Tasks",
-      subtitle: "View and manage all project tasks",
+      subtitle: "View And Manage All Project Tasks",
       icon: <List size={24} />,
 
       titleClass: "text-[30px]",
@@ -232,7 +231,7 @@ const DashboardHeader = ({
 
     "/tasks/add-task": {
       title: "Activity Creation Form",
-      subtitle: "Define project execution activities",
+      subtitle: "Define Project Execution Activities",
 
       icon: <Plus size={24} />,
 
@@ -241,7 +240,7 @@ const DashboardHeader = ({
     },
     "/edit-task": {
       title: "Activity Update Form",
-      subtitle: "Modify project activity details",
+      subtitle: "Modify Project Activity Details",
       icon: <Pencil size={24} />,
       titleClass: "text-[30px]",
       subtitleClass: "text-[12px]",
@@ -249,7 +248,7 @@ const DashboardHeader = ({
 
     "/users": {
       title: "Users",
-      subtitle: "Create and manage Usera",
+      subtitle: "Create And Manage Users",
       icon: <Users size={22} />,
 
       titleClass: "text-[32px]",
@@ -258,7 +257,7 @@ const DashboardHeader = ({
 
     "/users/add": {
       title: "Users",
-      subtitle: "Create and manage Usera",
+      subtitle: "Create And Manage Users",
       icon: <User size={22} />,
 
       titleClass: "text-[32px]",
@@ -267,7 +266,7 @@ const DashboardHeader = ({
 
     "/users/edit": {
       title: "Users",
-      subtitle: "Create and manage Usera",
+      subtitle: "Create And Manage Users",
       icon: <User size={22} />,
 
       titleClass: "text-[32px]",
@@ -276,7 +275,7 @@ const DashboardHeader = ({
 
     "/audits": {
       title: "Audit Logs",
-      subtitle: "View and manage audit logs",
+      subtitle: "View And Manage Audit Logs",
       icon: <ClipboardList size={22} />,
 
       titleClass: "text-[32px]",
@@ -285,7 +284,7 @@ const DashboardHeader = ({
 
     "/authorization": {
       title: "Authorization",
-      subtitle: "View and Authorize Requests",
+      subtitle: "View And Authorize Requests",
       icon: <ShieldCheck size={22} />,
 
       titleClass: "text-[32px]",
@@ -294,7 +293,7 @@ const DashboardHeader = ({
 
     "/create-project": {
       title: "Create New Project",
-      subtitle: "Fill in the details to create a new bank project",
+      subtitle: "Fill In The Details To Create A New Bank Project",
       icon: <ClipboardList size={22} />,
 
       titleClass: "text-[32px]",
@@ -303,16 +302,16 @@ const DashboardHeader = ({
 
     "/project-details": {
       title: "Implementation Readiness Dashboard",
-      subtitle: "Track Overall Project health and Go-live Readiness",
+      subtitle: "Track Overall Project Health And Go-live Readiness",
       icon: <LayoutDashboard size={24} />,
 
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",
     },
-        "/documents": {
+    "/documents": {
       title: "Documents",
-      subtitle: "Manage project sign-off documents ",
-       icon: <FileText size={24} />,
+      subtitle: "Manage Project Sign-off Documents ",
+      icon: <FileText size={24} />,
 
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",
@@ -320,22 +319,21 @@ const DashboardHeader = ({
 
     "/notifications": {
       title: "Notifications",
-      subtitle: "View and manage all system notifications and activity updates",
+      subtitle: "View And Manage All System Notifications And Activity Updates",
       icon: <Bell size={24} />,
 
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",
     },
 
-        "/documents": {
+    "/documents": {
       title: "Documents",
-      subtitle: "Upload and manage signoff documents",
+      subtitle: "Upload And Manage Signoff Documents",
       icon: <Users size={22} />,
 
       titleClass: "text-[32px]",
       subtitleClass: "text-[17px]",
     },
-
 
     "/upload-excel": {
       title: "Upload Excel",
@@ -432,121 +430,18 @@ const DashboardHeader = ({
             {location.pathname === "/dashboard" && (
               <>
                 {/* Bank Dropdown */}
-                <div
-                  className="
-                  hidden xl:flex
-                  items-center
-                  gap-2
-                  border border-[#E2E8F0]
-                  rounded-xl
-                  px-4
-                  h-11
-                  bg-white
-                  w-[220px]
-                  xl:w-[220px]
-                  2xl:w-[260px]
-                  flex-shrink-0
-                  hover:border-blue-500
-                  cursor-pointer
-                "
-                >
-                  <Building2
-                    size={16}
-                    className="text-[#64748B] flex-shrink-0"
-                  />
-
-                  <div
-                    className="relative flex-1 min-w-0"
-                    ref={bankDropdownRef}
-                  >
-                    <button
-                      onClick={() => setShowBanks(!showBanks)}
-                      className="
-                      flex
-                      items-center
-                      justify-between
-                      w-full
-                      text-sm
-                      text-[#0B1F59]
-                      cursor-pointer
-                    "
-                    >
-                      <span
-                        className="
-                        block
-                        flex-1
-                        min-w-0
-                        overflow-hidden
-                        text-ellipsis
-                        whitespace-nowrap
-                        text-left
-                      "
-                        title={selectedBank}
-                      >
-                        {selectedBank}
-                      </span>
-
-                      <ChevronDown
-                        size={16}
-                        className={`
-                        flex-shrink-0
-                        transition-transform
-                        ${showBanks ? "rotate-180" : ""}
-                      `}
-                      />
-                    </button>
-
-                    {showBanks && (
-                      <div
-                        className="
-                        absolute
-                        top-10
-                        -left-10
-                        w-[230px]
-                        bg-white
-                        border
-                        border-[#E2E8F0]
-                        rounded-xl
-                        shadow-xl
-                        z-[9999]
-                        max-h-[280px]
-                        overflow-y-auto
-                      "
-                      >
-                        {banks.map((bank) => (
-                          <button
-                            key={bank}
-                            onClick={() => {
-                              setSelectedBank(bank);
-                              sessionStorage.setItem("selectedBank", bank);
-                              window.dispatchEvent(new Event("bankChanged"));
-                              setShowBanks(false);
-                            }}
-                            title={bank}
-                            className="
-                            block
-                            w-full
-                            px-4
-                            py-3
-                            text-left
-                            text-[#0B1F59]
-                            hover:bg-[#F8FAFC]
-                            transition
-                            cursor-pointer
-                            break-words
-                            leading-6
-                          "
-                          >
-                            {bank}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <MultiSelectDropdown
+                  label=""
+                  placeholder="All Banks"
+                  options={banks}
+                  selected={selectedBanks}
+                  onChange={setSelectedBanks}
+                  icon={Building2}
+                  width="w-[260px]"
+                />
 
                 {/* Search */}
-                <div
+                {/* <div
                   className="
                 hidden xl:flex
                 items-center gap-2
@@ -589,7 +484,7 @@ const DashboardHeader = ({
                       );
                     }}
                   />
-                </div>
+                </div> */}
               </>
             )}
             {/* Notification */}
@@ -603,12 +498,17 @@ const DashboardHeader = ({
                   relative
                   w-10
                   h-10
+                  2xl:w-12
+                  2xl:h-12
                   flex
                   items-center
                   justify-center
                 "
                 >
-                  <Bell size={20} className="text-[#0B1F59] cursor-pointer" />
+                  <Bell
+                    size={20}
+                    className="text-[#0B1F59] cursor-pointer 2xl:size-8"
+                  />
 
                   {unreadCount > 0 && (
                     <span
@@ -618,6 +518,8 @@ const DashboardHeader = ({
                     -right-1
                     w-5
                     h-5
+                    2xl:w-6
+                    2xl:h-6
                     rounded-full
                     bg-red-500
                     text-white

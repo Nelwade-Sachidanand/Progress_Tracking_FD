@@ -1,4 +1,5 @@
-import { Building2, Calendar } from "lucide-react";
+import { Building2, Calendar, Info } from "lucide-react";
+import NumberInput from "../../../../components/common/NumberInput";
 
 export default function CBSBusinessDetailsTab({
   cbsInformation,
@@ -19,57 +20,63 @@ export default function CBSBusinessDetailsTab({
 
   const inputClass = `
     w-full
-    h-11
+    h-9
     px-3
+    rounded-lg
     border
-    border-blue-200
-    rounded-xl
+    border-slate-300
     bg-white
+    text-sm
     outline-none
     transition-all
     duration-200
-    focus:border-[#2563EB]
-    focus:ring-1
-    focus:ring-blue-200
+    focus:border-blue-500
   `;
 
   const iconInputClass = `
     w-full
-    h-11
+    h-9
     pl-10
+    pr-3
+    rounded-lg
     border
-    border-blue-200
-    rounded-xl
+    border-slate-300
     bg-white
+    text-sm
     outline-none
     transition-all
     duration-200
-    focus:border-[#2563EB]
-    focus:ring-1
-    focus:ring-blue-200
+    focus:border-blue-500
   `;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
+      {/* Header */}
+
       <div>
-        <h2 className="text-lg xl:text-xl font-semibold text-[#0B1F59]">
+        <h2 className="text-xl font-semibold text-[#0B1F59]">
           CBS & Business Details
         </h2>
 
-        <p className="text-sm text-slate-500 mt-1">
-          Existing CBS information and business statistics.
+        <p className="mt-1 text-sm text-slate-500">
+          Enter Existing CBS Information and Business Statistics.
         </p>
       </div>
 
-      {/* CBS Information */}
-      <div className="bg-white border border-blue-200 rounded-2xl p-5">
-        <h3 className="text-md font-semibold mb-5 text-[#0B1F59]">
+      {/* =========================
+          CBS INFORMATION
+      ========================== */}
+
+      <div className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="mb-4 rounded-md bg-blue-50 px-3 py-2 text-base font-semibold text-[#0B1F59] w-[200px]">
           CBS Information
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {/* Previous CBS Vendor */}
+
           <div>
-            <label className="block mb-2 text-sm font-medium">
+            <label className="mb-1 block text-sm font-medium text-slate-700">
               Previous CBS Vendor
             </label>
 
@@ -81,48 +88,57 @@ export default function CBSBusinessDetailsTab({
 
               <input
                 type="text"
+                autoComplete="off"
                 name="previousCBSVendor"
                 value={cbsInformation.previousCBSVendor || ""}
                 onChange={handleCbsChange}
-                placeholder="Vendor Name"
+                placeholder="Enter Previous Vendor"
                 className={iconInputClass}
               />
             </div>
           </div>
 
+          {/* Previous Vendor Period */}
+
           <div>
-            <label className="block mb-2 text-sm font-medium">
+            <label className="mb-1 block text-sm font-medium text-slate-700">
               Previous Vendor Period
             </label>
 
             <input
               type="text"
+              autoComplete="off"
               name="previousVendorPeriod"
               value={cbsInformation.previousVendorPeriod || ""}
               onChange={handleCbsChange}
-              placeholder="e.g. 2016-2022"
+              placeholder="Example: 2016 - 2022"
               className={inputClass}
             />
           </div>
 
+          {/* Existing CBS Vendor */}
+
           <div>
-            <label className="block mb-2 text-sm font-medium">
+            <label className="mb-1 block text-sm font-medium text-slate-700">
               Existing CBS Vendor
             </label>
 
             <input
               type="text"
+              autoComplete="off"
               name="existingCBSVendor"
               value={cbsInformation.existingCBSVendor || ""}
               onChange={handleCbsChange}
-              placeholder="Current Vendor"
+              placeholder="Enter Existing Vendor"
               className={inputClass}
             />
           </div>
 
+          {/* CBS Since */}
+
           <div>
-            <label className="block mb-2 text-sm font-medium">
-              CBS Since (e.g. June,2022)
+            <label className="mb-1 block text-sm font-medium text-slate-700">
+              CBS Since
             </label>
 
             <div className="relative">
@@ -143,13 +159,16 @@ export default function CBSBusinessDetailsTab({
         </div>
       </div>
 
-      {/* Business Statistics */}
-      <div className="bg-white border border-blue-200 rounded-2xl p-5">
-        <h3 className="text-md font-semibold mb-5 text-[#0B1F59]">
+      {/* =========================
+          BUSINESS STATISTICS
+      ========================== */}
+
+      <div className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="mb-4 rounded-md bg-blue-50 px-3 py-2 text-base font-semibold text-[#0B1F59] w-[200px]">
           Business Statistics
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
           <InputField
             type="number"
             label="Total Active Customers"
@@ -240,51 +259,87 @@ export default function CBSBusinessDetailsTab({
         </div>
       </div>
 
-      <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+      {/* =========================
+          Information
+      ========================== */}
+
+      <div
+        className="
+          flex
+          items-start
+          gap-3
+          rounded-lg
+          border
+          border-green-200
+          bg-green-50
+          px-4
+          py-3
+          w-[800px]
+        "
+      >
+        <Info size={18} className="mt-0.5 shrink-0 text-green-600" />
+
         <p className="text-sm text-green-700">
-          Enter current CBS and business statistics for accurate project
-          planning and sizing.
+          Enter Current CBS Information And Business Statistics For Accurate
+          Project Planning And Capacity Estimation.
         </p>
       </div>
     </div>
   );
 }
 
+/* ==========================================================
+   Reusable Input Field
+========================================================== */
+
 function InputField({ label, name, value, onChange, type = "text" }) {
   return (
     <div>
-      <label className="block mb-2 text-sm font-medium text-slate-700">
+      <label className="mb-1 block text-sm font-medium text-slate-700">
         {label}
       </label>
 
-      <input
-        type={type}
-        name={name}
-        value={value ?? ""}
-        onChange={onChange}
-        min={type === "number" ? 0 : undefined}
-        onKeyDown={(e) => {
-          if (type === "number" && (e.key === "-" || e.key === "e")) {
-            e.preventDefault();
-          }
-        }}
-        onWheel={(e) => e.target.blur()}
-        className="
-          w-full
-          h-11
-          px-3
-          border
-          border-blue-200
-          rounded-xl
-          bg-white
-          outline-none
-          transition-all
-          duration-200
-          focus:border-[#2563EB]
-          focus:ring-1
-          focus:ring-blue-200
-        "
-      />
+      {type === "number" ? (
+        <NumberInput
+          name={name}
+          value={value}
+          onChange={onChange}
+          className="
+            h-9
+            w-full
+            rounded-lg
+            border
+            border-slate-300
+            bg-white
+            px-3
+            text-sm
+            outline-none
+            transition-all
+            focus:border-blue-500
+          "
+        />
+      ) : (
+        <input
+          type="text"
+          name={name}
+          value={value ?? ""}
+          autoComplete="off"
+          onChange={onChange}
+          className="
+            h-10
+            w-full
+            rounded-lg
+            border
+            border-slate-300
+            bg-white
+            px-3
+            text-sm
+            outline-none
+            transition-all
+            focus:border-blue-500
+          "
+        />
+      )}
     </div>
   );
 }

@@ -141,6 +141,8 @@ export const getProjectMetrics = (project) => {
     status = "At Risk";
   }
 
+  const delayWeeks = Math.round((delayDays / 7) * 2) / 2;
+
   let scheduleVariance = 0;
 
   if (goLiveDate) {
@@ -164,6 +166,8 @@ export const getProjectMetrics = (project) => {
     scheduleVariance = Math.round(overallProgress - plannedProgress);
   }
 
+  // console.log("Project Metrics:", { delayDays, delayWeeks });
+
   return {
     overallProgress,
     readiness,
@@ -175,7 +179,7 @@ export const getProjectMetrics = (project) => {
     goLiveDate,
     daysRemaining,
 
-    delayDays,
+    delayWeeks,
     scheduleVariance,
 
     totalActivities,

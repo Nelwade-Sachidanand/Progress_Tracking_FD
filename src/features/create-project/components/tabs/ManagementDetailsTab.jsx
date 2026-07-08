@@ -1,45 +1,29 @@
-import { Phone, User } from "lucide-react";
+import { Info, Phone, User } from "lucide-react";
 import { toast } from "react-toastify";
 
 export default function ManagementDetailsTab({ data, updateSection }) {
   const contacts = [
-    {
-      label: "Chairman",
-      key: "chairman",
-    },
-    {
-      label: "CEO",
-      key: "ceo",
-    },
-    {
-      label: "Consultant",
-      key: "consultant",
-    },
-    {
-      label: "IT Head",
-      key: "itHead",
-    },
+    { label: "Chairman", key: "chairman" },
+    { label: "CEO", key: "ceo" },
+    { label: "Consultant", key: "consultant" },
+    { label: "IT Head", key: "itHead" },
   ];
 
   const handleChange = (contactKey, field, value) => {
     if (field === "contactNumber") {
-      // Allow only digits
-      if (!/^\d*$/.test(value)) {
-        return;
-      }
+      if (!/^\d*$/.test(value)) return;
 
-      // Maximum 10 digits
       if (value.length > 10) {
         toast.error("Contact number cannot exceed 10 digits");
         return;
       }
 
-      // Must start with 6-9 (Indian mobile numbers)
       if (value.length === 1 && !/[6-9]/.test(value)) {
         toast.error("Contact number must start with 6, 7, 8 or 9");
         return;
       }
     }
+
     updateSection("contactDetails", {
       ...data,
       [contactKey]: {
@@ -51,141 +35,104 @@ export default function ManagementDetailsTab({ data, updateSection }) {
 
   const inputClass = `
     w-full
-    h-11
+    h-9
     pl-10
+    pr-3
+    rounded-lg
     border
-    border-blue-200
-    rounded-xl
+    border-slate-300
     bg-white
+    text-sm
     outline-none
     transition-all
     duration-200
-    focus:border-[#2563EB]
-    focus:ring-1
-    focus:ring-blue-200
+    focus:border-blue-500
   `;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Header */}
       <div>
-        <h2
-          className="
-            text-lg
-            xl:text-xl
-            font-semibold
-            text-[#0B1F59]
-          "
-        >
+        <h2 className="text-xl font-semibold text-[#0B1F59]">
           Management Details
         </h2>
 
-        <p
-          className="
-            text-sm
-            text-slate-500
-            mt-1
-          "
-        >
+        <p className="mt-1 text-sm text-slate-500">
           Enter key management contacts of the bank.
         </p>
       </div>
 
-      {/* Contact Section */}
-      <div
-        className="
-          bg-white
-          border
-          border-blue-200
-          rounded-2xl
-          p-5
-        "
-      >
-        <div className="space-y-5">
+      {/* Contact Card */}
+      <div className="rounded-xl border border-slate-200 bg-white p-4">
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-4">
           {contacts.map((contact) => (
             <div
               key={contact.key}
-              className="
-                grid
-                grid-cols-1
-                xl:grid-cols-2
-                gap-4
-              "
+              className="rounded-lg border border-slate-200 p-4"
             >
-              {/* Name */}
-              <div>
-                <label
-                  className="
-                    block
-                    mb-2
-                    text-sm
-                    font-medium
-                    text-slate-700
-                  "
-                >
-                  Name of {contact.label}
-                </label>
-
-                <div className="relative">
-                  <User
-                    size={16}
-                    className="
-                      absolute
-                      left-3
-                      top-1/2
-                      -translate-y-1/2
-                      text-slate-400
-                    "
-                  />
-
-                  <input
-                    type="text"
-                    value={data?.[contact.key]?.name || ""}
-                    onChange={(e) =>
-                      handleChange(contact.key, "name", e.target.value)
-                    }
-                    placeholder={`Enter ${contact.label} Name`}
-                    className={inputClass}
-                  />
-                </div>
+              <div className="mb-3 flex items-center gap-2 rounded-lg bg-[#EFF6FF] px-3 py-2">
+                <User size={18} className="text-[#2563EB]" />
+                <h3 className="text-base font-semibold text-[#0B1F59]">
+                  {contact.label}
+                </h3>
               </div>
 
-              {/* Contact Number */}
-              <div>
-                <label
-                  className="
-                    block
-                    mb-2
-                    text-sm
-                    font-medium
-                    text-slate-700
-                  "
-                >
-                  Contact Number
-                </label>
+              <div className="space-y-3">
+                {/* Name */}
 
-                <div className="relative">
-                  <Phone
-                    size={16}
-                    className="
-                      absolute
-                      left-3
-                      top-1/2
-                      -translate-y-1/2
-                      text-slate-400
-                    "
-                  />
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-700">
+                    Name
+                  </label>
 
-                  <input
-                    type="text"
-                    maxLength={10}
-                    value={data?.[contact.key]?.contactNumber || ""}
-                    onChange={(e) =>
-                      handleChange(contact.key, "contactNumber", e.target.value)
-                    }
-                    placeholder="Enter Contact Number"
-                    className={inputClass}
-                  />
+                  <div className="relative">
+                    <User
+                      size={16}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                    />
+
+                    <input
+                      type="text"
+                      autoComplete="off"
+                      value={data?.[contact.key]?.name || ""}
+                      onChange={(e) =>
+                        handleChange(contact.key, "name", e.target.value)
+                      }
+                      placeholder={`Enter ${contact.label} Name`}
+                      className={inputClass}
+                    />
+                  </div>
+                </div>
+
+                {/* Contact Number */}
+
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-700">
+                    Contact Number
+                  </label>
+
+                  <div className="relative">
+                    <Phone
+                      size={16}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                    />
+
+                    <input
+                      type="text"
+                      maxLength={10}
+                      autoComplete="off"
+                      value={data?.[contact.key]?.contactNumber || ""}
+                      onChange={(e) =>
+                        handleChange(
+                          contact.key,
+                          "contactNumber",
+                          e.target.value,
+                        )
+                      }
+                      placeholder="Enter Contact Number"
+                      className={inputClass}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -193,24 +140,26 @@ export default function ManagementDetailsTab({ data, updateSection }) {
         </div>
       </div>
 
-      {/* Info Box */}
+      {/* Information */}
       <div
         className="
-          bg-green-50
-          border
-          border-green-200
-          rounded-xl
-          p-4
-        "
+        flex
+        items-start
+        gap-3
+        rounded-lg
+        border
+        border-green-200
+        bg-green-50
+        px-4
+        py-3
+        w-[800px]
+      "
       >
-        <p
-          className="
-            text-sm
-            text-green-700
-          "
-        >
-          These contacts will be used for communication, project coordination
-          and management approvals.
+        <Info size={18} className="mt-0.5 shrink-0 text-green-600" />
+
+        <p className="text-sm text-green-700">
+          These Contact Details Will Be Used for Communication, Project
+          Coordination, and Management Approvals.
         </p>
       </div>
     </div>

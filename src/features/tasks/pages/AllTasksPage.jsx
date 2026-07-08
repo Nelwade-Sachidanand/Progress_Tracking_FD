@@ -6,7 +6,6 @@ import ActiveFilters from "../components/ActiveFilters";
 import RemarkModal from "../components/RemarkModal";
 import TaskActions from "../components/TaskActions";
 import TaskFilters from "../components/TaskFilters";
-import TaskHeader from "../components/TaskHeader";
 import TaskSummaryCards from "../components/TaskSummaryCards";
 import TaskTable from "../components/TaskTable";
 import useTaskFilters from "../hooks/useTaskFilters";
@@ -63,9 +62,7 @@ export default function AllTasksPage() {
   const filteredMilestones = [
     ...new Set(
       tasks
-        .filter(
-          (t) => selectedPhase === "All Phases" || t.phase === selectedPhase,
-        )
+        .filter((t) => !selectedPhase || t.phase === selectedPhase)
         .map((t) => t.milestone),
     ),
   ];
@@ -84,7 +81,7 @@ export default function AllTasksPage() {
   const filteredSubTasks = [
     ...new Set(
       tasks
-        .filter((t) => selectedTask === "All Tasks" || t.task === selectedTask)
+        .filter((t) => !selectedTask || t.task === selectedTask)
         .map((t) => t.subTask),
     ),
   ];
@@ -92,11 +89,7 @@ export default function AllTasksPage() {
   const filteredActivities = [
     ...new Set(
       tasks
-        .filter(
-          (t) =>
-            selectedSubTask === "All Sub Tasks" ||
-            t.subTask === selectedSubTask,
-        )
+        .filter((t) => !selectedSubTask || t.subTask === selectedSubTask)
         .map((t) => t.activity),
     ),
   ];
@@ -113,6 +106,10 @@ export default function AllTasksPage() {
 
   const notStarted = filteredTasks.filter(
     (task) => task.status === "Not Started",
+  ).length;
+
+  const inProgress = filteredTasks.filter(
+    (task) => task.status === "In Progress",
   ).length;
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -133,12 +130,12 @@ export default function AllTasksPage() {
   );
 
   const clearFilters = () => {
-    setSelectedPhase("All Phases");
+    setSelectedPhase("");
     setSelectedMilestone([]);
-    setSelectedTask("All Tasks");
-    setSelectedSubTask("All Sub Tasks");
-    setSelectedActivity("All Activities");
-    setSelectedStatus("All Status");
+    setSelectedTask("");
+    setSelectedSubTask("");
+    setSelectedActivity("");
+    setSelectedStatus("");
     setSearchTerm("");
   };
 
@@ -221,6 +218,7 @@ export default function AllTasksPage() {
 
     setTasks(allActivities);
   }, [projects]);
+
   useEffect(() => {
     setCurrentPage(1);
   }, [
@@ -232,58 +230,80 @@ export default function AllTasksPage() {
     selectedStatus,
     searchTerm,
   ]);
+
   return (
     // <div className="p-6 bg-[#F5F7FB] min-h-screen ">
     <div className="p-6 w-full w-[1200px]">
-      <TaskHeader />
+      {/* <TaskHeader /> */}
 
-      <TaskActions
-        selectedPhase={selectedPhase}
-        selectedMilestone={selectedMilestone}
-        selectedTask={selectedTask}
-        selectedSubTask={selectedSubTask}
-        selectedActivity={selectedActivity}
-        selectedStatus={selectedStatus}
-      />
-      <TaskFilters
-        phases={phases}
-        milestones={filteredMilestones}
-        tasks={filteredTaskNames}
-        subTasks={filteredSubTasks}
-        activities={filteredActivities}
-        selectedPhase={selectedPhase}
-        selectedMilestone={selectedMilestone}
-        selectedTask={selectedTask}
-        selectedSubTask={selectedSubTask}
-        selectedActivity={selectedActivity}
-        selectedStatus={selectedStatus}
-        searchTerm={searchTerm}
-        setSelectedPhase={setSelectedPhase}
-        setSelectedMilestone={setSelectedMilestone}
-        setSelectedTask={setSelectedTask}
-        setSelectedSubTask={setSelectedSubTask}
-        setSelectedActivity={setSelectedActivity}
-        setSelectedStatus={setSelectedStatus}
-        setSearchTerm={setSearchTerm}
-        handleMilestoneChange={handleMilestoneChange}
-      />
-      <ActiveFilters
-        selectedPhase={selectedPhase}
-        selectedMilestone={selectedMilestone}
-        selectedTask={selectedTask}
-        selectedStatus={selectedStatus}
-        setSelectedPhase={setSelectedPhase}
-        setSelectedMilestone={setSelectedMilestone}
-        setSelectedTask={setSelectedTask}
-        setSelectedStatus={setSelectedStatus}
-        clearFilters={clearFilters}
-      />
       <TaskSummaryCards
         total={total}
         tasks={filteredTasks}
         completed={completed}
         delayed={delayed}
         notStarted={notStarted}
+        inProgress={inProgress}
+      />
+
+      <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="mb-1 flex items-center justify-between mt-[-7px]">
+          <div>
+            <h2 className="text-lg font-semibold text-[#0B1F59]">
+              Task Filters
+            </h2>
+
+            <p className="text-sm text-slate-500">
+              Filter Project Tasks Using The Criteria Below.
+            </p>
+          </div>
+
+          <TaskActions
+            selectedPhase={selectedPhase}
+            selectedMilestone={selectedMilestone}
+            selectedTask={selectedTask}
+            selectedSubTask={selectedSubTask}
+            selectedActivity={selectedActivity}
+            selectedStatus={selectedStatus}
+          />
+        </div>
+
+        <TaskFilters
+          phases={phases}
+          milestones={filteredMilestones}
+          tasks={filteredTaskNames}
+          subTasks={filteredSubTasks}
+          activities={filteredActivities}
+          selectedPhase={selectedPhase}
+          selectedMilestone={selectedMilestone}
+          selectedTask={selectedTask}
+          selectedSubTask={selectedSubTask}
+          selectedActivity={selectedActivity}
+          selectedStatus={selectedStatus}
+          searchTerm={searchTerm}
+          setSelectedPhase={setSelectedPhase}
+          setSelectedMilestone={setSelectedMilestone}
+          setSelectedTask={setSelectedTask}
+          setSelectedSubTask={setSelectedSubTask}
+          setSelectedActivity={setSelectedActivity}
+          setSelectedStatus={setSelectedStatus}
+          setSearchTerm={setSearchTerm}
+        />
+      </div>
+
+      <ActiveFilters
+        selectedPhase={selectedPhase}
+        selectedMilestone={selectedMilestone}
+        selectedTask={selectedTask}
+        selectedSubTask={selectedSubTask}
+        selectedActivity={selectedActivity}
+        selectedStatus={selectedStatus}
+        setSelectedPhase={setSelectedPhase}
+        setSelectedMilestone={setSelectedMilestone}
+        setSelectedTask={setSelectedTask}
+        setSelectedSubTask={setSelectedSubTask}
+        setSelectedActivity={setSelectedActivity}
+        setSelectedStatus={setSelectedStatus}
+        clearFilters={clearFilters}
       />
 
       <TaskTable

@@ -1,109 +1,125 @@
-import { ChevronDown, Search, SlidersHorizontal } from "lucide-react";
+import { Building2, CheckCircle, Plus, SlidersHorizontal } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import CustomDropdown from "../../../components/common/CustomDropdown";
+import SearchInput from "../../../components/common/SearchInput";
 
 const UserFilters = ({
   searchTerm,
   setSearchTerm,
   roleFilter,
   setRoleFilter,
+  statusFilter,
+  setStatusFilter,
+  bankFilter,
+  setBankFilter,
+  banks,
 }) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="grid grid-cols-[1fr_260px] gap-4">
+    <div
+      className="
+        bg-white
+        rounded-2xl
+        border
+        border-slate-200
+        p-5
+        mt-[-7px]
+      "
+    >
       <div
         className="
-        bg-white
-        h-[52px]
-        rounded-xl
-        border
-        border-[#E8EDF5]
-        flex
-        items-center
-        px-4
-        shadow-sm
+          grid
+          grid-cols-1
+          md:grid-cols-2
+          xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,2fr)_150px]
+          gap-4
+          mt-[-10px]
+          mb-[-7px]
         "
       >
-        <Search
-          size={18}
-          className="text-[#94A3B8] 2xl:text-[17px] 2xl:h-6 2xl:w-6"
+        {/* Role */}
+
+        <CustomDropdown
+          label="Role"
+          placeholder="All Roles"
+          value={roleFilter}
+          onChange={setRoleFilter}
+          icon={SlidersHorizontal}
+          options={[
+            { label: "Administrator", value: "ADMIN" },
+            { label: "Bank User", value: "USER" },
+            { label: "Management User", value: "MANAGEMENT USER" },
+            {
+              label: "Implementation User",
+              value: "IMPLEMENTATION USER",
+            },
+          ]}
         />
 
-        <input
+        {/* Status */}
+
+        <CustomDropdown
+          label="Status"
+          placeholder="All Status"
+          value={statusFilter}
+          onChange={setStatusFilter}
+          icon={CheckCircle}
+          options={[
+            { label: "Active", value: "true" },
+            { label: "Inactive", value: "false" },
+          ]}
+        />
+
+        {/* User Type */}
+
+        <CustomDropdown
+          label="Bank"
+          placeholder="All Banks"
+          value={bankFilter}
+          onChange={setBankFilter}
+          icon={Building2}
+          options={banks.map((bank) => ({
+            label: bank,
+            value: bank,
+          }))}
+        />
+
+        {/* Search */}
+
+        <SearchInput
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search by name or username..."
-          className="
-          flex-1
-          ml-3
-          outline-none
-          focus:border-blue-500
-          bg-transparent
-          text-[14px]
-          2xl:text-[17px]
-          2xl:font-medium
-          2xl:tracking-wide
-          "
-        />
-      </div>
-
-      <div className="relative">
-        <SlidersHorizontal
-          size={16}
-          className="
-          absolute
-          left-4
-          top-1/2
-          -translate-y-1/2
-          text-[#64748B]
-          2xl:h-5
-          2xl:w-5
-          "
+          placeholder="Search Users..."
         />
 
-        <ChevronDown
-          size={16}
-          className="
-          absolute
-          right-4
-          top-1/2
-          -translate-y-1/2
-          pointer-events-none
-          text-[#64748B]
-          2xl:h-5
-          2xl:w-5
-          "
-        />
+        {/* Add User */}
 
-        <select
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(e.target.value)}
-          className="
-          w-full
-          h-[52px]
-          pl-11
-          pr-10
-          bg-white
-          border
-          outline-none
-          focus:border-blue-500
-          border-[#E8EDF5]
-          rounded-xl
-          shadow-sm
-          appearance-none
-          cursor-pointer
-          2xl:text-[17px]
-          2xl:font-medium
-          2xl:tracking-wide
-          "
-        >
-          <option value="">All Roles</option>
-
-          <option value="ADMIN">Admin</option>
-
-          <option value="USER">Bank User</option>
-
-          <option value="MANAGEMENT USER">Manager</option>
-
-          <option value="IMPLEMENTATION USER">Implementation User</option>
-        </select>
+        <div className="flex items-end">
+          <button
+            onClick={() => navigate("/users/add")}
+            className="
+              w-full
+              h-9
+              rounded-xl
+              bg-gradient-to-r
+              from-[#7C3AED]
+              to-[#A855F7]
+              text-white
+              font-semibold
+              flex
+              items-center
+              justify-center
+              gap-2
+              shadow-lg
+              shadow-purple-500/20
+              cursor-pointer
+            "
+          >
+            <Plus size={18} />
+            Add User
+          </button>
+        </div>
       </div>
     </div>
   );

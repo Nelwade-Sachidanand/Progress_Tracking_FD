@@ -39,24 +39,23 @@ const AuditLogsPage = () => {
   return (
     <div
       className="
-      h-[calc(100vh-120px)]
-      flex
-      gap-6
-      px-4
-      xl:px-6
-      2xl:px-8
-      py-6
-      overflow-hidden
+      p-4
+      sm:p-5
+      md:p-6
+      lg:p-8
     "
     >
-      {/* Main Content */}
       <div
         className="
-  w-full
-  overflow-y-auto
-  "
+        w-full
+        mx-auto
+        space-y-4
+        md:space-y-5
+        lg:space-y-6
+        mt-[-15px]
+      "
       >
-        <AuditSummaryCards auditLogs={filteredLogs} />
+        <AuditSummaryCards auditLogs={auditLogs} />
 
         <AuditFilters
           logs={auditLogs}
@@ -70,27 +69,27 @@ const AuditLogsPage = () => {
           setSelectedDate={setSelectedDate}
         />
 
-        <AuditTable
-          logs={filteredLogs}
-          loading={loading}
-          onView={(log) => {
-            setSelectedLog(log);
-            setShowAuditModal(true);
-          }}
-        />
-      </div>
+        <div className="overflow-x-auto mt-[-25px]">
+          <AuditTable
+            logs={filteredLogs}
+            loading={loading}
+            onView={(log) => {
+              setSelectedLog(log);
+              setShowAuditModal(true);
+            }}
+          />
+        </div>
 
-      {/* Right Drawer */}
-      {/* Audit Modal */}
-      {showAuditModal && (
-        <AuditDetailsModal
-          log={selectedLog}
-          onClose={() => {
-            setShowAuditModal(false);
-            setSelectedLog(null);
-          }}
-        />
-      )}
+        {showAuditModal && (
+          <AuditDetailsModal
+            log={selectedLog}
+            onClose={() => {
+              setShowAuditModal(false);
+              setSelectedLog(null);
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 };

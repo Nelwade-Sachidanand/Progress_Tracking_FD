@@ -8,7 +8,7 @@ export default function BackButton({
   const navigate = useNavigate();
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center mb-3">
       <button
         type="button"
         onClick={() => navigate(path)}
@@ -18,7 +18,7 @@ export default function BackButton({
           gap-2
           text-[#2563EB]
           hover:text-[#1D4ED8]
-          text-lg
+          text-base
           font-medium
           cursor-pointer
           transition-colors

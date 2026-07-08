@@ -2,15 +2,15 @@ import { useLocation } from "react-router-dom";
 import UserForm from "../components/UserForm";
 
 const EditUserPage = () => {
-    const location = useLocation();
+  const location = useLocation();
 
-    const userData = location.state?.user;
+  const userData = location.state?.user;
 
-    // console.log(userData);
+  // console.log(userData);
 
-    return (
-        <div
-            className="
+  return (
+    <div
+      className="
             w-full
             min-h-[calc(100vh-100px)]
             bg-[#F8FAFC]
@@ -19,20 +19,17 @@ const EditUserPage = () => {
             xl:p-6
             2xl:p-10
             "
-        >
-            <div
-                className="
+    >
+      <div
+        className="
                 w-full
                 mx-auto
                 "
-            >
-                <UserForm
-                    mode="edit"
-                    userData={userData}
-                />
-            </div>
-        </div>
-    );
+      >
+        <UserForm mode="edit" userData={userData} />
+      </div>
+    </div>
+  );
 };
 
 export default EditUserPage;

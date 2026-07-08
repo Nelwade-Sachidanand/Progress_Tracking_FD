@@ -16,6 +16,14 @@ const getInitials = (name = "") => {
     .toUpperCase();
 };
 
+const formatValue = (value = "") => {
+  return value
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+
 const getRoleStyle = (role) => {
   switch (role) {
     case "ADMIN":
@@ -56,39 +64,40 @@ const UserTable = ({ users = [], loading, onDelete, onResetPassword }) => {
     <div
       className="
     bg-white
-    rounded-[24px]
+    rounded-2xl
     border
-    border-[#E8EDF5]
+    border-slate-200
     shadow-sm
     overflow-hidden
-    "
+  "
     >
       {/* Responsive Table Wrapper */}
+
       <div className="overflow-x-auto">
-        <table className="min-w-[1000px] w-full">
+        <table className="w-full table-auto">
           <thead>
-            <tr className="border-b border-[#EDF2F7] bg-white">
-              <th className="px-4 md:px-6 py-4 text-center text-sm md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
+            <tr className="border-b border-slate-200 bg-slate-100">
+              <th className="px-6 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
                 Full Name
               </th>
 
-              <th className="px-4 md:px-6 py-4 text-center text-sm md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
+              <th className="px-6 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
                 Username
               </th>
 
-              <th className="px-4 md:px-6 py-4 text-center text-sm md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
+              <th className="px-6 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
                 Role
               </th>
 
-              <th className="px-4 md:px-6 py-4 text-center text-sm md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
+              <th className="px-7 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
                 Projects
               </th>
 
-              <th className="px-4 md:px-6 py-4 text-center text-sm md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
+              <th className="px-6 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
                 Status
               </th>
 
-              <th className="px-4 md:px-6 py-4 text-center text-sm md:text-sm font-semibold text-[#64748B] whitespace-nowrap 2xl:text-lg 2xl:whitespace-normal">
+              <th className="px-6 py-4 text-center text-base font-semibold text-slate-600 whitespace-nowrap">
                 Actions
               </th>
             </tr>
@@ -96,47 +105,48 @@ const UserTable = ({ users = [], loading, onDelete, onResetPassword }) => {
 
           <tbody>
             {paginatedUsers.map((user) => (
-              <tr key={user.id} className="border-b border-[#EDF2F7]">
-                {/* Name */}
-                <td className="px-4 md:px-6 py-4 text-center">
-                  <div className="flex items-center gap-3">
+              <tr
+                key={user.id}
+                className="
+            border-b
+            border-slate-200
+            hover:bg-slate-50
+            transition-colors
+          "
+              >
+                {/* Full Name */}
+                <td className="px-4 py-2">
+                  <div className="flex items-center gap-2 min-w-0">
                     <div
                       className="
-                    w-8 h-8
-                    md:w-10 md:h-10
-                    rounded-full
-                    bg-purple-100
-                    text-purple-600
-                    flex
-                    items-center
-                    justify-center
-                    font-bold
-                    text-xs md:text-sm
-                    2xl:text-lg
-                      whitespace-nowrap
-                      2xl:whitespace-normal
-                      2xl:w-12 2xl:h-12
-                      2xl:font-semibold
-                      2xl:tracking-wide
-                    "
+                  h-9
+                  w-9
+                  rounded-full
+                  bg-purple-100
+                  text-purple-600
+                  flex
+                  items-center
+                  justify-center
+                  font-bold
+                  shrink-0
+                  2xl:h-10
+                  2xl:w-10
+                "
                     >
                       {getInitials(user.fullname)}
                     </div>
 
                     <span
                       className="
-                      block
-                      max-w-[180px]
-                      md:max-w-[220px]
-                      xl:max-w-[260px]
-                      2xl:max-w-[320px]
-                      truncate
-                      font-semibold
-                      text-[#0F172A]
-                      text-sm
-                      md:text-base
-                      2xl:text-xl
-                    "
+                  flex-1
+                  min-w-0
+                  truncate
+                  font-semibold
+                  text-slate-900
+                  text-sm
+                  xl:text-base
+                  2xl:text-base
+                "
                       title={user.fullname}
                     >
                       {user.fullname}
@@ -145,140 +155,174 @@ const UserTable = ({ users = [], loading, onDelete, onResetPassword }) => {
                 </td>
 
                 {/* Username */}
-                <td className="px-4 md:px-6 py-4 text-center">
-                  <div
-                    className=" text-[#0F172A] text-base md:max-w-[180px] lg:max-w-[220px] xl:max-w-[260px] 2xl:max-w-[320px] truncate 2xl:text-xl"
+                <td className="px-6 py-2">
+                  <span
+                    className="
+                block
+                truncate
+                text-slate-700
+                text-sm
+                xl:text-base
+                2xl:text-base
+              "
                     title={user.username}
                   >
                     {user.username}
-                  </div>
+                  </span>
                 </td>
 
                 {/* Role */}
-                <td className="px-4 md:px-6 py-4 text-center">
+                <td className="px-6 py-2">
                   <span
                     className={`
-                    px-2 md:px-4
-                    py-1 md:py-2
-                    rounded-full
-                    text-[11px] md:text-[13px]
-                    font-medium
-                    2xl:text-base
-                      whitespace-nowrap
-                      2xl:whitespace-normal
-                    ${getRoleStyle(user.role)}
-                  `}
+                inline-flex
+                items-center
+                px-2
+                py-1.5
+                rounded-full
+                text-sm
+                font-semibold
+                whitespace-nowrap
+                ${getRoleStyle(user.role)}
+              `}
                   >
-                    {user.role.replaceAll("_", " ")}
+                    {formatValue(user.role.replaceAll("_", " "))}
                   </span>
                 </td>
 
                 {/* Projects */}
-                <td className="px-4 md:px-6 py-4 text-center">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-md">
-                    {user.projectNames?.map((project) => (
+                <td className="px-6 py-2">
+                  <div
+                    className="flex flex-wrap items-center gap-2"
+                    title={user.projectNames?.join(", ")}
+                  >
+                    {user.projectNames?.slice(0, 2).map((project) => (
                       <span
                         key={project}
                         className="
-                        px-3
-                        py-1
-                        rounded-full
-                        bg-[#F1F5F9]
-                        text-[#475569]
-                        text-sm
-                        font-medium
-                        text-center
-                        truncate
-                        2xl:text-lg
-                      "
-                        title={project}
+                    px-3
+                    py-1
+                    rounded-full
+                    bg-slate-100
+                    text-slate-600
+                    text-xs
+                    xl:text-sm
+                    font-medium
+                    whitespace-nowrap
+                  "
                       >
                         {project}
                       </span>
                     ))}
+
+                    {user.projectNames?.length > 2 && (
+                      <span
+                        className="
+                    px-3
+                    py-1
+                    rounded-full
+                    bg-blue-50
+                    text-blue-600
+                    text-xs
+                    xl:text-sm
+                    font-semibold
+                    whitespace-nowrap
+                  "
+                      >
+                        +{user.projectNames.length - 2}
+                      </span>
+                    )}
                   </div>
                 </td>
 
                 {/* Status */}
-                <td className="px-4 md:px-6 py-4">
+                <td className="px-6 py-2">
                   <span
                     className={`
-                    px-2 md:px-4
-                    py-1 md:py-2
-                    rounded-full
-                    text-[11px] md:text-[13px]
-                    font-medium
-                    2xl:text-lg
-                      whitespace-nowrap
-                      2xl:whitespace-normal
-                    ${
-                      user.status
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-600"
-                    }
-                  `}
+                inline-flex
+                items-center
+                gap-1
+                px-3
+                py-1.5
+                rounded-full
+                text-sm
+                font-semibold
+                whitespace-nowrap
+                ${
+                  user.status
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-600"
+                }
+              `}
                   >
-                    ● {user.status === true ? "Active" : "Inactive"}
+                    <span className="text-xs">●</span>
+                    {user.status ? "Active" : "Inactive"}
                   </span>
                 </td>
 
                 {/* Actions */}
-                <td className="px-4 md:px-6 py-4">
-                  <div className="flex justify-center gap-2">
+                <td className="px-6 py-2">
+                  <div className="flex items-center justify-center gap-2">
                     <button
                       onClick={() =>
                         navigate("/users/edit", { state: { user } })
                       }
+                      title="Edit User"
                       className="
-                    w-8 h-8
-                    md:w-10 md:h-10
-                    rounded-xl
-                    bg-[#EEF4FF]
-                    flex
-                    items-center
-                    justify-center
-                    cursor-pointer
-                    2xl:w-12 2xl:h-12
-                    2xl:text-lg
-                    2xl:font-medium
-                    "
+                  h-9
+                  w-9
+                  rounded-lg
+                  bg-blue-50
+                  text-blue-600
+                  flex
+                  items-center
+                  justify-center
+                  hover:bg-blue-100
+                  transition-colors
+                  cursor-pointer
+                "
                     >
-                      <Pencil size={14} className="text-[#2563EB]" />
+                      <Pencil size={16} />
                     </button>
+
                     <button
                       onClick={() => onResetPassword?.(user)}
                       title="Reset Password"
                       className="
-  w-8 h-8
-  md:w-10 md:h-10
-  rounded-xl
-  bg-amber-50
-  flex
-  items-center
-  justify-center
-  cursor-pointer
-  2xl:w-12 2xl:h-12
-  "
+                  h-9
+                  w-9
+                  rounded-lg
+                  bg-amber-50
+                  text-amber-600
+                  flex
+                  items-center
+                  justify-center
+                  hover:bg-amber-100
+                  transition-colors
+                  cursor-pointer
+                "
                     >
-                      <KeyRound size={14} className="text-amber-600" />
+                      <KeyRound size={16} />
                     </button>
+
                     <button
                       onClick={() => onDelete(user.id)}
+                      title="Delete User"
                       className="
-                    w-8 h-8
-                    md:w-10 md:h-10
-                    rounded-xl
-                    bg-[#FFF1F2]
-                    flex
-                    items-center
-                    justify-center
-                    2xl:w-12 2xl:h-12
-                    2xl:text-lg
-                    2xl:font-medium
-                    cursor-pointer
-                    "
+                  h-9
+                  w-9
+                  rounded-lg
+                  bg-red-50
+                  text-red-600
+                  flex
+                  items-center
+                  justify-center
+                  hover:bg-red-100
+                  transition-colors
+                  cursor-pointer
+                "
                     >
-                      <Trash2 size={14} className="text-[#EF4444]" />
+                      <Trash2 size={16} />
                     </button>
                   </div>
                 </td>
@@ -294,7 +338,7 @@ const UserTable = ({ users = [], loading, onDelete, onResetPassword }) => {
         totalPages={totalPages}
         totalRecords={paginatedUsers.length}
         recordsPerPage={10}
-        label="users"
+        label="Users"
         onPageChange={setCurrentPage}
       />
     </div>

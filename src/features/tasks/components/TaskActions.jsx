@@ -5,19 +5,6 @@ import { toast } from "react-toastify";
 import { useProjects } from "../../../context/ProjectContext";
 import { exportExcelReport } from "../../add-task/api/exportExcelApi";
 import GenerateReportModal from "../components/GenerateReportModal";
-import { saveAs } from "file-saver";
-import { WidthType } from "docx";
-
-import {
-  Document,
-  Packer,
-  Paragraph,
-  Table,
-  TableRow,
-  TableCell,
-  HeadingLevel,
-} from "docx";
-
 
 import PrintReport from "../components//PrintReport";
 
@@ -353,59 +340,27 @@ export default function TaskActions({
           onClick={() => setShowReportModal(true)}
           className="
     bg-[#6D4AFF]
-    hover:bg-[#5B3DF4]
     text-white
     px-4
     py-2.5
     rounded-xl
     text-sm
+    h-10
     font-medium
     cursor-pointer
   "
         >
           Generate Report
         </button>
-
-        {/* <button
-        onClick={handleExportExcel}
-        className="
-        bg-[#10B981]
-        text-white
-        px-4
-        py-2.5
-        rounded-xl
-        text-sm
-        font-medium
-        hover:bg-[#059669]
-        flex-1
-        sm:flex-none
-        cursor-pointer
-        "
-        
-      >
-        Export Excel
-      </button> */}
-
-        {/* <button
- onClick={handlePrintReport}
-  className="
-  bg-[#2563EB]
-  text-white
-  px-4
-  py-2.5
-  rounded-xl
-  "
->
-  Print Report
-</button> */}
       </div>
 
       {(user?.role === "ADMIN" || user?.role === "IMPLEMENTATION USER") && (
         <button
           onClick={() => navigate("add-task")}
           className="
-          bg-[#6D4AFF]
-          hover:bg-[#5B3DF4]
+          bg-gradient-to-r
+              from-[#7C3AED]
+              to-[#A855F7]
           text-white
           px-5
           py-2.5
@@ -414,8 +369,9 @@ export default function TaskActions({
           items-center
           gap-2
           font-medium
-          shadow-sm
+          text-sm
           cursor-pointer
+          h-10
         "
         >
           <Plus size={18} />

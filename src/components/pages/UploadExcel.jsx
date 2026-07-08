@@ -15,7 +15,7 @@ const UploadExcel = () => {
 
   const handleUpload = async () => {
     if (!file) {
-      toast.error("Please select an Excel file.");
+      toast.error("Please Select An Excel File.");
       return;
     }
 
@@ -25,7 +25,7 @@ const UploadExcel = () => {
       const response = await uploadExcel(file);
 
       if (response?.statusType === "S") {
-        toast.success("Excel uploaded successfully.");
+        toast.success("Excel Uploaded Successfully.");
 
         setFile(null);
 
@@ -33,11 +33,11 @@ const UploadExcel = () => {
           fileInputRef.current.value = "";
         }
       } else {
-        toast.error(response?.message || "Failed to upload Excel.");
+        toast.error(response?.message || "Failed to Upload Excel.");
       }
     } catch (error) {
       console.error(error);
-      toast.error("Something went wrong while uploading.");
+      toast.error("Something Went Wrong While Uploading.");
     } finally {
       setLoading(false);
     }
@@ -61,13 +61,13 @@ const UploadExcel = () => {
     const fileName = selectedFile.name.toLowerCase();
 
     if (!fileName.endsWith(".xlsx") && !fileName.endsWith(".xls")) {
-      toast.error("Only Excel files (.xlsx or .xls) are allowed.");
+      toast.error("Only Excel Files (.xlsx or .xls) Are Allowed.");
       e.target.value = "";
       return;
     }
 
     if (selectedFile.size > MAX_FILE_SIZE) {
-      toast.error("File size should not exceed 10 MB.");
+      toast.error("File size Should Not Exceed 10 MB.");
       e.target.value = "";
       return;
     }
@@ -86,7 +86,7 @@ const UploadExcel = () => {
           </h2>
 
           <p className="text-slate-500 mt-1">
-            Upload project tracker Excel template (.xlsx or .xls)
+            Upload Project Tracker Excel Template (.xlsx or .xls)
           </p>
         </div>
 
@@ -121,7 +121,7 @@ const UploadExcel = () => {
             </p>
 
             <p className="text-sm text-slate-500 mt-1">
-              Supported formats: XLSX, XLS (Maximum 10 MB)
+              Supported Formats: XLSX, XLS (Maximum 10 MB)
             </p>
           </div>
 

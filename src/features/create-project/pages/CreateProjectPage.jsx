@@ -1,7 +1,10 @@
-import useProjectForm from "../hooks/useProjectForm";
+import { Check, ChevronDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-import ProjectNavigation from "../components/ProjectNavigation";
-import ProjectStepper from "../components/ProjectStepper";
+import useProjectForm from "../hooks/useProjectForm";
+import useProjectInformation from "../hooks/useProjectInformation";
+
+import { getProjectInformation } from "../services/createProjectService";
 
 import BackButton from "../components/tabs/BackButton";
 import BankDetailsTab from "../components/tabs/BankDetailsTab";
@@ -10,11 +13,10 @@ import DigitalChannelsTab from "../components/tabs/DigitalChannelsTab";
 import InfrastructureTab from "../components/tabs/InfrastructureTab";
 import ManagementDetailsTab from "../components/tabs/ManagementDetailsTab";
 import PaymentSystemsTab from "../components/tabs/PaymentSystemsTab";
-import useProjectInformation from "../hooks/useProjectInformation";
 
-import { Check, ChevronDown } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { getProjectInformation } from "../services/createProjectService";
+import DraftModal from "../../../components/common/DraftModal";
+import ProjectNavigation from "../components/ProjectNavigation";
+import ProjectStepper from "../components/ProjectStepper";
 
 export default function CreateProjectPage() {
   const {
@@ -31,11 +33,57 @@ export default function CreateProjectPage() {
   const { projectInformation, loadProjectInformation } =
     useProjectInformation();
 
+  const [selectedProjectId, setSelectedProjectId] = useState("");
+  const [showBanks, setShowBanks] = useState(false);
+
+  const [showDraftModal, setShowDraftModal] = useState(false);
+
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const draft = sessionStorage.getItem("projectDraft");
+
+    console.log("Draft:", draft);
+
+    if (draft) {
+      console.log("Opening Draft Modal");
+      setShowDraftModal(true);
+    }
+  }, []);
+
   useEffect(() => {
     loadProjectInformation();
   }, []);
 
-  const [selectedProjectId, setSelectedProjectId] = useState("");
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setShowBanks(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleContinueDraft = () => {
+    const draft = sessionStorage.getItem("projectDraft");
+
+    if (draft) {
+      const draftData = JSON.parse(draft);
+      setFormData(draftData);
+    }
+    setShowDraftModal(false);
+  };
+
+  const handleDiscardDraft = () => {
+    sessionStorage.removeItem("projectDraft");
+    resetForm();
+    setSelectedProjectId("");
+    setCurrentStep(0);
+    setShowDraftModal(false);
+  };
 
   const renderStep = () => {
     switch (currentStep) {
@@ -92,219 +140,187 @@ export default function CreateProjectPage() {
     }
   };
 
-  const [showBanks, setShowBanks] = useState(false);
-
-  const dropdownRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setShowBanks(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   return (
-    <div
-      className="
-      p-4
-      md:p-6
-      xl:p-8
-      2xl:p-10
-      max-w-[1800px]
-      mx-auto
-    "
-    >
-      <div
-        className="
-        bg-white
-        rounded-2xl
-        border
-        border-slate-200
-        p-4
-        md:p-6
-        xl:p-8
-      "
-      >
-        <BackButton />
-        <div className="mb-6 flex items-center gap-4 mt-5">
-          <div className="w-full max-w-md">
-            <label
-              className="
-              block
-              mb-2
-              text-sm
-              font-semibold
-              text-[#0B1F59]
-            "
-            >
-              Select Existing Bank
-            </label>
+    <>
+      <DraftModal
+        open={showDraftModal}
+        onContinue={handleContinueDraft}
+        onDiscard={handleDiscardDraft}
+      />
+      <div className="mx-auto max-w-[1800px] p-2 md:p-3 xl:p-3">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 md:p-5 xl:p-6">
+          {/* Header */}
+          <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
+            <BackButton />
 
-            <div ref={dropdownRef} className="relative">
-              {/* Button */}
+            <div className="w-full max-w-md">
+              <label className="mb-1 ml-1 block text-sm font-semibold text-[#0B1F59]">
+                Select Existing Bank
+              </label>
 
-              <button
-                type="button"
-                onClick={() => setShowBanks(!showBanks)}
-                className="
-                w-full
-                h-12
-                px-4
-                rounded-xl
-                border
-                border-[#D6E4FF]
-                bg-white
-                text-[#0B1F59]
-                font-medium
-                shadow-sm
-                flex
-                items-center
-                justify-between
-                hover:border-[#2563EB]
-                transition
-                cursor-pointer
-              "
-              >
-                <span className="truncate">
-                  {selectedProjectId
-                    ? projectInformation.find(
-                        (p) => String(p.id) === String(selectedProjectId),
-                      )?.bankName
-                    : "➕ New Project"}
-                </span>
+              <div ref={dropdownRef} className="relative">
+                {/* Dropdown Button */}
 
-                <ChevronDown
-                  size={18}
-                  className={`transition ${showBanks ? "rotate-180" : ""}`}
-                />
-              </button>
-
-              {/* Dropdown */}
-
-              {showBanks && (
-                <div
+                <button
+                  type="button"
+                  onClick={() => setShowBanks((prev) => !prev)}
                   className="
-                  absolute
-                  left-0
-                  mt-2
+                  flex
+                  h-9
                   w-full
-                  bg-white
-                  rounded-2xl
-                  shadow-xl
+                  cursor-pointer
+                  items-center
+                  justify-between
+                  rounded-lg
                   border
-                  border-[#E2E8F0]
-                  overflow-hidden
-                  z-50
-                  max-h-72
-                  overflow-y-auto
+                  border-[#D6E4FF]
+                  bg-white
+                  px-4
+                  text-sm
+                  font-medium
+                  text-[#0B1F59]
+                  shadow-sm
+                  focus:border-blue-500
                 "
                 >
-                  {/* New Project */}
+                  <span className="truncate">
+                    {selectedProjectId
+                      ? projectInformation.find(
+                          (p) => String(p.id) === String(selectedProjectId),
+                        )?.bankName
+                      : "➕ New Project"}
+                  </span>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedProjectId("");
-                      resetForm();
-                      setShowBanks(false);
-                    }}
+                  <ChevronDown
+                    size={18}
+                    className={`transition-transform ${
+                      showBanks ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {/* Dropdown */}
+
+                {showBanks && (
+                  <div
                     className="
+                    absolute
+                    left-0
+                    z-50
+                    mt-2
+                    max-h-72
                     w-full
-                    px-4
-                    py-3
-                    text-left
-                    hover:bg-[#EEF4FF]
-                    transition
-                    flex
-                    items-center
-                    justify-between
-                    cursor-pointer
+                    overflow-y-auto
+                    rounded-xl
+                    border
+                    border-slate-200
+                    bg-white
+                    shadow-xl
                   "
                   >
-                    <span>➕ New Project</span>
-
-                    {!selectedProjectId && (
-                      <Check size={16} className="text-[#2563EB]" />
-                    )}
-                  </button>
-
-                  {/* Banks */}
-
-                  {projectInformation.map((project) => (
                     <button
-                      key={project.id}
                       type="button"
-                      onClick={async () => {
-                        setSelectedProjectId(project.id);
-
+                      onClick={() => {
+                        resetForm();
+                        setSelectedProjectId("");
                         setShowBanks(false);
-
-                        try {
-                          const response = await getProjectInformation(
-                            project.bankName,
-                            project.projectName,
-                          );
-
-                          if (response?.statusType === "S") {
-                            setFormData(response.details);
-                          }
-                        } catch (error) {
-                          console.error(error);
-                        }
                       }}
-                      className={`
-                      w-full
-                      px-4
-                      py-3
-                      text-left
-                      hover:bg-[#EEF4FF]
-                      transition
+                      className="
                       flex
+                      w-full
+                      cursor-pointer
                       items-center
                       justify-between
-                      cursor-pointer
-
-                      ${
-                        String(selectedProjectId) === String(project.id)
-                          ? "bg-[#EEF4FF] text-[#2563EB] font-semibold"
-                          : "text-[#0B1F59]"
-                      }
-                      `}
+                      px-4
+                      py-2.5
+                      text-left
+                      transition
+                      hover:bg-[#EEF4FF]
+                    "
                     >
-                      <span className="break-words">{project.bankName}</span>
+                      <span>➕ New Project</span>
 
-                      {String(selectedProjectId) === String(project.id) && (
+                      {!selectedProjectId && (
                         <Check size={16} className="text-[#2563EB]" />
                       )}
                     </button>
-                  ))}
-                </div>
-              )}
+
+                    {projectInformation.map((project) => (
+                      <button
+                        key={project.id}
+                        type="button"
+                        onClick={async () => {
+                          setSelectedProjectId(project.id);
+                          setShowBanks(false);
+
+                          try {
+                            const response = await getProjectInformation(
+                              project.bankName,
+                              project.projectName,
+                            );
+
+                            if (response?.statusType === "S") {
+                              setFormData(response.details);
+                            }
+                          } catch (error) {
+                            console.error(error);
+                          }
+                        }}
+                        className={`
+                        flex
+                        w-full
+                        cursor-pointer
+                        items-center
+                        justify-between
+                        px-4
+                        py-2.5
+                        text-left
+                        transition
+                        hover:bg-[#EEF4FF]
+
+                        ${
+                          String(selectedProjectId) === String(project.id)
+                            ? "bg-[#EEF4FF] font-semibold text-[#2563EB]"
+                            : "text-[#0B1F59]"
+                        }
+                      `}
+                      >
+                        <span className="truncate">{project.bankName}</span>
+
+                        {String(selectedProjectId) === String(project.id) && (
+                          <Check size={16} className="text-[#2563EB]" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
+
+          {/* Stepper */}
+
+          <ProjectStepper
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+          />
+
+          {/* Current Step */}
+
+          <div className="mt-4">{renderStep()}</div>
+
+          {/* Navigation */}
+
+          <ProjectNavigation
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+            formData={formData}
+            resetForm={resetForm}
+            setSelectedProjectId={setSelectedProjectId}
+            loadProjectInformation={loadProjectInformation}
+          />
         </div>
-
-        <ProjectStepper
-          currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
-        />
-
-        <div className="mt-8">{renderStep()}</div>
-
-        <ProjectNavigation
-          currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
-          formData={formData}
-          resetForm={resetForm}
-          setSelectedProjectId={setSelectedProjectId}
-          loadProjectInformation={loadProjectInformation}
-        />
       </div>
-    </div>
+    </>
   );
 }

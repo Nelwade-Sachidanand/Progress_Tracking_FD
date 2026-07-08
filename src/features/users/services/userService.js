@@ -7,25 +7,34 @@ export const getUsers = async () => {
 };
 
 export const getProjectNames = async (projectIds) => {
-  const response = await apiClient.post("/projects/getNames",{projectIds});
+  const response = await apiClient.post("/projects/getNames", { projectIds });
 
   return response.data;
-}
+};
 
 export const registerUser = async (userData) => {
-  const response = await apiClient.post("/user/register",userData);
+  const response = await apiClient.post("/user/register", userData);
 
   return response.data;
-}
+};
 
 export const updateUser = async (userData) => {
-  const response = await apiClient.put("/user/updateUser",userData);
+  const response = await apiClient.put("/user/updateUser", userData);
 
   return response.data;
-}
+};
 
 export const deleteUser = async (userId) => {
   const response = await apiClient.delete(`/user/deleteUser/${userId}`);
 
+  return response.data;
+};
+
+export const resetPassword = async (userId, newPassword, confirmPassword) => {
+  const response = await apiClient.put("/user/resetPassword", {
+    userId,
+    newPassword,
+    confirmPassword,
+  });
   return response.data;
 };

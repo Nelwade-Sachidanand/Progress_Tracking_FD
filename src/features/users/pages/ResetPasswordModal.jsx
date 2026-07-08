@@ -1,40 +1,38 @@
-import { X, KeyRound } from "lucide-react";
+import { KeyRound, X } from "lucide-react";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
-export default function ResetPasswordModal({
-  isOpen,
-  onClose,
-  user,
-  onReset,
-}) {
-  const [newPassword, setNewPassword] =
-    useState("");
+export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
+  const [newPassword, setNewPassword] = useState("");
 
-  const [confirmPassword, setConfirmPassword] =
-    useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   if (!isOpen) return null;
 
   const handleSubmit = () => {
     if (!newPassword.trim()) {
-      alert("Password is required");
+      toast.error("Password is required");
       return;
     }
 
-    if (
-      newPassword !==
-      confirmPassword
-    ) {
-      alert(
-        "Passwords do not match"
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return false;
+    }
+
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/.test(newPassword)) {
+      toast.error(
+        "Password must contain at least one uppercase letter, one lowercase letter and one number",
       );
-      return;
+      return false;
     }
 
-    onReset?.(
-      user,
-      newPassword
-    );
+    onReset?.(user, newPassword, confirmPassword);
 
     setNewPassword("");
     setConfirmPassword("");
@@ -74,27 +72,18 @@ export default function ResetPasswordModal({
           "
         >
           <div className="flex items-center gap-2">
-            <KeyRound
-              size={20}
-              className="text-[#2563EB]"
-            />
+            <KeyRound size={20} className="text-[#2563EB]" />
 
-            <h2 className="text-lg font-bold text-[#0F172A]">
-              Reset Password
-            </h2>
+            <h2 className="text-lg font-bold text-[#0F172A]">Reset Password</h2>
           </div>
 
-          <button
-            onClick={onClose}
-            className="cursor-pointer"
-          >
+          <button onClick={onClose} className="cursor-pointer">
             <X size={20} />
           </button>
         </div>
 
         {/* Body */}
         <div className="p-6">
-
           <div className="mb-5">
             <label
               className="
@@ -109,9 +98,7 @@ export default function ResetPasswordModal({
             </label>
 
             <input
-              value={
-                user?.username || ""
-              }
+              value={user?.username || ""}
               disabled
               className="
               w-full
@@ -133,19 +120,13 @@ export default function ResetPasswordModal({
               "
             >
               New Password
-              <span className="text-red-500">
-                *
-              </span>
+              <span className="text-red-500">*</span>
             </label>
 
             <input
               type="password"
               value={newPassword}
-              onChange={(e) =>
-                setNewPassword(
-                  e.target.value
-                )
-              }
+              onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Enter new password"
               className="
               w-full
@@ -169,19 +150,13 @@ export default function ResetPasswordModal({
               "
             >
               Confirm Password
-              <span className="text-red-500">
-                *
-              </span>
+              <span className="text-red-500">*</span>
             </label>
 
             <input
               type="password"
               value={confirmPassword}
-              onChange={(e) =>
-                setConfirmPassword(
-                  e.target.value
-                )
-              }
+              onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm password"
               className="
               w-full
@@ -194,7 +169,6 @@ export default function ResetPasswordModal({
               "
             />
           </div>
-
         </div>
 
         {/* Footer */}

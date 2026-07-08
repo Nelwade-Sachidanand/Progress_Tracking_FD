@@ -1,9 +1,19 @@
-import { Calendar, ClipboardList, FolderOpen, User } from "lucide-react";
+import {
+  CalendarDays,
+  ClipboardCheck,
+  Database,
+  FolderKanban,
+  User,
+} from "lucide-react";
 
 export default function AuditSummaryCards({ auditLogs = [] }) {
   const totalLogs = auditLogs.length;
 
   const userLogs = auditLogs.filter((log) => log.entityType === "USER").length;
+
+  const activityLogs = auditLogs.filter(
+    (log) => log.entityType === "ACTIVITY",
+  ).length;
 
   const projectLogs = auditLogs.filter(
     (log) => log.entityType === "PROJECT",
@@ -19,7 +29,7 @@ export default function AuditSummaryCards({ auditLogs = [] }) {
     {
       title: "Total Logs",
       value: totalLogs,
-      icon: ClipboardList,
+      icon: Database,
       bg: "bg-purple-50",
       text: "text-purple-600",
     },
@@ -31,16 +41,23 @@ export default function AuditSummaryCards({ auditLogs = [] }) {
       text: "text-green-600",
     },
     {
-      title: "Project Logs",
-      value: projectLogs,
-      icon: FolderOpen,
+      title: "Activity Logs",
+      value: activityLogs,
+      icon: ClipboardCheck,
       bg: "bg-blue-50",
       text: "text-blue-600",
     },
     {
-      title: "Today Logs",
+      title: "Project Logs",
+      value: projectLogs,
+      icon: FolderKanban,
+      bg: "bg-yellow-50",
+      text: "text-yellow-600",
+    },
+    {
+      title: "Today's Logs",
       value: todayLogs,
-      icon: Calendar,
+      icon: CalendarDays,
       bg: "bg-orange-50",
       text: "text-orange-600",
     },
@@ -50,11 +67,13 @@ export default function AuditSummaryCards({ auditLogs = [] }) {
     <div
       className="
       grid
-      gap-5
+      gap-4
       grid-cols-1
       sm:grid-cols-2
-      xl:grid-cols-4
-      "
+      lg:grid-cols-3
+      xl:grid-cols-5
+      mt-[5px]
+    "
     >
       {cards.map((card) => {
         const Icon = card.icon;
@@ -64,53 +83,60 @@ export default function AuditSummaryCards({ auditLogs = [] }) {
             key={card.title}
             className="
             bg-white
-            rounded-3xl
+            rounded-2xl
             border
             border-slate-200
-            p-6
             shadow-sm
-            "
+
+            p-3
+            min-h-[120px]
+
+            flex
+            flex-col
+          "
           >
-            <div className="flex items-center gap-4">
-              <div
-                className={`
-                h-14
-                w-14
-                rounded-2xl
-                flex
-                items-center
-                justify-center
-                ${card.bg}
-                `}
+            {/* Icon - Top Left */}
+            <div
+              className={`
+              h-11
+              w-11
+              rounded-xl
+              flex
+              items-center
+              justify-center
+
+              ${card.bg}
+            `}
+            >
+              <Icon size={24} className={card.text} />
+            </div>
+
+            {/* Value & Title */}
+            <div className="relative mt-[-20px] flex-1 flex flex-col items-center justify-center text-center">
+              <h2
+                className="
+                text-3xl
+                xl:text-[35px]
+                font-bold
+                text-[#142850]
+                leading-none
+              "
               >
-                <Icon size={28} className={card.text} />
-              </div>
+                {card.value}
+              </h2>
 
-              <div>
-                <h2
-                  className="
-                  text-[32px]
-                  font-bold
-                  text-[#142850]
-                  leading-none
-                  "
-                >
-                  {card.value}
-                </h2>
-
-                <p
-                  className="
-                  text-[15px]
-                  text-slate-500
-                  mt-1
-                  2xl:text-[17px]
-                  2xl:font-medium
-                  2xl:tracking-wide
-                  "
-                >
-                  {card.title}
-                </p>
-              </div>
+              <p
+                className="
+                mt-2
+                text-sm
+                xl:text-[16px]
+                font-medium
+                text-slate-500
+                leading-snug
+              "
+              >
+                {card.title}
+              </p>
             </div>
           </div>
         );

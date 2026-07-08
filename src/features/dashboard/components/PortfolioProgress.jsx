@@ -9,7 +9,7 @@ export default function PortfolioProgress({ data }) {
         border
         border-slate-100
         shadow-sm
-
+        mt-[-10px]
         p-4
         xl:p-5
         2xl:p-6
