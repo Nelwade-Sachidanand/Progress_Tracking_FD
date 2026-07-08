@@ -13,14 +13,11 @@ export default function UploadDocumentModal({
   const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
-    if (!isOpen) {
-      setSelectedFile(null);
-    }
+    if (!isOpen) setSelectedFile(null);
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  // ✅ FILE VALIDATION
   const handleFile = (file) => {
     if (!file) return;
 
@@ -39,8 +36,7 @@ export default function UploadDocumentModal({
       return;
     }
 
-    const maxSize = 10 * 1024 * 1024;
-    if (file.size > maxSize) {
+    if (file.size > 10 * 1024 * 1024) {
       toast.error("File must be <= 10MB");
       return;
     }
@@ -50,8 +46,6 @@ export default function UploadDocumentModal({
 
   const handleUpload = async () => {
     if (!selectedFile) return;
-
-    // // console.log("🔥 Upload Started");
 
     const payload = {
       projectId:
@@ -65,14 +59,11 @@ export default function UploadDocumentModal({
       activityName: document.activity,
     };
 
-    // console.log("📦 Payload:", payload);
-
     try {
       const response = await uploadDocument(selectedFile, payload);
 
       if (response.statusType === "S") {
         toast.success("Document uploaded successfully 🎉");
-
         setSelectedFile(null);
         onClose();
         await onSuccess?.();
@@ -80,36 +71,62 @@ export default function UploadDocumentModal({
         toast.error(response.statusDesc || "Upload failed");
       }
     } catch (err) {
-      console.error("❌ Upload failed:", err);
-      toast.error(err?.response?.data?.statusDesc || "Failed to create user");
+      console.error(err);
+      toast.error("Failed to upload document");
     }
   };
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-xl">
+
+      {/* CARD */}
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden">
+
         {/* HEADER */}
-        <div className="flex justify-between border-b px-6 py-5">
+        <div className="flex items-center justify-between px-6 py-4 border-b bg-slate-50">
           <div>
-            <h2 className="text-xl font-bold text-[#0B1F59]">
+            <h2 className="text-lg font-bold text-[#0B1F59]">
               Upload Document
             </h2>
-            <p className="text-sm text-slate-500">{document?.activity}</p>
+            <p className="text-sm text-slate-500">
+              {document?.activity}
+            </p>
           </div>
 
-          <button onClick={onClose}>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg hover:bg-slate-200 cursor-pointer"
+          >
             <X />
           </button>
         </div>
 
-        {/* UPLOAD AREA */}
+        {/* BODY */}
         <div className="p-6">
+
+          {/* DROP AREA */}
           <div
             onClick={() => inputRef.current?.click()}
-            className="border-2 border-dashed p-10 text-center cursor-pointer"
+            className="
+              border-2 border-dashed border-blue-300
+              rounded-xl
+              p-10
+              flex flex-col items-center justify-center
+              cursor-pointer
+              hover:bg-blue-50
+              transition
+              text-center
+            "
           >
-            <Upload size={40} />
-            <p>Drag & Drop or Click</p>
+            <Upload size={45} className="text-blue-500" />
+
+            <p className="mt-3 font-semibold text-gray-700">
+              Drag & Drop or Click to Upload
+            </p>
+
+            <p className="text-xs text-gray-400">
+              PDF, Excel, Word, Images (max 10MB)
+            </p>
 
             <input
               ref={inputRef}
@@ -121,18 +138,49 @@ export default function UploadDocumentModal({
 
           {/* FILE PREVIEW */}
           {selectedFile && (
-            <div className="mt-4 border p-3 rounded">
-              <p>{selectedFile.name}</p>
+            <div className="mt-5 p-4 border rounded-xl bg-gray-50 flex justify-between items-center">
+              <div>
+                <p className="font-medium text-gray-800">
+                  {selectedFile.name}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                </p>
+              </div>
 
               <button
-                onClick={handleUpload}
-                className="mt-3 bg-blue-600 text-white px-4 py-2 rounded"
+                onClick={() => setSelectedFile(null)}
+                className="text-red-500 hover:text-red-700 cursor-pointer"
               >
-                Upload
+                <X />
               </button>
             </div>
           )}
         </div>
+
+        {/* FOOTER */}
+        <div className="flex justify-end gap-3 px-6 py-4 border-t bg-slate-50">
+
+          <button
+            onClick={() => {
+              setSelectedFile(null);
+              onClose();
+            }}
+            className="px-5 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 cursor-pointer"
+          >
+            Cancel
+          </button>
+
+          <button
+            disabled={!selectedFile}
+            onClick={handleUpload}
+            className="px-5 py-2 rounded-lg bg-blue-600 text-white disabled:bg-gray-300 cursor-pointer"
+          >
+            Upload
+          </button>
+
+        </div>
+
       </div>
     </div>
   );

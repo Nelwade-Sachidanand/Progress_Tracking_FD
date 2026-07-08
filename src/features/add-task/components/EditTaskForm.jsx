@@ -270,16 +270,21 @@ const getStatus = (p) => {
               Estimated Weeks
             </label>
 
-            <input
-              type="number"
-              step="0.1"
-              placeholder="Enter Estimated Weeks"
-              className={inputClass}
-              value={formData.estimatedPeriodWeek}
-              onChange={(e) =>
-                handleChange("estimatedPeriodWeek", e.target.value)
-              }
-            />
+               <input
+  type="number"
+  min="0"
+  step="0.1"
+  placeholder="Enter Estimated Weeks"
+  className={inputClass}
+  value={formData.estimatedPeriodWeek}
+  onChange={(e) => {
+    const value = e.target.value;
+
+    if (value === "" || Number(value) >= 0) {
+      handleChange("estimatedPeriodWeek", value);
+    }
+  }}
+/>
           </div>
           {isDateChanged && (
             <div>

@@ -1,11 +1,4 @@
-// import {
-//   Cloud,
-//   Database,
-//   GraduationCap,
-//   ClipboardCheck,
-//   ShieldCheck,
-//   CalendarDays,
-// } from "lucide-react";
+
 import { CalendarDays } from "lucide-react";
 
 export default function GoLiveReadiness({
@@ -77,9 +70,10 @@ const notStartedActivities =
 const overallReadiness =
   totalActivities > 0
     ? Math.round(
-        (completedActivities /
-          totalActivities) *
-          100
+        activeActivities.reduce(
+          (sum, a) => sum + (a.progress || 0),
+          0
+        ) / totalActivities
       )
     : 0;
  const pendingActivities =

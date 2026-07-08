@@ -77,6 +77,7 @@ export default function DocumentFilters({
             font-medium
             mb-2
             "
+        
           >
             Phase
           </label>
@@ -94,6 +95,7 @@ export default function DocumentFilters({
             outline-none
             focus:border-[#2563EB]
             text-sm
+            cursor-pointer
             "
           >
             <option value="All Phases">All Phases</option>
@@ -247,6 +249,7 @@ export default function DocumentFilters({
             outline-none
             focus:border-[#2563EB]
             text-sm
+            cursor-pointer
             "
           >
             <option value="All Tasks">All Tasks</option>
@@ -286,6 +289,7 @@ export default function DocumentFilters({
             outline-none
             focus:border-[#2563EB]
             text-sm
+            cursor-pointer
             "
           >
             <option value="All Sub Tasks">All Sub Tasks</option>
@@ -325,6 +329,7 @@ export default function DocumentFilters({
             outline-none
             focus:border-[#2563EB]
             text-sm
+            cursor-pointer
             "
           >
             <option value="All Activities">All Activities</option>
@@ -364,6 +369,7 @@ export default function DocumentFilters({
             outline-none
             focus:border-[#2563EB]
             text-sm
+            cursor-pointer
             "
           >
             <option value="All Status">All Status</option>
@@ -375,85 +381,65 @@ export default function DocumentFilters({
         </div>
         {/* Search */}
 
-        <div>
-          <label
-            className="
-    block
-    text-sm
-    font-medium
-    mb-2
-    "
-          >
-            Search
-          </label>
+       {/* Search */}
+<div className="lg:col-span-2">
+  <label className="block text-sm font-medium mb-2">
+    Search
+  </label>
 
-          <div className="relative">
-            <Search
-              size={18}
-              className="
-      absolute
-      left-4
-      top-1/2
-      -translate-y-1/2
-      text-slate-400
+  <div className="relative">
+    <Search
+      size={18}
+      className="
+        absolute
+        left-4
+        top-1/2
+        -translate-y-1/2
+        text-slate-400
       "
-            />
+    />
 
-            <input
-              type="text"
-              placeholder="Search Activity / File..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="
-      w-full
-      h-11
-      pl-11
-      pr-4
+    <input
+      type="text"
+      placeholder="Search Activity / File..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="
+        w-full
+        h-11
+        pl-11
+        pr-4
+        rounded-xl
+        border
+        border-slate-300
+        outline-none
+        focus:border-[#2563EB]
+        text-sm
+      "
+    />
+  </div>
+</div>
+
+<div className="col-span-full flex justify-end mb-2">
+  <button
+    onClick={clearFilters}
+    className="
+      px-4
+      py-2
       rounded-xl
       border
-      border-slate-300
-      outline-none
-      focus:border-[#2563EB]
+      border-red-200
+      text-red-600
+      bg-red-50
+      hover:bg-red-100
       text-sm
-      "
-            />
-          </div>
-        </div>
-
-        <div
-          className="
-          pt-5
-          px-20
-          border-slate-200
-          flex
-          items-end
-          justify-between
-          "
-        >
-          <button
-            onClick={clearFilters}
-            className="
-            px-5
-            py-3
-            rounded-xl
-            border
-            border-slate-300
-            
-            hover:bg-slate-50
-            font-medium
-            transition
-            cursor-pointer
-            
-            
-            text-red-600
-            border-red-200
-            cursor-pointer
-            rounded-xl 
-            text-sm"
-          >
-            Clear Filters
-          </button>
-        </div>
+      font-medium
+      cursor-pointer
+    "
+  >
+    Clear Filters
+  </button>
+</div>
       </div>
     </div>
   );
