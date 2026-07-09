@@ -135,10 +135,10 @@ export default function ProjectOverview({ project }) {
 
           <div
             className="
-              h-10
-              w-10
-              2xl:h-15
-              2xl:w-15
+              h-9
+              w-9
+              2xl:h-12
+              2xl:w-12
 
               rounded-xl
 
@@ -153,7 +153,7 @@ export default function ProjectOverview({ project }) {
               shrink-0
             "
           >
-            <Building2 size={34} className="text-[#6D4AFF]" />
+            <Building2 size={25} className="text-[#6D4AFF]" />
           </div>
 
           {/* Project Details */}
@@ -166,9 +166,9 @@ export default function ProjectOverview({ project }) {
                 className="
                   text-[15px]
                   xl:text-base
-                  2xl:text-lg
+                  2xl:text-xl
                   font-medium
-                  text-slate-500
+                  text-slate-600
                 "
               >
                 Project Name:
@@ -181,7 +181,7 @@ export default function ProjectOverview({ project }) {
 
                   text-base
                   xl:text-lg
-                  2xl:text-[28px]
+                  2xl:text-xl
 
                   font-bold
                   text-[#6D4AFF]
@@ -197,11 +197,11 @@ export default function ProjectOverview({ project }) {
             <div className="flex flex-wrap items-center gap-2">
               <span
                 className="
-                  text-[15px]
+                  text-sm
                   xl:text-base
-                  2xl:text-lg
+                  2xl:text-xl
                   font-medium
-                  text-slate-500
+                  text-slate-600
                 "
               >
                 Bank Name:
@@ -212,9 +212,9 @@ export default function ProjectOverview({ project }) {
                   min-w-0
                   truncate
 
-                  text-base
-                  xl:text-lg
-                  2xl:text-2xl
+                  text-sm
+                  xl:text-base
+                  2xl:text-xl
 
                   font-semibold
                   text-[#0B1F59]
@@ -232,11 +232,11 @@ export default function ProjectOverview({ project }) {
 
               <span
                 className="
-                  text-[15px]
+                  text-sm
                   xl:text-base
-                  2xl:text-lg
+                  2xl:text-xl
                   font-medium
-                  text-slate-500
+                  text-slate-600
                 "
               >
                 Project Manager:
@@ -247,9 +247,9 @@ export default function ProjectOverview({ project }) {
                   min-w-0
                   truncate
 
-                  text-base
-                  xl:text-lg
-                  2xl:text-2xl
+                  text-sm
+                  xl:text-base
+                  2xl:text-xl
 
                   font-semibold
                   text-[#0B1F59]
@@ -297,7 +297,7 @@ export default function ProjectOverview({ project }) {
         shrink-0
       "
             >
-              <CalendarDays size={18} className="text-[#7C3AED]" />
+              <CalendarDays size={18} className="text-[#7C3AED] 2xl:h-6 2xl:w-6" />
             </div>
 
             <div className="flex-1 min-w-0">
@@ -305,8 +305,9 @@ export default function ProjectOverview({ project }) {
                 className="
           text-xs
           xl:text-sm
-          font-semibold
-          text-slate-500
+          2xl:text-base
+          font-medium
+          text-slate-600
           leading-tight
         "
               >
@@ -318,7 +319,7 @@ export default function ProjectOverview({ project }) {
           mt-1
           text-sm
           xl:text-base
-          font-bold
+          font-medium
           text-[#0B1F59]
           truncate
         "
@@ -359,7 +360,7 @@ export default function ProjectOverview({ project }) {
         shrink-0
       "
             >
-              <Flag size={18} className="text-[#EF4444]" />
+              <Flag size={18} className="text-[#EF4444] 2xl:h-6 2xl:w-6" />
             </div>
 
             <div className="flex-1 min-w-0">
@@ -367,8 +368,9 @@ export default function ProjectOverview({ project }) {
                 className="
           text-xs
           xl:text-sm
-          font-semibold
-          text-slate-500
+          2xl:text-base
+          font-medium
+          text-slate-600
           leading-tight
         "
               >
@@ -380,7 +382,7 @@ export default function ProjectOverview({ project }) {
           mt-1
           text-sm
           xl:text-base
-          font-bold
+          font-medium
           text-[#0B1F59]
           truncate
         "
@@ -421,7 +423,7 @@ export default function ProjectOverview({ project }) {
         shrink-0
       "
             >
-              <TriangleAlert size={18} className="text-[#F59E0B]" />
+              <TriangleAlert size={18} className="text-[#F59E0B] 2xl:h-6 2xl:w-6" />
             </div>
 
             <div className="flex-1 min-w-0">
@@ -429,8 +431,9 @@ export default function ProjectOverview({ project }) {
                 className="
           text-xs
           xl:text-sm
-          font-semibold
-          text-slate-500
+          2xl:text-base
+          font-medium
+          text-slate-600
           leading-tight
         "
               >
@@ -446,6 +449,7 @@ export default function ProjectOverview({ project }) {
           rounded-full
           text-[10px]
           xl:text-xs
+          2xl:text-sm
           font-semibold
           whitespace-nowrap
           ${

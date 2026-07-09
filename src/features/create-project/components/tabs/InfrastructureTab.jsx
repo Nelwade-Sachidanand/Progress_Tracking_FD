@@ -4,8 +4,8 @@ import TableDropdown from "../../../../components/common/TableDropdown";
 export default function InfrastructureTab({
   infrastructure = {},
   hardwareDetails = [],
-  updateSection = () => {},
-  updateArraySection = () => {},
+  updateSection = () => { },
+  updateArraySection = () => { },
 }) {
   const serverOptions = [
     "DB Server",
@@ -66,35 +66,49 @@ export default function InfrastructureTab({
   };
 
   const inputClass = `
-    w-full
-    h-9
-    px-3
-    rounded-lg
-    border
-    border-slate-300
-    bg-white
-    text-sm
-    outline-none
-    transition-all
-    duration-200
-    focus:border-blue-500
-  `;
+  w-full
+  h-9
+  px-3
+
+  rounded-lg
+  border
+  border-[#B8C4D1]
+  bg-white
+
+  text-sm
+  text-slate-700
+  placeholder:text-slate-500
+
+  outline-none
+
+  transition-all
+  duration-200
+
+  focus:border-blue-500
+`;
 
   const iconInputClass = `
-    w-full
-    h-9
-    pl-10
-    pr-3
-    rounded-lg
-    border
-    border-slate-300
-    bg-white
-    text-sm
-    outline-none
-    transition-all
-    duration-200
-    focus:border-blue-500
-  `;
+  w-full
+  h-9
+  pl-10
+  pr-3
+
+  rounded-lg
+  border
+  border-[#B8C4D1]
+  bg-white
+
+  text-sm
+  text-slate-700
+  placeholder:text-slate-500
+
+  outline-none
+
+  transition-all
+  duration-200
+
+  focus:border-blue-500
+`;
 
   return (
     <div className="space-y-4">
@@ -105,7 +119,7 @@ export default function InfrastructureTab({
           Existing CBS Infrastructure
         </h2>
 
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-slate-600">
           Enter Current CBS Infrastructure, Database and Server Details.
         </p>
       </div>
@@ -114,7 +128,7 @@ export default function InfrastructureTab({
           Infrastructure Details
       ======================================================== */}
 
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="rounded-xl border border-[#CDD7E3] bg-white p-4">
         <h3 className="mb-4 rounded-md bg-blue-50 px-3 py-2 text-base font-semibold text-[#0B1F59] w-[200px]">
           Infrastructure Details
         </h3>
@@ -166,7 +180,7 @@ export default function InfrastructureTab({
             <div className="relative">
               <Database
                 size={16}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
               />
 
               <input
@@ -206,7 +220,7 @@ export default function InfrastructureTab({
           Server Configuration
       ======================================================== */}
 
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="rounded-xl border border-[#CDD7E3] bg-white p-4">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="rounded-md bg-blue-50 px-3 py-2 text-base font-semibold text-[#0B1F59] w-[200px]">
             Server Configuration

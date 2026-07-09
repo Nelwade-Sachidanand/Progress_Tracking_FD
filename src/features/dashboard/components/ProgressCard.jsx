@@ -43,7 +43,7 @@ export default function ProgressCard({ projects = [] }) {
         bg-white
         rounded-2xl
         border
-        border-slate-200
+        border-[#CDD7E3]
         p-10
         text-center
         text-slate-500
@@ -59,8 +59,8 @@ export default function ProgressCard({ projects = [] }) {
       <div className="flex items-center justify-between mb-6">
         <h2
           className="
-          text-2xl
-          xl:text-3xl
+          text-xl
+          xl:text-2xl
           font-bold
           text-[#0B1F59]
         "
@@ -71,7 +71,7 @@ export default function ProgressCard({ projects = [] }) {
         <span
           className="
           text-sm
-          text-slate-500
+          text-slate-600
         "
         >
           {projects.length} Project
@@ -108,7 +108,7 @@ export default function ProgressCard({ projects = [] }) {
               bg-white
               rounded-2xl
               border
-              border-slate-200
+              border-[#CDD7E3]
               shadow-sm
               duration-300
               p-5
@@ -152,7 +152,7 @@ export default function ProgressCard({ projects = [] }) {
                       className="
                       text-sm
                       2xl:base
-                      text-slate-500
+                      text-slate-600
                       truncate
                     "
                     >
@@ -235,7 +235,8 @@ export default function ProgressCard({ projects = [] }) {
                     <span
                       className="
                       text-[12px]
-                      text-slate-500
+                      text-slate-600
+                      font-semibold
                     "
                     >
                       Progress
@@ -247,7 +248,7 @@ export default function ProgressCard({ projects = [] }) {
                   <div className="flex items-center gap-2">
                     <Calendar size={16} className="text-green-600" />
 
-                    <span className="text-sm text-slate-500 font-medium 2xl:text-base">
+                    <span className="text-sm text-slate-600 font-medium 2xl:text-base">
                       Start Date
                     </span>
 
@@ -262,7 +263,7 @@ export default function ProgressCard({ projects = [] }) {
                   <div className="flex items-center gap-2">
                     <CalendarDays size={16} className="text-blue-600" />
 
-                    <span className="text-sm text-slate-500 font-medium 2xl:text-base">
+                    <span className="text-sm text-slate-600 font-medium 2xl:text-base">
                       Go Live
                     </span>
 
@@ -278,7 +279,7 @@ export default function ProgressCard({ projects = [] }) {
                   <div className="flex items-center gap-2">
                     <Clock3 size={16} className="text-indigo-600" />
 
-                    <span className="text-sm text-slate-500 font-medium 2xl:text-base">
+                    <span className="text-sm text-slate-600 font-medium 2xl:text-base">
                       Days Left
                     </span>
 
@@ -290,7 +291,7 @@ export default function ProgressCard({ projects = [] }) {
                   <div className="flex items-center gap-2">
                     <AlertTriangle size={16} className="text-orange-500" />
 
-                    <span className="text-sm text-slate-500 font-medium 2xl:text-base">
+                    <span className="text-sm text-slate-600 font-medium 2xl:text-base">
                       Delay
                     </span>
 

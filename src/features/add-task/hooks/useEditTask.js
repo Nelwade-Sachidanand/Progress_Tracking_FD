@@ -10,6 +10,7 @@ export default function useEditTask() {
   const { state } = useLocation();
 
   const task = state?.task;
+  console.log("Task:", task);
 
   const { fetchProjects, projects } = useProjects();
   const selectedProjectId = sessionStorage.getItem("selectedProjectId");
@@ -20,15 +21,21 @@ export default function useEditTask() {
     ) || null;
 
   const [formData, setFormData] = useState({
-    phaseName: task?.phaseName || task?.phase || "",
+    phaseId: task?.phaseId || "",
+phaseName: task?.phaseName || task?.phase || "",
 
-    milestoneName: task?.milestoneName || task?.milestone || "",
+milestoneId: task?.milestoneId || "",
+milestoneName: task?.milestoneName || task?.milestone || "",
 
-    taskName: task?.taskName || task?.task || "",
+taskId: task?.taskId || "",
+taskName: task?.taskName || task?.task || "",
 
-    subTaskName: task?.subTaskName || task?.subTask || "",
+subTaskId: task?.subTaskId || "",
+subTaskName: task?.subTaskName || task?.subTask || "",
 
-    activityName: task?.activityName || task?.activity || "",
+//activityId: task?.activityId || "",
+  activityName: task?.activityName || task?.activity || "",
+
 
     owner: task?.owner || "",
 
@@ -45,7 +52,7 @@ export default function useEditTask() {
     progress: task?.progress || 0,
 
     executionStatus: task?.executionStatus || "",
-    actualPeriodWeek: task?.actualPeriodWeek || "",
+actualPeriodWeek: task?.actualPeriodWeek || "",
     scheduleHealth: task?.scheduleHealth || "",
     changeReason: "",
   });
@@ -53,63 +60,83 @@ export default function useEditTask() {
 
   const originalPlannedEndDate = task?.plannedEndDate || "";
 
-  const phases = useMemo(() => {
-    return selectedProject?.phases?.map((phase) => phase.phaseName) || [];
-  }, [selectedProject]);
+const phases = useMemo(() => {
+  return (
+    selectedProject?.phases?.map((phase) => ({
+      id: phase.phaseId,
+      name: phase.phaseName,
+    })) || []
+  );
+}, [selectedProject]);
 
   const milestones = useMemo(() => {
-    const phase = selectedProject?.phases?.find(
-      (phase) => phase.phaseName === formData.phaseName,
-    );
+  const phase = selectedProject?.phases?.find(
+    (p) => p.phaseId === formData.phaseId,
+  );
 
-    return phase?.milestones?.map((milestone) => milestone.milestoneName) || [];
-  }, [selectedProject, formData.phaseName]);
+  return (
+    phase?.milestones?.map((m) => ({
+      id: m.milestoneId,
+      name: m.milestoneName,
+    })) || []
+  );
+}, [selectedProject, formData.phaseId]);
 
-  const taskOptions = useMemo(() => {
-    const phase = selectedProject?.phases?.find(
-      (phase) => phase.phaseName === formData.phaseName,
-    );
+const taskOptions = useMemo(() => {
+  const phase = selectedProject?.phases?.find(
+    (p) => p.phaseId === formData.phaseId,
+  );
 
-    const milestone = phase?.milestones?.find(
-      (milestone) => milestone.milestoneName === formData.milestoneName,
-    );
+  const milestone = phase?.milestones?.find(
+    (m) => m.milestoneId === formData.milestoneId,
+  );
 
-    return milestone?.tasks?.map((task) => task.taskName) || [];
-  }, [selectedProject, formData.phaseName, formData.milestoneName]);
+  return (
+    milestone?.tasks?.map((t) => ({
+      id: t.taskId,
+      name: t.taskName,
+    })) || []
+  );
+}, [selectedProject, formData.phaseId, formData.milestoneId]);
 
-  const subTasks = useMemo(() => {
-    const phase = selectedProject?.phases?.find(
-      (phase) => phase.phaseName === formData.phaseName,
-    );
+const subTasks = useMemo(() => {
+  const phase = selectedProject?.phases?.find(
+    (p) => p.phaseId === formData.phaseId,
+  );
 
-    const milestone = phase?.milestones?.find(
-      (milestone) => milestone.milestoneName === formData.milestoneName,
-    );
+  const milestone = phase?.milestones?.find(
+    (m) => m.milestoneId === formData.milestoneId,
+  );
 
-    const taskObj = milestone?.tasks?.find(
-      (task) => task.taskName === formData.taskName,
-    );
+  const taskObj = milestone?.tasks?.find(
+    (t) => t.taskId === formData.taskId,
+  );
 
-    return taskObj?.subTasks?.map((subTask) => subTask.subTaskName) || [];
-  }, [
-    selectedProject,
-    formData.phaseName,
-    formData.milestoneName,
-    formData.taskName,
-  ]);
+  return (
+    taskObj?.subTasks?.map((s) => ({
+      id: s.subTaskId,
+      name: s.subTaskName,
+    })) || []
+  );
+}, [
+  selectedProject,
+  formData.phaseId,
+  formData.milestoneId,
+  formData.taskId,
+]);
 
   const handleChange = (field, value) => {
     setFormData((prev) => {
-      const updated = {
-        ...prev,
-        [field]: value,
-      };
+    const updated = {
+  ...prev,
+  [field]: value,
+};
 
-      // ================================
-      // Estimated Period Week
-      // ================================
+// ================================
+// Estimated Period Week
+// ================================
 
-    if (field === "plannedStartDate" || field === "plannedEndDate") {
+if (field === "plannedStartDate" || field === "plannedEndDate") {
   const start =
     field === "plannedStartDate"
       ? value
@@ -151,17 +178,16 @@ export default function useEditTask() {
     updated.estimatedPeriodWeek = "";
   }
 }
-      // ================================
-      // Actual Period Week
-      // ================================
 
-      if (field === "actualStartDate" || field === "actualEndDate") {
-        const start =
-          field === "actualStartDate" ? value : updated.actualStartDate;
+// ================================
+// Actual Period Week
+// ================================
 
-        const end = field === "actualEndDate" ? value : updated.actualEndDate;
+// ================================
+// Actual Period Week (NETWORKDAYS / 5)
+// ================================
 
-       if (field === "actualStartDate" || field === "actualEndDate") {
+if (field === "actualStartDate" || field === "actualEndDate") {
   const start =
     field === "actualStartDate"
       ? value
@@ -184,7 +210,7 @@ export default function useEditTask() {
       while (current <= endDate) {
         const day = current.getDay();
 
-        // Monday-Friday only
+        // Monday-Friday
         if (day !== 0 && day !== 6) {
           workingDays++;
         }
@@ -192,7 +218,9 @@ export default function useEditTask() {
         current.setDate(current.getDate() + 1);
       }
 
-      updated.actualPeriodWeek = Number((workingDays / 5).toFixed(2));
+      updated.actualPeriodWeek = Number(
+        (workingDays / 5).toFixed(2)
+      );
     } else {
       updated.actualPeriodWeek = "";
     }
@@ -200,7 +228,6 @@ export default function useEditTask() {
     updated.actualPeriodWeek = "";
   }
 }
-      }
 
       if (field === "phaseName") {
         updated.milestoneName = "";
@@ -236,42 +263,42 @@ export default function useEditTask() {
         return;
       }
       const payload = {
-        projectId: selectedProject?.id,
+  projectId: selectedProject?.id,
 
-        projectName: selectedProject?.projectName,
+  phaseId: formData.phaseId,
+  phaseName: formData.phaseName,
 
-        phaseName: formData.phaseName,
+  milestoneId: formData.milestoneId,
+  milestoneName: formData.milestoneName,
 
-        milestoneName: formData.milestoneName,
+  taskId: formData.taskId,
+  taskName: formData.taskName,
 
-        taskName: formData.taskName,
+  subTaskId: formData.subTaskId,
+  subTaskName: formData.subTaskName,
 
-        subTaskName: formData.subTaskName,
+//  activityId: formData.activityId,
+  activityName: formData.activityName,
 
-        activityName: formData.activityName,
+  owner: formData.owner,
 
-        owner: formData.owner,
+  estimatedPeriodWeek: Number(formData.estimatedPeriodWeek),
 
-        estimatedPeriodWeek: Number(formData.estimatedPeriodWeek),
+  plannedStartDate: formData.plannedStartDate,
+  plannedEndDate: formData.plannedEndDate,
 
-        plannedStartDate: formData.plannedStartDate,
+  actualStartDate: formData.actualStartDate,
+  actualEndDate: formData.actualEndDate,
 
-        plannedEndDate: formData.plannedEndDate,
+  progress: Number(formData.progress),
 
-        actualStartDate: formData.actualStartDate,
+  executionStatus: formData.executionStatus,
+  scheduleHealth: formData.scheduleHealth,
 
-        actualEndDate: formData.actualEndDate,
+  changeReason: formData.changeReason,
+};
 
-        progress: Number(formData.progress),
-
-        executionStatus: formData.executionStatus,
-
-        scheduleHealth: formData.scheduleHealth,
-
-        changeReason: formData.changeReason,
-      };
-
-      // console.log(payload);
+      console.log(payload);
 
       const response = await updateActivity(payload);
 

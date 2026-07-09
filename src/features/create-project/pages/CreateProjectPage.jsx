@@ -148,7 +148,7 @@ export default function CreateProjectPage() {
         onDiscard={handleDiscardDraft}
       />
       <div className="mx-auto max-w-[1800px] p-2 md:p-3 xl:p-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 md:p-5 xl:p-6">
+        <div className="rounded-2xl border border-[#CDD7E3] bg-white p-4 md:p-5 xl:p-6">
           {/* Header */}
           <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
             <BackButton />

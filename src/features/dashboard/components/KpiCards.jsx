@@ -84,7 +84,7 @@ export default function KpiCards({ data }) {
       bg-white
       rounded-2xl
       border
-      border-slate-200
+      border-[#CDD7E3]
       shadow-sm
 
       p-2

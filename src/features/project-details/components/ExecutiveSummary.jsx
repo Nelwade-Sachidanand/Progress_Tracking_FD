@@ -8,6 +8,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import CustomDropdown from "../../../components/common/CustomDropdown";
 import MultiSelectDropdown from "../../../components/common/MultiSelectDropdown";
+import DateInput from "../../../components/common/DateInput";
 
 export default function ExecutiveSummary({ project }) {
   function SmallCard({ title, value, icon: Icon, color, bg, border }) {
@@ -123,11 +124,11 @@ export default function ExecutiveSummary({ project }) {
   const overallProgress =
     totalActivities > 0
       ? Math.round(
-          activities.reduce(
-            (sum, activity) => sum + (activity.progress || 0),
-            0,
-          ) / totalActivities,
-        )
+        activities.reduce(
+          (sum, activity) => sum + (activity.progress || 0),
+          0,
+        ) / totalActivities,
+      )
       : 0;
 
   useEffect(() => {
@@ -211,7 +212,7 @@ export default function ExecutiveSummary({ project }) {
         <div className="flex items-center gap-3 shrink-0">
           <div
             className="
-        h-7
+            h-7
             w-7
             rounded-full
             bg-[#2563EB]
@@ -244,8 +245,8 @@ export default function ExecutiveSummary({ project }) {
         <div
           className="
       grid
-      grid-cols-[340px_200px_150px_150px]
-      gap-4
+      grid-cols-[300px_150px_150px_150px]
+      gap-3
       items-end
       shrink-0
       mt-[-10px]
@@ -283,59 +284,19 @@ export default function ExecutiveSummary({ project }) {
             ]}
           />
 
-          {/* From */}
-          <div>
-            <label className="mb-1 ml-1 block text-sm font-semibold text-slate-600">
-              From
-            </label>
+          <DateInput
+            label="From"
+            value={fromDate}
+            max={toDate || undefined}
+            onChange={(e) => setFromDate(e.target.value)}
+          />
 
-            <input
-              type="date"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-              className="
-          h-9
-          w-full
-          rounded-lg
-          border
-          border-slate-300
-          bg-white
-          px-3
-          text-sm
-          outline-none
-          transition
-          focus:border-blue-500
-          cursor-pointer
-        "
-            />
-          </div>
-
-          {/* To */}
-          <div>
-            <label className="mb-1 ml-1 block text-sm font-semibold text-slate-600">
-              To
-            </label>
-
-            <input
-              type="date"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-              className="
-          h-9
-          w-full
-          rounded-lg
-          border
-          border-slate-300
-          bg-white
-          px-3
-          text-sm
-          outline-none
-          transition
-          focus:border-blue-500
-          cursor-pointer
-        "
-            />
-          </div>
+          <DateInput
+            label="To"
+            value={toDate}
+            min={fromDate || undefined}
+            onChange={(e) => setToDate(e.target.value)}
+          />
         </div>
       </div>
 

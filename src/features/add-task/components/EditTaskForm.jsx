@@ -50,6 +50,8 @@ export default function EditTaskForm() {
     }
   }, []);
 
+  // console.log(formData);
+
   return (
     <div className="space-y-6 mx-auto w-full">
       {/* Single Professional Card */}

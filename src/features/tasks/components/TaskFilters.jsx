@@ -31,7 +31,7 @@ export default function TaskFilters({
         bg-white
         rounded-2xl
         border
-        border-slate-200
+        border-[#CDD7E3]
         p-3
         mt-[10px]
       "

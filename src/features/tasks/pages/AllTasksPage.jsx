@@ -161,55 +161,56 @@ export default function AllTasksPage() {
           task.subTasks?.forEach((subTask) => {
             subTask.activities?.forEach((activity) => {
               allActivities.push({
-                id: activity.id,
+                id: activity.activityId,
 
                 projectId: selectedProject.id,
                 projectName: selectedProject.projectName,
 
+                phaseId: phase.phaseId,
                 phaseName: phase.phaseName,
+
+                milestoneId: milestone.milestoneId,
                 milestoneName: milestone.milestoneName,
+
+                taskId: task.taskId,
                 taskName: task.taskName,
+
+                subTaskId: subTask.subTaskId,
                 subTaskName: subTask.subTaskName,
 
+                activityId: activity.activityId,
                 activityName: activity.activityName,
 
                 owner: activity.owner,
 
                 estimatedPeriodWeek: activity.estimatedPeriodWeek,
+                actualPeriodWeek: activity.actualPeriodWeek,
 
                 actualPeriodWeek: activity.actualPeriodWeek,
 
                 plannedStartDate: activity.plannedStartDate,
-
                 plannedEndDate: activity.plannedEndDate,
 
                 actualStartDate: activity.actualStartDate,
-
                 actualEndDate: activity.actualEndDate,
 
                 progress: activity.progress,
 
                 executionStatus: activity.executionStatus,
-
                 scheduleHealth: activity.scheduleHealth,
 
                 remark: activity.remark || "",
 
-                // For TaskTable display
+                // Table display
                 phase: phase.phaseName,
-
                 milestone: milestone.milestoneName,
-
                 task: task.taskName,
-
                 subTask: subTask.subTaskName,
-
                 activity: activity.activityName,
 
                 status: activity.executionStatus,
 
                 startDate: activity.actualStartDate,
-
                 endDate: activity.actualEndDate,
               });
             });
@@ -247,14 +248,14 @@ export default function AllTasksPage() {
         inProgress={inProgress}
       />
 
-      <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-5">
+      <div className="mt-5 rounded-2xl border border-[#CDD7E3] bg-white p-5">
         <div className="mb-1 flex items-center justify-between mt-[-7px]">
           <div>
             <h2 className="text-lg font-semibold text-[#0B1F59]">
               Task Filters
             </h2>
 
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-600">
               Filter Project Tasks Using The Criteria Below.
             </p>
           </div>
