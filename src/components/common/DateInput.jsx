@@ -39,6 +39,7 @@ export default function DateInput({
           className="
           w-full
           h-9
+          2xl:h-10
           pl-8
           pr-2
 

@@ -51,6 +51,7 @@ export default function CustomDropdown({
           className="
           w-full
           h-9
+          2xl:h-10
           px-4
           rounded-lg
           border
@@ -88,7 +89,7 @@ export default function CustomDropdown({
               text-left
               text-sm
               text-slate-700
-              2xl:text-base
+              2xl:text-lg
             "
               title={formatValue(selectedLabel)}
             >
@@ -148,6 +149,7 @@ export default function CustomDropdown({
               truncate
               text-left
               text-sm
+              2xl:text-base
               text-slate-600
 
               border-b
@@ -182,6 +184,7 @@ export default function CustomDropdown({
                   truncate
                   text-left
                   text-sm
+                  2xl:text-base
 
                   border-b
                   border-[#E1E7EF]

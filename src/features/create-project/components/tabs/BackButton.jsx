@@ -2,8 +2,8 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function BackButton({
-  path = "/dashboard",
-  label = "Back to Dashboard",
+  path = "/projects",
+  label = "Back to Projects",
 }) {
   const navigate = useNavigate();
 

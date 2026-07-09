@@ -31,18 +31,18 @@ export default function ProjectOverview({ project }) {
   const projectStartDate =
     activities.length > 0
       ? activities
-          .map((a) => a.plannedStartDate)
-          .filter(Boolean)
-          .sort()[0]
+        .map((a) => a.plannedStartDate)
+        .filter(Boolean)
+        .sort()[0]
       : "-";
 
   const targetGoLive =
     activities.length > 0
       ? activities
-          .map((a) => a.plannedEndDate)
-          .filter(Boolean)
-          .sort()
-          .at(-1)
+        .map((a) => a.plannedEndDate)
+        .filter(Boolean)
+        .sort()
+        .at(-1)
       : "-";
 
   const projectStatus = activities.some(
@@ -54,53 +54,50 @@ export default function ProjectOverview({ project }) {
   return (
     <div
       className="
-        bg-white
-        rounded-2xl
-        border
-        border-slate-200
-        p-5
-        lg:p-6
-        2xl:p-7
-      "
+      rounded-2xl
+      border
+      border-[#CDD7E3]
+      bg-white
+      p-4
+      sm:p-5
+      lg:p-6
+      2xl:p-7
+    "
     >
       {/* Header */}
 
-      <div className="flex items-center gap-3 mb-7">
+      <div className="mb-6 flex items-center gap-2">
         <div
           className="
-            h-7
-            w-7
-            rounded-full
-            bg-[#2563EB]
-            text-white
-            flex
-            items-center
-            justify-center
-            font-bold
-            shrink-0
-          "
+          flex
+          h-7
+          w-7
+          shrink-0
+          items-center
+          justify-center
+          rounded-full
+          bg-[#2563EB]
+          text-sm
+          font-bold
+          text-white
+
+          sm:h-7
+          sm:w-7
+        "
         >
           1
         </div>
 
-        {/* <h2
-          className="
-            text-xl
-            lg:text-2xl
-            2xl:text-[30px]
-            font-bold
-            text-[#0B1F59]
-            mt-[-2px]
-          "
-        > */}
         <h2
           className="
           text-base
-          sm:text-lg
-          lg:text-xl
           font-bold
           text-[#0B1F59]
-          mt-[-3px]
+
+          sm:text-lg
+          lg:text-xl
+          xl:text-xl
+          2xl:text-[28px]
         "
         >
           Project Overview
@@ -111,81 +108,87 @@ export default function ProjectOverview({ project }) {
 
       <div
         className="
-          grid
-          grid-cols-1
-          xl:grid-cols-[1.6fr_1fr]
-          2xl:grid-cols-[1.8fr_1fr]
-          gap-6
-          2xl:gap-8
-          items-start
-        "
+        grid
+        grid-cols-1
+        gap-6
+
+        xl:grid-cols-[1.6fr_1fr]
+        2xl:grid-cols-[1.8fr_1fr]
+
+        xl:gap-8
+      "
       >
         {/* LEFT */}
 
         <div
           className="
-            flex
-            flex-col
-            sm:flex-row
-            gap-5
-            2xl:gap-6
-          "
+          flex
+          flex-col
+          gap-5
+
+          sm:flex-row
+          sm:items-start
+        "
         >
           {/* Project Icon */}
 
           <div
             className="
-              h-9
-              w-9
-              2xl:h-12
-              2xl:w-12
+            flex
+            h-11
+            w-11
+            shrink-0
+            items-center
+            justify-center
 
-              rounded-xl
+            rounded-xl
+            border
+            border-[#CDD7E3]
+            bg-[#F5F7FF]
 
-              bg-[#F5F7FF]
-              border
-              border-slate-200
+            sm:h-12
+            sm:w-12
 
-              flex
-              items-center
-              justify-center
-
-              shrink-0
-            "
+            xl:h-10
+            xl:w-10
+          "
           >
-            <Building2 size={25} className="text-[#6D4AFF]" />
+            <Building2
+              size={24}
+              className="text-[#6D4AFF]"
+            />
           </div>
 
           {/* Project Details */}
 
-          <div className="flex-1 min-w-0 space-y-4">
+          <div className="min-w-0 flex-1 space-y-4">
             {/* Project Name */}
 
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-col gap-1 sm:flex-row sm:flex-wrap sm:items-center">
               <span
                 className="
-                  text-[15px]
-                  xl:text-base
-                  2xl:text-xl
-                  font-medium
-                  text-slate-600
-                "
+                text-sm
+                font-medium
+                text-slate-600
+
+                xl:text-base
+                2xl:text-lg
+              "
               >
                 Project Name:
               </span>
 
               <h3
                 className="
-                  min-w-0
-                  truncate
+                truncate
+                font-bold
+                text-[#6D4AFF]
 
-                  text-base
-                  xl:text-lg
-                  2xl:text-xl
-
-                  font-bold
-                  text-[#6D4AFF]
-                "
+                text-base
+                sm:text-lg
+                xl:text-xl
+                2xl:text-2xl
+              "
                 title={project?.projectName}
               >
                 {project?.projectName}
@@ -194,31 +197,31 @@ export default function ProjectOverview({ project }) {
 
             {/* Bank Name */}
 
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-col gap-1 sm:flex-row sm:flex-wrap sm:items-center">
               <span
                 className="
-                  text-sm
-                  xl:text-base
-                  2xl:text-xl
-                  font-medium
-                  text-slate-600
-                "
+                text-sm
+                font-medium
+                text-slate-600
+
+                xl:text-base
+                2xl:text-lg
+              "
               >
                 Bank Name:
               </span>
 
               <h3
                 className="
-                  min-w-0
-                  truncate
+                truncate
+                font-semibold
+                text-[#0B1F59]
 
-                  text-sm
-                  xl:text-base
-                  2xl:text-xl
-
-                  font-semibold
-                  text-[#0B1F59]
-                "
+                text-sm
+                sm:text-base
+                xl:text-base
+                2xl:text-xl
+              "
                 title={project?.bankName}
               >
                 {project?.bankName}
@@ -227,33 +230,38 @@ export default function ProjectOverview({ project }) {
 
             {/* Project Manager */}
 
-            <div className="flex flex-wrap items-center gap-2">
-              <Users size={18} className="text-[#2563EB] shrink-0" />
+            <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+              <div className="flex items-center gap-2">
+                <Users
+                  size={18}
+                  className="shrink-0 text-[#2563EB]"
+                />
 
-              <span
-                className="
+                <span
+                  className="
                   text-sm
-                  xl:text-base
-                  2xl:text-xl
                   font-medium
                   text-slate-600
+
+                  xl:text-base
+                  2xl:text-lg
                 "
-              >
-                Project Manager:
-              </span>
+                >
+                  Project Manager:
+                </span>
+              </div>
 
               <h3
                 className="
-                  min-w-0
-                  truncate
+                truncate
+                font-semibold
+                text-[#0B1F59]
 
-                  text-sm
-                  xl:text-base
-                  2xl:text-xl
-
-                  font-semibold
-                  text-[#0B1F59]
-                "
+                text-sm
+                sm:text-base
+                xl:text-base
+                2xl:text-xl
+              "
                 title={project?.projectManager}
               >
                 {project?.projectManager}
@@ -264,51 +272,67 @@ export default function ProjectOverview({ project }) {
 
         {/* RIGHT */}
 
-        {/* RIGHT */}
-        <div className="position-relative grid grid-cols-2 gap-3 w-full mt-[-50px]">
-          {/* Start Date */}
+        <div
+          className="
+          grid
+          grid-cols-2
+          gap-4
+
+          sm:grid-cols-3
+
+          xl:grid-cols-2
+          2xl:grid-cols-2
+
+          xl:mt-[-50px]
+        "
+        >
+          {/* Project Start */}
+
           <div
             className="
-      bg-white
-      border
-      border-slate-200
-      rounded-lg
-      shadow-sm
-
-      p-3
-      xl:p-4
-
       flex
       items-center
       gap-3
+
+      rounded-xl
+      border
+      border-[#CDD7E3]
+      bg-white
+
+      p-4
+      shadow-sm
     "
           >
             <div
               className="
-        h-9
-        w-9
-        xl:h-10
-        xl:w-10
-        rounded-lg
-        bg-[#F5F3FF]
         flex
+        h-10
+        w-10
+        shrink-0
         items-center
         justify-center
-        shrink-0
+
+        rounded-lg
+        bg-[#F5F3FF]
+
+        sm:h-11
+        sm:w-11
       "
             >
-              <CalendarDays size={18} className="text-[#7C3AED] 2xl:h-6 2xl:w-6" />
+              <CalendarDays
+                size={18}
+                className="text-[#7C3AED]"
+              />
             </div>
 
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               <p
                 className="
           text-xs
-          xl:text-sm
-          2xl:text-base
           font-medium
           text-slate-600
-          leading-tight
+
+          sm:text-sm
         "
               >
                 Project Start
@@ -317,11 +341,13 @@ export default function ProjectOverview({ project }) {
               <p
                 className="
           mt-1
-          text-sm
-          xl:text-base
-          font-medium
-          text-[#0B1F59]
           truncate
+
+          text-sm
+          font-semibold
+          text-[#0B1F59]
+
+          sm:text-base
         "
               >
                 {formatDate(projectStartDate)}
@@ -330,48 +356,52 @@ export default function ProjectOverview({ project }) {
           </div>
 
           {/* Go Live */}
+
           <div
             className="
-      bg-white
-      border
-      border-slate-200
-      rounded-lg
-      shadow-sm
-
-      p-3
-      xl:p-4
-
       flex
       items-center
       gap-3
+
+      rounded-xl
+      border
+      border-[#CDD7E3]
+      bg-white
+
+      p-4
+      shadow-sm
     "
           >
             <div
               className="
-        h-9
-        w-9
-        xl:h-10
-        xl:w-10
-        rounded-lg
-        bg-[#FEF2F2]
         flex
+        h-10
+        w-10
+        shrink-0
         items-center
         justify-center
-        shrink-0
+
+        rounded-lg
+        bg-[#FEF2F2]
+
+        sm:h-11
+        sm:w-11
       "
             >
-              <Flag size={18} className="text-[#EF4444] 2xl:h-6 2xl:w-6" />
+              <Flag
+                size={18}
+                className="text-[#EF4444]"
+              />
             </div>
 
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               <p
                 className="
           text-xs
-          xl:text-sm
-          2xl:text-base
           font-medium
           text-slate-600
-          leading-tight
+
+          sm:text-sm
         "
               >
                 Target Go-Live
@@ -380,11 +410,13 @@ export default function ProjectOverview({ project }) {
               <p
                 className="
           mt-1
-          text-sm
-          xl:text-base
-          font-medium
-          text-[#0B1F59]
           truncate
+
+          text-sm
+          font-semibold
+          text-[#0B1F59]
+
+          sm:text-base
         "
               >
                 {formatDate(targetGoLive)}
@@ -393,48 +425,55 @@ export default function ProjectOverview({ project }) {
           </div>
 
           {/* Status */}
+
           <div
             className="
-      bg-white
-      border
-      border-slate-200
-      rounded-lg
-      shadow-sm
-
-      p-3
-      xl:p-4
-
       flex
       items-center
       gap-3
+
+      rounded-xl
+      border
+      border-[#CDD7E3]
+      bg-white
+
+      p-4
+      shadow-sm
+
+      sm:col-span-1
+      xl:col-span-1
     "
           >
             <div
               className="
-        h-9
-        w-9
-        xl:h-10
-        xl:w-10
-        rounded-lg
-        bg-[#FEF3C7]
         flex
+        h-10
+        w-10
+        shrink-0
         items-center
         justify-center
-        shrink-0
+
+        rounded-lg
+        bg-[#FEF3C7]
+
+        sm:h-11
+        sm:w-11
       "
             >
-              <TriangleAlert size={18} className="text-[#F59E0B] 2xl:h-6 2xl:w-6" />
+              <TriangleAlert
+                size={18}
+                className="text-[#F59E0B]"
+              />
             </div>
 
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               <p
                 className="
           text-xs
-          xl:text-sm
-          2xl:text-base
           font-medium
           text-slate-600
-          leading-tight
+
+          sm:text-sm
         "
               >
                 Project Status
@@ -442,21 +481,19 @@ export default function ProjectOverview({ project }) {
 
               <span
                 className={`
+          mt-2
           inline-flex
-          mt-1
-          px-2.5
-          py-1
           rounded-full
-          text-[10px]
-          xl:text-xs
-          2xl:text-sm
+          px-3
+          py-1
+
+          text-xs
           font-semibold
-          whitespace-nowrap
-          ${
-            projectStatus === "On Track"
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
-          }
+
+          ${projectStatus === "On Track"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
+                  }
         `}
               >
                 {projectStatus}

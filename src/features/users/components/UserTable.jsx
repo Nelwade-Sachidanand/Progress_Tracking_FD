@@ -66,7 +66,7 @@ const UserTable = ({ users = [], loading, onDelete, onResetPassword }) => {
     bg-white
     rounded-2xl
     border
-    border-slate-200
+    border-[#CDD7E3]
     shadow-sm
     overflow-hidden
   "
@@ -76,7 +76,7 @@ const UserTable = ({ users = [], loading, onDelete, onResetPassword }) => {
       <div className="overflow-x-auto">
         <table className="w-full table-auto">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-100">
+            <tr className="border-b border-[#CDD7E3] bg-blue-100">
               <th className="px-6 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
                 Full Name
               </th>
@@ -109,9 +109,7 @@ const UserTable = ({ users = [], loading, onDelete, onResetPassword }) => {
                 key={user.id}
                 className="
             border-b
-            border-slate-200
-            hover:bg-slate-50
-            transition-colors
+            border-[#CDD7E3]
           "
               >
                 {/* Full Name */}

@@ -71,6 +71,7 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
           px-6
           py-4
           border-b
+          border-[#CDD7E3]
           "
         >
           <div className="flex items-center gap-2">
@@ -92,7 +93,7 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
               block
               text-sm
               font-medium
-              text-slate-600
+              text-slate-700
               mb-2
               "
             >
@@ -108,6 +109,7 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
               p-3
               rounded-lg
               border
+              border-[#B8C4D1]
               bg-slate-100
               "
             />
@@ -119,6 +121,7 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
               block
               text-sm
               font-medium
+              text-slate-700
               mb-2
               "
             >
@@ -137,9 +140,10 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
               h-9
               rounded-lg
               border
-              border-[#DCE3EE]
+              border-[#B8C4D1]
               outline-none
               focus:border-blue-500
+              placeholder:text-slate-500
               "
             />
           </div>
@@ -150,6 +154,7 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
               block
               text-sm
               font-medium
+              text-slate-700
               mb-2
               "
             >
@@ -168,9 +173,10 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
               h-9
               rounded-lg
               border
-              border-[#DCE3EE]
+              border-[#B8C4D1]
               outline-none
               focus:border-blue-500
+              placeholder:text-slate-500
               "
             />
           </div>
@@ -185,6 +191,7 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
           px-6
           py-4
           border-t
+          border-[#CDD7E3]
           "
         >
           <button
@@ -194,6 +201,7 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
             py-2
             rounded-xl
             border
+            border-[#CDD7E3]
             cursor-pointer
             h-10
             "

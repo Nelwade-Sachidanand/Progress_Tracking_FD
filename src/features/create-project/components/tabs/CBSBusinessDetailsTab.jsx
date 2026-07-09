@@ -182,7 +182,7 @@ export default function CBSBusinessDetailsTab({
           Business Statistics
         </h3>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-6">
           <InputField
             type="number"
             label="Total Active Customers"

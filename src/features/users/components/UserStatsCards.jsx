@@ -64,8 +64,8 @@ const UserStatsCards = ({ users = [] }) => {
     <div
       className="
       grid
-      grid-cols-1
-      sm:grid-cols-2
+      grid-cols-2
+      sm:grid-cols-3
       xl:grid-cols-5
       gap-5
       mt-[-10px]
@@ -81,7 +81,7 @@ const UserStatsCards = ({ users = [] }) => {
             bg-white
             rounded-2xl
             border
-            border-slate-200
+            border-[#CDD7E3]
             shadow-sm
 
             p-3
@@ -111,7 +111,8 @@ const UserStatsCards = ({ users = [] }) => {
             <div className="relative mt-[-30px] flex-1 flex flex-col items-center justify-center text-center">
               <h2
                 className="
-                text-3xl
+                text-xl
+                2xl:text-[37px]
                 xl:text-[35px]
                 font-bold
                 text-[#142850]
@@ -126,8 +127,9 @@ const UserStatsCards = ({ users = [] }) => {
                 mt-2
                 text-sm
                 xl:text-[16px]
+                2xl:text-[18px]
                 font-medium
-                text-slate-500
+                text-slate-600
                 leading-snug
               "
               >

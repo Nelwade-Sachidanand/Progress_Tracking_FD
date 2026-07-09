@@ -139,7 +139,7 @@ export default function AuthorizationTable({
       bg-white
       rounded-2xl
       border
-      border-slate-200
+      border-[#CDD7E3]
       shadow-sm
       overflow-hidden
       mt-5
@@ -150,9 +150,9 @@ export default function AuthorizationTable({
       <div
         className="
         px-4
-        py-4
+        py-2
         border-b
-        border-slate-200
+        border-[#CDD7E3]
 
         flex
         flex-col
@@ -223,7 +223,7 @@ export default function AuthorizationTable({
       <div className="overflow-x-auto">
         <table className="w-full table-auto">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-100">
+            <tr className="border-b border-[#CDD7E3] bg-blue-100">
               {/* Checkbox */}
 
               <th className="w-[60px] px-4 py-4 text-center">
@@ -310,9 +310,7 @@ export default function AuthorizationTable({
                     key={log.id || srNo}
                     className="
             border-b
-            border-slate-200
-            hover:bg-slate-50
-            transition-colors
+            border-[#CDD7E3]
           "
                   >
                     {/* Checkbox */}

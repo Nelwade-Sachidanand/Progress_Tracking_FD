@@ -43,10 +43,10 @@ export default function CreateProjectPage() {
   useEffect(() => {
     const draft = sessionStorage.getItem("projectDraft");
 
-    console.log("Draft:", draft);
+    // console.log("Draft:", draft);
 
     if (draft) {
-      console.log("Opening Draft Modal");
+      // console.log("Opening Draft Modal");
       setShowDraftModal(true);
     }
   }, []);

@@ -37,7 +37,7 @@ export default function AuthorizationFilters({
         bg-white
         rounded-2xl
         border
-        border-slate-200
+        border-[#CDD7E3]
         p-5
         mt-[-7px]
       "

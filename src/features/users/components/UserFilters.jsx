@@ -22,7 +22,7 @@ const UserFilters = ({
         bg-white
         rounded-2xl
         border
-        border-slate-200
+        border-[#CDD7E3]
         p-5
         mt-[-7px]
       "
@@ -31,7 +31,7 @@ const UserFilters = ({
         className="
           grid
           grid-cols-1
-          md:grid-cols-2
+          md:grid-cols-3
           xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,2fr)_150px]
           gap-4
           mt-[-10px]
@@ -101,6 +101,7 @@ const UserFilters = ({
             className="
               w-full
               h-9
+              2xl:h-10
               rounded-xl
               bg-gradient-to-r
               from-[#7C3AED]

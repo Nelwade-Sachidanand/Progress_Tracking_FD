@@ -71,7 +71,7 @@ export default function ManagementDetailsTab({ data, updateSection }) {
 
       {/* Contact Card */}
       <div className="rounded-xl border border-[#CDD7E3] bg-white p-4">
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-4">
+        <div className="grid grid-cols-1 sm :grid-cols-2 gap-4 xl:grid-cols-4">
           {contacts.map((contact) => (
             <div
               key={contact.key}
