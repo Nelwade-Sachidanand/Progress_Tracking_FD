@@ -71,29 +71,41 @@ export default function TableDropdown({
         type="button"
         onClick={() => setOpen((prev) => !prev)}
         className="
-          w-full
-          h-9
-          px-3
-          rounded-lg
-          border
-          border-slate-300
-          bg-white
-          flex
-          items-center
-          justify-between
-          text-sm
-          text-slate-700
-          cursor-pointer
-          hover:border-blue-500
-          focus:border-blue-500
-          transition
-        "
+        w-full
+        h-9
+        px-3
+
+        rounded-lg
+        border
+        border-[#B8C4D1]
+        bg-white
+
+        flex
+        items-center
+        justify-between
+
+        text-sm
+        text-slate-700
+
+        outline-none
+
+        transition-all
+        duration-200
+
+        focus:border-blue-500
+        cursor-pointer
+      "
       >
         <span className="truncate">{selectedLabel}</span>
 
         <ChevronDown
           size={16}
-          className={`transition-transform ${open ? "rotate-180" : ""}`}
+          className={`
+          text-slate-500
+          transition-transform
+          duration-200
+          ${open ? "rotate-180" : ""}
+        `}
         />
       </button>
 
@@ -104,14 +116,18 @@ export default function TableDropdown({
             ref={dropdownRef}
             style={dropdownStyle}
             className="
-              bg-white
-              border
-              border-slate-200
-              rounded-lg
-              shadow-xl
-              max-h-45
-              overflow-y-auto
-            "
+            overflow-hidden
+
+            rounded-xl
+            border
+            border-[#CDD7E3]
+            bg-white
+
+            shadow-xl
+
+            max-h-45
+            overflow-y-auto
+          "
           >
             {options.map((option) => (
               <button
@@ -122,20 +138,27 @@ export default function TableDropdown({
                   setOpen(false);
                 }}
                 className={`
-                  w-full
-                  px-3
-                  py-2.5
-                  text-left
-                  text-sm
-                  transition
-                  cursor-pointer
+                w-full
+                px-4
+                py-3
 
-                  ${
-                    value === option.value
-                      ? "bg-blue-50 text-blue-600 font-medium"
-                      : "hover:bg-slate-50 text-slate-700"
+                border-b
+                border-[#E1E7EF]
+                last:border-b-0
+
+                text-left
+                text-sm
+                text-slate-700
+
+                transition-colors
+
+                cursor-pointer
+
+                ${value === option.value
+                    ? "bg-blue-50 font-semibold text-blue-600"
+                    : "hover:bg-slate-50"
                   }
-                `}
+              `}
               >
                 {option.label}
               </button>

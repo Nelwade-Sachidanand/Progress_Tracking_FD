@@ -30,35 +30,45 @@ export default function BankDetailsTab({ data, updateRootFields }) {
   };
 
   const inputClass = `
-    w-full
-    h-9
-    px-3
-    text-sm
-    border
-    border-slate-300
-    rounded-lg
-    bg-white
-    outline-none
-    transition-all
-    duration-200
-    focus:border-blue-500
-  `;
+  w-full
+  h-9
+  px-3
+  text-sm
+  text-slate-700
+
+  rounded-lg
+  border
+  border-[#B8C4D1]
+  bg-white
+
+  outline-none
+  transition-all
+  duration-200
+
+  focus:border-blue-500
+  placeholder:text-slate-500
+`;
 
   const iconInputClass = `
-    w-full
-    h-9
-    pl-10
-    pr-3
-    text-sm
-    border
-    border-slate-300
-    rounded-lg
-    bg-white
-    outline-none
-    transition-all
-    duration-200
-    focus:border-blue-500
-  `;
+  w-full
+  h-9
+  pl-10
+  pr-3
+  text-sm
+  text-slate-700
+
+  rounded-lg
+  border
+  border-[#B8C4D1]
+  bg-white
+
+  outline-none
+  transition-all
+  duration-200
+
+  focus:border-blue-500
+  placeholder:text-slate-500
+`;
 
   return (
     <div className="space-y-4 mb-10">
@@ -69,14 +79,14 @@ export default function BankDetailsTab({ data, updateRootFields }) {
           Project Information
         </h2>
 
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-slate-600">
           Fill Bank and Project Details
         </p>
       </div>
 
       {/* Card */}
 
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="rounded-xl border border-[#CDD7E3] bg-white p-4">
         {/* ============================
             Row 1
         ============================ */}
@@ -92,7 +102,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
             <div className="relative">
               <Briefcase
                 size={16}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
               />
 
               <input
@@ -100,7 +110,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
                 name="projectName"
                 value={data.projectName || ""}
                 onChange={handleChange}
-                placeholder="Enter project name"
+                placeholder="Enter Project Name"
                 className={iconInputClass}
                 autoComplete="off"
               />
@@ -117,7 +127,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
             <div className="relative">
               <Building2
                 size={16}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
               />
 
               <input
@@ -125,7 +135,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
                 name="bankName"
                 value={data.bankName || ""}
                 onChange={handleChange}
-                placeholder="Enter bank name"
+                placeholder="Enter Bank Name"
                 className={iconInputClass}
                 autoComplete="off"
               />
@@ -144,7 +154,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
               name="projectManager"
               value={data.projectManager || ""}
               onChange={handleChange}
-              placeholder="Enter project manager"
+              placeholder="Enter Project Manager"
               className={inputClass}
               autoComplete="off"
             />
@@ -162,7 +172,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
               name="salesPerson"
               value={data.salesPerson || ""}
               onChange={handleChange}
-              placeholder="Enter sales person"
+              placeholder="Enter Sales Person"
               className={inputClass}
               autoComplete="off"
             />
@@ -183,7 +193,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
             <div className="relative">
               <Phone
                 size={16}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
               />
 
               <input
@@ -192,7 +202,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
                 name="headOfficeContactNo"
                 value={data.headOfficeContactNo || ""}
                 onChange={handleChange}
-                placeholder="Enter contact number"
+                placeholder="Enter Contact Number"
                 className={iconInputClass}
                 autoComplete="off"
               />
@@ -249,7 +259,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
             <div className="relative">
               <MapPin
                 size={16}
-                className="absolute left-3 top-3 text-slate-400"
+                className="absolute left-3 top-3 text-slate-500"
               />
 
               <textarea
@@ -257,24 +267,32 @@ export default function BankDetailsTab({ data, updateRootFields }) {
                 name="headOfficeAddress"
                 value={data.headOfficeAddress || ""}
                 onChange={handleChange}
-                placeholder="Enter head office address"
+                placeholder="Enter Head Office Address"
                 autoComplete="off"
                 className="
                 w-full
                 resize-none
+
                 rounded-lg
                 border
-                border-slate-300
+                border-[#B8C4D1]
                 bg-white
+
                 pl-10
                 pr-3
                 pt-2.5
+
                 text-sm
+                text-slate-700
+                placeholder:text-slate-500
+
                 outline-none
+
                 transition-all
                 duration-200
+
                 focus:border-blue-500
-        "
+              "
               />
             </div>
           </div>

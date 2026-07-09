@@ -64,7 +64,7 @@ export default function MultiSelectDropdown({
     <div className={`${width} min-w-0`}>
       {/* Label */}
       {label && (
-        <label className="block mb-1 ml-1 text-sm font-semibold text-slate-600 2xl:text-base">
+        <label className="block mb-1 ml-1 text-sm font-medium text-slate-700 2xl:text-base">
           {label}
         </label>
       )}
@@ -79,8 +79,7 @@ export default function MultiSelectDropdown({
           h-9
           px-4
           border
-          border-slate-300
-          2xl:border-slate-400
+          border-[#B8C4D1]
           rounded-lg
           bg-white
           focus:border-blue-500
@@ -100,7 +99,7 @@ export default function MultiSelectDropdown({
             {Icon && (
               <Icon
                 size={18}
-                className="shrink-0 text-slate-400 2xl:text-slate-500"
+                className="shrink-0 text-slate-500 2xl:text-slate-500"
               />
             )}
 
@@ -127,7 +126,7 @@ export default function MultiSelectDropdown({
             size={18}
             className={`
             shrink-0
-            text-slate-400
+            text-slate-500
             2xl:text-slate-500
             transition-transform
             duration-200
@@ -149,8 +148,7 @@ export default function MultiSelectDropdown({
             bg-white
             rounded-xl
             border
-            border-slate-200
-            2xl:border-slate-300
+            border-[#CDD7E3]
 
             shadow-xl
 
@@ -165,7 +163,7 @@ export default function MultiSelectDropdown({
           "
           >
             {/* Search */}
-            <div className="border-b border-slate-100 2xl:border-slate-200 p-3">
+            <div className="border-b border-[#E1E7EF] p-3">
               <div className="relative">
                 <Search
                   size={16}
@@ -185,7 +183,7 @@ export default function MultiSelectDropdown({
 
                   rounded-lg
                   border
-                  border-slate-300
+                  border-[#B8C4D1]
 
                   text-sm
 
@@ -216,8 +214,7 @@ export default function MultiSelectDropdown({
               text-sm
 
               border-b
-              border-slate-100
-              2xl:border-slate-200
+              border-[#E1E7EF]
 
               hover:bg-slate-50
 
@@ -261,19 +258,17 @@ export default function MultiSelectDropdown({
                     text-sm
 
                     border-b
-                    border-slate-100
-                    2xl:border-slate-200
+                    border-[#E1E7EF]
                     last:border-b-0
 
                     transition-colors
 
                     cursor-pointer
 
-                    ${
-                      selected.includes(option)
+                    ${selected.includes(option)
                         ? "bg-blue-50"
                         : "hover:bg-slate-50"
-                    }
+                      }
                   `}
                   >
                     {selected.includes(option) ? (
@@ -289,7 +284,7 @@ export default function MultiSelectDropdown({
             </div>
 
             {/* Footer */}
-            <div className="border-t border-slate-100 2xl:border-slate-200 p-2">
+            <div className="border-t border-[#E1E7EF] p-2">
               <button
                 type="button"
                 onClick={() => onChange([])}

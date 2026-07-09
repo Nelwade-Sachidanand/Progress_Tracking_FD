@@ -10,6 +10,7 @@ export default function useEditTask() {
   const { state } = useLocation();
 
   const task = state?.task;
+  // console.log("Task:", task);
 
   const { fetchProjects, projects } = useProjects();
   const selectedProjectId = sessionStorage.getItem("selectedProjectId");
@@ -20,15 +21,21 @@ export default function useEditTask() {
     ) || null;
 
   const [formData, setFormData] = useState({
+    phaseId: task?.phaseId || "",
     phaseName: task?.phaseName || task?.phase || "",
 
+    milestoneId: task?.milestoneId || "",
     milestoneName: task?.milestoneName || task?.milestone || "",
 
+    taskId: task?.taskId || "",
     taskName: task?.taskName || task?.task || "",
 
+    subTaskId: task?.subTaskId || "",
     subTaskName: task?.subTaskName || task?.subTask || "",
 
+    //activityId: task?.activityId || "",
     activityName: task?.activityName || task?.activity || "",
+
 
     owner: task?.owner || "",
 
@@ -54,48 +61,68 @@ export default function useEditTask() {
   const originalPlannedEndDate = task?.plannedEndDate || "";
 
   const phases = useMemo(() => {
-    return selectedProject?.phases?.map((phase) => phase.phaseName) || [];
+    return (
+      selectedProject?.phases?.map((phase) => ({
+        id: phase.phaseId,
+        name: phase.phaseName,
+      })) || []
+    );
   }, [selectedProject]);
 
   const milestones = useMemo(() => {
     const phase = selectedProject?.phases?.find(
-      (phase) => phase.phaseName === formData.phaseName,
+      (p) => p.phaseId === formData.phaseId,
     );
 
-    return phase?.milestones?.map((milestone) => milestone.milestoneName) || [];
-  }, [selectedProject, formData.phaseName]);
+    return (
+      phase?.milestones?.map((m) => ({
+        id: m.milestoneId,
+        name: m.milestoneName,
+      })) || []
+    );
+  }, [selectedProject, formData.phaseId]);
 
   const taskOptions = useMemo(() => {
     const phase = selectedProject?.phases?.find(
-      (phase) => phase.phaseName === formData.phaseName,
+      (p) => p.phaseId === formData.phaseId,
     );
 
     const milestone = phase?.milestones?.find(
-      (milestone) => milestone.milestoneName === formData.milestoneName,
+      (m) => m.milestoneId === formData.milestoneId,
     );
 
-    return milestone?.tasks?.map((task) => task.taskName) || [];
-  }, [selectedProject, formData.phaseName, formData.milestoneName]);
+    return (
+      milestone?.tasks?.map((t) => ({
+        id: t.taskId,
+        name: t.taskName,
+      })) || []
+    );
+  }, [selectedProject, formData.phaseId, formData.milestoneId]);
 
   const subTasks = useMemo(() => {
     const phase = selectedProject?.phases?.find(
-      (phase) => phase.phaseName === formData.phaseName,
+      (p) => p.phaseId === formData.phaseId,
     );
 
     const milestone = phase?.milestones?.find(
-      (milestone) => milestone.milestoneName === formData.milestoneName,
+      (m) => m.milestoneId === formData.milestoneId,
     );
 
     const taskObj = milestone?.tasks?.find(
-      (task) => task.taskName === formData.taskName,
+      (t) => t.taskId === formData.taskId,
     );
 
-    return taskObj?.subTasks?.map((subTask) => subTask.subTaskName) || [];
+    return (
+      taskObj?.subTasks?.map((s) => ({
+        id: s.subTaskId,
+        name: s.subTaskName,
+      })) || []
+    );
   }, [
     selectedProject,
-    formData.phaseName,
-    formData.milestoneName,
-    formData.taskName,
+    formData.phaseId,
+    formData.milestoneId,
+    formData.taskId,
   ]);
 
   const handleChange = (field, value) => {
@@ -111,19 +138,39 @@ export default function useEditTask() {
 
       if (field === "plannedStartDate" || field === "plannedEndDate") {
         const start =
-          field === "plannedStartDate" ? value : updated.plannedStartDate;
+          field === "plannedStartDate"
+            ? value
+            : updated.plannedStartDate;
 
-        const end = field === "plannedEndDate" ? value : updated.plannedEndDate;
+        const end =
+          field === "plannedEndDate"
+            ? value
+            : updated.plannedEndDate;
 
         if (start && end) {
           const startDate = new Date(start);
           const endDate = new Date(end);
 
           if (endDate >= startDate) {
-            const diffDays =
-              Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+            let workingDays = 0;
 
-            updated.estimatedPeriodWeek = Math.ceil(diffDays / 7);
+            const current = new Date(startDate);
+
+            while (current <= endDate) {
+              const day = current.getDay();
+
+              // Monday to Friday only
+              if (day !== 0 && day !== 6) {
+                workingDays++;
+              }
+
+              current.setDate(current.getDate() + 1);
+            }
+
+            // Same as Excel: NETWORKDAYS(start,end)/5
+            updated.estimatedPeriodWeek = Number(
+              (workingDays / 5).toFixed(2)
+            );
           } else {
             updated.estimatedPeriodWeek = "";
           }
@@ -136,21 +183,44 @@ export default function useEditTask() {
       // Actual Period Week
       // ================================
 
+      // ================================
+      // Actual Period Week (NETWORKDAYS / 5)
+      // ================================
+
       if (field === "actualStartDate" || field === "actualEndDate") {
         const start =
-          field === "actualStartDate" ? value : updated.actualStartDate;
+          field === "actualStartDate"
+            ? value
+            : updated.actualStartDate;
 
-        const end = field === "actualEndDate" ? value : updated.actualEndDate;
+        const end =
+          field === "actualEndDate"
+            ? value
+            : updated.actualEndDate;
 
         if (start && end) {
           const startDate = new Date(start);
           const endDate = new Date(end);
 
           if (endDate >= startDate) {
-            const diffDays =
-              Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+            let workingDays = 0;
 
-            updated.actualPeriodWeek = Math.ceil(diffDays / 7);
+            const current = new Date(startDate);
+
+            while (current <= endDate) {
+              const day = current.getDay();
+
+              // Monday-Friday
+              if (day !== 0 && day !== 6) {
+                workingDays++;
+              }
+
+              current.setDate(current.getDate() + 1);
+            }
+
+            updated.actualPeriodWeek = Number(
+              (workingDays / 5).toFixed(2)
+            );
           } else {
             updated.actualPeriodWeek = "";
           }
@@ -195,16 +265,19 @@ export default function useEditTask() {
       const payload = {
         projectId: selectedProject?.id,
 
-        projectName: selectedProject?.projectName,
-
+        phaseId: formData.phaseId,
         phaseName: formData.phaseName,
 
+        milestoneId: formData.milestoneId,
         milestoneName: formData.milestoneName,
 
+        taskId: formData.taskId,
         taskName: formData.taskName,
 
+        subTaskId: formData.subTaskId,
         subTaskName: formData.subTaskName,
 
+        //  activityId: formData.activityId,
         activityName: formData.activityName,
 
         owner: formData.owner,
@@ -212,17 +285,14 @@ export default function useEditTask() {
         estimatedPeriodWeek: Number(formData.estimatedPeriodWeek),
 
         plannedStartDate: formData.plannedStartDate,
-
         plannedEndDate: formData.plannedEndDate,
 
         actualStartDate: formData.actualStartDate,
-
         actualEndDate: formData.actualEndDate,
 
         progress: Number(formData.progress),
 
         executionStatus: formData.executionStatus,
-
         scheduleHealth: formData.scheduleHealth,
 
         changeReason: formData.changeReason,

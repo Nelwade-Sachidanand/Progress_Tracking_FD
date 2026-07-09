@@ -76,7 +76,7 @@ export default function TaskSummaryCards({
             className="
             rounded-2xl
             border
-            border-slate-200
+            border-[#CDD7E3]
             bg-white
             shadow-sm
 

@@ -24,19 +24,26 @@ export default function PaymentSystemsTab({ data, updateSection }) {
   };
 
   const inputClass = `
-    w-full
-    h-9
-    px-3
-    rounded-lg
-    border
-    border-slate-300
-    bg-white
-    text-sm
-    outline-none
-    transition-all
-    duration-200
-    focus:border-blue-500
-  `;
+  w-full
+  h-9
+  px-3
+
+  rounded-lg
+  border
+  border-[#B8C4D1]
+  bg-white
+
+  text-sm
+  text-slate-700
+  placeholder:text-slate-500
+
+  outline-none
+
+  transition-all
+  duration-200
+
+  focus:border-blue-500
+`;
 
   const products = [
     { key: "rtgs", title: "RTGS", icon: Landmark },
@@ -55,14 +62,14 @@ export default function PaymentSystemsTab({ data, updateSection }) {
           Payment Systems & NPCI Products
         </h2>
 
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-slate-600">
           Configure The Payment Systems And NPCI Products Currently Enabled For
           The Bank.
         </p>
       </div>
 
       {/* Payment Systems */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="rounded-xl border border-[#CDD7E3] bg-white p-4">
         <h3 className="mb-4 text-base font-semibold text-[#0B1F59]">
           Enabled Payment Systems
         </h3>
@@ -84,10 +91,9 @@ export default function PaymentSystemsTab({ data, updateSection }) {
                   transition-all
                   duration-300
 
-                  ${
-                    data[item.key]
-                      ? "border-blue-500 bg-blue-50 shadow-sm"
-                      : "border-slate-200 hover:border-blue-500"
+                  ${data[item.key]
+                    ? "border-blue-500 bg-blue-50 shadow-sm"
+                    : "border-slate-200 hover:border-blue-500"
                   }
                 `}
               >
@@ -102,10 +108,9 @@ export default function PaymentSystemsTab({ data, updateSection }) {
                       rounded-lg
                       transition-all
 
-                      ${
-                        data[item.key]
-                          ? "bg-[#2563EB] text-white"
-                          : "bg-blue-100 text-[#2563EB]"
+                      ${data[item.key]
+                        ? "bg-[#2563EB] text-white"
+                        : "bg-blue-100 text-[#2563EB]"
                       }
                     `}
                   >
@@ -154,7 +159,7 @@ export default function PaymentSystemsTab({ data, updateSection }) {
       </div>
 
       {/* Transaction Statistics */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="rounded-xl border border-[#CDD7E3] bg-white p-4">
         <h3 className="mb-4 text-base font-semibold text-[#0B1F59]">
           Transaction Statistics
         </h3>

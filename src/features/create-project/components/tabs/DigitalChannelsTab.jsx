@@ -17,19 +17,26 @@ export default function DigitalChannelsTab({ data, updateSection }) {
   };
 
   const inputClass = `
-    w-full
-    h-9
-    px-3
-    rounded-lg
-    border
-    border-slate-300
-    bg-white
-    text-sm
-    outline-none
-    transition-all
-    duration-200
-    focus:border-blue-500
-  `;
+  w-full
+  h-9
+  px-3
+
+  rounded-lg
+  border
+  border-[#B8C4D1]
+  bg-white
+
+  text-sm
+  text-slate-700
+  placeholder:text-slate-500
+
+  outline-none
+
+  transition-all
+  duration-200
+
+  focus:border-blue-500
+`;
 
   const channels = [
     {
@@ -65,7 +72,7 @@ export default function DigitalChannelsTab({ data, updateSection }) {
           Digital Channels
         </h2>
 
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-slate-600">
           Configure The Digital Banking Channels Available To Customers.
         </p>
       </div>
@@ -74,7 +81,7 @@ export default function DigitalChannelsTab({ data, updateSection }) {
           Available Digital Channels
       =========================================== */}
 
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="rounded-xl border border-[#CDD7E3] bg-white p-4">
         <h3 className="mb-4 rounded-md bg-blue-50 px-3 py-2 text-base font-semibold text-[#0B1F59] w-[250px]">
           Available Digital Channels
         </h3>
@@ -96,11 +103,10 @@ export default function DigitalChannelsTab({ data, updateSection }) {
           transition-all
           duration-300
 
-          ${
-            data[channel.key]
-              ? "border-blue-500 bg-blue-50 shadow-sm"
-              : "border-slate-200 hover:border-blue-500"
-          }
+          ${data[channel.key]
+                    ? "border-blue-500 bg-blue-50 shadow-sm"
+                    : "border-slate-200 hover:border-blue-500"
+                  }
         `}
               >
                 <div className="flex items-center justify-between">
@@ -114,11 +120,10 @@ export default function DigitalChannelsTab({ data, updateSection }) {
               rounded-lg
               transition-all
 
-              ${
-                data[channel.key]
-                  ? "bg-[#2563EB] text-white"
-                  : "bg-blue-100 text-[#2563EB]"
-              }
+              ${data[channel.key]
+                        ? "bg-[#2563EB] text-white"
+                        : "bg-blue-100 text-[#2563EB]"
+                      }
             `}
                   >
                     <Icon size={18} />
@@ -169,7 +174,7 @@ export default function DigitalChannelsTab({ data, updateSection }) {
           Channel Statistics
       =========================================== */}
 
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="rounded-xl border border-[#CDD7E3] bg-white p-4">
         <h3 className="mb-4 rounded-md bg-blue-50 px-3 py-2 text-base font-semibold text-[#0B1F59] w-[250px]">
           Channel Statistics
         </h3>

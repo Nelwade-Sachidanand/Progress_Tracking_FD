@@ -56,7 +56,7 @@ export default function ProjectNavigation({
       className="
         mt-5
         border-t
-        border-slate-200
+        border-[#CDD7E3]
         pt-4
       "
     >

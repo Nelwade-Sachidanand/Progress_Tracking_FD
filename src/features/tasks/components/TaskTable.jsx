@@ -25,10 +25,10 @@ export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
   };
 
   return (
-    <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div className="mt-5 overflow-hidden rounded-2xl border border-[#CDD7E3] bg-white shadow-sm">
       <table className="w-full table-fixed">
         <thead>
-          <tr className="border-b border-slate-200 bg-slate-100">
+          <tr className="border-b border-[#CDD7E3] bg-slate-100">
             <th className="w-[60px] px-3 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
               Sr. No.
             </th>
@@ -74,8 +74,8 @@ export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
                 key={`${task.activity}-${index}`}
                 className="
           border-b
-          border-slate-200
-          hover:bg-slate-50
+          border-[#CDD7E3]
+          
           transition-colors
         "
               >
@@ -97,7 +97,7 @@ export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
                     </p>
 
                     <p
-                      className="truncate text-sm text-slate-500"
+                      className="truncate text-sm text-slate-600"
                       title={task.task}
                     >
                       {task.task}
@@ -115,7 +115,7 @@ export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
                   </p>
 
                   <p
-                    className="truncate text-sm text-slate-500"
+                    className="truncate text-sm text-slate-600"
                     title={task.milestone}
                   >
                     {task.milestone}
@@ -127,7 +127,7 @@ export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
                   <div className="text-sm text-slate-700">
                     <div>{formatDate(task.startDate)}</div>
 
-                    <div className="text-sm text-slate-500">
+                    <div className="text-sm text-slate-700">
                       {formatDate(task.endDate)}
                     </div>
                   </div>

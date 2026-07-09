@@ -34,20 +34,27 @@ export default function ManagementDetailsTab({ data, updateSection }) {
   };
 
   const inputClass = `
-    w-full
-    h-9
-    pl-10
-    pr-3
-    rounded-lg
-    border
-    border-slate-300
-    bg-white
-    text-sm
-    outline-none
-    transition-all
-    duration-200
-    focus:border-blue-500
-  `;
+  w-full
+  h-9
+  pl-10
+  pr-3
+
+  rounded-lg
+  border
+  border-[#B8C4D1]
+  bg-white
+
+  text-sm
+  text-slate-700
+  placeholder:text-slate-500
+
+  outline-none
+
+  transition-all
+  duration-200
+
+  focus:border-blue-500
+`;
 
   return (
     <div className="space-y-4">
@@ -57,18 +64,18 @@ export default function ManagementDetailsTab({ data, updateSection }) {
           Management Details
         </h2>
 
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-slate-600">
           Enter key management contacts of the bank.
         </p>
       </div>
 
       {/* Contact Card */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="rounded-xl border border-[#CDD7E3] bg-white p-4">
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-4">
           {contacts.map((contact) => (
             <div
               key={contact.key}
-              className="rounded-lg border border-slate-200 p-4"
+              className="rounded-lg border border-[#CDD7E3] p-4"
             >
               <div className="mb-3 flex items-center gap-2 rounded-lg bg-[#EFF6FF] px-3 py-2">
                 <User size={18} className="text-[#2563EB]" />
@@ -88,7 +95,7 @@ export default function ManagementDetailsTab({ data, updateSection }) {
                   <div className="relative">
                     <User
                       size={16}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
                     />
 
                     <input
@@ -114,7 +121,7 @@ export default function ManagementDetailsTab({ data, updateSection }) {
                   <div className="relative">
                     <Phone
                       size={16}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
                     />
 
                     <input
