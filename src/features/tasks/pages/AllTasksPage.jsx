@@ -177,6 +177,8 @@ export default function AllTasksPage() {
 
                 estimatedPeriodWeek: activity.estimatedPeriodWeek,
 
+                actualPeriodWeek: activity.actualPeriodWeek,
+
                 plannedStartDate: activity.plannedStartDate,
 
                 plannedEndDate: activity.plannedEndDate,

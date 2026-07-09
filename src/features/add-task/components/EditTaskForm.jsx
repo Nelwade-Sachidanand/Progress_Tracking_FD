@@ -14,6 +14,8 @@ export default function EditTaskForm() {
     handleUpdate,
   } = useEditTask();
 
+  console.log(formData);
+
   const phaseRef = useRef(null);
   const milestoneRef = useRef(null);
   const taskRef = useRef(null);

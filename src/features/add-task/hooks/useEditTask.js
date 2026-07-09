@@ -109,29 +109,48 @@ export default function useEditTask() {
       // Estimated Period Week
       // ================================
 
-      if (field === "plannedStartDate" || field === "plannedEndDate") {
-        const start =
-          field === "plannedStartDate" ? value : updated.plannedStartDate;
+    if (field === "plannedStartDate" || field === "plannedEndDate") {
+  const start =
+    field === "plannedStartDate"
+      ? value
+      : updated.plannedStartDate;
 
-        const end = field === "plannedEndDate" ? value : updated.plannedEndDate;
+  const end =
+    field === "plannedEndDate"
+      ? value
+      : updated.plannedEndDate;
 
-        if (start && end) {
-          const startDate = new Date(start);
-          const endDate = new Date(end);
+  if (start && end) {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
 
-          if (endDate >= startDate) {
-            const diffDays =
-              Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+    if (endDate >= startDate) {
+      let workingDays = 0;
 
-            updated.estimatedPeriodWeek = Math.ceil(diffDays / 7);
-          } else {
-            updated.estimatedPeriodWeek = "";
-          }
-        } else {
-          updated.estimatedPeriodWeek = "";
+      const current = new Date(startDate);
+
+      while (current <= endDate) {
+        const day = current.getDay();
+
+        // Monday to Friday only
+        if (day !== 0 && day !== 6) {
+          workingDays++;
         }
+
+        current.setDate(current.getDate() + 1);
       }
 
+      // Same as Excel: NETWORKDAYS(start,end)/5
+      updated.estimatedPeriodWeek = Number(
+        (workingDays / 5).toFixed(2)
+      );
+    } else {
+      updated.estimatedPeriodWeek = "";
+    }
+  } else {
+    updated.estimatedPeriodWeek = "";
+  }
+}
       // ================================
       // Actual Period Week
       // ================================
@@ -142,21 +161,45 @@ export default function useEditTask() {
 
         const end = field === "actualEndDate" ? value : updated.actualEndDate;
 
-        if (start && end) {
-          const startDate = new Date(start);
-          const endDate = new Date(end);
+       if (field === "actualStartDate" || field === "actualEndDate") {
+  const start =
+    field === "actualStartDate"
+      ? value
+      : updated.actualStartDate;
 
-          if (endDate >= startDate) {
-            const diffDays =
-              Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+  const end =
+    field === "actualEndDate"
+      ? value
+      : updated.actualEndDate;
 
-            updated.actualPeriodWeek = Math.ceil(diffDays / 7);
-          } else {
-            updated.actualPeriodWeek = "";
-          }
-        } else {
-          updated.actualPeriodWeek = "";
+  if (start && end) {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    if (endDate >= startDate) {
+      let workingDays = 0;
+
+      const current = new Date(startDate);
+
+      while (current <= endDate) {
+        const day = current.getDay();
+
+        // Monday-Friday only
+        if (day !== 0 && day !== 6) {
+          workingDays++;
         }
+
+        current.setDate(current.getDate() + 1);
+      }
+
+      updated.actualPeriodWeek = Number((workingDays / 5).toFixed(2));
+    } else {
+      updated.actualPeriodWeek = "";
+    }
+  } else {
+    updated.actualPeriodWeek = "";
+  }
+}
       }
 
       if (field === "phaseName") {
