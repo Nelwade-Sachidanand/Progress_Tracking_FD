@@ -10,7 +10,7 @@ export default function useEditTask() {
   const { state } = useLocation();
 
   const task = state?.task;
-  // console.log("Task:", task);
+  console.log("Task:", task);
 
   const { fetchProjects, projects } = useProjects();
   const selectedProjectId = sessionStorage.getItem("selectedProjectId");
@@ -22,19 +22,19 @@ export default function useEditTask() {
 
   const [formData, setFormData] = useState({
     phaseId: task?.phaseId || "",
-    phaseName: task?.phaseName || task?.phase || "",
+phaseName: task?.phaseName || task?.phase || "",
 
-    milestoneId: task?.milestoneId || "",
-    milestoneName: task?.milestoneName || task?.milestone || "",
+milestoneId: task?.milestoneId || "",
+milestoneName: task?.milestoneName || task?.milestone || "",
 
-    taskId: task?.taskId || "",
-    taskName: task?.taskName || task?.task || "",
+taskId: task?.taskId || "",
+taskName: task?.taskName || task?.task || "",
 
-    subTaskId: task?.subTaskId || "",
-    subTaskName: task?.subTaskName || task?.subTask || "",
+subTaskId: task?.subTaskId || "",
+subTaskName: task?.subTaskName || task?.subTask || "",
 
-    //activityId: task?.activityId || "",
-    activityName: task?.activityName || task?.activity || "",
+//activityId: task?.activityId || "",
+  activityName: task?.activityName || task?.activity || "",
 
 
     owner: task?.owner || "",
@@ -52,7 +52,7 @@ export default function useEditTask() {
     progress: task?.progress || 0,
 
     executionStatus: task?.executionStatus || "",
-    actualPeriodWeek: task?.actualPeriodWeek || "",
+actualPeriodWeek: task?.actualPeriodWeek || "",
     scheduleHealth: task?.scheduleHealth || "",
     changeReason: "",
   });
@@ -60,174 +60,174 @@ export default function useEditTask() {
 
   const originalPlannedEndDate = task?.plannedEndDate || "";
 
-  const phases = useMemo(() => {
-    return (
-      selectedProject?.phases?.map((phase) => ({
-        id: phase.phaseId,
-        name: phase.phaseName,
-      })) || []
-    );
-  }, [selectedProject]);
+const phases = useMemo(() => {
+  return (
+    selectedProject?.phases?.map((phase) => ({
+      id: phase.phaseId,
+      name: phase.phaseName,
+    })) || []
+  );
+}, [selectedProject]);
 
   const milestones = useMemo(() => {
-    const phase = selectedProject?.phases?.find(
-      (p) => p.phaseId === formData.phaseId,
-    );
+  const phase = selectedProject?.phases?.find(
+    (p) => p.phaseId === formData.phaseId,
+  );
 
-    return (
-      phase?.milestones?.map((m) => ({
-        id: m.milestoneId,
-        name: m.milestoneName,
-      })) || []
-    );
-  }, [selectedProject, formData.phaseId]);
+  return (
+    phase?.milestones?.map((m) => ({
+      id: m.milestoneId,
+      name: m.milestoneName,
+    })) || []
+  );
+}, [selectedProject, formData.phaseId]);
 
-  const taskOptions = useMemo(() => {
-    const phase = selectedProject?.phases?.find(
-      (p) => p.phaseId === formData.phaseId,
-    );
+const taskOptions = useMemo(() => {
+  const phase = selectedProject?.phases?.find(
+    (p) => p.phaseId === formData.phaseId,
+  );
 
-    const milestone = phase?.milestones?.find(
-      (m) => m.milestoneId === formData.milestoneId,
-    );
+  const milestone = phase?.milestones?.find(
+    (m) => m.milestoneId === formData.milestoneId,
+  );
 
-    return (
-      milestone?.tasks?.map((t) => ({
-        id: t.taskId,
-        name: t.taskName,
-      })) || []
-    );
-  }, [selectedProject, formData.phaseId, formData.milestoneId]);
+  return (
+    milestone?.tasks?.map((t) => ({
+      id: t.taskId,
+      name: t.taskName,
+    })) || []
+  );
+}, [selectedProject, formData.phaseId, formData.milestoneId]);
 
-  const subTasks = useMemo(() => {
-    const phase = selectedProject?.phases?.find(
-      (p) => p.phaseId === formData.phaseId,
-    );
+const subTasks = useMemo(() => {
+  const phase = selectedProject?.phases?.find(
+    (p) => p.phaseId === formData.phaseId,
+  );
 
-    const milestone = phase?.milestones?.find(
-      (m) => m.milestoneId === formData.milestoneId,
-    );
+  const milestone = phase?.milestones?.find(
+    (m) => m.milestoneId === formData.milestoneId,
+  );
 
-    const taskObj = milestone?.tasks?.find(
-      (t) => t.taskId === formData.taskId,
-    );
+  const taskObj = milestone?.tasks?.find(
+    (t) => t.taskId === formData.taskId,
+  );
 
-    return (
-      taskObj?.subTasks?.map((s) => ({
-        id: s.subTaskId,
-        name: s.subTaskName,
-      })) || []
-    );
-  }, [
-    selectedProject,
-    formData.phaseId,
-    formData.milestoneId,
-    formData.taskId,
-  ]);
+  return (
+    taskObj?.subTasks?.map((s) => ({
+      id: s.subTaskId,
+      name: s.subTaskName,
+    })) || []
+  );
+}, [
+  selectedProject,
+  formData.phaseId,
+  formData.milestoneId,
+  formData.taskId,
+]);
 
   const handleChange = (field, value) => {
     setFormData((prev) => {
-      const updated = {
-        ...prev,
-        [field]: value,
-      };
+    const updated = {
+  ...prev,
+  [field]: value,
+};
 
-      // ================================
-      // Estimated Period Week
-      // ================================
+// ================================
+// Estimated Period Week
+// ================================
 
-      if (field === "plannedStartDate" || field === "plannedEndDate") {
-        const start =
-          field === "plannedStartDate"
-            ? value
-            : updated.plannedStartDate;
+if (field === "plannedStartDate" || field === "plannedEndDate") {
+  const start =
+    field === "plannedStartDate"
+      ? value
+      : updated.plannedStartDate;
 
-        const end =
-          field === "plannedEndDate"
-            ? value
-            : updated.plannedEndDate;
+  const end =
+    field === "plannedEndDate"
+      ? value
+      : updated.plannedEndDate;
 
-        if (start && end) {
-          const startDate = new Date(start);
-          const endDate = new Date(end);
+  if (start && end) {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
 
-          if (endDate >= startDate) {
-            let workingDays = 0;
+    if (endDate >= startDate) {
+      let workingDays = 0;
 
-            const current = new Date(startDate);
+      const current = new Date(startDate);
 
-            while (current <= endDate) {
-              const day = current.getDay();
+      while (current <= endDate) {
+        const day = current.getDay();
 
-              // Monday to Friday only
-              if (day !== 0 && day !== 6) {
-                workingDays++;
-              }
-
-              current.setDate(current.getDate() + 1);
-            }
-
-            // Same as Excel: NETWORKDAYS(start,end)/5
-            updated.estimatedPeriodWeek = Number(
-              (workingDays / 5).toFixed(2)
-            );
-          } else {
-            updated.estimatedPeriodWeek = "";
-          }
-        } else {
-          updated.estimatedPeriodWeek = "";
+        // Monday to Friday only
+        if (day !== 0 && day !== 6) {
+          workingDays++;
         }
+
+        current.setDate(current.getDate() + 1);
       }
 
-      // ================================
-      // Actual Period Week
-      // ================================
+      // Same as Excel: NETWORKDAYS(start,end)/5
+      updated.estimatedPeriodWeek = Number(
+        (workingDays / 5).toFixed(2)
+      );
+    } else {
+      updated.estimatedPeriodWeek = "";
+    }
+  } else {
+    updated.estimatedPeriodWeek = "";
+  }
+}
 
-      // ================================
-      // Actual Period Week (NETWORKDAYS / 5)
-      // ================================
+// ================================
+// Actual Period Week
+// ================================
 
-      if (field === "actualStartDate" || field === "actualEndDate") {
-        const start =
-          field === "actualStartDate"
-            ? value
-            : updated.actualStartDate;
+// ================================
+// Actual Period Week (NETWORKDAYS / 5)
+// ================================
 
-        const end =
-          field === "actualEndDate"
-            ? value
-            : updated.actualEndDate;
+if (field === "actualStartDate" || field === "actualEndDate") {
+  const start =
+    field === "actualStartDate"
+      ? value
+      : updated.actualStartDate;
 
-        if (start && end) {
-          const startDate = new Date(start);
-          const endDate = new Date(end);
+  const end =
+    field === "actualEndDate"
+      ? value
+      : updated.actualEndDate;
 
-          if (endDate >= startDate) {
-            let workingDays = 0;
+  if (start && end) {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
 
-            const current = new Date(startDate);
+    if (endDate >= startDate) {
+      let workingDays = 0;
 
-            while (current <= endDate) {
-              const day = current.getDay();
+      const current = new Date(startDate);
 
-              // Monday-Friday
-              if (day !== 0 && day !== 6) {
-                workingDays++;
-              }
+      while (current <= endDate) {
+        const day = current.getDay();
 
-              current.setDate(current.getDate() + 1);
-            }
-
-            updated.actualPeriodWeek = Number(
-              (workingDays / 5).toFixed(2)
-            );
-          } else {
-            updated.actualPeriodWeek = "";
-          }
-        } else {
-          updated.actualPeriodWeek = "";
+        // Monday-Friday
+        if (day !== 0 && day !== 6) {
+          workingDays++;
         }
+
+        current.setDate(current.getDate() + 1);
       }
+
+      updated.actualPeriodWeek = Number(
+        (workingDays / 5).toFixed(2)
+      );
+    } else {
+      updated.actualPeriodWeek = "";
+    }
+  } else {
+    updated.actualPeriodWeek = "";
+  }
+}
 
       if (field === "phaseName") {
         updated.milestoneName = "";
@@ -263,42 +263,42 @@ export default function useEditTask() {
         return;
       }
       const payload = {
-        projectId: selectedProject?.id,
+  projectId: selectedProject?.id,
 
-        phaseId: formData.phaseId,
-        phaseName: formData.phaseName,
+  phaseId: formData.phaseId,
+  phaseName: formData.phaseName,
 
-        milestoneId: formData.milestoneId,
-        milestoneName: formData.milestoneName,
+  milestoneId: formData.milestoneId,
+  milestoneName: formData.milestoneName,
 
-        taskId: formData.taskId,
-        taskName: formData.taskName,
+  taskId: formData.taskId,
+  taskName: formData.taskName,
 
-        subTaskId: formData.subTaskId,
-        subTaskName: formData.subTaskName,
+  subTaskId: formData.subTaskId,
+  subTaskName: formData.subTaskName,
 
-        //  activityId: formData.activityId,
-        activityName: formData.activityName,
+//  activityId: formData.activityId,
+  activityName: formData.activityName,
 
-        owner: formData.owner,
+  owner: formData.owner,
 
-        estimatedPeriodWeek: Number(formData.estimatedPeriodWeek),
+  estimatedPeriodWeek: Number(formData.estimatedPeriodWeek),
 
-        plannedStartDate: formData.plannedStartDate,
-        plannedEndDate: formData.plannedEndDate,
+  plannedStartDate: formData.plannedStartDate,
+  plannedEndDate: formData.plannedEndDate,
 
-        actualStartDate: formData.actualStartDate,
-        actualEndDate: formData.actualEndDate,
+  actualStartDate: formData.actualStartDate,
+  actualEndDate: formData.actualEndDate,
 
-        progress: Number(formData.progress),
+  progress: Number(formData.progress),
 
-        executionStatus: formData.executionStatus,
-        scheduleHealth: formData.scheduleHealth,
+  executionStatus: formData.executionStatus,
+  scheduleHealth: formData.scheduleHealth,
 
-        changeReason: formData.changeReason,
-      };
+  changeReason: formData.changeReason,
+};
 
-      // console.log(payload);
+      console.log(payload);
 
       const response = await updateActivity(payload);
 
