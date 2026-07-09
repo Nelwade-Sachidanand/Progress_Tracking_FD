@@ -191,7 +191,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
         className="
         w-full
         max-w-[850px]
-        rounded-3xl
+        rounded-2xl
         bg-white
         shadow-2xl
         border
@@ -228,7 +228,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
             w-9
             items-center
             justify-center
-            rounded-xl
+            rounded-lg
             hover:bg-slate-100
             transition
             cursor-pointer
@@ -257,7 +257,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
                 className="
                 w-full
                 h-9
-                rounded-xl
+                rounded-lg
                 border
                 border-slate-300
                 px-4
@@ -283,7 +283,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
                 className="
                 w-full
                 h-9
-                rounded-xl
+                rounded-lg
                 border
                 border-slate-300
                 px-4
@@ -309,7 +309,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
                 className="
                 w-full
                 h-9
-                rounded-xl
+                rounded-lg
                 border
                 border-slate-300
                 px-4
@@ -337,7 +337,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
                     className="
                     w-full
                     h-9
-                    rounded-xl
+                    rounded-lg
                     border
                     border-slate-300
                     px-4
@@ -447,9 +447,9 @@ const UserForm = ({ mode = "add", userData = null }) => {
 
               <div
                 className="
-        h-[150px]
+        min-h-[150px]
         overflow-y-auto
-        rounded-xl
+        rounded-lg
         border
         border-slate-300
         bg-slate-50
@@ -514,7 +514,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
               type="button"
               onClick={() => navigate("/users")}
               className="
-              h-10
+              h-9
               rounded-xl
               border
               border-slate-300
@@ -537,7 +537,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
               disabled={loading}
               className="
               flex
-              h-10
+              h-9
               items-center
               justify-center
               gap-2

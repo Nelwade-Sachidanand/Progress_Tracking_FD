@@ -6,6 +6,7 @@ import {
   ClipboardList,
   FileSpreadsheet,
   FileText,
+  FolderKanban,
   LayoutDashboard,
   List,
   LogOut,
@@ -339,6 +340,15 @@ const DashboardHeader = ({
       title: "Upload Excel",
       // subtitle: "Upload Excel files to create or update project information",
       icon: <FileSpreadsheet size={24} />,
+
+      titleClass: "text-[26px]",
+      subtitleClass: "text-[12px]",
+    },
+
+    "/projects": {
+      title: "Projects",
+      subtitle: "Manage All Projects",
+      icon: <FolderKanban size={24} />,
 
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",

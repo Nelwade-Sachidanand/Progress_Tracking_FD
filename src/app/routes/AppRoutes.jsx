@@ -19,6 +19,7 @@ import AddUserPage from "../../features/users/pages/AddUserPage";
 import EditUserPage from "../../features/users/pages/EditUserPage";
 import UserManagementPage from "../../features/users/pages/UserManagementPage";
 
+import ProjectsPage from "../../features/projects/pages/ProjectsPage";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 
@@ -97,6 +98,7 @@ const AppRoutes = () => {
             path="/authorization"
             element={<AuthorizationRequestsPage />}
           />
+          <Route path="/projects" element={<ProjectsPage />} />
         </Route>
       </Route>
     </Routes>

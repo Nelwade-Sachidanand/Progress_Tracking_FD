@@ -25,9 +25,11 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
       return false;
     }
 
-    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/.test(newPassword)) {
+    if (
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/.test(newPassword)
+    ) {
       toast.error(
-        "Password must contain at least one uppercase letter, one lowercase letter and one number",
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
       );
       return false;
     }
@@ -101,9 +103,10 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
               value={user?.username || ""}
               disabled
               className="
+              h-9
               w-full
               p-3
-              rounded-xl
+              rounded-lg
               border
               bg-slate-100
               "
@@ -131,11 +134,12 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
               className="
               w-full
               p-3
-              rounded-xl
+              h-9
+              rounded-lg
               border
               border-[#DCE3EE]
               outline-none
-              focus:border-[#2563EB]
+              focus:border-blue-500
               "
             />
           </div>
@@ -161,11 +165,12 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
               className="
               w-full
               p-3
-              rounded-xl
+              h-9
+              rounded-lg
               border
               border-[#DCE3EE]
               outline-none
-              focus:border-[#2563EB]
+              focus:border-blue-500
               "
             />
           </div>
@@ -186,10 +191,11 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
             onClick={onClose}
             className="
             px-5
-            py-2.5
+            py-2
             rounded-xl
             border
             cursor-pointer
+            h-10
             "
           >
             Cancel
@@ -199,12 +205,13 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
             onClick={handleSubmit}
             className="
             px-5
-            py-2.5
+            py-2
             rounded-xl
             bg-[#2563EB]
             text-white
             font-medium
             cursor-pointer
+            h-10
             "
           >
             Reset Password

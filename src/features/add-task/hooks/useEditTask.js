@@ -45,7 +45,7 @@ export default function useEditTask() {
     progress: task?.progress || 0,
 
     executionStatus: task?.executionStatus || "",
-
+    actualPeriodWeek: task?.actualPeriodWeek || "",
     scheduleHealth: task?.scheduleHealth || "",
     changeReason: "",
   });
@@ -104,6 +104,60 @@ export default function useEditTask() {
         ...prev,
         [field]: value,
       };
+
+      // ================================
+      // Estimated Period Week
+      // ================================
+
+      if (field === "plannedStartDate" || field === "plannedEndDate") {
+        const start =
+          field === "plannedStartDate" ? value : updated.plannedStartDate;
+
+        const end = field === "plannedEndDate" ? value : updated.plannedEndDate;
+
+        if (start && end) {
+          const startDate = new Date(start);
+          const endDate = new Date(end);
+
+          if (endDate >= startDate) {
+            const diffDays =
+              Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
+            updated.estimatedPeriodWeek = Math.ceil(diffDays / 7);
+          } else {
+            updated.estimatedPeriodWeek = "";
+          }
+        } else {
+          updated.estimatedPeriodWeek = "";
+        }
+      }
+
+      // ================================
+      // Actual Period Week
+      // ================================
+
+      if (field === "actualStartDate" || field === "actualEndDate") {
+        const start =
+          field === "actualStartDate" ? value : updated.actualStartDate;
+
+        const end = field === "actualEndDate" ? value : updated.actualEndDate;
+
+        if (start && end) {
+          const startDate = new Date(start);
+          const endDate = new Date(end);
+
+          if (endDate >= startDate) {
+            const diffDays =
+              Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
+            updated.actualPeriodWeek = Math.ceil(diffDays / 7);
+          } else {
+            updated.actualPeriodWeek = "";
+          }
+        } else {
+          updated.actualPeriodWeek = "";
+        }
+      }
 
       if (field === "phaseName") {
         updated.milestoneName = "";
