@@ -391,10 +391,6 @@ const svgW = PAD * 2 + ITEMS_PER_ROW * colW;
           onClose={() => setTooltip(null)}
         />
       )}
-<<<<<<< HEAD
-</div>
-=======
     </div>
->>>>>>> 2d88949adea6db5594771bf9c2efb472e782275b
   );
 }
