@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 export default function TableDropdown({
   value,
   onChange,
+  disabled = false,
   options = [],
   placeholder = "Select",
 }) {
@@ -67,6 +68,7 @@ export default function TableDropdown({
     <div ref={wrapperRef} className="relative w-full">
       {/* Button */}
       <button
+        disabled={disabled}
         ref={buttonRef}
         type="button"
         onClick={() => setOpen((prev) => !prev)}
@@ -94,6 +96,12 @@ export default function TableDropdown({
 
         focus:border-blue-500
         cursor-pointer
+
+        disabled:bg-slate-100
+        disabled:text-slate-500
+        disabled:border-slate-300
+        disabled:cursor-not-allowed
+        disabled:opacity-100
       "
       >
         <span className="truncate">{selectedLabel}</span>
@@ -113,6 +121,7 @@ export default function TableDropdown({
       {open &&
         createPortal(
           <div
+            disabled={disabled}
             ref={dropdownRef}
             style={dropdownStyle}
             className="
@@ -131,6 +140,7 @@ export default function TableDropdown({
           >
             {options.map((option) => (
               <button
+                disabled={disabled}
                 key={option.value}
                 type="button"
                 onClick={() => {

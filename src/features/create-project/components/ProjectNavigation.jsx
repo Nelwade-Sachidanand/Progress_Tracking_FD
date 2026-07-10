@@ -8,32 +8,32 @@ export default function ProjectNavigation({
   formData,
   resetForm,
   setSelectedProjectId,
-  loadProjectInformation,
+  disabled = false,
+  isView,
+  isEdit,
+  selectedInfoId,
+  setSelectedInfoId
 }) {
-  const { saveProject, loading } = useCreateProject();
+  const { saveProject, loading, updateProject } = useCreateProject();
 
   const totalSteps = 6;
 
-  const handleCreateProject = async () => {
+  const handleSubmitProject = async () => {
     const payload = mapProjectPayload(formData);
 
-    const response = await saveProject(payload);
+    const response = isEdit
+      ? await updateProject(selectedInfoId, payload)
+      : await saveProject(payload);
 
     if (response.statusType === "S") {
-      // Remove saved draft
       sessionStorage.removeItem("projectDraft");
 
-      // Reset form
       resetForm();
-
-      // Reset selected project
       setSelectedProjectId("");
-
-      // Go back to first step
+      setSelectedInfoId("");
       setCurrentStep(0);
 
-      // Reload project list
-      await loadProjectInformation();
+      navigate("/projects");
     }
   };
 
@@ -100,6 +100,7 @@ export default function ProjectNavigation({
 
         <div className="flex items-center gap-2">
           <button
+            disabled={disabled}
             onClick={handleSaveDraft}
             type="button"
             className="
@@ -116,6 +117,9 @@ export default function ProjectNavigation({
               duration-200
               hover:bg-slate-100
               cursor-pointer
+
+              disabled:cursor-not-allowed
+              disabled:opacity-50
             "
           >
             Save Draft
@@ -123,34 +127,41 @@ export default function ProjectNavigation({
 
           <button
             type="button"
-            disabled={loading}
+            disabled={
+              loading ||
+              (isView && currentStep === totalSteps - 1)
+            }
             onClick={
-              currentStep === totalSteps - 1 ? handleCreateProject : handleNext
+              currentStep === totalSteps - 1 ? handleSubmitProject : handleNext
             }
             className="
-              flex
-              h-10
-              min-w-[150px]
-              items-center
-              justify-center
-              rounded-lg
-              bg-[#2563EB]
-              px-6
-              text-sm
-              font-medium
-              text-white
-              transition-all
-              duration-200
-              hover:bg-blue-700
-              disabled:cursor-not-allowed
-              disabled:opacity-50
-              cursor-pointer
-            "
+            flex
+            h-10
+            min-w-[150px]
+            items-center
+            justify-center
+            rounded-lg
+            bg-[#2563EB]
+            px-6
+            text-sm
+            font-medium
+            text-white
+            transition-all
+            duration-200
+            hover:bg-blue-700
+            disabled:cursor-not-allowed
+            disabled:opacity-50
+            cursor-pointer
+          "
           >
             {loading
               ? "Please wait..."
               : currentStep === totalSteps - 1
-                ? "Create Project"
+                ? isView
+                  ? "View Project"
+                  : isEdit
+                    ? "Update Project"
+                    : "Create Project"
                 : "Next"}
           </button>
         </div>

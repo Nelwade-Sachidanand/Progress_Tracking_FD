@@ -1,7 +1,7 @@
 import { Info, Phone, User } from "lucide-react";
 import { toast } from "react-toastify";
 
-export default function ManagementDetailsTab({ data, updateSection }) {
+export default function ManagementDetailsTab({ data, updateSection, disabled = false }) {
   const contacts = [
     { label: "Chairman", key: "chairman" },
     { label: "CEO", key: "ceo" },
@@ -54,6 +54,12 @@ export default function ManagementDetailsTab({ data, updateSection }) {
   duration-200
 
   focus:border-blue-500
+
+  disabled:bg-slate-100
+    disabled:text-slate-500
+    disabled:border-slate-300
+    disabled:cursor-not-allowed
+    disabled:opacity-100
 `;
 
   return (
@@ -71,7 +77,7 @@ export default function ManagementDetailsTab({ data, updateSection }) {
 
       {/* Contact Card */}
       <div className="rounded-xl border border-[#CDD7E3] bg-white p-4">
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-4">
+        <div className="grid grid-cols-1 sm :grid-cols-2 gap-4 xl:grid-cols-4">
           {contacts.map((contact) => (
             <div
               key={contact.key}
@@ -105,6 +111,7 @@ export default function ManagementDetailsTab({ data, updateSection }) {
                       onChange={(e) =>
                         handleChange(contact.key, "name", e.target.value)
                       }
+                      disabled={disabled}
                       placeholder={`Enter ${contact.label} Name`}
                       className={inputClass}
                     />
@@ -136,6 +143,7 @@ export default function ManagementDetailsTab({ data, updateSection }) {
                           e.target.value,
                         )
                       }
+                      disabled={disabled}
                       placeholder="Enter Contact Number"
                       className={inputClass}
                     />

@@ -38,6 +38,7 @@ export default function SearchInput({
           className="
           w-full
           h-9
+          2xl:h-10
           pl-11
           pr-4
 
@@ -57,8 +58,6 @@ export default function SearchInput({
           duration-200
 
           focus:border-blue-500
-          focus:ring-2
-          focus:ring-blue-100
         "
         />
       </div>

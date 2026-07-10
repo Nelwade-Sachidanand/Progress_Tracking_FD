@@ -185,6 +185,18 @@ const UserForm = ({ mode = "add", userData = null }) => {
 
   if (!open) return null;
 
+  const inputClass = `
+    w-full
+    h-9
+    rounded-lg
+    border
+    border-[#B8C4D1] 
+    px-4
+    text-sm
+    outline-none
+    focus:border-blue-500
+    placeholder:text-slate-500`;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
       <div
@@ -195,13 +207,13 @@ const UserForm = ({ mode = "add", userData = null }) => {
         bg-white
         shadow-2xl
         border
-        border-slate-200
+        border-[#CDD7E3]
         overflow-visible
       "
-      >
+      > 
         {/* Header */}
 
-        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-[#CDD7E3] px-6 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100">
               <UserPlus className="text-blue-600" size={22} />
@@ -212,7 +224,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
                 {mode === "add" ? "Add User" : "Edit User"}
               </h2>
 
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-600">
                 {mode === "add"
                   ? "Create and assign a new user"
                   : "Update user information"}
@@ -245,7 +257,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
             {/* Full Name */}
 
             <div>
-              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-600">
+              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-700">
                 Full Name
               </label>
 
@@ -254,24 +266,14 @@ const UserForm = ({ mode = "add", userData = null }) => {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Enter Full Name"
-                className="
-                w-full
-                h-9
-                rounded-lg
-                border
-                border-slate-300
-                px-4
-                text-sm
-                outline-none
-                focus:border-blue-500
-              "
+                className={inputClass}
               />
             </div>
 
             {/* Username */}
 
             <div>
-              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-600">
+              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-700">
                 Username
               </label>
 
@@ -280,24 +282,14 @@ const UserForm = ({ mode = "add", userData = null }) => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter Username"
-                className="
-                w-full
-                h-9
-                rounded-lg
-                border
-                border-slate-300
-                px-4
-                text-sm
-                outline-none
-                focus:border-blue-500
-              "
+                className={inputClass}
               />
             </div>
 
             {/* Email */}
 
             <div>
-              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-600">
+              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-700">
                 Email
               </label>
 
@@ -306,17 +298,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter Email"
-                className="
-                w-full
-                h-9
-                rounded-lg
-                border
-                border-slate-300
-                px-4
-                text-sm
-                outline-none
-                focus:border-blue-500
-              "
+                className={inputClass}
               />
             </div>
 
@@ -324,7 +306,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
 
             {mode === "add" && (
               <div>
-                <label className="block mb-1 ml-1 text-sm font-semibold text-slate-600">
+                <label className="block mb-1 ml-1 text-sm font-semibold text-slate-700">
                   Password
                 </label>
 
@@ -334,18 +316,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter Password"
-                    className="
-                    w-full
-                    h-9
-                    rounded-lg
-                    border
-                    border-slate-300
-                    px-4
-                    pr-10
-                    text-sm
-                    outline-none
-                    focus:border-blue-500
-                  "
+                    className={inputClass}
                   />
 
                   <button
@@ -415,13 +386,13 @@ const UserForm = ({ mode = "add", userData = null }) => {
 
           <div
             className="
-    mt-5
-    grid
-    grid-cols-1
-    lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]
-    gap-5
-    items-start
-  "
+            mt-5
+            grid
+            grid-cols-1
+            lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]
+            gap-5
+            items-start
+          "
           >
             {/* Left Column */}
             <div className="relative z-50">
@@ -441,23 +412,23 @@ const UserForm = ({ mode = "add", userData = null }) => {
 
             {/* Right Column */}
             <div>
-              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-600">
+              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-700">
                 Selected Projects ({selectedProjects.length})
               </label>
 
               <div
                 className="
-        min-h-[150px]
-        overflow-y-auto
-        rounded-lg
-        border
-        border-slate-300
-        bg-slate-50
-        p-3
-      "
+                min-h-[150px]
+                overflow-y-auto
+                rounded-lg
+                border
+                border-[#B8C4D1]
+                bg-slate-100
+                p-3
+              "
               >
                 {selectedProjects.length === 0 ? (
-                  <div className="flex h-full items-center justify-center text-sm text-slate-400">
+                  <div className="flex h-full items-center justify-center text-sm text-slate-600">
                     No project selected
                   </div>
                 ) : (

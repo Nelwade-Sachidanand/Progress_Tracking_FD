@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 
 import useProjectForm from "../hooks/useProjectForm";
 import useProjectInformation from "../hooks/useProjectInformation";
+import { useParams, useLocation } from "react-router-dom";
+
 
 import { getProjectInformation } from "../services/createProjectService";
 
@@ -30,10 +32,29 @@ export default function CreateProjectPage() {
     resetForm,
   } = useProjectForm();
 
-  const { projectInformation, loadProjectInformation } =
+  const { id } = useParams();
+
+  const location = useLocation();
+
+  const isCreate = location.pathname === "/create";
+
+  const isEdit = location.pathname.includes("/edit");
+
+  const isView = location.pathname.includes("/view");
+
+  const mode = isCreate
+    ? "create"
+    : isEdit
+      ? "edit"
+      : "view";
+
+  const isReadOnly = isView;
+
+  const { loadProjectInfoById } =
     useProjectInformation();
 
   const [selectedProjectId, setSelectedProjectId] = useState("");
+  const [selectedInfoId, setSelectedInfoId] = useState("");
   const [showBanks, setShowBanks] = useState(false);
 
   const [showDraftModal, setShowDraftModal] = useState(false);
@@ -41,19 +62,31 @@ export default function CreateProjectPage() {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
+    if (!isEdit) return;
     const draft = sessionStorage.getItem("projectDraft");
 
-    console.log("Draft:", draft);
+    // console.log("Draft:", draft);
 
     if (draft) {
-      console.log("Opening Draft Modal");
+      // console.log("Opening Draft Modal");
       setShowDraftModal(true);
     }
-  }, []);
+  }, [isEdit]);
 
   useEffect(() => {
-    loadProjectInformation();
-  }, []);
+    if (!id) return;
+
+    const loadProjectInfo = async () => {
+      const projectInfo = await loadProjectInfoById(id);
+
+      if (projectInfo) {
+        setFormData(projectInfo);
+        setSelectedInfoId(id);
+      }
+    };
+
+    loadProjectInfo();
+  }, [id]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -80,6 +113,7 @@ export default function CreateProjectPage() {
   const handleDiscardDraft = () => {
     sessionStorage.removeItem("projectDraft");
     resetForm();
+    setFormData(formData);
     setSelectedProjectId("");
     setCurrentStep(0);
     setShowDraftModal(false);
@@ -89,7 +123,7 @@ export default function CreateProjectPage() {
     switch (currentStep) {
       case 0:
         return (
-          <BankDetailsTab data={formData} updateRootFields={updateRootFields} />
+          <BankDetailsTab data={formData} updateRootFields={updateRootFields} disabled={isReadOnly}/>
         );
 
       case 1:
@@ -97,6 +131,7 @@ export default function CreateProjectPage() {
           <ManagementDetailsTab
             data={formData.contactDetails}
             updateSection={updateSection}
+            disabled={isReadOnly}
           />
         );
 
@@ -106,6 +141,7 @@ export default function CreateProjectPage() {
             cbsInformation={formData.cbsInformation}
             businessStatistics={formData.businessStatistics}
             updateSection={updateSection}
+            disabled={isReadOnly}
           />
         );
 
@@ -116,6 +152,7 @@ export default function CreateProjectPage() {
             hardwareDetails={formData.hardwareDetails}
             updateSection={updateSection}
             updateArraySection={updateArraySection}
+            disabled={isReadOnly}
           />
         );
 
@@ -124,6 +161,7 @@ export default function CreateProjectPage() {
           <DigitalChannelsTab
             data={formData.digitalChannels}
             updateSection={updateSection}
+            disabled={isReadOnly}
           />
         );
 
@@ -132,6 +170,7 @@ export default function CreateProjectPage() {
           <PaymentSystemsTab
             data={formData.paymentSystems}
             updateSection={updateSection}
+            disabled={isReadOnly}
           />
         );
 
@@ -152,150 +191,6 @@ export default function CreateProjectPage() {
           {/* Header */}
           <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
             <BackButton />
-
-            <div className="w-full max-w-md">
-              <label className="mb-1 ml-1 block text-sm font-semibold text-[#0B1F59]">
-                Select Existing Bank
-              </label>
-
-              <div ref={dropdownRef} className="relative">
-                {/* Dropdown Button */}
-
-                <button
-                  type="button"
-                  onClick={() => setShowBanks((prev) => !prev)}
-                  className="
-                  flex
-                  h-9
-                  w-full
-                  cursor-pointer
-                  items-center
-                  justify-between
-                  rounded-lg
-                  border
-                  border-[#D6E4FF]
-                  bg-white
-                  px-4
-                  text-sm
-                  font-medium
-                  text-[#0B1F59]
-                  shadow-sm
-                  focus:border-blue-500
-                "
-                >
-                  <span className="truncate">
-                    {selectedProjectId
-                      ? projectInformation.find(
-                          (p) => String(p.id) === String(selectedProjectId),
-                        )?.bankName
-                      : "➕ New Project"}
-                  </span>
-
-                  <ChevronDown
-                    size={18}
-                    className={`transition-transform ${
-                      showBanks ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-
-                {/* Dropdown */}
-
-                {showBanks && (
-                  <div
-                    className="
-                    absolute
-                    left-0
-                    z-50
-                    mt-2
-                    max-h-72
-                    w-full
-                    overflow-y-auto
-                    rounded-xl
-                    border
-                    border-slate-200
-                    bg-white
-                    shadow-xl
-                  "
-                  >
-                    <button
-                      type="button"
-                      onClick={() => {
-                        resetForm();
-                        setSelectedProjectId("");
-                        setShowBanks(false);
-                      }}
-                      className="
-                      flex
-                      w-full
-                      cursor-pointer
-                      items-center
-                      justify-between
-                      px-4
-                      py-2.5
-                      text-left
-                      transition
-                      hover:bg-[#EEF4FF]
-                    "
-                    >
-                      <span>➕ New Project</span>
-
-                      {!selectedProjectId && (
-                        <Check size={16} className="text-[#2563EB]" />
-                      )}
-                    </button>
-
-                    {projectInformation.map((project) => (
-                      <button
-                        key={project.id}
-                        type="button"
-                        onClick={async () => {
-                          setSelectedProjectId(project.id);
-                          setShowBanks(false);
-
-                          try {
-                            const response = await getProjectInformation(
-                              project.bankName,
-                              project.projectName,
-                            );
-
-                            if (response?.statusType === "S") {
-                              setFormData(response.details);
-                            }
-                          } catch (error) {
-                            console.error(error);
-                          }
-                        }}
-                        className={`
-                        flex
-                        w-full
-                        cursor-pointer
-                        items-center
-                        justify-between
-                        px-4
-                        py-2.5
-                        text-left
-                        transition
-                        hover:bg-[#EEF4FF]
-
-                        ${
-                          String(selectedProjectId) === String(project.id)
-                            ? "bg-[#EEF4FF] font-semibold text-[#2563EB]"
-                            : "text-[#0B1F59]"
-                        }
-                      `}
-                      >
-                        <span className="truncate">{project.bankName}</span>
-
-                        {String(selectedProjectId) === String(project.id) && (
-                          <Check size={16} className="text-[#2563EB]" />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
 
           {/* Stepper */}
@@ -317,7 +212,11 @@ export default function CreateProjectPage() {
             formData={formData}
             resetForm={resetForm}
             setSelectedProjectId={setSelectedProjectId}
-            loadProjectInformation={loadProjectInformation}
+            disabled={isReadOnly}
+            isView={isView}
+            isEdit={isEdit}
+            selectedInfoId={selectedInfoId}
+            setSelectedInfoId={setSelectedInfoId}
           />
         </div>
       </div>

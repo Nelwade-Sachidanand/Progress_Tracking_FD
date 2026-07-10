@@ -11,51 +11,75 @@ import MultiSelectDropdown from "../../../components/common/MultiSelectDropdown"
 import DateInput from "../../../components/common/DateInput";
 
 export default function ExecutiveSummary({ project }) {
-  function SmallCard({ title, value, icon: Icon, color, bg, border }) {
+  function SmallCard({
+    title,
+    value,
+    subText,
+    icon: Icon,
+    color,
+    bg,
+    border,
+  }) {
     return (
       <div
         className="
         relative
-        w-[170px]
-        h-[78px]
-        rounded-lg
+        w-full
+        min-h-[110px]
+        rounded-xl
         border
+        border-[#CDD7E3]
+        px-5
+        py-4
         shadow-sm
       "
         style={{
           backgroundColor: bg,
           borderColor: border,
-          boxShadow: "0 6px 18px rgba(15,23,42,.06)",
         }}
       >
         {/* Icon */}
+
         <div
           className="
           absolute
-          top-3
-          left-3
-          w-7
-          h-7
-          rounded-lg
+          left-4
+          top-4
           flex
+          h-10
+          w-10
           items-center
           justify-center
+          rounded-xl
         "
           style={{
             backgroundColor: `${color}15`,
           }}
         >
-          <Icon size={14} color={color} />
+          <Icon size={18} color={color} />
         </div>
 
-        {/* Center Content */}
-        <div className="h-full flex flex-col items-center justify-center">
-          <h2 className="text-lg font-bold leading-none" style={{ color }}>
+        {/* Content */}
+
+        <div className="flex h-full flex-col items-center justify-center">
+          <h2
+            className="
+            text-3xl
+            font-bold
+            leading-none
+          "
+            style={{ color }}
+          >
             {value}
           </h2>
 
           <p
-            className="mt-2 text-xs font-semibold text-center"
+            className="
+            mt-2
+            text-base
+            font-semibold
+            text-center
+          "
             style={{ color }}
           >
             {title}
@@ -195,64 +219,85 @@ export default function ExecutiveSummary({ project }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E5EAF2] p-5 ">
+    <div
+      className="
+      rounded-2xl
+      border
+      border-[#CDD7E3]
+      bg-white
+      p-4
+      sm:p-5
+      lg:p-6
+    "
+    >
       {/* Header */}
+
       <div
         className="
-    mb-5
-    flex
-    flex-col
-    gap-5
-    xl:flex-row
-    xl:items-start
-    xl:justify-between
-  "
+        mb-4
+        flex
+        flex-col
+        gap-5
+
+        xl:flex-row
+        xl:items-start
+        xl:justify-between
+      "
       >
-        {/* ================= Left ================= */}
-        <div className="flex items-center gap-3 shrink-0">
+        {/* Left */}
+
+        <div className="flex items-center gap-2">
           <div
             className="
-            h-7
-            w-7
-            rounded-full
-            bg-[#2563EB]
-            text-white
-            flex
-            items-center
-            justify-center
-            font-bold
-            shrink-0
-      "
+          flex
+          h-7
+          w-7
+          shrink-0
+          items-center
+          justify-center
+          rounded-full
+          bg-[#2563EB]
+          text-sm
+          font-bold
+          text-white
+
+          sm:h-7
+          sm:w-7
+        "
           >
             2
           </div>
 
           <h2
             className="
-        text-base
-          sm:text-lg
-          lg:text-xl
-          font-bold
-          text-[#0B1F59]
-          mt-[-3px]
-      "
+            text-base
+            font-bold
+            text-[#0B1F59]
+
+            sm:text-lg
+            lg:text-xl
+          "
           >
             Executive Summary
           </h2>
         </div>
 
-        {/* ================= Right Filters ================= */}
+        {/* Filters */}
+
         <div
           className="
-      grid
-      grid-cols-[300px_150px_150px_150px]
-      gap-3
-      items-end
-      shrink-0
-      mt-[-10px]
-    "
+          grid
+          w-full
+          grid-cols-1
+          gap-4
+
+          sm:grid-cols-2
+          xl:w-auto
+          xl:grid-cols-[250px_170px_160px_160px]
+        "
         >
           {/* Milestone */}
+
           <MultiSelectDropdown
             label="Milestone Filter"
             placeholder="All Milestones"
@@ -260,9 +305,11 @@ export default function ExecutiveSummary({ project }) {
             selected={selectedMilestones}
             onChange={setSelectedMilestones}
             width="w-full"
+            dropdownWidth="w-[350px]"
           />
 
-          {/* Date Filter */}
+          {/* Quick Filter */}
+
           <CustomDropdown
             label="Date Filter"
             placeholder="Quick Select"
@@ -301,126 +348,160 @@ export default function ExecutiveSummary({ project }) {
       </div>
 
       {/* Cards */}
-      <div className="grid grid-cols-12 gap-4">
-        {/* ================= LEFT : OVERALL PROGRESS ================= */}
 
-        <div className="col-span-12 lg:col-span-4">
+      <div
+        className="
+        grid
+        grid-cols-1
+        gap-5
+
+        lg:grid-cols-12
+      "
+      >
+        {/* ================= LEFT ================= */}
+
+        <div className="lg:col-span-4">
           <div
             className="
-      relative
-      w-[330px]
-      h-[168px]
-      rounded-lg
-      border
-      px-5
-      py-4
-      shadow-lg
-    "
+        relative
+        flex
+        h-full
+        min-h-[240px]
+        flex-col
+        justify-between
+
+        rounded-xl
+        border
+        border-[#CDD7E3]
+        px-6
+        py-5
+        shadow-sm
+      "
             style={{
               backgroundColor: "#F8FBFF",
               borderColor: "#E5EDF8",
-              boxShadow: "0 8px 24px rgba(15, 23, 42, 0.08)",
             }}
           >
-            {/* Top Left Icon */}
+            {/* Icon */}
+
             <div
               className="
-        absolute
-        top-5
-        left-5
-        w-12
-        h-12
-        rounded-xl
-        flex
-        items-center
-        justify-center
-      "
+          flex
+          h-12
+          w-12
+          items-center
+          justify-center
+          rounded-xl
+        "
               style={{
                 backgroundColor: "#2563EB15",
               }}
             >
-              <CircleDashed size={24} color="#2563EB" />
+              <CircleDashed
+                size={24}
+                color="#2563EB"
+              />
             </div>
 
-            {/* Center Content */}
-            <div className="h-full flex flex-col items-center justify-center">
-              <h1
-                className="text-[42px] font-bold leading-none"
-                style={{ color: "#2563EB" }}
-              >
+            {/* Progress */}
+
+            <div className="text-center">
+              <h1 className="text-5xl font-bold text-[#2563EB]">
                 {overallProgress}%
               </h1>
 
-              <p
-                className="mt-2 text-[16px] font-semibold"
-                style={{ color: "#2563EB" }}
-              >
+              <p className="mt-2 text-lg font-semibold text-[#2563EB]">
                 Overall Progress
+              </p>
+            </div>
+
+            {/* Progress Bar */}
+
+            <div>
+              <div className="h-3 overflow-hidden rounded-full bg-slate-200">
+                <div
+                  className="h-full rounded-full bg-[#2563EB] transition-all duration-500"
+                  style={{
+                    width: `${overallProgress}%`,
+                  }}
+                />
+              </div>
+
+              <p className="mt-3 text-center text-sm text-slate-500">
+                {overallProgress}% of total activities completed
               </p>
             </div>
           </div>
         </div>
 
         {/* ================= RIGHT ================= */}
-        <div className="col-span-12 lg:col-span-7 flex flex-col gap-4">
-          {/* Row 1 */}
-          <div className="grid grid-cols-3 gap-2">
-            {/* Total */}
-            <SmallCard
-              title="Total Activities"
-              value={totalActivities}
-              icon={ListTodo}
-              color="#D97706"
-              bg="#FFFDF8"
-              border="#F5E8C7"
-            />
 
-            {/* Completed */}
-            <SmallCard
-              title="Completed"
-              value={completedActivities}
-              subText={`${Math.round(
-                (completedActivities / (totalActivities || 1)) * 100,
-              )}% of total`}
-              icon={CheckCircle2}
-              color="#16A34A"
-              bg="#F8FFFB"
-              border="#DDF7E7"
-            />
+        <div className="lg:col-span-8">
+          <div className="flex h-full flex-col justify-between gap-5">
+            {/* Row 1 */}
 
-            {/* Delayed */}
-            <SmallCard
-              title="Delayed"
-              value={delayedActivities}
-              subText={`${Math.round(
-                (delayedActivities / (totalActivities || 1)) * 100,
-              )}% of total`}
-              icon={AlertTriangle}
-              color="#EF4444"
-              bg="#FFF9F9"
-              border="#FFE3E3"
-            />
-          </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <SmallCard
+                title="Total Activities"
+                value={totalActivities}
+                icon={ListTodo}
+                color="#D97706"
+                bg="#FFFDF8"
+                border="#F5E8C7"
+              />
 
-          {/* Row 2 */}
-          <div className="grid grid-cols-3 gap-4">
-            <SmallCard
-              title="In Progress"
-              value={inProgressActivities}
-              icon={CircleDashed}
-              color="#2563EB"
-              bg="#F8FBFF"
-              border="#E5EDF8"
-            />
+              <SmallCard
+                title="Completed"
+                value={completedActivities}
+                subText={`${Math.round(
+                  (completedActivities / (totalActivities || 1)) * 100,
+                )}% of total`}
+                icon={CheckCircle2}
+                color="#16A34A"
+                bg="#F8FFFB"
+                border="#DDF7E7"
+              />
 
-            <SmallCard
-              title="Not Yet Started"
-              value={notStartedActivities}
-              icon={ClipboardList}
-              color="#6D4AFF"
-              bg="#FCFAFF"
-              border="#ECE5FF"
-            />
+              <SmallCard
+                title="Delayed"
+                value={delayedActivities}
+                subText={`${Math.round(
+                  (delayedActivities / (totalActivities || 1)) * 100,
+                )}% of total`}
+                icon={AlertTriangle}
+                color="#EF4444"
+                bg="#FFF9F9"
+                border="#FFE3E3"
+              />
+            </div>
+
+            {/* Row 2 */}
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <SmallCard
+                title="In Progress"
+                value={inProgressActivities}
+                subText={`${Math.round(
+                  (inProgressActivities / (totalActivities || 1)) * 100,
+                )}% of total`}
+                icon={CircleDashed}
+                color="#2563EB"
+                bg="#F8FBFF"
+                border="#E5EDF8"
+              />
+
+              <SmallCard
+                title="Not Yet Started"
+                value={notStartedActivities}
+                subText={`${Math.round(
+                  (notStartedActivities / (totalActivities || 1)) * 100,
+                )}% of total`}
+                icon={ClipboardList}
+                color="#6D4AFF"
+                bg="#FCFAFF"
+                border="#ECE5FF"
+              />
+            </div>
           </div>
         </div>
       </div>

@@ -68,8 +68,8 @@ export default function AuditSummaryCards({ auditLogs = [] }) {
       className="
       grid
       gap-4
-      grid-cols-1
-      sm:grid-cols-2
+      grid-cols-2
+      sm:grid-cols-3
       lg:grid-cols-3
       xl:grid-cols-5
       mt-[5px]
@@ -85,7 +85,7 @@ export default function AuditSummaryCards({ auditLogs = [] }) {
             bg-white
             rounded-2xl
             border
-            border-slate-200
+            border-[#CDD7E3]
             shadow-sm
 
             p-3
@@ -115,8 +115,9 @@ export default function AuditSummaryCards({ auditLogs = [] }) {
             <div className="relative mt-[-20px] flex-1 flex flex-col items-center justify-center text-center">
               <h2
                 className="
-                text-3xl
+                text-xl
                 xl:text-[35px]
+                2xl:text-[37px]
                 font-bold
                 text-[#142850]
                 leading-none
@@ -130,8 +131,9 @@ export default function AuditSummaryCards({ auditLogs = [] }) {
                 mt-2
                 text-sm
                 xl:text-[16px]
+                2xl:text-[18px]
                 font-medium
-                text-slate-500
+                text-slate-600
                 leading-snug
               "
               >

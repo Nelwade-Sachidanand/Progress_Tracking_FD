@@ -1,6 +1,24 @@
 import { Building2, Download, Eye, Pencil, Trash2 } from "lucide-react";
+import { useState } from "react";
+import Pagination from "../../../components/layout/Pagination";
+import { calculateOverallProgress } from "../../dashboard/utils/dashboardUtils";
+import { useNavigate } from "react-router-dom";
 
 export default function ProjectTable({ projects = [] }) {
+
+  const navigate = useNavigate();
+
+  const RECORDS_PER_PAGE = 10;
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(projects.length / RECORDS_PER_PAGE);
+
+  const pageProjects = projects.slice(
+    (currentPage - 1) * RECORDS_PER_PAGE,
+    currentPage * RECORDS_PER_PAGE,
+  );
+
   const getStatus = (progress) => {
     if (progress >= 100) {
       return {
@@ -30,11 +48,15 @@ export default function ProjectTable({ projects = [] }) {
   };
 
   return (
-    <div className="overflow-x-auto mt-5 rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div className="overflow-x-auto mt-5 rounded-2xl border border-[#CDD7E3] bg-white shadow-sm">
       <table className="w-full table-auto">
         <thead>
-          <tr className="border-b border-slate-200 bg-slate-100">
-            <th className="w-[40%] px-6 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
+          <tr className="border-b border-[#CDD7E3] bg-blue-100">
+            <th className="w-[50px] px-4 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
+              Sr. No.
+            </th>
+
+            <th className="w-[40%] px-1 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
               Project / Bank
             </th>
 
@@ -42,7 +64,7 @@ export default function ProjectTable({ projects = [] }) {
               Project Manager
             </th>
 
-            <th className="w-[15%] px-4 py-4 text-center text-base font-semibold text-slate-600 whitespace-nowrap">
+            <th className="w-[17%] px-1 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
               Progress
             </th>
 
@@ -58,28 +80,34 @@ export default function ProjectTable({ projects = [] }) {
 
         <tbody>
           {projects.length > 0 ? (
-            projects.map((project) => {
+            pageProjects.map((project, index) => {
               const status = getStatus(project.progress || 0);
+
+              const progress = calculateOverallProgress([project]);
 
               return (
                 <tr
                   key={project.id}
                   className="
                   border-b
-                  border-slate-200
-                  hover:bg-slate-50
-                  transition-colors
+                  border-[#CDD7E3]
                 "
                 >
                   {/* Project */}
 
                   <td className="px-6 py-3">
-                    <div className="flex items-center gap-3">
+                    <span className="text-sm xl:text-base font-medium text-slate-700">
+                      {(currentPage - 1) * RECORDS_PER_PAGE + index + 1}
+                    </span>
+                  </td>
+
+                  <td className="px-1 py-3">
+                    <div className="flex items-center gap-2">
                       <div
                         className="
                         flex
-                        h-10
-                        w-10
+                        h-9
+                        w-9
                         items-center
                         justify-center
                         rounded-xl
@@ -109,7 +137,7 @@ export default function ProjectTable({ projects = [] }) {
                           truncate
                           text-xs
                           xl:text-sm
-                          text-slate-500
+                          text-slate-600
                         "
                           title={project.bankName}
                         >
@@ -139,13 +167,13 @@ export default function ProjectTable({ projects = [] }) {
 
                   {/* Progress */}
 
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
+                  <td className="px-1 py-3">
+                    <div className="flex items-center gap-1">
                       <div className="h-2 flex-1 rounded-full bg-slate-200">
                         <div
                           className="h-2 rounded-full bg-[#2563EB] transition-all duration-500"
                           style={{
-                            width: `${project.progress || 0}%`,
+                            width: `${progress || 0}%`,
                           }}
                         />
                       </div>
@@ -160,7 +188,7 @@ export default function ProjectTable({ projects = [] }) {
                         text-slate-700
                       "
                       >
-                        {project.progress || 0}%
+                        {progress || 0}%
                       </span>
                     </div>
                   </td>
@@ -191,6 +219,7 @@ export default function ProjectTable({ projects = [] }) {
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-center gap-2">
                       <button
+                        onClick={() => navigate(`/projects/view/${project.projectInformationId}`)}
                         title="View Project"
                         className="
                         h-9
@@ -210,6 +239,7 @@ export default function ProjectTable({ projects = [] }) {
                       </button>
 
                       <button
+                        onClick={() => navigate(`/projects/edit/${project.projectInformationId}`)}
                         title="Edit Project"
                         className="
                         h-9
@@ -273,7 +303,7 @@ export default function ProjectTable({ projects = [] }) {
           ) : (
             <tr>
               <td
-                colSpan={5}
+                colSpan={6}
                 className="
                 py-14
                 text-center
@@ -287,6 +317,14 @@ export default function ProjectTable({ projects = [] }) {
           )}
         </tbody>
       </table>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalRecords={projects.length}
+        recordsPerPage={RECORDS_PER_PAGE}
+        onPageChange={setCurrentPage}
+        label="Projects"
+      />
     </div>
   );
 }

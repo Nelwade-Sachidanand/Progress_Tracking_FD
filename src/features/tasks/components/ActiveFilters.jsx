@@ -149,7 +149,6 @@ function ActiveFilters({
           bg-red-50
           px-4
           text-sm
-          font-semibold
           text-red-600
           transition
           hover:bg-red-100

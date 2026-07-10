@@ -5,6 +5,7 @@ export default function NumberInput({
   name,
   value,
   onChange,
+  disabled = false,
   placeholder = "",
   className = "",
   min = 0,
@@ -39,6 +40,7 @@ export default function NumberInput({
 
   return (
     <input
+      disabled={disabled}
       type="number"
       name={name}
       min={min}

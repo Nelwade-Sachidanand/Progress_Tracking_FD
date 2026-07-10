@@ -99,7 +99,7 @@ export default function AuditTable({ logs = [], loading, onView }) {
         bg-white
         rounded-2xl
         border
-        border-slate-200
+        border-[#CDD7E3]
         p-10
         text-center
         text-slate-500
@@ -117,10 +117,10 @@ export default function AuditTable({ logs = [], loading, onView }) {
   const pageLogs = logs.slice(startIndex, startIndex + RECORDS_PER_PAGE);
 
   return (
-    <div className="overflow-x-auto mt-5 rounded-3xl border border-slate-200 bg-white shadow-sm">
+    <div className="overflow-x-auto mt-5 rounded-2xl border border-[#CDD7E3] bg-white shadow-sm">
       <table className="w-full table-auto">
         <thead>
-          <tr className="border-b border-slate-200 bg-slate-100">
+          <tr className="border-b border-[#CDD7E3] bg-blue-100">
             <th className="w-[90px] px-4 py-4 text-left text-base font-semibold text-slate-600">
               Sr. No.
             </th>
@@ -158,9 +158,7 @@ export default function AuditTable({ logs = [], loading, onView }) {
                 key={log.id}
                 className="
               border-b
-              border-slate-200
-              hover:bg-slate-50
-              transition-colors
+              border-[#CDD7E3]
             "
               >
                 {/* Sr No */}

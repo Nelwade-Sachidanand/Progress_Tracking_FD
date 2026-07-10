@@ -146,7 +146,7 @@ export default function AuditDetailsModal({ log, onClose }) {
       >
         {/* Header */}
 
-        <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+        <div className="px-5 py-4 border-b border-[#CDD7E3] flex items-center justify-between">
           <h2 className="text-lg font-semibold text-[#0F172A]">
             Audit Details
           </h2>

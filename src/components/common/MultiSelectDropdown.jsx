@@ -9,6 +9,7 @@ export default function MultiSelectDropdown({
   onChange,
   icon: Icon,
   width = "w-full",
+  dropdownWidth,
 }) {
   const dropdownRef = useRef(null);
 
@@ -77,6 +78,7 @@ export default function MultiSelectDropdown({
           className="
           w-full
           h-9
+          2xl:h-10
           px-4
           border
           border-[#B8C4D1]
@@ -93,13 +95,18 @@ export default function MultiSelectDropdown({
           min-w-0
 
           cursor-pointer
+          disabled:bg-slate-100
+          disabled:text-slate-500
+          disabled:border-slate-300
+          disabled:cursor-not-allowed
+          disabled:opacity-100
         "
         >
           <div className="flex items-center gap-3 flex-1 min-w-0 overflow-hidden">
             {Icon && (
               <Icon
                 size={18}
-                className="shrink-0 text-slate-500 2xl:text-slate-500"
+                className="shrink-0 text-slate-500 2xl:text-slate-500 2xl:h-5 2xl:w-5"
               />
             )}
 
@@ -113,7 +120,7 @@ export default function MultiSelectDropdown({
               text-left
               text-sm
               text-slate-700
-              2xl:text-base
+              2xl:text-lg
               2xl:text-slate-800
             "
               title={displayText}
@@ -126,8 +133,8 @@ export default function MultiSelectDropdown({
             size={18}
             className={`
             shrink-0
-            text-slate-500
-            2xl:text-slate-500
+            text-slate-600
+            2xl:text-slate-600
             transition-transform
             duration-200
             ${open ? "rotate-180" : ""}
@@ -138,36 +145,33 @@ export default function MultiSelectDropdown({
         {/* Dropdown */}
         {open && (
           <div
-            className="
+          className={`
             absolute
-            left-0
+            right-0
             top-11
 
-            w-full
+            ${dropdownWidth || width || "w-full"}
 
             bg-white
             rounded-xl
             border
             border-[#CDD7E3]
-
             shadow-xl
-
             z-60
-
             overflow-x-hidden
             overflow-y-auto
 
             animate-in
             fade-in
             zoom-in-95
-          "
-          >
+          `}
+        >
             {/* Search */}
             <div className="border-b border-[#E1E7EF] p-3">
               <div className="relative">
                 <Search
                   size={16}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
                 />
 
                 <input
@@ -178,6 +182,7 @@ export default function MultiSelectDropdown({
                   className="
                   w-full
                   h-9
+                  2xl:h-10
                   pl-9
                   pr-3
 
@@ -186,12 +191,12 @@ export default function MultiSelectDropdown({
                   border-[#B8C4D1]
 
                   text-sm
+                  2xl:text-base
 
                   outline-none
 
                   focus:border-blue-500
-                  focus:ring-2
-                  focus:ring-blue-100
+                  
                 "
                 />
               </div>
@@ -212,6 +217,7 @@ export default function MultiSelectDropdown({
 
               text-left
               text-sm
+              2xl:text-base
 
               border-b
               border-[#E1E7EF]
@@ -224,9 +230,9 @@ export default function MultiSelectDropdown({
             "
             >
               {selected.length === options.length ? (
-                <CheckSquare className="h-4 w-4 shrink-0 text-blue-600" />
+                <CheckSquare className="h-4 w-4 2xl:h-5 2xl:w-5 shrink-0 text-blue-600" />
               ) : (
-                <Square className="h-4 w-4 shrink-0 text-slate-500" />
+                <Square className="h-4 w-4 2xl:h-5 2xl:w-5 shrink-0 text-slate-600" />
               )}
 
               <span className="font-medium text-slate-700">Select All</span>
@@ -235,7 +241,7 @@ export default function MultiSelectDropdown({
             {/* Options */}
             <div className="max-h-50 overflow-y-auto">
               {filteredOptions.length === 0 ? (
-                <div className="py-6 text-center text-sm text-slate-500">
+                <div className="py-6 text-center text-sm 2xl:text-base text-slate-600">
                   No Results Found
                 </div>
               ) : (
@@ -256,6 +262,7 @@ export default function MultiSelectDropdown({
 
                     text-left
                     text-sm
+                    2xl:text-base
 
                     border-b
                     border-[#E1E7EF]
@@ -272,9 +279,9 @@ export default function MultiSelectDropdown({
                   `}
                   >
                     {selected.includes(option) ? (
-                      <CheckSquare className="h-4 w-4 shrink-0 text-blue-600" />
+                      <CheckSquare className="h-4 w-4 2xl:h-5 2xl:w-5 shrink-0 text-blue-600" />
                     ) : (
-                      <Square className="h-4 w-4 shrink-0 text-slate-500" />
+                      <Square className="h-4 w-4 2xl:h-5 2xl:w-5 shrink-0 text-slate-500" />
                     )}
 
                     <span className="truncate text-slate-700">{option}</span>
@@ -294,6 +301,7 @@ export default function MultiSelectDropdown({
                 py-2
 
                 text-sm
+                2xl:text-base
                 font-medium
                 text-red-600
 

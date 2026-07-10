@@ -43,7 +43,7 @@ export default function ProjectStepper({ currentStep, setCurrentStep }) {
                 ? "bg-[#2563EB] border-[#2563EB] text-white shadow-sm"
                 : currentStep > index
                   ? "bg-blue-50 border-blue-200 text-[#2563EB]"
-                  : "bg-white border-[#CDD7E3] text-slate-600 hover:border-blue-300 hover:bg-slate-50"
+                  : "bg-white border-[#CDD7E3] text-slate-700 hover:border-blue-300 hover:bg-slate-50"
             }
           `}
         >

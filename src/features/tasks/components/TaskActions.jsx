@@ -592,68 +592,104 @@ export default function TaskActions({
   return (
     <div
       className="
-    flex
-    flex-col
-    lg:flex-row
-    lg:items-center
-    lg:justify-between
-    gap-4
-    mb-3
-    cursor-pointer
+      mb-4
+      flex
+      flex-col
+      gap-3
+
+      sm:flex-row
+      sm:items-center
+      sm:justify-between
     "
     >
-      {/* Action Buttons */}
+      {/* Buttons */}
+
       <div
         className="
-      flex
-      flex-wrap
-      gap-3
-      w-full
-      lg:w-auto
+        flex
+        w-full
+        flex-col
+        gap-3
+
+        sm:w-auto
+        sm:flex-row
       "
       >
+        {/* Generate Report */}
+
         <button
           onClick={() => setShowReportModal(true)}
           className="
-    bg-[#6D4AFF]
-    text-white
-    px-4
-    py-2.5
-    rounded-xl
-    text-sm
-    h-10
-    font-medium
-    cursor-pointer
-  "
+          flex
+          h-10
+          w-full
+          items-center
+          justify-center
+
+          rounded-xl
+          bg-[#6D4AFF]
+
+          px-5
+
+          text-sm
+          font-medium
+          text-white
+
+          transition
+          hover:bg-[#5B38E0]
+
+          cursor-pointer
+
+          sm:w-auto
+          sm:min-w-[170px]
+        "
         >
           Generate Report
         </button>
+
+        {/* Add Task */}
+
+        {(user?.role === "ADMIN" ||
+          user?.role === "IMPLEMENTATION USER") && (
+            <button
+              onClick={() => navigate("add-task")}
+              className="
+            flex
+            h-10
+            w-full
+            items-center
+            justify-center
+            gap-2
+
+            rounded-xl
+
+            bg-gradient-to-r
+            from-[#7C3AED]
+            to-[#A855F7]
+
+            px-5
+
+            text-sm
+            font-medium
+            text-white
+
+            transition
+            hover:opacity-90
+
+            cursor-pointer
+
+            sm:w-auto
+            sm:min-w-[140px]
+          "
+            >
+              <Plus size={18} />
+              Add Task
+            </button>
+          )}
       </div>
 
-      {(user?.role === "ADMIN" || user?.role === "IMPLEMENTATION USER") && (
-        <button
-          onClick={() => navigate("add-task")}
-          className="
-          bg-gradient-to-r
-              from-[#7C3AED]
-              to-[#A855F7]
-          text-white
-          px-5
-          py-2.5
-          rounded-xl
-          flex
-          items-center
-          gap-2
-          font-medium
-          text-sm
-          cursor-pointer
-          h-10
-        "
-        >
-          <Plus size={18} />
-          Add Task
-        </button>
-      )}
+      {/* Hidden Report */}
+
       <div
         ref={reportRef}
         style={{
@@ -674,6 +710,9 @@ export default function TaskActions({
           toDate={toDate}
         />
       </div>
+
+      {/* Report Modal */}
+
       <GenerateReportModal
         isOpen={showReportModal}
         onClose={() => setShowReportModal(false)}

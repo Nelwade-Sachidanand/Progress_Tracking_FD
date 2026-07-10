@@ -85,7 +85,7 @@ export default function ProgressCard({ projects = [] }) {
         grid-cols-1
         md:grid-cols-2
         xl:grid-cols-3
-        2xl:grid-cols-4
+        2xl:grid-cols-3
         gap-6
         mt-[-10px]
       "
@@ -332,7 +332,7 @@ export default function ProgressCard({ projects = [] }) {
                     2xl:text-sm
                     uppercase
                     tracking-wide
-                    text-slate-500
+                    text-slate-600
                     font-medium
                   "
                   >
@@ -356,7 +356,7 @@ export default function ProgressCard({ projects = [] }) {
                   mt-1
                   text-sm
                   2xl:text-base
-                  text-slate-500
+                  text-slate-600
                   truncate
                   font-medium
                 "
@@ -383,7 +383,7 @@ export default function ProgressCard({ projects = [] }) {
                   text-center
                 "
                 >
-                  <p className="text-sm text-slate-500 font-medium 2xl:text-base">
+                  <p className="text-sm text-slate-600 font-medium 2xl:text-base">
                     Readiness
                   </p>
 
@@ -407,7 +407,7 @@ export default function ProgressCard({ projects = [] }) {
                   text-center
                 "
                 >
-                  <p className="text-sm text-slate-500 font-medium 2xl:text-base">
+                  <p className="text-sm text-slate-600 font-medium 2xl:text-base">
                     Health
                   </p>
 

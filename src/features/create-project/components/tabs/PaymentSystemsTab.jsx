@@ -5,10 +5,12 @@ import {
   Info,
   Landmark,
   Smartphone,
+  CheckSquare,
+  Square,
 } from "lucide-react";
 import NumberInput from "../../../../components/common/NumberInput";
 
-export default function PaymentSystemsTab({ data, updateSection }) {
+export default function PaymentSystemsTab({ data, updateSection, disabled = false }) {
   const handleToggle = (field) => {
     updateSection("paymentSystems", {
       ...data,
@@ -43,6 +45,12 @@ export default function PaymentSystemsTab({ data, updateSection }) {
   duration-200
 
   focus:border-blue-500
+
+  disabled:bg-slate-100
+    disabled:text-slate-500
+    disabled:border-slate-300
+    disabled:cursor-not-allowed
+    disabled:opacity-100
 `;
 
   const products = [
@@ -81,34 +89,37 @@ export default function PaymentSystemsTab({ data, updateSection }) {
             return (
               <div
                 key={item.key}
-                onClick={() => handleToggle(item.key)}
+                onClick={() => !disabled && handleToggle(item.key)}
                 className={`
-                  relative
-                  cursor-pointer
-                  rounded-xl
-                  border
-                  p-4
-                  transition-all
-                  duration-300
+                relative
+                rounded-xl
+                border
+                p-4
+                transition-all
+                duration-300
 
-                  ${data[item.key]
+                ${disabled ? "cursor-not-allowed opacity-70" : "cursor-pointer"}
+
+                ${data[item.key]
                     ? "border-blue-500 bg-blue-50 shadow-sm"
-                    : "border-slate-200 hover:border-blue-500"
+                    : disabled
+                      ? "border-slate-200"
+                      : "border-slate-200 hover:border-blue-500"
                   }
                 `}
               >
                 <div className="flex items-center justify-between">
                   <div
                     className={`
-                      flex
-                      h-9
-                      w-9
-                      items-center
-                      justify-center
-                      rounded-lg
-                      transition-all
+                    flex
+                    h-9
+                    w-9
+                    items-center
+                    justify-center
+                    rounded-lg
+                    transition-all
 
-                      ${data[item.key]
+                    ${data[item.key]
                         ? "bg-[#2563EB] text-white"
                         : "bg-blue-100 text-[#2563EB]"
                       }
@@ -117,37 +128,48 @@ export default function PaymentSystemsTab({ data, updateSection }) {
                     <Icon size={18} />
                   </div>
 
-                  <input
-                    type="checkbox"
-                    checked={data[item.key] || false}
-                    onChange={() => handleToggle(item.key)}
-                    onClick={(e) => e.stopPropagation()}
-                    className="h-4 w-4 accent-blue-600 cursor-pointer"
-                  />
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+
+                      if (!disabled) {
+                        handleToggle(item.key);
+                      }
+                    }}
+                    className={`
+                    flex
+                    items-center
+                    justify-center
+                    ${disabled ? "cursor-not-allowed" : "cursor-pointer"}
+                  `}
+                  >
+                    {data[item.key] ? (
+                      <CheckSquare className="h-5 w-5 text-blue-600" />
+                    ) : (
+                      <Square className="h-5 w-5 text-slate-400" />
+                    )}
+                  </button>
                 </div>
 
                 <h4 className="mt-3 text-sm font-semibold text-[#0B1F59]">
                   {item.title}
                 </h4>
 
-                {/* <p className="mt-1 text-xs text-slate-500">
-                  Enabled In Banking Ecosystem
-                </p> */}
-
                 {data[item.key] && (
                   <span
                     className="
-                      absolute
-                      right-3
-                      bottom-3
-                      rounded-full
-                      bg-green-100
-                      px-2
-                      py-0.5
-                      text-[10px]
-                      font-semibold
-                      text-green-700
-                    "
+                    absolute
+                    right-3
+                    bottom-3
+                    rounded-full
+                    bg-green-100
+                    px-2
+                    py-0.5
+                    text-[10px]
+                    font-semibold
+                    text-green-700
+                  "
                   >
                     Active
                   </span>
@@ -193,6 +215,7 @@ export default function PaymentSystemsTab({ data, updateSection }) {
                 value={data[field.name]}
                 onChange={handleChange}
                 className={inputClass}
+                disabled={disabled}
               />
             </div>
           ))}

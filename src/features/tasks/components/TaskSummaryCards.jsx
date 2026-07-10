@@ -30,14 +30,6 @@ export default function TaskSummaryCards({
       color: "#16A34A",
     },
     {
-      title: "Delayed",
-      value: delayed,
-      icon: AlertTriangle,
-      bg: "#FEF2F2",
-      iconBg: "#FFE3E3",
-      color: "#EF4444",
-    },
-    {
       title: "In Progress",
       value: inProgress,
       icon: MinusCircle,
@@ -60,10 +52,10 @@ export default function TaskSummaryCards({
       className="
       grid
       gap-4
-      grid-cols-1
-      sm:grid-cols-2
-      lg:grid-cols-3
-      xl:grid-cols-5
+      grid-cols-2
+      sm:grid-cols-4
+      lg:grid-cols-4
+      xl:grid-cols-4
       mt-[-3px]
     "
     >
@@ -113,8 +105,9 @@ export default function TaskSummaryCards({
             <div className="relative mt-[-18px] flex flex-1 flex-col items-center justify-center text-center">
               <h2
                 className="
-                text-3xl
-                xl:text-[36px]
+                text-xl
+                xl:text-[35px]
+                2xl:text-[37px]
                 font-bold
                 leading-none
               "
@@ -130,8 +123,9 @@ export default function TaskSummaryCards({
                 mt-2
                 text-sm
                 xl:text-[16px]
+                2xl:text-[18px]
                 font-medium
-                text-slate-500
+                text-slate-600
                 leading-snug
               "
               >

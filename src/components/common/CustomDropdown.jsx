@@ -6,6 +6,7 @@ export default function CustomDropdown({
   placeholder,
   value,
   onChange,
+  disabled = false,
   options = [],
   icon: Icon,
 }) {
@@ -46,11 +47,13 @@ export default function CustomDropdown({
       <div ref={dropdownRef} className="relative w-full min-w-0">
         {/* Select Button */}
         <button
+          disabled={disabled}
           type="button"
           onClick={() => setOpen((prev) => !prev)}
           className="
           w-full
           h-9
+          2xl:h-10
           px-4
           rounded-lg
           border
@@ -69,6 +72,12 @@ export default function CustomDropdown({
           min-w-0
 
           cursor-pointer
+
+          disabled:bg-slate-100
+          disabled:text-slate-500
+          disabled:border-slate-300
+          disabled:cursor-not-allowed
+          disabled:opacity-100
         "
         >
           <div className="flex flex-1 min-w-0 items-center gap-3 overflow-hidden">
@@ -88,7 +97,7 @@ export default function CustomDropdown({
               text-left
               text-sm
               text-slate-700
-              2xl:text-base
+              2xl:text-lg
             "
               title={formatValue(selectedLabel)}
             >
@@ -111,6 +120,7 @@ export default function CustomDropdown({
         {/* Dropdown */}
         {open && (
           <div
+            disabled={disabled}
             className="
             absolute
             left-0
@@ -148,6 +158,7 @@ export default function CustomDropdown({
               truncate
               text-left
               text-sm
+              2xl:text-base
               text-slate-600
 
               border-b
@@ -182,6 +193,7 @@ export default function CustomDropdown({
                   truncate
                   text-left
                   text-sm
+                  2xl:text-base
 
                   border-b
                   border-[#E1E7EF]

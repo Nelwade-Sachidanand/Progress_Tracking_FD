@@ -37,7 +37,7 @@ export default function MilestoneTable({
   const user = JSON.parse(sessionStorage.getItem("user"));
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-5">
+    <div className="bg-white rounded-2xl border border-[#CDD7E3] p-5">
       {/* Header */}
 
       {/* Header */}
@@ -142,10 +142,10 @@ export default function MilestoneTable({
 
       {/* Table */}
 
-      <div className="overflow-x-auto rounded-2xl border border-slate-200">
+      <div className="overflow-x-auto rounded-2xl border border-[#CDD7E3]">
         <table className="w-full min-w-[650px]">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-100">
+            <tr className="border-b border-[#CDD7E3] bg-blue-100"> 
               <th className="px-5 py-3 text-left text-sm lg:text-base font-semibold text-slate-700">
                 Milestone
               </th>
@@ -168,18 +168,18 @@ export default function MilestoneTable({
                 return (
                   <tr
                     key={milestone.id || index}
-                    className="border-b border-slate-200 hover:bg-slate-50 transition-colors"
+                    className="border-b border-[#CDD7E3]"
                   >
-                    <td className="px-6 py-3">
+                    <td className="px-6 py-2">
                       <span
-                        className="block truncate text-slate-700 text-sm xl:text-base "
+                        className="block truncate text-slate-700 text-sm xl:text-base font-semibold"
                         title={milestone.milestoneName}
                       >
                         {milestone.milestoneName}
                       </span>
                     </td>
 
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2">
                       <div className="flex justify-center">
                         <input
                           type="number"
@@ -206,7 +206,7 @@ export default function MilestoneTable({
                           sm:w-24
                           rounded-lg
                           border
-                          border-slate-300
+                          border-[#CDD7E3]
                           text-center
                           text-sm
                           outline-none
@@ -216,7 +216,7 @@ export default function MilestoneTable({
                       </div>
                     </td>
 
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-4 py-2 text-center">
                       <span
                         className={`
                         inline-flex
@@ -251,7 +251,7 @@ export default function MilestoneTable({
         </table>
       </div>
 
-      <p className="mt-3 text-sm text-slate-500">
+      <p className="mt-3 text-sm text-slate-600">
         * Total Weightage Must be Exactly <strong>100%</strong>.
       </p>
     </div>

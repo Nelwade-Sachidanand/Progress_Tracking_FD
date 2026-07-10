@@ -29,7 +29,7 @@ export default function ProjectToolbar({
       bg-white
       rounded-xl
       border
-      border-slate-200
+      border-[#CDD7E3]
       p-5
       mt-[-10px]
     "
@@ -38,7 +38,7 @@ export default function ProjectToolbar({
         className="
         grid
         grid-cols-1
-        md:grid-cols-2
+        md:grid-cols-3
         xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.6fr)_auto]
         gap-4
         items-end
@@ -110,7 +110,7 @@ export default function ProjectToolbar({
           <div className="flex justify-end">
             <button
               type="button"
-              onClick={() => navigate("/create-project")}
+              onClick={() => navigate("create")}
               className="
               flex
               items-center

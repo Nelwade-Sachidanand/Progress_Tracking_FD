@@ -90,7 +90,12 @@ const AppRoutes = () => {
           <Route path="/users/add" element={<AddUserPage />} />
           <Route path="/users/edit" element={<EditUserPage />} />
 
-          <Route path="/create-project" element={<CreateProjectPage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+
+          <Route path="/projects/create" element={<CreateProjectPage />} />
+          <Route path="/projects/edit/:id" element={<CreateProjectPage />} />
+          <Route path="/projects/view/:id" element={<CreateProjectPage />} />
+
           <Route path="/upload-excel" element={<UploadExcel />} />
           <Route path="/audits" element={<AuditLogsPage />} />
 
@@ -98,7 +103,7 @@ const AppRoutes = () => {
             path="/authorization"
             element={<AuthorizationRequestsPage />}
           />
-          <Route path="/projects" element={<ProjectsPage />} />
+          
         </Route>
       </Route>
     </Routes>

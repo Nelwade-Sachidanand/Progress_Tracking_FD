@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   User,
   Users,
+  Eye,
 } from "lucide-react";
 
 import { useEffect, useRef, useState } from "react";
@@ -36,6 +37,7 @@ const DashboardHeader = ({
   sidebarOpen,
   setSidebarOpen,
 }) => {
+  const location = useLocation();
   const navigate = useNavigate();
   const profileDropdownRef = useRef(null);
 
@@ -130,7 +132,7 @@ const DashboardHeader = ({
     try {
       const notificationsRes = await getNotifications();
 
-      console.log(notificationsRes);
+      // console.log(notificationsRes);
 
       const countRes = await getUnreadCount();
 
@@ -292,10 +294,28 @@ const DashboardHeader = ({
       subtitleClass: "text-[17px]",
     },
 
-    "/create-project": {
+    "/projects/create": {
       title: "Create New Project",
       subtitle: "Fill In The Details To Create A New Bank Project",
       icon: <ClipboardList size={22} />,
+
+      titleClass: "text-[32px]",
+      subtitleClass: "text-[17px]",
+    },
+
+    "/projects/edit": {
+      title: "Edit Project",
+      subtitle: "Update Project Information And Configuration",
+      icon: <Pencil size={22} />,
+
+      titleClass: "text-[32px]",
+      subtitleClass: "text-[17px]",
+    },
+
+    "/projects/view": {
+      title: "Project Details",
+      subtitle: "View Complete Project Information",
+      icon: <Eye size={22} />,
 
       titleClass: "text-[32px]",
       subtitleClass: "text-[17px]",
@@ -355,20 +375,45 @@ const DashboardHeader = ({
     },
   };
 
-  const location = useLocation();
+  let currentPage;
 
-  const currentPage = pageConfig[location.pathname] || {
-    title: "Progress Tracker",
-    subtitle: "",
-    icon: null,
-  };
+  if (location.pathname.startsWith("/projects/edit")) {
+    currentPage = pageConfig["/projects/edit"];
+  } else if (location.pathname.startsWith("/projects/view")) {
+    currentPage = pageConfig["/projects/view"];
+  } else {
+    currentPage = pageConfig[location.pathname] || {
+      title: "Progress Tracker",
+      subtitle: "",
+      icon: null,
+    };
+  }
   return (
-    <header className="bg-white border-b border-[#EAEFF5] px-3 sm:px-4 lg:px-8 py-3 lg:py-4">
+    <header
+      className="bg-white border-b border-[#EAEFF5] px-3 sm:px-4 md:px-5 lg:px-6 xl:px-8 py-3 lg:py-4"
+    >
       <div className="flex flex-col gap-4">
         {/* Top Row */}
-        <div className="flex items-start lg:items-center justify-between gap-4 ">
-          {/* Left */}
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <div
+          className="
+          flex
+          flex-wrap
+          items-center
+          justify-between
+          gap-3
+          lg:flex-nowrap
+        "
+        >          {/* Left */}
+          <div
+            className="
+            flex
+            items-center
+            gap-2
+            sm:gap-3
+            min-w-0
+            flex-1
+          "
+          >
             <button
               className="lg:hidden flex-shrink-0 mr-4"
               onClick={() => setSidebarOpen(true)}
@@ -378,16 +423,22 @@ const DashboardHeader = ({
 
             <div
               className="
-            w-10 h-10
-            sm:w-12 sm:h-12
-            rounded-xl
-            bg-[#EEF2FF]
-            flex
-            items-center
-            justify-center
-            flex-shrink-0
-            2xl:w-14 2xl:h-14
-          "
+              flex
+              h-10
+              w-10
+              sm:h-11
+              sm:w-11
+              lg:h-12
+              lg:w-12
+              items-center
+              justify-center
+              rounded-xl
+              bg-[#EEF2FF]
+              flex-shrink-0
+
+              2xl:h-14
+              2xl:w-14
+            "
             >
               {currentPage.icon}
             </div>
@@ -395,31 +446,29 @@ const DashboardHeader = ({
             <div className="min-w-0">
               <h1
                 className="
-              text-base
-              sm:text-xl
-              lg:text-[24px]
-              font-bold
-              xl:text-[20px]
-              text-[#0B1F59]
-              2xl:text-[32px]
-              2xl:font-bold
-              2xl:tracking-wide
-            "
+                truncate
+                text-lg
+                sm:text-xl
+                lg:text-2xl
+                font-bold
+                text-[#0B1F59]
+                2xl:text-[28px]
+              "
               >
                 {currentPage.title}
               </h1>
 
               <p
                 className="
-              hidden
-              md:block
-              text-sm
-              text-[#64748B]
-              mt-1
-              2xl:text-[17px]
-              2xl:font-medium
-              2xl:tracking-wide
-            "
+                hidden
+                md:block
+                mt-1
+                truncate
+                text-sm
+                text-[#64748B]
+                2xl:text-lg
+                text-slate-600
+              "
               >
                 {currentPage.subtitle}
               </p>
@@ -430,10 +479,12 @@ const DashboardHeader = ({
           <div
             className="
             flex
+            flex-wrap
             items-center
             justify-end
             gap-2
-            lg:gap-4
+            sm:gap-3
+            lg:flex-nowrap
           "
           >
             {" "}
@@ -447,7 +498,8 @@ const DashboardHeader = ({
                   selected={selectedBanks}
                   onChange={setSelectedBanks}
                   icon={Building2}
-                  width="w-[260px]"
+                  width="w-full sm:w-[220px] md:w-[220px] lg:w-[240px] xl:w-[260px]"
+                  dropdownWidth="w-[350px]"
                 />
 
                 {/* Search */}
@@ -517,7 +569,7 @@ const DashboardHeader = ({
                 >
                   <Bell
                     size={20}
-                    className="text-[#0B1F59] cursor-pointer 2xl:size-8"
+                    className="text-[#0B1F59] cursor-pointer 2xl:size-6"
                   />
 
                   {unreadCount > 0 && (
@@ -551,12 +603,14 @@ const DashboardHeader = ({
                     className="
                   absolute
                   right-0
-                  lg:right-[-80px]
-                  xl:right-[-120px]
+                  sm:right-0
+                  lg:right-[-40px]
+                  xl:right-[-80px]
                   top-14
-                  w-[92vw]
+                  w-[95vw]
                   max-w-[420px]
                   sm:w-[380px]
+                  md:w-[400px]
                   lg:w-[420px]
                   bg-white
                   rounded-3xl
@@ -762,22 +816,27 @@ const DashboardHeader = ({
               >
                 <div
                   className="
-                w-8 h-8
-                sm:w-10 sm:h-10
-                lg:w-12 lg:h-12
-                rounded-full
-                bg-[#EEF4FF]
-                text-[#2563EB]
-                text-xs
-                sm:text-sm
-                font-bold
-                flex
-                items-center
-                justify-center
-                2xl:w-14 2xl:h-14
-                2xl:text-lg
-                2xl:font-bold
-              "
+                  flex
+                  h-9
+                  w-9
+                  sm:h-10
+                  sm:w-10
+                  lg:h-11
+                  lg:w-11
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-[#EEF4FF]
+                  text-[#2563EB]
+                  text-sm
+                  xl:text-base
+                  2xl:text-base
+                  font-bold
+                  flex-shrink-0
+
+                  2xl:h-14
+                  2xl:w-14
+                "
                 >
                   {initials}
                 </div>
