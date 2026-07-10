@@ -11,8 +11,6 @@ export default function ProjectNavigation({
   disabled = false,
   isView,
   isEdit,
-  selectedInfoId,
-  setSelectedInfoId
 }) {
   const { saveProject, loading, updateProject } = useCreateProject();
 
@@ -21,8 +19,10 @@ export default function ProjectNavigation({
   const handleSubmitProject = async () => {
     const payload = mapProjectPayload(formData);
 
+    console.log(payload);
+
     const response = isEdit
-      ? await updateProject(selectedInfoId, payload)
+      ? await updateProject(payload)
       : await saveProject(payload);
 
     if (response.statusType === "S") {
@@ -30,7 +30,6 @@ export default function ProjectNavigation({
 
       resetForm();
       setSelectedProjectId("");
-      setSelectedInfoId("");
       setCurrentStep(0);
 
       navigate("/projects");

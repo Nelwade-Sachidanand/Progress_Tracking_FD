@@ -5,6 +5,8 @@ import {
   Lock,
   ShieldCheck,
   User,
+  CheckSquare,
+  Square
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -26,6 +28,8 @@ const LoginForm = () => {
 
   const [showPassword, setShowPassword] = useState(false);
 
+  const [rememberMe, setRememberMe] = useState(false);
+
   const [username, setUsername] = useState("");
 
   const [password, setPassword] = useState("");
@@ -44,6 +48,15 @@ const LoginForm = () => {
       });
     }
   }, [location, navigate]);
+
+  useEffect(() => {
+    const savedUsername = localStorage.getItem("rememberUsername");
+
+    if (savedUsername) {
+      setUsername(savedUsername);
+      setRememberMe(true);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,7 +83,15 @@ const LoginForm = () => {
           });
         }
 
-        setUsername("");
+        if (rememberMe) {
+          localStorage.setItem("rememberUsername", username);
+        } else {
+          localStorage.removeItem("rememberUsername");
+        }
+
+        if (!rememberMe) {
+          setUsername("");
+        }
         setPassword("");
         setShowPassword(false);
       }
@@ -98,10 +119,11 @@ const LoginForm = () => {
         className="
           bg-white
 
-          rounded-[28px]
-          xl:rounded-[32px]
+          rounded-2xl
+          xl:rounded-3xl
 
           shadow-[0_12px_40px_rgba(15,23,42,0.08)]
+          border border-[#CDD7E3]
 
           px-8
           xl:px-10
@@ -191,7 +213,7 @@ const LoginForm = () => {
               font-semibold
               text-[#101828]
 
-              mb-2
+              mb-1
 
               text-[15px]
               xl:text-[16px]
@@ -208,7 +230,7 @@ const LoginForm = () => {
                 top-1/2
                 -translate-y-1/2
 
-                text-gray-400
+                text-gray-500
 
                 w-5
                 h-5
@@ -224,13 +246,13 @@ const LoginForm = () => {
               className="
                 w-full
 
-                h-11
-                xl:h-11
+                h-9
+                xl:h-10
 
-                rounded-xl
+                rounded-lg 
 
                 border
-                border-[#D0D5DD]
+                border-[#B8C4D1]
 
                 bg-white
 
@@ -244,9 +266,8 @@ const LoginForm = () => {
 
                 transition-all
 
-                focus:border-[#2563EB]
-                focus:ring-2
-                focus:ring-blue-100
+                focus:border-blue-500
+                placeholder:text-slate-500
               "
             />
           </div>
@@ -261,7 +282,7 @@ const LoginForm = () => {
               text-[#101828]
 
               mt-5
-              mb-2
+              mb-1
 
               text-[15px]
               xl:text-[16px]
@@ -278,7 +299,7 @@ const LoginForm = () => {
                 top-1/2
                 -translate-y-1/2
 
-                text-gray-400
+                text-slate-500
 
                 w-5
                 h-5
@@ -294,13 +315,13 @@ const LoginForm = () => {
               className="
                 w-full
 
-                h-11
-                xl:h-11
+                h-9
+                xl:h-10
 
-                rounded-xl
+                rounded-lg
 
                 border
-                border-[#D0D5DD]
+                border-[#B8C4D1]
 
                 bg-white
 
@@ -314,9 +335,8 @@ const LoginForm = () => {
 
                 transition-all
 
-                focus:border-[#2563EB]
-                focus:ring-2
-                focus:ring-blue-100
+                focus:border-blue-500
+                placeholder:text-slate-500
               "
             />
 
@@ -359,25 +379,30 @@ const LoginForm = () => {
             "
           >
             <label
+              onClick={() => setRememberMe((prev) => !prev)}
               className="
-                flex
-                items-center
-                gap-2
-
-                text-[#344054]
-
-                text-[14px]
-                xl:text-[15px]
-              "
+              flex
+              items-center
+              gap-2
+              text-sm
+              xl:text-base
+              text-slate-600
+              cursor-pointer
+              select-none
+            "
             >
-              <input
-                type="checkbox"
-                className="
-                  w-4
-                  h-4
-                  accent-[#2563EB]
-                "
-              />
+              {rememberMe ? (
+                <CheckSquare
+                  size={20}
+                  className="text-[#2563EB]"
+                />
+              ) : (
+                <Square
+                  size={20}
+                  className="text-slate-400"
+                />
+              )}
+
               Remember Me
             </label>
 
@@ -410,8 +435,8 @@ const LoginForm = () => {
             className="
               w-full
 
-              h-12
-              xl:h-12
+              h-10
+              xl:h-11
 
               mt-8
 

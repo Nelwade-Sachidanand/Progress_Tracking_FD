@@ -1,4 +1,5 @@
 export const mapProjectPayload = (formData) => ({
+  id: formData.id,
   projectName: formData.projectName,
   bankName: formData.bankName,
   projectManager: formData.projectManager,

@@ -42,7 +42,7 @@ export default function PortfolioProgress({ data }) {
               2xl:tracking-wide
             "
           >
-            Overall Portfolio Progress
+            Overall Progress
           </h3>
 
           <div

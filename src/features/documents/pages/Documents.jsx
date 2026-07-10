@@ -35,7 +35,7 @@ export default function Documents() {
 
   const [showPreviewModal, setShowPreviewModal] = useState(false);
 
- 
+
 
   const loadDocuments = async () => {
     try {
@@ -139,17 +139,17 @@ export default function Documents() {
       //   documents: matched?.documents || [],
       // };
       return {
-  ...doc,
-  documents: matched?.documents || [],
+        ...doc,
+        documents: matched?.documents || [],
 
-  
-  uploadStatus: matched?.documents?.length > 0 ? "Uploaded" : "Pending",
 
-  uploadedBy: matched?.documents?.[0]?.uploadedBy || "-",
-  uploadedDate: matched?.documents?.[0]?.uploadedDate || "-",
-  fileName: matched?.documents?.[0]?.fileName || "",
-  fileUrl: matched?.documents?.[0]?.fileUrl || "",
-};
+        uploadStatus: matched?.documents?.length > 0 ? "Uploaded" : "Pending",
+
+        uploadedBy: matched?.documents?.[0]?.uploadedBy || "-",
+        uploadedDate: matched?.documents?.[0]?.uploadedDate || "-",
+        fileName: matched?.documents?.[0]?.fileName || "",
+        fileUrl: matched?.documents?.[0]?.fileUrl || "",
+      };
     });
   }, [documents, documentsDetails]);
 
@@ -233,21 +233,21 @@ export default function Documents() {
     setShowPreviewModal(true);
   };
 
- 
+
 
   /*Clear Filters*/
   const clearFilters = () => {
-    setSelectedPhase("All Phases");
+    setSelectedPhase("");
 
     setSelectedMilestone([]);
 
-    setSelectedTask("All Tasks");
+    setSelectedTask("");
 
-    setSelectedSubTask("All Sub Tasks");
+    setSelectedSubTask("");
 
-    setSelectedActivity("All Activities");
+    setSelectedActivity("");
 
-    setSelectedStatus("All Status");
+    setSelectedStatus("");
 
     setSearchTerm("");
   };
@@ -268,23 +268,23 @@ export default function Documents() {
       </div>
       <div
         className="
-  w-full
-  
-  border
-  border-slate-200
-  rounded-2xl
-  px-6
-  py-4
-  shadow-sm
-  
-     
-  mb-4
-  bg-[#F8FAFF]
-  border
-  border-[#E2E8F0]
-  rounded-2xl
-  
-  "
+        w-full
+        
+        border
+        border-slate-200
+        rounded-2xl
+        px-6
+        py-4
+        shadow-sm
+        
+          
+        mb-4
+        bg-[#F8FAFF]
+        border
+        border-[#E2E8F0]
+        rounded-2xl
+        
+        "
       >
         <div className="flex flex-wrap items-center gap-3 text-[15px]">
           <span className="font-semibold text-[#0B1F59]">
@@ -298,148 +298,7 @@ export default function Documents() {
           </span>
         </div>
       </div>
-      {/* Summary */}
-      {/* <div
-        className="
-        grid
-        grid-cols-1
-        md:grid-cols-3
-        gap-5
-        mb-6
-        "
-      >
-        <div
-          className="
-          bg-white
-          rounded-2xl
-          border
-          border-slate-200
-          p-5
-          shadow-sm
-          "
-        >
-          <p className="text-slate-500 text-sm">Total Documents</p>
-
-          <h2
-            className="
-            mt-2
-            text-3xl
-            font-bold
-            text-[#0B1F59]
-            "
-          >
-            {total}
-          </h2>
-        </div>
-
-        <div
-          className="
-          bg-white
-          rounded-2xl
-          border
-          border-green-200
-          p-5
-          shadow-sm
-          "
-        >
-          <p className="text-slate-500 text-sm">Uploaded</p>
-
-          <h2
-            className="
-            mt-2
-            text-3xl
-            font-bold
-            text-green-600
-            "
-          >
-            {uploaded}
-          </h2>
-        </div>
-
-        <div
-          className="
-          bg-white
-          rounded-2xl
-          border
-          border-orange-200
-          p-5
-          shadow-sm
-          "
-        >
-          <p className="text-slate-500 text-sm">Pending</p>
-
-          <h2
-            className="
-            mt-2
-            text-3xl
-            font-bold
-            text-orange-500
-            "
-          >
-            {pending}
-          </h2>
-        </div>
-      </div> */}
- {/* Summary */}
-<div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
-
-  {/* Total */}
-  <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center gap-4">
-
-    {/* ICON LEFT */}
-    <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
-      <FileText className="text-purple-600" size={22} />
-    </div>
-
-    {/* TEXT */}
-    <div>
-      <h2 className="text-3xl font-bold text-[#0B1F59]">
-        {total}
-      </h2>
-      <p className="text-sm text-slate-500">
-        Total Documents
-      </p>
-    </div>
-
-  </div>
-
-  {/* Uploaded */}
-  <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center gap-4">
-
-    <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-      <UploadCloud className="text-green-600" size={22} />
-    </div>
-
-    <div>
-      <h2 className="text-3xl font-bold text-green-600">
-        {uploaded}
-      </h2>
-      <p className="text-sm text-slate-500">
-        Uploaded
-      </p>
-    </div>
-
-  </div>
-
-  {/* Pending */}
-  <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center gap-4">
-
-    <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
-      <Clock className="text-orange-600" size={22} />
-    </div>
-
-    <div>
-      <h2 className="text-3xl font-bold text-orange-500">
-        {pending}
-      </h2>
-      <p className="text-sm text-slate-500">
-        Pending
-      </p>
-    </div>
-
-  </div>
-
-</div>
+      
       {/* Filters */}
       <DocumentFilters
         phases={phases}
@@ -449,6 +308,7 @@ export default function Documents() {
         activities={activities}
         selectedPhase={selectedPhase}
         selectedMilestone={selectedMilestone}
+        setSelectedMilestone={setSelectedMilestone}
         selectedTask={selectedTask}
         selectedSubTask={selectedSubTask}
         selectedActivity={selectedActivity}
@@ -516,7 +376,7 @@ export default function Documents() {
             documents={paginatedDocuments}
             onUpload={handleUpload}
             onPreview={handlePreview}
-           
+
           />
         )}
       </div>
@@ -552,7 +412,7 @@ export default function Documents() {
           setSelectedDocument(null);
         }}
       />
-      
+
     </div>
   );
 }
