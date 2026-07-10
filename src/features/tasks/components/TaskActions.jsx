@@ -102,35 +102,39 @@ export default function TaskActions({
     );
   });
 
-  // const handleGenerate = () => {
-  //   switch (reportType) {
-  //     case "pdf":
-  //       handleGeneratePdf();
-  //       break;
+  
+const handleGenerate = () => {
+ 
+  if (!project || !selectedProjectId) {
+    toast.error("No project selected. No permission to generate report.");
+    return;
+  }
 
-  //     case "excel":
-  //       handleExportExcel();
-  //       break;
 
-  //     case "csv":
-  //       handleGenerateCsv();
-  //       break;
+  if (!project.projectName) {
+    toast.error("Invalid project selection.");
+    return;
+  }
 
-  //     case "word":
-  //       handleGenerateWord();
-  //       break;
+  switch (reportType) {
+    case "pdf":
+      handleGeneratePdf();
+      break;
 
-  //     default:
-  //       toast.error("Please select report format");
-  //       return;
-  //   }
+    case "excel":
+      handleExportExcel();
+      break;
 
-  //   setShowReportModal(false);
-  // };
-  const handleGenerate = () => {
-    // ✅ 1. CHECK PROJECT FIRST
-    if (!project || !selectedProjectId) {
-      toast.error("No project selected. No permission to generate report.");
+    case "csv":
+      handleGenerateCsv();
+      break;
+
+    case "word":
+      handleGenerateWord();
+      break;
+
+    default:
+      toast.error("Please select report format");
       return;
     }
 
@@ -367,67 +371,105 @@ export default function TaskActions({
       printWindow.close();
     }, 500);
   };
-  // const handleGenerateCsv = () => {
-  //   const rows = [
-  //     [
-  //       "Phase",
-  //       "Milestone",
-  //       "Task",
-  //       "Sub Task",
-  //       "Activity",
-  //       "Owner",
-  //       "Progress",
-  //       "Status",
-  //       "Schedule Health",
-  //     ],
-  //   ];
 
-  //   filteredActivities.forEach((activity) => {
-  //     rows.push([
-  //       activity.phase,
-  //       activity.milestone,
-  //       activity.task,
-  //       activity.subTask,
-  //       activity.activityName,
-  //       activity.owner,
-  //       activity.progress,
-  //       activity.executionStatus,
-  //       activity.scheduleHealth,
-  //     ]);
-  //   });
-
-  //   const csv = rows.map((row) => row.join(",")).join("\n");
-
-  //   const blob = new Blob([csv], {
-  //     type: "text/csv;charset=utf-8;",
-  //   });
-
-  //   const link = document.createElement("a");
-
-  //   link.href = URL.createObjectURL(blob);
-
-  //   link.download = `${project.projectName}.csv`;
-
-  //   link.click();
-
-  //   URL.revokeObjectURL(link.href);
-
-  //   toast.success("CSV downloaded successfully");
-  // };
-  const handleGenerateCsv = () => {
-    try {
-      if (!project) {
-        toast.error("No project selected");
-        return;
-      }
+const handleGenerateCsv = () => {
+  try {
+    if (!project) {
+      toast.error("No project selected");
+      return;
+    }
 
       if (!filteredActivities || filteredActivities.length === 0) {
         toast.error("No activities found for selected filters");
         return;
       }
 
-      const rows = [
-        [
+    const rows = [
+      [
+        "Phase",
+        "Milestone",
+        "Task",
+        "Sub Task",
+        "Activity",
+        "Owner",
+        "Progress",
+        "Status",
+        "Schedule Health",
+        "Planned Start",
+        "Planned End",
+        "Actual Start",
+        "Actual End",
+      ],
+    ];
+
+    filteredActivities.forEach((activity) => {
+      rows.push([
+        activity.phase ?? "",
+        activity.milestone ?? "",
+        activity.task ?? "",
+        activity.subTask ?? "",
+        activity.activityName ?? "",
+        activity.owner ?? "",
+        `${activity.progress ?? 0}%`,
+        activity.executionStatus ?? "",
+        activity.scheduleHealth ?? "",
+        activity.plannedStartDate ?? "",
+        activity.plannedEndDate ?? "",
+        activity.actualStartDate ?? "",
+        activity.actualEndDate ?? "",
+      ]);
+    });
+
+    const csvContent = rows
+      .map((row) =>
+        row
+          .map((cell) => `"${String(cell).replace(/"/g, '""')}"`)
+          .join(",")
+      )
+      .join("\n");
+
+    const blob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const link = document.createElement("a");
+
+    link.href = URL.createObjectURL(blob);
+
+    link.download = `${project.projectName}_Report.csv`;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(link.href);
+
+    toast.success("CSV report downloaded successfully");
+  } catch (error) {
+    console.error("CSV Generation Error:", error);
+
+    toast.error("Failed to generate CSV report");
+  }
+};
+ 
+
+ const handleGenerateWord = async () => {
+  try {
+    if (!project) {
+      toast.error("No project selected");
+      return;
+    }
+
+    if (!filteredActivities || filteredActivities.length === 0) {
+      toast.error("No activities found for selected filters");
+      return;
+    }
+
+    const tableRows = [
+      new TableRow({
+        children: [
           "Phase",
           "Milestone",
           "Task",
@@ -647,49 +689,31 @@ export default function TaskActions({
           Generate Report
         </button>
 
-        {/* Add Task */}
-
-        {(user?.role === "ADMIN" ||
-          user?.role === "IMPLEMENTATION USER") && (
-            <button
-              onClick={() => navigate("add-task")}
-              className="
-            flex
-            h-10
-            w-full
-            items-center
-            justify-center
-            gap-2
-
-            rounded-xl
-
-            bg-gradient-to-r
-            from-[#7C3AED]
-            to-[#A855F7]
-
-            px-5
-
-            text-sm
-            font-medium
-            text-white
-
-            transition
-            hover:opacity-90
-
-            cursor-pointer
-
-            sm:w-auto
-            sm:min-w-[140px]
-          "
-            >
-              <Plus size={18} />
-              Add Task
-            </button>
-          )}
+    
       </div>
 
-      {/* Hidden Report */}
-
+      {(user?.role === "ADMIN" || user?.role === "IMPLEMENTATION USER") && (
+        <button
+          onClick={() => navigate("add-task")}
+          className="
+          bg-[#6D4AFF]
+          hover:bg-[#5B3DF4]
+          text-white
+          px-5
+          py-2.5
+          rounded-xl
+          flex
+          items-center
+          gap-2
+          font-medium
+          shadow-sm
+          cursor-pointer
+        "
+        >
+          <Plus size={18} />
+          Add Activity
+        </button>
+      )}
       <div
         ref={reportRef}
         style={{

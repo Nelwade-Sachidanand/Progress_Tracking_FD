@@ -201,9 +201,7 @@ export default function Documents() {
     (doc) => doc.uploadStatus === "Pending",
   ).length;
 
-  /*
-   * Pagination
-   */
+  /*Pagination  */
 
   const ITEMS_PER_PAGE = 10;
 
@@ -216,9 +214,7 @@ export default function Documents() {
     currentPage * ITEMS_PER_PAGE,
   );
 
-  /*
-   * Modal Actions
-   */
+  /* Modal Actions  */
 
   const handleUpload = (document) => {
     setSelectedDocument(document);

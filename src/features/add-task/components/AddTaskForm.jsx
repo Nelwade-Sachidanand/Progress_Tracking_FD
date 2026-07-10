@@ -4,9 +4,13 @@ import {
   Check,
   ChevronDown,
   RotateCcw,
+  Pencil,
+  X
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import CustomDropdown from "../../../components/common/CustomDropdown";
+import EditableDropdown from "./EditableDropdown";
+import useEditableDropdown from "../hooks/useEditableDropdown";
+import CustomDropdown from "../../../components/layout/CustomDropdown";
 import { useProjects } from "../../../context/ProjectContext";
 import useAddTask from "../hooks/useAddTask";
 
@@ -23,286 +27,456 @@ export default function AddTaskForm() {
     handleSubmit,
   } = useAddTask();
 
+
+
   const phaseRef = useRef(null);
   const milestoneRef = useRef(null);
   const taskRef = useRef(null);
   const subTaskRef = useRef(null);
 
-  const [showPhaseDropdown, setShowPhaseDropdown] = useState(false);
-  const [showAddPhase, setShowAddPhase] = useState(false);
-  const [showMilestoneDropdown, setShowMilestoneDropdown] = useState(false);
-  const [showAddMilestone, setShowAddMilestone] = useState(false);
-  const [showTaskDropdown, setShowTaskDropdown] = useState(false);
-  const [showAddTask, setShowAddTask] = useState(false);
-  const [showSubTaskDropdown, setShowSubTaskDropdown] = useState(false);
-  const [showAddSubTask, setShowAddSubTask] = useState(false);
   const [newPhase, setNewPhase] = useState("");
   const [newMilestone, setNewMilestone] = useState("");
   const [newTask, setNewTask] = useState("");
   const [newSubTask, setNewSubTask] = useState("");
   const { projects, setProjects } = useProjects();
 
-  //   const handleAddPhase = () => {
-  //     if (!newPhase.trim()) return;
-  //     const updatedProjects = projects.map((project) => {
-  //       if (project.projectName === selectedProject.projectName) {
-  //         const phaseExists = project.phases?.some(
-  //           (p) => p.phaseName === newPhase.trim(),
-  //         );
-  //         if (phaseExists) {
-  //           alert("Phase already exists");
-  //           return project;
-  //         }
-  //         return {
-  //           ...project,
-  //           phases: [
-  //             ...(project.phases || []),
-  //             {
-  //               phaseName: newPhase.trim(),
-  //               milestones: [],
-  //             },
-  //           ],
-  //         };
-  //       }
-  //       return project;
-  //     });
-  //     setProjects(updatedProjects);
-  //     handleChange("phaseId", "");
-  // handleChange("phaseName", newPhase.trim());
-  // handleChange("newPhase", true);
-  //     setNewPhase("");
-  //     setShowAddPhase(false);
-  //   };
-  const handleAddPhase = () => {
-    if (!newPhase.trim()) return;
+ 
 
-    handleChange("phaseId", "");
-    handleChange("phaseName", newPhase.trim());
-    handleChange("newPhase", true);
 
-    setNewPhase("");
-    setShowAddPhase(false);
-    setShowPhaseDropdown(false);
+ const handleAddPhase = (phaseName) => {
+  if (!phaseName.trim()) return;
+
+  const alreadyExists = phases.some(
+    (p) => p.name.toLowerCase() === phaseName.toLowerCase()
+  );
+
+  if (alreadyExists) {
+    alert("Phase already exists");
+    return;
+  }
+
+  const newPhaseObj = {
+    id: `temp-${Date.now()}`,
+    name: phaseName,
+    isNew: true,
   };
-  //   const handleAddMilestone = () => {
-  //     if (!newMilestone.trim()) return;
-  //     const updatedProjects = projects.map((project) => {
-  //       if (project.projectName === selectedProject.projectName) {
-  //         return {
-  //           ...project,
-  //           phases: project.phases?.map((phase) => {
-  //             if (phase.phaseName === formData.phaseName) {
-  //               const milestoneExists = phase.milestones?.some(
-  //                 (m) => m.milestoneName === newMilestone.trim(),
-  //               );
-  //               if (milestoneExists) {
-  //                 alert("Milestone already exists");
-  //                 return phase;
-  //               }
-  //               return {
-  //                 ...phase,
-  //                 milestones: [
-  //                   ...(phase.milestones || []),
-  //                   {
-  //                     milestoneName: newMilestone.trim(),
-  //                     tasks: [],
-  //                   },
-  //                 ],
-  //               };
-  //             }
-  //             return phase;
-  //           }),
-  //         };
-  //       }
-  //       return project;
-  //     });
-  //     setProjects(updatedProjects);
-  //     handleChange("milestoneId", "");
-  // handleChange("milestoneName", newMilestone.trim());
-  // handleChange("newMilestone", true);
-  //     setNewMilestone("");
-  //     setShowAddMilestone(false);
-  //     setShowMilestoneDropdown(false);
-  //   };
-  const handleAddMilestone = () => {
-    if (!newMilestone.trim()) return;
 
-    handleChange("milestoneId", "");
-    handleChange("milestoneName", newMilestone.trim());
-    handleChange("newMilestone", true);
+  setProjects((prev) =>
+    prev.map((project) => {
+      if (project.id !== selectedProject.id) return project;
 
-    setNewMilestone("");
-    setShowAddMilestone(false);
-    setShowMilestoneDropdown(false);
+      return {
+        ...project,
+        phases: [
+          ...project.phases,
+          {
+            phaseId: newPhaseObj.id,
+            phaseName: newPhaseObj.name,
+            milestones: [],
+            isNew: true,
+          },
+        ],
+      };
+    })
+  );
+
+  handleChange("phaseId", newPhaseObj.id);
+  handleChange("phaseName", newPhaseObj.name);
+  handleChange("newPhase", true);
+};
+const handleSavePhaseName = (id, name) => {
+  if (!name.trim()) return;
+
+  setProjects((prev) =>
+    prev.map((project) => {
+      if (project.id !== selectedProject.id) return project;
+
+      return {
+        ...project,
+        phases: project.phases.map((phase) =>
+          phase.phaseId === id
+            ? {
+                ...phase,
+                phaseName: name,
+              }
+            : phase
+        ),
+      };
+    })
+  );
+
+  handleChange("phaseId", id);
+  handleChange("phaseName", name);
+};
+
+ const phaseDropdown = useEditableDropdown({
+  items: phases,
+
+  onSelect: (phase) => {
+    handleChange("phaseId", phase.id);
+    handleChange("phaseName", phase.name);
+    handleChange("newPhase", false);
+  },
+
+  onAdd: handleAddPhase,
+
+  onEdit: handleSavePhaseName,
+});
+const handleAddMilestone = (milestoneName) => {
+  if (!milestoneName.trim()) return;
+
+  if (!formData.phaseId) {
+    alert("Please select a Phase first");
+    return;
+  }
+
+  const alreadyExists = milestones.some(
+    (m) => m.name.toLowerCase() === milestoneName.toLowerCase()
+  );
+
+  if (alreadyExists) {
+    alert("Milestone already exists");
+    return;
+  }
+
+  const newMilestoneObj = {
+    id: `temp-${Date.now()}`,
+    name: milestoneName,
+    isNew: true,
   };
-  //   const handleAddTask = () => {
-  //     if (!newTask.trim()) return;
-  //     if (!formData.phaseName) {
-  //       alert("Please select a phase first");
-  //       return;
-  //     }
-  //     const updatedProjects = projects.map((project) => {
-  //       if (project.projectName === selectedProject.projectName) {
-  //         return {
-  //           ...project,
-  //           phases: project.phases?.map((phase) => {
-  //             if (phase.phaseName === formData.phaseName) {
-  //               return {
-  //                 ...phase,
-  //                 milestones: phase.milestones?.map((milestone) => {
-  //                   if (milestone.milestoneName === formData.milestoneName) {
-  //                     const taskExists = milestone.tasks?.some(
-  //                       (task) => task.taskName === newTask.trim(),
-  //                     );
-  //                     if (taskExists) {
-  //                       alert("Task already exists");
-  //                       return milestone;
-  //                     }
-  //                     return {
-  //                       ...milestone,
-  //                       tasks: [
-  //                         ...(milestone.tasks || []),
-  //                         {
-  //                           taskName: newTask.trim(),
-  //                           subTasks: [],
-  //                         },
-  //                       ],
-  //                     };
-  //                   }
-  //                   return milestone;
-  //                 }),
-  //               };
-  //             }
-  //             return phase;
-  //           }),
-  //         };
-  //       }
-  //       return project;
-  //     });
-  //     setProjects(updatedProjects);
-  //     handleChange("taskId", "");
-  // handleChange("taskName", newTask.trim());
-  // handleChange("newTask", true);
-  //     setNewTask("");
-  //     setShowAddTask(false);
-  //     setShowTaskDropdown(false);
-  //   };
-  const handleAddTask = () => {
-    if (!newTask.trim()) return;
 
-    if (!formData.phaseName) {
-      alert("Please select a phase first");
-      return;
-    }
+  setProjects((prev) =>
+    prev.map((project) => {
+      if (project.id !== selectedProject.id) return project;
 
-    if (!formData.milestoneName) {
-      alert("Please select a milestone first");
-      return;
-    }
+      return {
+        ...project,
+        phases: project.phases.map((phase) => {
+          if (phase.phaseId !== formData.phaseId) return phase;
 
-    handleChange("taskId", "");
-    handleChange("taskName", newTask.trim());
-    handleChange("newTask", true);
+          return {
+            ...phase,
+            milestones: [
+              ...(phase.milestones || []),
+              {
+                milestoneId: newMilestoneObj.id,
+                milestoneName: newMilestoneObj.name,
+                tasks: [],
+                isNew: true,
+              },
+            ],
+          };
+        }),
+      };
+    })
+  );
 
-    setNewTask("");
-    setShowAddTask(false);
-    setShowTaskDropdown(false);
+  handleChange("milestoneId", newMilestoneObj.id);
+  handleChange("milestoneName", newMilestoneObj.name);
+  handleChange("newMilestone", true);
+};
+const handleSaveMilestoneName = (id, name) => {
+  if (!name.trim()) return;
+
+  setProjects((prev) =>
+    prev.map((project) => {
+      if (project.id !== selectedProject.id) return project;
+
+      return {
+        ...project,
+        phases: project.phases.map((phase) => {
+          if (phase.phaseId !== formData.phaseId) return phase;
+
+          return {
+            ...phase,
+            milestones: phase.milestones.map((milestone) =>
+              milestone.milestoneId === id
+                ? {
+                    ...milestone,
+                    milestoneName: name,
+                  }
+                : milestone
+            ),
+          };
+        }),
+      };
+    })
+  );
+
+  handleChange("milestoneId", id);
+  handleChange("milestoneName", name);
+};
+
+const milestoneDropdown = useEditableDropdown({
+  items: milestones,
+
+  onSelect: (milestone) => {
+    handleChange("milestoneId", milestone.id);
+    handleChange("milestoneName", milestone.name);
+    handleChange("newMilestone", false);
+  },
+
+  onAdd: handleAddMilestone,
+
+  onEdit: handleSaveMilestoneName,
+});
+  const handleAddTask = (taskName) => {
+  if (!taskName.trim()) return;
+
+  if (!formData.phaseId) {
+    alert("Please select a Phase first");
+    return;
+  }
+
+  if (!formData.milestoneId) {
+    alert("Please select a Milestone first");
+    return;
+  }
+
+  const alreadyExists = taskOptions.some(
+    (t) => t.name.toLowerCase() === taskName.toLowerCase()
+  );
+
+  if (alreadyExists) {
+    alert("Task already exists");
+    return;
+  }
+
+  const newTaskObj = {
+    id: `temp-${Date.now()}`,
+    name: taskName,
+    isNew: true,
   };
-  //   const handleAddSubTask = () => {
-  //     if (!newSubTask.trim()) return;
-  //     if (!formData.phaseName) {
-  //       alert("Please select a phase first");
-  //       return;
-  //     }
-  //     if (!formData.milestoneName) {
-  //       alert("Please select a milestone first");
-  //       return;
-  //     }
-  //     if (!formData.taskName) {
-  //       alert("Please select a task first");
-  //       return;
-  //     }
-  //     const updatedProjects = projects.map((project) => {
-  //       if (project.projectName === selectedProject.projectName) {
-  //         return {
-  //           ...project,
-  //           phases: project.phases?.map((phase) => {
-  //             if (phase.phaseName === formData.phaseName) {
-  //               return {
-  //                 ...phase,
-  //                 milestones: phase.milestones?.map((milestone) => {
-  //                   if (milestone.milestoneName === formData.milestoneName) {
-  //                     return {
-  //                       ...milestone,
-  //                       tasks: milestone.tasks?.map((task) => {
-  //                         if (task.taskName === formData.taskName) {
-  //                           const subTaskExists = task.subTasks?.some(
-  //                             (subTask) =>
-  //                               subTask.subTaskName === newSubTask.trim(),
-  //                           );
-  //                           if (subTaskExists) {
-  //                             alert("Sub Task already exists");
-  //                             return task;
-  //                           }
-  //                           return {
-  //                             ...task,
-  //                             subTasks: [
-  //                               ...(task.subTasks || []),
-  //                               {
-  //                                 subTaskName: newSubTask.trim(),
-  //                                 activities: [],
-  //                               },
-  //                             ],
-  //                           };
-  //                         }
-  //                         return task;
-  //                       }),
-  //                     };
-  //                   }
-  //                   return milestone;
-  //                 }),
-  //               };
-  //             }
-  //             return phase;
-  //           }),
-  //         };
-  //       }
-  //       return project;
-  //     });
-  //     setProjects(updatedProjects);
-  //    handleChange("subTaskId", "");
-  // handleChange("subTaskName", newSubTask.trim());
-  // handleChange("newSubTask", true);
-  //     setNewSubTask("");
-  //     setShowAddSubTask(false);
-  //     setShowSubTaskDropdown(false);
-  //   };
-  const handleAddSubTask = () => {
-    if (!newSubTask.trim()) return;
 
-    if (!formData.phaseName) {
-      alert("Please select a phase first");
-      return;
-    }
+  setProjects((prev) =>
+    prev.map((project) => {
+      if (project.id !== selectedProject.id) return project;
 
-    if (!formData.milestoneName) {
-      alert("Please select a milestone first");
-      return;
-    }
+      return {
+        ...project,
+        phases: project.phases.map((phase) => {
+          if (phase.phaseId !== formData.phaseId) return phase;
 
-    if (!formData.taskName) {
-      alert("Please select a task first");
-      return;
-    }
+          return {
+            ...phase,
+            milestones: phase.milestones.map((milestone) => {
+              if (milestone.milestoneId !== formData.milestoneId)
+                return milestone;
 
-    handleChange("subTaskId", "");
-    handleChange("subTaskName", newSubTask.trim());
-    handleChange("newSubTask", true);
+              return {
+                ...milestone,
+                tasks: [
+                  ...(milestone.tasks || []),
+                  {
+                    taskId: newTaskObj.id,
+                    taskName: newTaskObj.name,
+                    subTasks: [],
+                    isNew: true,
+                  },
+                ],
+              };
+            }),
+          };
+        }),
+      };
+    })
+  );
 
-    setNewSubTask("");
-    setShowAddSubTask(false);
-    setShowSubTaskDropdown(false);
+  handleChange("taskId", newTaskObj.id);
+  handleChange("taskName", newTaskObj.name);
+  handleChange("newTask", true);
+};
+const handleSaveTaskName = (id, name) => {
+  if (!name.trim()) return;
+
+  setProjects((prev) =>
+    prev.map((project) => {
+      if (project.id !== selectedProject.id) return project;
+
+      return {
+        ...project,
+        phases: project.phases.map((phase) => {
+          if (phase.phaseId !== formData.phaseId) return phase;
+
+          return {
+            ...phase,
+            milestones: phase.milestones.map((milestone) => {
+              if (milestone.milestoneId !== formData.milestoneId)
+                return milestone;
+
+              return {
+                ...milestone,
+                tasks: milestone.tasks.map((task) =>
+                  task.taskId === id
+                    ? {
+                        ...task,
+                        taskName: name,
+                      }
+                    : task
+                ),
+              };
+            }),
+          };
+        }),
+      };
+    })
+  );
+
+  handleChange("taskId", id);
+  handleChange("taskName", name);
+};
+const taskDropdown = useEditableDropdown({
+  items: taskOptions,
+
+  onSelect: (task) => {
+    handleChange("taskId", task.id);
+    handleChange("taskName", task.name);
+    handleChange("newTask", false);
+  },
+
+  onAdd: handleAddTask,
+
+  onEdit: handleSaveTaskName,
+});
+  const handleAddSubTask = (subTaskName) => {
+  if (!subTaskName.trim()) return;
+
+  if (!formData.phaseId) {
+    alert("Please select a Phase first");
+    return;
+  }
+
+  if (!formData.milestoneId) {
+    alert("Please select a Milestone first");
+    return;
+  }
+
+  if (!formData.taskId) {
+    alert("Please select a Task first");
+    return;
+  }
+
+  const alreadyExists = subTasks.some(
+    (s) => s.name.toLowerCase() === subTaskName.toLowerCase()
+  );
+
+  if (alreadyExists) {
+    alert("Sub Task already exists");
+    return;
+  }
+
+  const newSubTaskObj = {
+    id: `temp-${Date.now()}`,
+    name: subTaskName,
+    isNew: true,
   };
+
+  setProjects((prev) =>
+    prev.map((project) => {
+      if (project.id !== selectedProject.id) return project;
+
+      return {
+        ...project,
+        phases: project.phases.map((phase) => {
+          if (phase.phaseId !== formData.phaseId) return phase;
+
+          return {
+            ...phase,
+            milestones: phase.milestones.map((milestone) => {
+              if (milestone.milestoneId !== formData.milestoneId)
+                return milestone;
+
+              return {
+                ...milestone,
+                tasks: milestone.tasks.map((task) => {
+                  if (task.taskId !== formData.taskId)
+                    return task;
+
+                  return {
+                    ...task,
+                    subTasks: [
+                      ...(task.subTasks || []),
+                      {
+                        subTaskId: newSubTaskObj.id,
+                        subTaskName: newSubTaskObj.name,
+                        activities: [],
+                        isNew: true,
+                      },
+                    ],
+                  };
+                }),
+              };
+            }),
+          };
+        }),
+      };
+    })
+  );
+
+  handleChange("subTaskId", newSubTaskObj.id);
+  handleChange("subTaskName", newSubTaskObj.name);
+  handleChange("newSubTask", true);
+};
+const handleSaveSubTaskName = (id, name) => {
+  if (!name.trim()) return;
+
+  setProjects((prev) =>
+    prev.map((project) => {
+      if (project.id !== selectedProject.id) return project;
+
+      return {
+        ...project,
+        phases: project.phases.map((phase) => {
+          if (phase.phaseId !== formData.phaseId) return phase;
+
+          return {
+            ...phase,
+            milestones: phase.milestones.map((milestone) => {
+              if (milestone.milestoneId !== formData.milestoneId)
+                return milestone;
+
+              return {
+                ...milestone,
+                tasks: milestone.tasks.map((task) => {
+                  if (task.taskId !== formData.taskId)
+                    return task;
+
+                  return {
+                    ...task,
+                    subTasks: task.subTasks.map((subTask) =>
+                      subTask.subTaskId === id
+                        ? {
+                            ...subTask,
+                            subTaskName: name,
+                          }
+                        : subTask
+                    ),
+                  };
+                }),
+              };
+            }),
+          };
+        }),
+      };
+    })
+  );
+
+  handleChange("subTaskId", id);
+  handleChange("subTaskName", name);
+};
+const subTaskDropdown = useEditableDropdown({
+  items: subTasks,
+
+  onSelect: (subTask) => {
+    handleChange("subTaskId", subTask.id);
+    handleChange("subTaskName", subTask.name);
+    handleChange("newSubTask", false);
+  },
+
+  onAdd: handleAddSubTask,
+
+  onEdit: handleSaveSubTaskName,
+});
   const inputClass =
     "w-full h-9 px-3 text-sm bg-white border border-[#DCE3EE] rounded-lg outline-none transition-all duration-200 focus:border-blue-500";
 
@@ -312,8 +486,8 @@ export default function AddTaskForm() {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (phaseRef.current && !phaseRef.current.contains(event.target)) {
-        setShowPhaseDropdown(false);
-        setShowAddPhase(false);
+     //   setShowPhaseDropdown(false);
+        phaseDropdown.closeDropdown();
       }
       if (
         milestoneRef.current &&
@@ -356,372 +530,148 @@ export default function AddTaskForm() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Phase */}
             <div>
-              <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
-                Phase <span className="text-red-500">*</span>
-              </label>
+
               <div ref={phaseRef} className="relative w-full">
-                <button
-                  data-testid="phase-dropdown"
-                  type="button"
-                  onClick={() => setShowPhaseDropdown(!showPhaseDropdown)}
-                  className="w-full h-9 px-3 bg-white border border-[#DCE3EE] rounded-lg flex items-center justify-between text-sm cursor-pointer"
-                >
-                  <span className="truncate text-sm">
-                    {formData.phaseName || "Select Phase"}
-                  </span>
-                  <ChevronDown
-                    size={14}
-                    className={`transition-transform ${showPhaseDropdown ? "rotate-180" : ""}`}
-                  />
-                </button>
 
-                {showPhaseDropdown && (
-                  <div className="absolute top-full left-0 mt-2 w-full bg-white border border-[#DCE3EE] rounded-xl shadow-xl z-50">
-                    <div className="max-h-52 overflow-y-auto">
-                      {phases.length > 0 ? (
-                        phases.map((phase) => (
-                          <button
-                            key={phase.id}
-                            type="button"
-                            onClick={() => {
-                              handleChange("phaseId", phase.id);
-                              handleChange("phaseName", phase.name);
-                              handleChange("newPhase", false);
+               
+                <EditableDropdown
+    label="Phase"
 
-                              setShowPhaseDropdown(false);
-                            }}
-                            className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 cursor-pointer"
-                          >
-                            {phase.name}
-                          </button>
-                        ))
-                      ) : (
-                        <div className="p-3 text-sm text-slate-400">
-                          No Phase Available
-                        </div>
-                      )}
-                    </div>
-                    <div className="border-t" />
-                    <div className="p-4">
-                      {!showAddPhase ? (
-                        <button
-                          type="button"
-                          onClick={() => setShowAddPhase(true)}
-                          className="text-[#6D4AFF] text-sm font-medium cursor-pointer"
-                        >
-                          + Add New Phase
-                        </button>
-                      ) : (
-                        <div className="space-y-3">
-                          <input
-                            type="text"
-                            value={newPhase}
-                            onChange={(e) => setNewPhase(e.target.value)}
-                            placeholder="Enter Phase Name"
-                            className="w-full h-9 px-3 border border-[#DCE3EE] rounded-lg text-sm"
-                          />
-                          <div className="flex justify-end gap-2">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setShowAddPhase(false);
-                                setNewPhase("");
-                              }}
-                              className="px-4 py-1.5 border border-[#DCE3EE] rounded-lg cursor-pointer text-sm"
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              type="button"
-                              onClick={handleAddPhase}
-                              className="px-4 py-1.5 bg-[#6D4AFF] text-white rounded-lg cursor-pointer text-sm"
-                            >
-                              Add
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
+    value={formData.phaseName}
+
+    placeholder="Select Phase"
+
+    items={phases}
+
+    showDropdown={phaseDropdown.showDropdown}
+    setShowDropdown={phaseDropdown.setShowDropdown}
+
+    showAdd={phaseDropdown.showAdd}
+    setShowAdd={phaseDropdown.setShowAdd}
+
+    newValue={phaseDropdown.newValue}
+    setNewValue={phaseDropdown.setNewValue}
+
+    editingId={phaseDropdown.editingId}
+    editingValue={phaseDropdown.editingValue}
+    setEditingValue={phaseDropdown.setEditingValue}
+
+    handleSelect={phaseDropdown.handleSelect}
+    handleAdd={phaseDropdown.handleAdd}
+
+    startEdit={phaseDropdown.startEdit}
+    handleSave={phaseDropdown.handleSave}
+    cancelEdit={phaseDropdown.cancelEdit}
+/>
               </div>
             </div>
 
             {/* Milestone */}
             <div>
-              <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
-                Milestone <span className="text-red-500">*</span>
-              </label>
+             
               <div ref={milestoneRef} className="relative w-full">
-                <button
-                  data-testid="milestone-dropdown"
-                  type="button"
-                  onClick={() =>
-                    setShowMilestoneDropdown(!showMilestoneDropdown)
-                  }
-                  className="w-full h-9 px-3 border border-[#DCE3EE] rounded-lg bg-white flex items-center justify-between text-sm cursor-pointer"
-                >
-                  <span className="text-sm">
-                    {formData.milestoneName || "Select Milestone"}
-                  </span>
-                  <ChevronDown
-                    size={14}
-                    className={`transition-transform ${showMilestoneDropdown ? "rotate-180" : ""}`}
-                  />
-                </button>
+              <EditableDropdown
+  label="Milestone"
+  value={formData.milestoneName}
+  placeholder="Select Milestone"
+  items={milestones}
 
-                {showMilestoneDropdown && (
-                  <div className="absolute top-full left-0 mt-2 w-full bg-white border border-[#DCE3EE] rounded-xl shadow-lg z-50 overflow-hidden">
-                    <div className="max-h-[220px] overflow-y-auto">
-                      {milestones.length > 0 ? (
-                        milestones.map((milestone) => (
-                          <button
-                            key={milestone.id}
-                            onClick={() => {
-                              handleChange("milestoneId", milestone.id);
-                              handleChange("milestoneName", milestone.name);
-                              handleChange("newMilestone", false);
+  showDropdown={milestoneDropdown.showDropdown}
+  setShowDropdown={milestoneDropdown.setShowDropdown}
 
-                              setShowMilestoneDropdown(false);
-                            }}
-                            className="w-full px-4 py-2.5 text-left text-sm hover:bg-[#F8FAFC] cursor-pointer"
-                          >
-                            {milestone.name}
-                          </button>
-                        ))
-                      ) : (
-                        <div className="p-3 text-sm text-slate-400">
-                          No Milestones Found
-                        </div>
-                      )}
-                    </div>
-                    <div className="border-t border-[#E5E7EB]" />
-                    <div className="p-4">
-                      <button
-                        type="button"
-                        onClick={() => setShowAddMilestone(!showAddMilestone)}
-                        className="text-[#6D4AFF] text-sm font-medium cursor-pointer"
-                      >
-                        + Add New Milestone
-                      </button>
-                      {showAddMilestone && (
-                        <div className="mt-4">
-                          <input
-                            value={newMilestone}
-                            onChange={(e) => setNewMilestone(e.target.value)}
-                            placeholder="Enter Milestone Name"
-                            className="w-full h-9 px-3 border border-[#DCE3EE] rounded-lg text-sm"
-                          />
-                          <div className="flex justify-end gap-2 mt-4">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setShowAddMilestone(false);
-                                setNewMilestone("");
-                              }}
-                              className="px-4 py-1.5 border border-[#DCE3EE] rounded-lg cursor-pointer text-sm"
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              type="button"
-                              onClick={handleAddMilestone}
-                              className="px-4 py-1.5 bg-[#6D4AFF] text-white rounded-lg cursor-pointer text-sm"
-                            >
-                              Add
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
+  showAdd={milestoneDropdown.showAdd}
+  setShowAdd={milestoneDropdown.setShowAdd}
+
+  newValue={milestoneDropdown.newValue}
+  setNewValue={milestoneDropdown.setNewValue}
+
+  editingId={milestoneDropdown.editingId}
+  editingValue={milestoneDropdown.editingValue}
+  setEditingValue={milestoneDropdown.setEditingValue}
+
+  handleSelect={milestoneDropdown.handleSelect}
+  handleAdd={milestoneDropdown.handleAdd}
+
+  startEdit={milestoneDropdown.startEdit}
+  handleSave={milestoneDropdown.handleSave}
+  cancelEdit={milestoneDropdown.cancelEdit}
+/>
               </div>
             </div>
 
             {/* Task */}
             <div>
-              <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
-                Task <span className="text-red-500">*</span>
-              </label>
+             
               <div ref={taskRef} className="relative w-full">
-                <button
-                  data-testid="task-dropdown"
-                  type="button"
-                  onClick={() => setShowTaskDropdown(!showTaskDropdown)}
-                  className="w-full h-9 px-3 border border-[#DCE3EE] rounded-lg bg-white flex items-center justify-between text-sm cursor-pointer"
-                >
-                  <span className="text-sm">
-                    {formData.taskName || "Select Task"}
-                  </span>
-                  <ChevronDown
-                    size={14}
-                    className={`transition-transform ${showTaskDropdown ? "rotate-180" : ""}`}
-                  />
-                </button>
+             
 
-                {showTaskDropdown && (
-                  <div className="absolute top-full left-0 mt-2 w-full bg-white border border-[#DCE3EE] rounded-xl shadow-lg z-50 overflow-hidden">
-                    <div className="max-h-[220px] overflow-y-auto">
-                      {taskOptions.length > 0 ? (
-                        taskOptions.map((task) => (
-                          <button
-                            key={task.id}
-                            onClick={() => {
-                              handleChange("taskId", task.id);
-                              handleChange("taskName", task.name);
-                              handleChange("newTask", false);
+               <EditableDropdown
+  label="Task"
+  value={formData.taskName}
+  placeholder="Select Task"
+  items={taskOptions}
 
-                              setShowTaskDropdown(false);
-                            }}
-                            className="w-full px-4 py-2.5 text-left text-sm hover:bg-[#F8FAFC] cursor-pointer"
-                          >
-                            {task.name}
-                          </button>
-                        ))
-                      ) : (
-                        <div className="p-3 text-sm text-slate-400">
-                          No Tasks Found
-                        </div>
-                      )}
-                    </div>
-                    <div className="border-t border-[#E5E7EB]" />
-                    <div className="p-4">
-                      <button
-                        type="button"
-                        onClick={() => setShowAddTask(!showAddTask)}
-                        className="text-[#6D4AFF] text-sm font-medium cursor-pointer"
-                      >
-                        + Add New Task
-                      </button>
-                      {showAddTask && (
-                        <div className="mt-4">
-                          <input
-                            value={newTask}
-                            onChange={(e) => setNewTask(e.target.value)}
-                            placeholder="Enter Task Name"
-                            className="w-full h-9 px-3 border border-[#DCE3EE] rounded-lg text-sm"
-                          />
-                          <div className="flex justify-end gap-2 mt-4">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setShowAddTask(false);
-                                setNewTask("");
-                              }}
-                              className="px-4 py-1.5 border border-[#DCE3EE] rounded-lg cursor-pointer text-sm"
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              type="button"
-                              onClick={handleAddTask}
-                              className="px-4 py-1.5 bg-[#6D4AFF] text-white rounded-lg cursor-pointer text-sm"
-                            >
-                              Add
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
+  showDropdown={taskDropdown.showDropdown}
+  setShowDropdown={taskDropdown.setShowDropdown}
+
+  showAdd={taskDropdown.showAdd}
+  setShowAdd={taskDropdown.setShowAdd}
+
+  newValue={taskDropdown.newValue}
+  setNewValue={taskDropdown.setNewValue}
+
+  editingId={taskDropdown.editingId}
+  editingValue={taskDropdown.editingValue}
+  setEditingValue={taskDropdown.setEditingValue}
+
+  handleSelect={taskDropdown.handleSelect}
+  handleAdd={taskDropdown.handleAdd}
+
+  startEdit={taskDropdown.startEdit}
+  handleSave={taskDropdown.handleSave}
+  cancelEdit={taskDropdown.cancelEdit}
+/>
               </div>
             </div>
 
             {/* Sub Task */}
             <div>
-              <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
-                Sub Task <span className="text-red-500">*</span>
-              </label>
+             
               <div ref={subTaskRef} className="relative w-full">
-                <button
-                  data-testid="subtask-dropdown"
-                  type="button"
-                  onClick={() => setShowSubTaskDropdown(!showSubTaskDropdown)}
-                  className="w-full h-9 px-3 border border-[#DCE3EE] rounded-lg bg-white flex items-center justify-between text-sm cursor-pointer"
-                >
-                  <span className="text-sm">
-                    {formData.subTaskName || "Select Sub Task"}
-                  </span>
-                  <ChevronDown
-                    size={14}
-                    className={`transition-transform ${showSubTaskDropdown ? "rotate-180" : ""}`}
-                  />
-                </button>
+                <EditableDropdown
+  label="Sub Task"
+  value={formData.subTaskName}
+  placeholder="Select Sub Task"
+  items={subTasks}
 
-                {showSubTaskDropdown && (
-                  <div className="absolute top-full left-0 mt-2 w-full bg-white border border-[#DCE3EE] rounded-xl shadow-lg z-50 overflow-hidden">
-                    <div className="max-h-[220px] overflow-y-auto">
-                      {subTasks.length > 0 ? (
-                        subTasks.map((subTask) => (
-                          <button
-                            key={subTask.id}
-                            onClick={() => {
-                              handleChange("subTaskId", subTask.id);
-                              handleChange("subTaskName", subTask.name);
-                              handleChange("newSubTask", false);
+  showDropdown={subTaskDropdown.showDropdown}
+  setShowDropdown={subTaskDropdown.setShowDropdown}
 
-                              setShowSubTaskDropdown(false);
-                            }}
-                            className="w-full px-4 py-2.5 text-left text-sm hover:bg-[#F8FAFC] cursor-pointer"
-                          >
-                            {subTask.name}
-                          </button>
-                        ))
-                      ) : (
-                        <div className="p-3 text-sm text-slate-400">
-                          No Sub Tasks Found
-                        </div>
-                      )}
-                    </div>
-                    <div className="border-t border-[#E5E7EB]" />
-                    <div className="p-4">
-                      <button
-                        type="button"
-                        onClick={() => setShowAddSubTask(!showAddSubTask)}
-                        className="text-[#6D4AFF] text-sm font-medium cursor-pointer"
-                      >
-                        + Add New Sub Task
-                      </button>
-                      {showAddSubTask && (
-                        <div className="mt-4">
-                          <input
-                            value={newSubTask}
-                            onChange={(e) => setNewSubTask(e.target.value)}
-                            placeholder="Enter Sub Task Name"
-                            className="w-full h-9 px-3 border border-[#DCE3EE] rounded-lg text-sm"
-                          />
-                          <div className="flex justify-end gap-2 mt-4">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setShowAddSubTask(false);
-                                setNewSubTask("");
-                              }}
-                              className="px-4 py-1.5 border border-[#DCE3EE] rounded-lg cursor-pointer text-sm"
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              type="button"
-                              onClick={handleAddSubTask}
-                              className="px-4 py-1.5 bg-[#6D4AFF] text-white rounded-lg cursor-pointer text-sm"
-                            >
-                              Add
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
+  showAdd={subTaskDropdown.showAdd}
+  setShowAdd={subTaskDropdown.setShowAdd}
+
+  newValue={subTaskDropdown.newValue}
+  setNewValue={subTaskDropdown.setNewValue}
+
+  editingId={subTaskDropdown.editingId}
+  editingValue={subTaskDropdown.editingValue}
+  setEditingValue={subTaskDropdown.setEditingValue}
+
+  handleSelect={subTaskDropdown.handleSelect}
+  handleAdd={subTaskDropdown.handleAdd}
+
+  startEdit={subTaskDropdown.startEdit}
+  handleSave={subTaskDropdown.handleSave}
+  cancelEdit={subTaskDropdown.cancelEdit}
+/>
+
+               
               </div>
             </div>
           </div>
 
           {/* Activity Name & Owner - Smaller fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
             <div>
               <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                 Activity Name <span className="text-red-500">*</span>
@@ -817,35 +767,25 @@ export default function AddTaskForm() {
                 Estimated Weeks
               </label>
               <input
-                type="number"
-                min="0"
-                step="0.1"
-                placeholder="Est. Weeks"
-                className={inputClass}
-                value={formData.estimatedPeriodWeek}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (value === "" || Number(value) >= 0) {
-                    handleChange("estimatedPeriodWeek", value);
-                  }
-                }}
-              />
+  type="number"
+  readOnly
+  value={formData.estimatedPeriodWeek}
+  placeholder="Est. Weeks"
+  className={`${inputClass} bg-slate-100 cursor-not-allowed`}
+/>
             </div>
             <div>
               <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                 Actual Weeks
               </label>
+          
               <input
-                type="number"
-                min="0"
-                step="0.1"
-                placeholder="Act. Weeks"
-                className={inputClass}
-                value={formData.actualPeriodWeek || ""}
-                onChange={(e) =>
-                  handleChange("actualPeriodWeek", e.target.value)
-                }
-              />
+  type="number"
+  readOnly
+  placeholder="Act. Weeks"
+  className={`${inputClass} bg-slate-100 cursor-not-allowed`}
+  value={formData.actualPeriodWeek || ""}
+/>
             </div>
             <div>
               <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
