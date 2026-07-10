@@ -68,9 +68,9 @@ export default function AuthorizationSummaryCards({ auths = [] }) {
       className="
       grid
       gap-4
-      grid-cols-1
-      sm:grid-cols-2
-      lg:grid-cols-2
+      grid-cols-2
+      sm:grid-cols-3
+      lg:grid-cols-3
       xl:grid-cols-5
       mt-[5px]
     "
@@ -85,7 +85,7 @@ export default function AuthorizationSummaryCards({ auths = [] }) {
             bg-white
             rounded-2xl
             border
-            border-slate-200
+            border-[#CDD7E3]
             shadow-sm
 
             p-3
@@ -125,8 +125,9 @@ export default function AuthorizationSummaryCards({ auths = [] }) {
             >
               <h2
                 className="
-                text-3xl
+                text-xl
                 xl:text-[35px]
+                2x:text-[37px]
                 font-bold
                 text-[#142850]
                 leading-none
@@ -140,8 +141,9 @@ export default function AuthorizationSummaryCards({ auths = [] }) {
                 mt-2
                 text-sm
                 xl:text-[16px]
-                font-semibold
-                text-slate-500
+                2xl:text-[18px]
+                font-medium
+                text-slate-600
                 leading-snug
               "
               >

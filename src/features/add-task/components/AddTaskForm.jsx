@@ -34,7 +34,6 @@ export default function AddTaskForm() {
   const taskRef = useRef(null);
   const subTaskRef = useRef(null);
 
-
   const [newPhase, setNewPhase] = useState("");
   const [newMilestone, setNewMilestone] = useState("");
   const [newTask, setNewTask] = useState("");

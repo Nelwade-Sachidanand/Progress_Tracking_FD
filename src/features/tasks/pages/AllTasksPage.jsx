@@ -160,57 +160,59 @@ export default function AllTasksPage() {
         milestone.tasks?.forEach((task) => {
           task.subTasks?.forEach((subTask) => {
             subTask.activities?.forEach((activity) => {
-             allActivities.push({
-    id: activity.activityId,
+              allActivities.push({
+                id: activity.activityId,
 
-    projectId: selectedProject.id,
-    projectName: selectedProject.projectName,
+                projectId: selectedProject.id,
+                projectName: selectedProject.projectName,
 
-    phaseId: phase.phaseId,
-    phaseName: phase.phaseName,
+                phaseId: phase.phaseId,
+                phaseName: phase.phaseName,
 
-    milestoneId: milestone.milestoneId,
-    milestoneName: milestone.milestoneName,
+                milestoneId: milestone.milestoneId,
+                milestoneName: milestone.milestoneName,
 
-    taskId: task.taskId,
-    taskName: task.taskName,
+                taskId: task.taskId,
+                taskName: task.taskName,
 
-    subTaskId: subTask.subTaskId,
-    subTaskName: subTask.subTaskName,
+                subTaskId: subTask.subTaskId,
+                subTaskName: subTask.subTaskName,
 
-    activityId: activity.activityId,
-    activityName: activity.activityName,
+                activityId: activity.activityId,
+                activityName: activity.activityName,
 
-    owner: activity.owner,
+                owner: activity.owner,
 
-    estimatedPeriodWeek: activity.estimatedPeriodWeek,
-    actualPeriodWeek: activity.actualPeriodWeek,
+                estimatedPeriodWeek: activity.estimatedPeriodWeek,
+                actualPeriodWeek: activity.actualPeriodWeek,
 
-    plannedStartDate: activity.plannedStartDate,
-    plannedEndDate: activity.plannedEndDate,
+                actualPeriodWeek: activity.actualPeriodWeek,
 
-    actualStartDate: activity.actualStartDate,
-    actualEndDate: activity.actualEndDate,
+                plannedStartDate: activity.plannedStartDate,
+                plannedEndDate: activity.plannedEndDate,
 
-    progress: activity.progress,
+                actualStartDate: activity.actualStartDate,
+                actualEndDate: activity.actualEndDate,
 
-    executionStatus: activity.executionStatus,
-    scheduleHealth: activity.scheduleHealth,
+                progress: activity.progress,
 
-    remark: activity.remark || "",
+                executionStatus: activity.executionStatus,
+                scheduleHealth: activity.scheduleHealth,
 
-    // Table display
-    phase: phase.phaseName,
-    milestone: milestone.milestoneName,
-    task: task.taskName,
-    subTask: subTask.subTaskName,
-    activity: activity.activityName,
+                remark: activity.remark || "",
 
-    status: activity.executionStatus,
+                // Table display
+                phase: phase.phaseName,
+                milestone: milestone.milestoneName,
+                task: task.taskName,
+                subTask: subTask.subTaskName,
+                activity: activity.activityName,
 
-    startDate: activity.actualStartDate,
-    endDate: activity.actualEndDate,
-});
+                status: activity.executionStatus,
+
+                startDate: activity.actualStartDate,
+                endDate: activity.actualEndDate,
+              });
             });
           });
         });
@@ -246,15 +248,15 @@ export default function AllTasksPage() {
         inProgress={inProgress}
       />
 
-      <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-5">
+      <div className="mt-5 rounded-2xl border border-[#CDD7E3] bg-white p-5">
         <div className="mb-1 flex items-center justify-between mt-[-7px]">
           <div>
             <h2 className="text-lg font-semibold text-[#0B1F59]">
               Task Filters
             </h2>
 
-            <p className="text-sm text-slate-500">
-              Filter Project Tasks Using the Criteria Below.
+            <p className="text-sm text-slate-600">
+              Filter Project Tasks Using The Criteria Below.
             </p>
           </div>
 
@@ -295,10 +297,14 @@ export default function AllTasksPage() {
         selectedPhase={selectedPhase}
         selectedMilestone={selectedMilestone}
         selectedTask={selectedTask}
+        selectedSubTask={selectedSubTask}
+        selectedActivity={selectedActivity}
         selectedStatus={selectedStatus}
         setSelectedPhase={setSelectedPhase}
         setSelectedMilestone={setSelectedMilestone}
         setSelectedTask={setSelectedTask}
+        setSelectedSubTask={setSelectedSubTask}
+        setSelectedActivity={setSelectedActivity}
         setSelectedStatus={setSelectedStatus}
         clearFilters={clearFilters}
       />

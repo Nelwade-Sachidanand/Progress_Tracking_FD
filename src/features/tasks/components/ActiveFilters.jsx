@@ -4,11 +4,15 @@ function ActiveFilters({
   selectedPhase,
   selectedMilestone,
   selectedTask,
+  selectedSubTask,
+  selectedActivity,
   selectedStatus,
 
   setSelectedPhase,
   setSelectedMilestone,
   setSelectedTask,
+  setSelectedSubTask,
+  setSelectedActivity,
   setSelectedStatus,
 
   clearFilters,
@@ -40,6 +44,20 @@ function ActiveFilters({
     filters.push({
       type: "status",
       label: `Status: ${selectedStatus}`,
+    });
+  }
+
+  if (selectedSubTask) {
+    filters.push({
+      type: "subTask",
+      label: `Sub Task: ${selectedSubTask}`,
+    });
+  }
+
+  if (selectedActivity) {
+    filters.push({
+      type: "activity",
+      label: `Activity: ${selectedActivity}`,
     });
   }
 
@@ -92,6 +110,13 @@ function ActiveFilters({
                 if (filter.type === "status") {
                   setSelectedStatus("");
                 }
+                if (filter.type === "subTask") {
+                  setSelectedSubTask("");
+                }
+
+                if (filter.type === "activity") {
+                  setSelectedActivity("");
+                }
               }}
               className="
               flex
@@ -124,7 +149,10 @@ function ActiveFilters({
           bg-red-50
           px-4
           text-sm
+<<<<<<< HEAD
           font-semibold
+=======
+>>>>>>> 2d88949adea6db5594771bf9c2efb472e782275b
           text-red-600
           transition
           hover:bg-red-100

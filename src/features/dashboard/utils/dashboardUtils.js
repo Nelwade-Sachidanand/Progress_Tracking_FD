@@ -1,5 +1,5 @@
 // dashboardUtils.js
-
+import { getProjectMetrics } from "./projectMetrics";
 export const getAllActivities = (projects) => {
   const activities = [];
 
@@ -141,9 +141,8 @@ export const getActiveProjects = (projects) => {
 
 export const getDelayedProjects = (projects) => {
   return projects.filter((project) => {
-    const activities = getProjectActivities(project);
-
-    return activities.some((activity) => activity.scheduleHealth === "Delayed");
+    const status = getProjectMetrics(project).status;
+    return status === "Delayed";
   });
 };
 
@@ -152,17 +151,9 @@ export const getDelayedProjects = (projects) => {
 ========================================== */
 
 export const getOnTrackProjects = (projects) => {
-  return projects.filter((project) => {
-    const activities = getProjectActivities(project);
-
-    if (!activities.length) return false;
-
-    const hasDelayed = activities.some(
-      (activity) => activity.scheduleHealth === "Delayed",
-    );
-
-    return !hasDelayed;
-  });
+  return projects.filter(
+    (project) => getProjectMetrics(project).status === "On Track",
+  );
 };
 
 /* ==========================================

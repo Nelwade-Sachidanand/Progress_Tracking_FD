@@ -137,9 +137,9 @@ export default function AuthorizationTable({
     <div
       className="
       bg-white
-      rounded-3xl
+      rounded-2xl
       border
-      border-slate-200
+      border-[#CDD7E3]
       shadow-sm
       overflow-hidden
       mt-5
@@ -150,9 +150,9 @@ export default function AuthorizationTable({
       <div
         className="
         px-4
-        py-4
+        py-2
         border-b
-        border-slate-200
+        border-[#CDD7E3]
 
         flex
         flex-col
@@ -168,6 +168,7 @@ export default function AuthorizationTable({
             text-sm
             font-medium
             text-slate-600
+            2xl:text-base
           "
           >
             {selectedRows.length} Requests Selected
@@ -184,6 +185,7 @@ export default function AuthorizationTable({
             text-white
             text-sm
             font-semibold
+            2xl:text-base
             hover:bg-green-700
             disabled:opacity-50
             transition-colors
@@ -203,6 +205,7 @@ export default function AuthorizationTable({
             bg-red-600
             text-white
             text-sm
+            2xl:text-base
             font-semibold
             hover:bg-red-700
             disabled:opacity-50
@@ -220,13 +223,13 @@ export default function AuthorizationTable({
       <div className="overflow-x-auto">
         <table className="w-full table-auto">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50">
+            <tr className="border-b border-[#CDD7E3] bg-blue-100">
               {/* Checkbox */}
 
               <th className="w-[60px] px-4 py-4 text-center">
                 <input
                   type="checkbox"
-                  className="h-4 w-4 cursor-pointer"
+                  className="h-3 w-3 cursor-pointer"
                   checked={
                     paginatedLogs.filter((log) => log.status === "PENDING")
                       .length > 0 &&
@@ -240,43 +243,43 @@ export default function AuthorizationTable({
 
               {/* Sr No */}
 
-              <th className="w-[80px] px-4 py-4 text-left text-sm font-semibold text-slate-700">
+              <th className="w-[80px] px-2 py-4 text-left text-base font-semibold text-slate-700 2xl:text-base">
                 Sr. No.
               </th>
 
               {/* Request Type */}
 
-              <th className="w-[170px] px-4 py-4 text-left text-sm font-semibold text-slate-700 whitespace-nowrap">
+              <th className="w-[170px] px-4 py-4 text-left text-base font-semibold text-slate-700 whitespace-nowrap 2xl:text-base">
                 Request Type
               </th>
 
               {/* Requested By */}
 
-              <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700 whitespace-nowrap">
+              <th className="px-4 py-4 text-left text-base font-semibold text-slate-700 whitespace-nowrap 2xl:text-base">
                 Requested By
               </th>
 
               {/* Resource */}
 
-              <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700 whitespace-nowrap">
+              <th className="px-4 py-4 text-left text-base font-semibold text-slate-700 whitespace-nowrap 2xl:text-base">
                 Resource
               </th>
 
               {/* Requested Date */}
 
-              <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700 whitespace-nowrap">
+              <th className="px-4 py-4 text-left text-base font-semibold text-slate-700 whitespace-nowrap 2xl:text-base">
                 Requested Date
               </th>
 
               {/* Status */}
 
-              <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700 whitespace-nowrap">
+              <th className="px-4 py-4 text-left text-base font-semibold text-slate-700 whitespace-nowrap 2xl:text-base">
                 Status
               </th>
 
               {/* Actions */}
 
-              <th className="px-4 py-4 text-center text-sm font-semibold text-slate-700 whitespace-nowrap">
+              <th className="px-4 py-4 text-center text-base font-semibold text-slate-700 whitespace-nowrap 2xl:text-base">
                 Actions
               </th>
             </tr>
@@ -292,6 +295,7 @@ export default function AuthorizationTable({
           text-center
           text-slate-500
           text-sm
+          2xl:text-base
         "
                 >
                   No requests found
@@ -306,18 +310,16 @@ export default function AuthorizationTable({
                     key={log.id || srNo}
                     className="
             border-b
-            border-slate-200
-            hover:bg-slate-50
-            transition-colors
+            border-[#CDD7E3]
           "
                   >
                     {/* Checkbox */}
 
-                    <td className="px-4 py-4 text-center">
+                    <td className="px-4 py-2 text-center">
                       {log.status === "PENDING" && (
                         <input
                           type="checkbox"
-                          className="h-4 w-4 cursor-pointer"
+                          className="h-3 w-3 cursor-pointer"
                           checked={selectedRows.includes(log.id)}
                           onChange={() => handleRowSelect(log.id)}
                         />
@@ -326,15 +328,15 @@ export default function AuthorizationTable({
 
                     {/* Sr No */}
 
-                    <td className="px-4 py-4">
-                      <span className="text-slate-700 text-sm xl:text-[15px] font-medium">
+                    <td className="px-4 py-2">
+                      <span className="text-slate-700 text-sm xl:text-base font-medium 2xl:text-base">
                         {srNo}
                       </span>
                     </td>
 
                     {/* Request Type */}
 
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-2">
                       <span
                         className={`
                 inline-flex
@@ -342,7 +344,8 @@ export default function AuthorizationTable({
                 px-3
                 py-1.5
                 rounded-full
-                text-xs
+                text-sm
+                2xl:text-base
                 font-semibold
                 whitespace-nowrap
                 ${getRequestTypeStyle(log.requestSource)}
@@ -354,15 +357,15 @@ export default function AuthorizationTable({
 
                     {/* Requested By */}
 
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-2">
                       <span
                         className="
                 block
                 truncate
                 text-slate-700
                 text-sm
-                xl:text-[15px]
                 2xl:text-base
+                xl:text-base
               "
                         title={log.requestedBy}
                       >
@@ -372,26 +375,26 @@ export default function AuthorizationTable({
 
                     {/* Resource */}
 
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-2">
                       <span
                         className="
                 block
                 truncate
                 text-slate-700
                 text-sm
-                xl:text-[15px]
+                xl:text-base
                 2xl:text-base
               "
-                        title={log.activityName}
+                        title={log.newActivityName}
                       >
-                        {log.activityName}
+                        {log.newActivityName}
                       </span>
                     </td>
 
                     {/* Requested Date */}
 
-                    <td className="px-4 py-4 whitespace-nowrap">
-                      <span className="text-slate-700 text-sm xl:text-[15px] 2xl:text-base">
+                    <td className="px-4 py-2 whitespace-nowrap">
+                      <span className="text-slate-700 text-sm xl:text-base 2xl:text-base">
                         {new Date(log.requestedAt)
                           .toLocaleDateString("en-GB")
                           .replace(/\//g, "-")}
@@ -400,7 +403,7 @@ export default function AuthorizationTable({
 
                     {/* Status */}
 
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-2">
                       <span
                         className={`
                 inline-flex
@@ -410,6 +413,7 @@ export default function AuthorizationTable({
                 py-1.5
                 rounded-full
                 text-xs
+                2xl:text-sm
                 font-semibold
                 whitespace-nowrap
                 ${getStatusStyle(log.status)}
@@ -421,7 +425,7 @@ export default function AuthorizationTable({
 
                     {/* Actions */}
 
-                    <td className="px-4 py-4">
+                    <td className="px-4 py-2">
                       <div className="flex items-center justify-center">
                         <button
                           onClick={() => onView(log)}
@@ -442,7 +446,7 @@ export default function AuthorizationTable({
                   cursor-pointer
                 "
                         >
-                          <Eye size={16} />
+                          <Eye size={20} />
                         </button>
                       </div>
                     </td>
@@ -459,7 +463,7 @@ export default function AuthorizationTable({
         totalPages={totalPages}
         totalRecords={logs.length}
         recordsPerPage={10}
-        label="auths"
+        label="Auths"
         onPageChange={setCurrentPage}
       />
 

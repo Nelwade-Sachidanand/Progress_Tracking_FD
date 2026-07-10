@@ -33,24 +33,60 @@ const getActionColor = (action) => {
     case "SUBTASK_CREATED":
       return "bg-teal-100 text-teal-700";
 
-    case "Export_Excel":
+    case "EXPORT_EXCEL":
       return "bg-purple-100 text-purple-700";
 
-    case "Import_Project":
+    case "IMPORT_PROJECT":
       return "bg-amber-100 text-amber-700";
 
-    case "Upload_Activity_created":
+    case "UPLOAD_CREATE_ACTIVITY":
       return "bg-lime-100 text-lime-700";
 
-    case "Upload_Activity_Updated":
+    case "UPLOAD_UPDATE_ACTIVITY":
       return "bg-yellow-100 text-yellow-700";
 
-    case "Delete_Project":
+    case "DELETE_PROJECT":
       return "bg-orange-100 text-orange-700";
+
+    case "REQUEST_ACTIVITY_UPDATE":
+      return "bg-pink-100 text-pink-700";
+
+    case "APPROVE_ACTIVITY_UPDATE":
+      return "bg-green-100 text-green-800";
+
+    case "REJECT_ACTIVITY_UPDATE":
+      return "bg-red-100 text-red-800";
+
+    case "APPROVE_ALL_ACTIVITY_UPDATES":
+      return "bg-emerald-100 text-emerald-800";
+
+    case "REJECTED_ALL_ACTIVITY_UPDATES":
+      return "bg-rose-100 text-rose-800";
+
+    case "ROLLBACK_ACTIVITY":
+    case "ROLLBACK_ACTIVITY_UPDATE":
+      return "bg-gray-200 text-gray-800";
+
+    case "CREATE_PROJECT_INFORMATION":
+      return "bg-blue-100 text-blue-800";
+
+    case "UPDATE_PROJECT_INFORMATION":
+      return "bg-cyan-100 text-cyan-800";
+
+    case "DELETE_PROJECT_INFORMATION":
+      return "bg-red-100 text-red-800";
 
     default:
       return "bg-slate-100 text-slate-700";
   }
+};
+
+const formatAction = (value = "") => {
+  return value
+    .toLowerCase()
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 };
 
 export default function AuditTable({ logs = [], loading, onView }) {
@@ -61,9 +97,9 @@ export default function AuditTable({ logs = [], loading, onView }) {
       <div
         className="
         bg-white
-        rounded-3xl
+        rounded-2xl
         border
-        border-slate-200
+        border-[#CDD7E3]
         p-10
         text-center
         text-slate-500
@@ -81,299 +117,186 @@ export default function AuditTable({ logs = [], loading, onView }) {
   const pageLogs = logs.slice(startIndex, startIndex + RECORDS_PER_PAGE);
 
   return (
-    <div
-      className="
-      mt-5
-      bg-white
-      rounded-3xl
-      border
-      border-slate-200
-      shadow-sm
-      overflow-hidden
-      "
-    >
-      {/* Table */}
+    <div className="overflow-x-auto mt-5 rounded-2xl border border-[#CDD7E3] bg-white shadow-sm">
+      <table className="w-full table-auto">
+        <thead>
+          <tr className="border-b border-[#CDD7E3] bg-blue-100">
+            <th className="w-[90px] px-4 py-4 text-left text-base font-semibold text-slate-600">
+              Sr. No.
+            </th>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr
-              className="
-              bg-slate-50
+            <th className="w-[180px] px-2 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
+              Action Type
+            </th>
+
+            <th className="px-8 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
+              Entity Type
+            </th>
+
+            <th className="px-0 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
+              Entity Name
+            </th>
+
+            <th className="px-4 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
+              Modified By
+            </th>
+
+            <th className="px-4 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
+              Modified Date
+            </th>
+
+            <th className="px-4 py-4 text-center text-base font-semibold text-slate-600 whitespace-nowrap">
+              Actions
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {pageLogs.length > 0 ? (
+            pageLogs.map((log, index) => (
+              <tr
+                key={log.id}
+                className="
               border-b
-              border-slate-200
-              "
-            >
-              <th
-                className="
-                px-6
-                py-4
-                text-center
-                text-sm
-                font-semibold
-                text-slate-600
-                xl:text-base 2xl:text-lg
-                "
+              border-[#CDD7E3]
+            "
               >
-                Sr. No.
-              </th>
-
-              <th
-                className="
-                px-6
-                py-4
-                text-center
-                text-sm
-                font-semibold
-                text-slate-600
-                xl:text-base 2xl:text-lg
-                "
-              >
-                Action Type
-              </th>
-
-              <th
-                className="
-                px-6
-                py-4
-                text-center
-                text-sm
-                font-semibold
-                text-slate-600
-                xl:text-base 2xl:text-lg
-                "
-              >
-                Entity Type
-              </th>
-
-              <th
-                className="
-                px-6
-                py-4
-                text-center
-                text-sm
-                font-semibold
-                text-slate-600
-                xl:text-base 2xl:text-lg
-                "
-              >
-                Entity Name
-              </th>
-
-              <th
-                className="
-                px-6
-                py-4
-                text-center
-                text-sm
-                font-semibold
-                text-slate-600
-                xl:text-base 2xl:text-lg
-                "
-              >
-                Modified By
-              </th>
-
-              <th
-                className="
-                px-6
-                py-4
-                text-center
-                text-sm
-                font-semibold
-                text-slate-600
-                xl:text-base 2xl:text-lg
-                "
-              >
-                Modified Date
-              </th>
-
-              <th
-                className="
-                px-6
-                py-4
-                text-center
-                text-sm
-                font-semibold
-                text-slate-600
-                xl:text-base 2xl:text-lg
-                "
-              >
-                Actions
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {pageLogs.length > 0 ? (
-              pageLogs.map((log, index) => (
-                <tr
-                  key={log.id}
-                  className="
-                  border-b
-                  border-slate-100
-                  hover:bg-slate-50
-                  transition
-                  "
-                >
-                  {/* Sr No */}
-
-                  <td
-                    className="
-                    text-center
-                    px-6
-                    py-5
-                    font-medium
-                    text-slate-700
-                    text-sm
-                    xl:text-base 2xl:text-lg
-                    "
-                  >
+                {/* Sr No */}
+                <td className="w-[50px] px-6 py-2">
+                  <span className="text-slate-700 text-sm xl:text-base 2xl:text-base font-medium">
                     {(currentPage - 1) * RECORDS_PER_PAGE + index + 1}
-                  </td>
+                  </span>
+                </td>
 
-                  {/* Action Type */}
-
-                  <td className="px-6 py-5 text-center">
-                    <span
-                      className={`
-                        
-                      px-3
-                      py-1.5
-                      rounded-full
-                      text-xs
-                      font-medium
-                      xl:text-xs 2xl:text-base
-                      ${getActionColor(log.actionType)}
-                      `}
-                    >
-                      {log.actionType}
-                    </span>
-                  </td>
-
-                  {/* Entity Type */}
-
-                  <td
-                    className="
-                    text-center
-                    px-6
-                    py-5
-                    font-bold
-                    text-slate-700
-                    font-medium
-                    text-sm
-                    xl:text-sm 2xl:text-base
-                    "
+                {/* Action Type */}
+                <td className="w-[180px] px-0 py-2">
+                  <span
+                    className={`
+                  inline-flex
+                  items-center
+                  px-3
+                  py-1.5
+                  rounded-full
+                  text-xs
+                  font-semibold
+                  whitespace-nowrap
+                  ${getActionColor(log.actionType)}
+                `}
                   >
-                    {log.entityType}
-                  </td>
+                    {formatAction(log.actionType)}
+                  </span>
+                </td>
 
-                  {/* Entity Name */}
-
-                  <td
+                {/* Entity Type */}
+                <td className="px-8 py-2">
+                  <span
                     className="
-                    text-center
-                    px-6
-                    py-5
-                    text-slate-700
-                    text-sm
-                    xl:text-base 2xl:text-lg
-                    "
+                  block
+                  truncate
+                  text-slate-700
+                  text-sm
+                  xl:text-base
+                  2xl:text-base
+                "
+                    title={log.entityType}
+                  >
+                    {formatAction(log.entityType)}
+                  </span>
+                </td>
+
+                {/* Entity Name */}
+                <td className="px-0 py-2">
+                  <span
+                    className="
+                  block
+                  truncate
+                  text-slate-700
+                  text-sm
+                  xl:text-base
+                  2xl:text-base
+                "
+                    title={log.entityName}
                   >
                     {log.entityName}
-                  </td>
+                  </span>
+                </td>
 
-                  {/* Modified By */}
-
-                  <td
+                {/* Modified By */}
+                <td className="px-4 py-2">
+                  <span
                     className="
-                    text-center
-                    px-6
-                    py-5
-                    text-slate-700
-                    text-sm
-                    xl:text-base 2xl:text-lg
-                    "
-                  >
-                    {log.modifiedBy}
-                  </td>
-
-                  {/* Modified Date */}
-
-                  <td
-                    className="
-                    text-center
-                    px-6
-                    py-5
-                    text-slate-700
-                    text-sm
-                    xl:text-base 2xl:text-lg
-                    "
-                  >
-                    {new Date(log.modifiedDate).toLocaleString()}
-                  </td>
-
-                  {/* View */}
-
-                  <td
-                    className="
-                    text-center
-                    px-6
-                    py-5
-                    "
-                  >
-                    <div className="flex justify-center">
-                      <button
-                        onClick={() => onView?.(log)}
-                        className="
-                        w-10
-                        h-10
-                        rounded-xl
-                        bg-[#EEF4FF]
-                        flex
-                        items-center
-                        justify-center
-                        hover:bg-blue-100
-                        transition
-                        cursor-pointer
-                        "
-                      >
-                        <Eye
-                          size={16}
-                          className="text-[#2563EB] 2xl:w-5 2xl:h-5"
-                        />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={7}
-                  className="
-                  py-14
-                  text-center
-                  text-slate-500
+                  block
+                  truncate
+                  text-slate-700
+                  text-sm
+                  xl:text-base
                   2xl:text-base
+                "
+                    title={formatAction(log.modifiedBy)}
+                  >
+                    {formatAction(log.modifiedBy)}
+                  </span>
+                </td>
+
+                {/* Modified Date */}
+                <td className="px-4 py-2">
+                  <span className="text-slate-700 text-sm xl:text-base 2xl:text-base">
+                    {new Date(log.modifiedDate)
+                      .toLocaleDateString("en-GB")
+                      .replace(/\//g, "-")}
+                  </span>
+                </td>
+
+                {/* Actions */}
+                <td className="px-4 py-2">
+                  <div className="flex items-center justify-center">
+                    <button
+                      onClick={() => onView?.(log)}
+                      title="View Details"
+                      className="
+                    h-9
+                    w-9
+                    rounded-lg
+                    bg-blue-50
+                    text-blue-600
+                    flex
+                    items-center
+                    justify-center
+                    hover:bg-blue-100
+                    transition-colors
+                    cursor-pointer
                   "
-                >
-                  No audit logs found
+                    >
+                      <Eye size={16} />
+                    </button>
+                  </div>
                 </td>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Footer */}
+            ))
+          ) : (
+            <tr>
+              <td
+                colSpan={7}
+                className="
+              py-14
+              text-center
+              text-slate-500
+              text-sm
+            "
+              >
+                No audit logs found
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
 
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         totalRecords={logs.length}
         recordsPerPage={10}
-        label="logs"
+        label="Logs"
         onPageChange={setCurrentPage}
       />
     </div>

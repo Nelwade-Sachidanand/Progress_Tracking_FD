@@ -1,11 +1,10 @@
 import { Filter, Plus } from "lucide-react";
 
 export default function DashboardToolbar({ onCreateProject }) {
-
   const user = JSON.parse(sessionStorage.getItem("user"));
 
   return (
-    <div className="flex justify-end gap-3 mt-[-15px]">
+    <div className="flex justify-end gap-3 mt-[-20px]">
       <button
         className="
         flex
@@ -31,7 +30,7 @@ export default function DashboardToolbar({ onCreateProject }) {
         Filters
       </button>
 
-      {user?.role === "ADMIN" &&
+      {user?.role === "ADMIN" && (
         <button
           onClick={onCreateProject}
           className="
@@ -57,7 +56,7 @@ export default function DashboardToolbar({ onCreateProject }) {
           <Plus size={16} />
           Create Project
         </button>
-      }
+      )}
     </div>
   );
 }

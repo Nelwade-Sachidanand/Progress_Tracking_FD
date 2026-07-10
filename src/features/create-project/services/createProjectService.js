@@ -20,3 +20,13 @@ export const getProjectInformation = async (bankName, projectName) => {
 
   return response.data;
 };
+
+export const updateProjectInformation = async (id, payload) => {
+  console.log(id);
+  const response = await apiClient.put(
+    `/project-information/update/${id}`,
+    payload,
+  );
+
+  return response.data;
+};

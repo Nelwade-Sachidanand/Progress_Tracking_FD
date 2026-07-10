@@ -5,18 +5,18 @@ import {
   ChevronDown,
   ClipboardList,
   FileSpreadsheet,
+  FileText,
+  FolderKanban,
   LayoutDashboard,
   List,
   LogOut,
   Menu,
   Pencil,
   Plus,
-  Search,
   ShieldCheck,
   User,
   Users,
-  XCircle,
-  FileText,
+  Eye,
 } from "lucide-react";
 
 import { useEffect, useRef, useState } from "react";
@@ -28,6 +28,7 @@ import {
   markAllRead,
   markAsRead,
 } from "../../services/notificationService";
+import MultiSelectDropdown from "../common/MultiSelectDropdown";
 
 const DashboardHeader = ({
   title,
@@ -36,9 +37,9 @@ const DashboardHeader = ({
   sidebarOpen,
   setSidebarOpen,
 }) => {
+  const location = useLocation();
   const navigate = useNavigate();
   const profileDropdownRef = useRef(null);
-  const bankDropdownRef = useRef(null);
 
   const notificationRef = useRef(null);
   const notificationButtonRef = useRef(null);
@@ -51,20 +52,28 @@ const DashboardHeader = ({
 
   const [unreadCount, setUnreadCount] = useState(0);
 
-  const [selectedBank, setSelectedBank] = useState(
-    sessionStorage.getItem("selectedBank") || "All Banks",
-  );
-
-  const [showBanks, setShowBanks] = useState(false);
+  const [selectedBanks, setSelectedBanks] = useState(() => {
+    const saved = sessionStorage.getItem("selectedBanks");
+    return saved ? JSON.parse(saved) : [];
+  });
 
   const [searchText, setSearchText] = useState("");
 
   const { projects, setProjects } = useProjects();
 
   const banks = [
-    "All Banks",
     ...new Set(projects.map((p) => p.bankName).filter(Boolean)),
-  ];
+  ].sort((a, b) => a.localeCompare(b));
+
+  useEffect(() => {
+    sessionStorage.setItem("selectedBanks", JSON.stringify(selectedBanks));
+
+    window.dispatchEvent(
+      new CustomEvent("bankChanged", {
+        detail: selectedBanks,
+      }),
+    );
+  }, [selectedBanks]);
 
   const user = JSON.parse(sessionStorage.getItem("user"));
 
@@ -110,13 +119,6 @@ const DashboardHeader = ({
       ) {
         setOpen(false);
       }
-
-      if (
-        bankDropdownRef.current &&
-        !bankDropdownRef.current.contains(event.target)
-      ) {
-        setShowBanks(false);
-      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -130,7 +132,7 @@ const DashboardHeader = ({
     try {
       const notificationsRes = await getNotifications();
 
-      console.log(notificationsRes);
+      // console.log(notificationsRes);
 
       const countRes = await getUnreadCount();
 
@@ -203,7 +205,7 @@ const DashboardHeader = ({
   const pageConfig = {
     "/dashboard": {
       title: "Implementation Command Center",
-      subtitle: "Real-time visibility across all banks and products",
+      subtitle: "Real-Time Visibility Across All Banks And Products",
       icon: <LayoutDashboard size={24} />,
       showFilters: true,
 
@@ -213,7 +215,7 @@ const DashboardHeader = ({
 
     "/milestones": {
       title: "Milestone Management ",
-      subtitle: "Manage milestone weightages for selected bank",
+      subtitle: "Manage Milestone Weightages For Selected Bank",
       icon: <LayoutDashboard size={24} />,
       showFilters: true,
 
@@ -223,7 +225,7 @@ const DashboardHeader = ({
 
     "/tasks": {
       title: "All Tasks",
-      subtitle: "View and manage all project tasks",
+      subtitle: "View And Manage All Project Tasks",
       icon: <List size={24} />,
 
       titleClass: "text-[30px]",
@@ -232,7 +234,7 @@ const DashboardHeader = ({
 
     "/tasks/add-task": {
       title: "Activity Creation Form",
-      subtitle: "Define project execution activities",
+      subtitle: "Define Project Execution Activities",
 
       icon: <Plus size={24} />,
 
@@ -241,7 +243,7 @@ const DashboardHeader = ({
     },
     "/edit-task": {
       title: "Activity Update Form",
-      subtitle: "Modify project activity details",
+      subtitle: "Modify Project Activity Details",
       icon: <Pencil size={24} />,
       titleClass: "text-[30px]",
       subtitleClass: "text-[12px]",
@@ -249,7 +251,7 @@ const DashboardHeader = ({
 
     "/users": {
       title: "Users",
-      subtitle: "Create and manage Usera",
+      subtitle: "Create And Manage Users",
       icon: <Users size={22} />,
 
       titleClass: "text-[32px]",
@@ -258,7 +260,7 @@ const DashboardHeader = ({
 
     "/users/add": {
       title: "Users",
-      subtitle: "Create and manage Usera",
+      subtitle: "Create And Manage Users",
       icon: <User size={22} />,
 
       titleClass: "text-[32px]",
@@ -267,7 +269,7 @@ const DashboardHeader = ({
 
     "/users/edit": {
       title: "Users",
-      subtitle: "Create and manage Usera",
+      subtitle: "Create And Manage Users",
       icon: <User size={22} />,
 
       titleClass: "text-[32px]",
@@ -276,7 +278,7 @@ const DashboardHeader = ({
 
     "/audits": {
       title: "Audit Logs",
-      subtitle: "View and manage audit logs",
+      subtitle: "View And Manage Audit Logs",
       icon: <ClipboardList size={22} />,
 
       titleClass: "text-[32px]",
@@ -285,17 +287,35 @@ const DashboardHeader = ({
 
     "/authorization": {
       title: "Authorization",
-      subtitle: "View and Authorize Requests",
+      subtitle: "View And Authorize Requests",
       icon: <ShieldCheck size={22} />,
 
       titleClass: "text-[32px]",
       subtitleClass: "text-[17px]",
     },
 
-    "/create-project": {
+    "/projects/create": {
       title: "Create New Project",
-      subtitle: "Fill in the details to create a new bank project",
+      subtitle: "Fill In The Details To Create A New Bank Project",
       icon: <ClipboardList size={22} />,
+
+      titleClass: "text-[32px]",
+      subtitleClass: "text-[17px]",
+    },
+
+    "/projects/edit": {
+      title: "Edit Project",
+      subtitle: "Update Project Information And Configuration",
+      icon: <Pencil size={22} />,
+
+      titleClass: "text-[32px]",
+      subtitleClass: "text-[17px]",
+    },
+
+    "/projects/view": {
+      title: "Project Details",
+      subtitle: "View Complete Project Information",
+      icon: <Eye size={22} />,
 
       titleClass: "text-[32px]",
       subtitleClass: "text-[17px]",
@@ -303,16 +323,16 @@ const DashboardHeader = ({
 
     "/project-details": {
       title: "Implementation Readiness Dashboard",
-      subtitle: "Track Overall Project health and Go-live Readiness",
+      subtitle: "Track Overall Project Health And Go-live Readiness",
       icon: <LayoutDashboard size={24} />,
 
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",
     },
-        "/documents": {
+    "/documents": {
       title: "Documents",
-      subtitle: "Manage project sign-off documents ",
-       icon: <FileText size={24} />,
+      subtitle: "Manage Project Sign-off Documents ",
+      icon: <FileText size={24} />,
 
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",
@@ -320,22 +340,21 @@ const DashboardHeader = ({
 
     "/notifications": {
       title: "Notifications",
-      subtitle: "View and manage all system notifications and activity updates",
+      subtitle: "View And Manage All System Notifications And Activity Updates",
       icon: <Bell size={24} />,
 
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",
     },
 
-        "/documents": {
+    "/documents": {
       title: "Documents",
-      subtitle: "Upload and manage signoff documents",
+      subtitle: "Upload And Manage Signoff Documents",
       icon: <Users size={22} />,
 
       titleClass: "text-[32px]",
       subtitleClass: "text-[17px]",
     },
-
 
     "/upload-excel": {
       title: "Upload Excel",
@@ -345,22 +364,56 @@ const DashboardHeader = ({
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",
     },
+
+    "/projects": {
+      title: "Projects",
+      subtitle: "Manage All Projects",
+      icon: <FolderKanban size={24} />,
+
+      titleClass: "text-[26px]",
+      subtitleClass: "text-[12px]",
+    },
   };
 
-  const location = useLocation();
+  let currentPage;
 
-  const currentPage = pageConfig[location.pathname] || {
-    title: "Progress Tracker",
-    subtitle: "",
-    icon: null,
-  };
+  if (location.pathname.startsWith("/projects/edit")) {
+    currentPage = pageConfig["/projects/edit"];
+  } else if (location.pathname.startsWith("/projects/view")) {
+    currentPage = pageConfig["/projects/view"];
+  } else {
+    currentPage = pageConfig[location.pathname] || {
+      title: "Progress Tracker",
+      subtitle: "",
+      icon: null,
+    };
+  }
   return (
-    <header className="bg-white border-b border-[#EAEFF5] px-3 sm:px-4 lg:px-8 py-3 lg:py-4">
+    <header
+      className="bg-white border-b border-[#EAEFF5] px-3 sm:px-4 md:px-5 lg:px-6 xl:px-8 py-3 lg:py-4"
+    >
       <div className="flex flex-col gap-4">
         {/* Top Row */}
-        <div className="flex items-start lg:items-center justify-between gap-4 ">
-          {/* Left */}
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <div
+          className="
+          flex
+          flex-wrap
+          items-center
+          justify-between
+          gap-3
+          lg:flex-nowrap
+        "
+        >          {/* Left */}
+          <div
+            className="
+            flex
+            items-center
+            gap-2
+            sm:gap-3
+            min-w-0
+            flex-1
+          "
+          >
             <button
               className="lg:hidden flex-shrink-0 mr-4"
               onClick={() => setSidebarOpen(true)}
@@ -370,16 +423,22 @@ const DashboardHeader = ({
 
             <div
               className="
-            w-10 h-10
-            sm:w-12 sm:h-12
-            rounded-xl
-            bg-[#EEF2FF]
-            flex
-            items-center
-            justify-center
-            flex-shrink-0
-            2xl:w-14 2xl:h-14
-          "
+              flex
+              h-10
+              w-10
+              sm:h-11
+              sm:w-11
+              lg:h-12
+              lg:w-12
+              items-center
+              justify-center
+              rounded-xl
+              bg-[#EEF2FF]
+              flex-shrink-0
+
+              2xl:h-14
+              2xl:w-14
+            "
             >
               {currentPage.icon}
             </div>
@@ -387,31 +446,29 @@ const DashboardHeader = ({
             <div className="min-w-0">
               <h1
                 className="
-              text-base
-              sm:text-xl
-              lg:text-[24px]
-              font-bold
-              xl:text-[20px]
-              text-[#0B1F59]
-              2xl:text-[32px]
-              2xl:font-bold
-              2xl:tracking-wide
-            "
+                truncate
+                text-lg
+                sm:text-xl
+                lg:text-2xl
+                font-bold
+                text-[#0B1F59]
+                2xl:text-[28px]
+              "
               >
                 {currentPage.title}
               </h1>
 
               <p
                 className="
-              hidden
-              md:block
-              text-sm
-              text-[#64748B]
-              mt-1
-              2xl:text-[17px]
-              2xl:font-medium
-              2xl:tracking-wide
-            "
+                hidden
+                md:block
+                mt-1
+                truncate
+                text-sm
+                text-[#64748B]
+                2xl:text-lg
+                text-slate-600
+              "
               >
                 {currentPage.subtitle}
               </p>
@@ -422,131 +479,31 @@ const DashboardHeader = ({
           <div
             className="
             flex
+            flex-wrap
             items-center
             justify-end
             gap-2
-            lg:gap-4
+            sm:gap-3
+            lg:flex-nowrap
           "
           >
             {" "}
             {location.pathname === "/dashboard" && (
               <>
                 {/* Bank Dropdown */}
-                <div
-                  className="
-                  hidden xl:flex
-                  items-center
-                  gap-2
-                  border border-[#E2E8F0]
-                  rounded-xl
-                  px-4
-                  h-11
-                  bg-white
-                  w-[220px]
-                  xl:w-[220px]
-                  2xl:w-[260px]
-                  flex-shrink-0
-                  hover:border-blue-500
-                  cursor-pointer
-                "
-                >
-                  <Building2
-                    size={16}
-                    className="text-[#64748B] flex-shrink-0"
-                  />
-
-                  <div
-                    className="relative flex-1 min-w-0"
-                    ref={bankDropdownRef}
-                  >
-                    <button
-                      onClick={() => setShowBanks(!showBanks)}
-                      className="
-                      flex
-                      items-center
-                      justify-between
-                      w-full
-                      text-sm
-                      text-[#0B1F59]
-                      cursor-pointer
-                    "
-                    >
-                      <span
-                        className="
-                        block
-                        flex-1
-                        min-w-0
-                        overflow-hidden
-                        text-ellipsis
-                        whitespace-nowrap
-                        text-left
-                      "
-                        title={selectedBank}
-                      >
-                        {selectedBank}
-                      </span>
-
-                      <ChevronDown
-                        size={16}
-                        className={`
-                        flex-shrink-0
-                        transition-transform
-                        ${showBanks ? "rotate-180" : ""}
-                      `}
-                      />
-                    </button>
-
-                    {showBanks && (
-                      <div
-                        className="
-                        absolute
-                        top-10
-                        -left-10
-                        w-[230px]
-                        bg-white
-                        border
-                        border-[#E2E8F0]
-                        rounded-xl
-                        shadow-xl
-                        z-[9999]
-                        max-h-[280px]
-                        overflow-y-auto
-                      "
-                      >
-                        {banks.map((bank) => (
-                          <button
-                            key={bank}
-                            onClick={() => {
-                              setSelectedBank(bank);
-                              sessionStorage.setItem("selectedBank", bank);
-                              window.dispatchEvent(new Event("bankChanged"));
-                              setShowBanks(false);
-                            }}
-                            title={bank}
-                            className="
-                            block
-                            w-full
-                            px-4
-                            py-3
-                            text-left
-                            text-[#0B1F59]
-                            hover:bg-[#F8FAFC]
-                            transition
-                            cursor-pointer
-                            break-words
-                            leading-6
-                          "
-                          >
-                            {bank}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <MultiSelectDropdown
+                  label=""
+                  placeholder="All Banks"
+                  options={banks}
+                  selected={selectedBanks}
+                  onChange={setSelectedBanks}
+                  icon={Building2}
+                  width="w-full sm:w-[220px] md:w-[220px] lg:w-[240px] xl:w-[260px]"
+                  dropdownWidth="w-[350px]"
+                />
 
                 {/* Search */}
-                <div
+                {/* <div
                   className="
                 hidden xl:flex
                 items-center gap-2
@@ -589,7 +546,7 @@ const DashboardHeader = ({
                       );
                     }}
                   />
-                </div>
+                </div> */}
               </>
             )}
             {/* Notification */}
@@ -603,12 +560,17 @@ const DashboardHeader = ({
                   relative
                   w-10
                   h-10
+                  2xl:w-12
+                  2xl:h-12
                   flex
                   items-center
                   justify-center
                 "
                 >
-                  <Bell size={20} className="text-[#0B1F59] cursor-pointer" />
+                  <Bell
+                    size={20}
+                    className="text-[#0B1F59] cursor-pointer 2xl:size-6"
+                  />
 
                   {unreadCount > 0 && (
                     <span
@@ -618,6 +580,8 @@ const DashboardHeader = ({
                     -right-1
                     w-5
                     h-5
+                    2xl:w-6
+                    2xl:h-6
                     rounded-full
                     bg-red-500
                     text-white
@@ -639,12 +603,14 @@ const DashboardHeader = ({
                     className="
                   absolute
                   right-0
-                  lg:right-[-80px]
-                  xl:right-[-120px]
+                  sm:right-0
+                  lg:right-[-40px]
+                  xl:right-[-80px]
                   top-14
-                  w-[92vw]
+                  w-[95vw]
                   max-w-[420px]
                   sm:w-[380px]
+                  md:w-[400px]
                   lg:w-[420px]
                   bg-white
                   rounded-3xl
@@ -850,22 +816,27 @@ const DashboardHeader = ({
               >
                 <div
                   className="
-                w-8 h-8
-                sm:w-10 sm:h-10
-                lg:w-12 lg:h-12
-                rounded-full
-                bg-[#EEF4FF]
-                text-[#2563EB]
-                text-xs
-                sm:text-sm
-                font-bold
-                flex
-                items-center
-                justify-center
-                2xl:w-14 2xl:h-14
-                2xl:text-lg
-                2xl:font-bold
-              "
+                  flex
+                  h-9
+                  w-9
+                  sm:h-10
+                  sm:w-10
+                  lg:h-11
+                  lg:w-11
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-[#EEF4FF]
+                  text-[#2563EB]
+                  text-sm
+                  xl:text-base
+                  2xl:text-base
+                  font-bold
+                  flex-shrink-0
+
+                  2xl:h-14
+                  2xl:w-14
+                "
                 >
                   {initials}
                 </div>

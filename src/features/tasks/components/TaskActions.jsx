@@ -6,24 +6,10 @@ import { useProjects } from "../../../context/ProjectContext";
 import { exportExcelReport } from "../../add-task/api/exportExcelApi";
 import GenerateReportModal from "../components/GenerateReportModal";
 
-
-import {
-  Document,
-  Packer,
-  Paragraph,
-  Table,
-  TableRow,
-  TableCell,
-  HeadingLevel,
-  WidthType,
-} from "docx";
-
-
-
 import PrintReport from "../components//PrintReport";
 
 export default function TaskActions({
-   activities = [],
+  activities = [],
   selectedPhase,
   selectedMilestone,
   selectedTask,
@@ -48,70 +34,73 @@ export default function TaskActions({
   const project = projects.find(
     (p) => String(p.id) === String(selectedProjectId),
   );
- const allActivities =
-  project?.phases?.flatMap((phase) =>
-    phase.milestones?.flatMap((milestone) =>
-      milestone.tasks?.flatMap((task) =>
-        task.subTasks?.flatMap((subTask) =>
-          subTask.activities?.map((activity) => ({
-            ...activity,
-            phase: phase.phaseName,
-            milestone: milestone.milestoneName,
-            task: task.taskName,
-            subTask: subTask.subTaskName,
-          })) || []
-        ) || []
-      ) || []
-    ) || []
-  ) || [];
+  const allActivities =
+    project?.phases?.flatMap(
+      (phase) =>
+        phase.milestones?.flatMap(
+          (milestone) =>
+            milestone.tasks?.flatMap(
+              (task) =>
+                task.subTasks?.flatMap(
+                  (subTask) =>
+                    subTask.activities?.map((activity) => ({
+                      ...activity,
+                      phase: phase.phaseName,
+                      milestone: milestone.milestoneName,
+                      task: task.taskName,
+                      subTask: subTask.subTaskName,
+                    })) || [],
+                ) || [],
+            ) || [],
+        ) || [],
+    ) || [];
 
-const filteredActivities = allActivities.filter((activity) => {
-  const phaseMatch =
-    !selectedPhase ||
-    selectedPhase === "All Phases" ||
-    activity.phase === selectedPhase;
+  const filteredActivities = allActivities.filter((activity) => {
+    const phaseMatch =
+      !selectedPhase ||
+      selectedPhase === "All Phases" ||
+      activity.phase === selectedPhase;
 
-  const milestoneMatch =
-    !selectedMilestone ||
-    selectedMilestone.length === 0 ||
-    selectedMilestone.includes(activity.milestone);
+    const milestoneMatch =
+      !selectedMilestone ||
+      selectedMilestone.length === 0 ||
+      selectedMilestone.includes(activity.milestone);
 
-  const taskMatch =
-    !selectedTask ||
-    selectedTask === "All Tasks" ||
-    activity.task === selectedTask;
+    const taskMatch =
+      !selectedTask ||
+      selectedTask === "All Tasks" ||
+      activity.task === selectedTask;
 
-  const subTaskMatch =
-    !selectedSubTask ||
-    selectedSubTask === "All Sub Tasks" ||
-    activity.subTask === selectedSubTask;
+    const subTaskMatch =
+      !selectedSubTask ||
+      selectedSubTask === "All Sub Tasks" ||
+      activity.subTask === selectedSubTask;
 
-  const activityMatch =
-    !selectedActivity ||
-    selectedActivity === "All Activities" ||
-    activity.activityName === selectedActivity;
+    const activityMatch =
+      !selectedActivity ||
+      selectedActivity === "All Activities" ||
+      activity.activityName === selectedActivity;
 
-  const statusMatch =
-    !selectedStatus ||
-    selectedStatus === "All Status" ||
-    activity.executionStatus === selectedStatus;
+    const statusMatch =
+      !selectedStatus ||
+      selectedStatus === "All Status" ||
+      activity.executionStatus === selectedStatus;
 
-  const dateMatch =
-    (!fromDate ||
-      new Date(activity.plannedStartDate) >= new Date(fromDate)) &&
-    (!toDate ||
-      new Date(activity.plannedEndDate) <= new Date(toDate));
+    const dateMatch =
+      (!fromDate ||
+        new Date(activity.plannedStartDate) >= new Date(fromDate)) &&
+      (!toDate || new Date(activity.plannedEndDate) <= new Date(toDate));
 
-  return (
-    phaseMatch &&
-    milestoneMatch &&
-    taskMatch &&
-    subTaskMatch &&
-    activityMatch &&
-    statusMatch &&
-    dateMatch
-  );
-});
+    return (
+      phaseMatch &&
+      milestoneMatch &&
+      taskMatch &&
+      subTaskMatch &&
+      activityMatch &&
+      statusMatch &&
+      dateMatch
+    );
+  });
 
   
 const handleGenerate = () => {
@@ -147,10 +136,38 @@ const handleGenerate = () => {
     default:
       toast.error("Please select report format");
       return;
-  }
+    }
 
-  setShowReportModal(false);
-};
+    // (optional extra safety)
+    if (!project.projectName) {
+      toast.error("Invalid project selection.");
+      return;
+    }
+
+    switch (reportType) {
+      case "pdf":
+        handleGeneratePdf();
+        break;
+
+      case "excel":
+        handleExportExcel();
+        break;
+
+      case "csv":
+        handleGenerateCsv();
+        break;
+
+      case "word":
+        handleGenerateWord();
+        break;
+
+      default:
+        toast.error("Please select report format");
+        return;
+    }
+
+    setShowReportModal(false);
+  };
   const handleExportExcel = async () => {
     try {
       const selectedProjectId = sessionStorage.getItem("selectedProjectId");
@@ -362,10 +379,10 @@ const handleGenerateCsv = () => {
       return;
     }
 
-    if (!filteredActivities || filteredActivities.length === 0) {
-      toast.error("No activities found for selected filters");
-      return;
-    }
+      if (!filteredActivities || filteredActivities.length === 0) {
+        toast.error("No activities found for selected filters");
+        return;
+      }
 
     const rows = [
       [
@@ -461,121 +478,213 @@ const handleGenerateCsv = () => {
           "Owner",
           "Progress",
           "Status",
-        ].map(
-          (value) =>
-            new TableCell({
-              children: [new Paragraph(String(value))],
-            })
-        ),
-      }),
+          "Schedule Health",
+          "Planned Start",
+          "Planned End",
+          "Actual Start",
+          "Actual End",
+        ],
+      ];
 
-      ...filteredActivities.map(
-        (activity) =>
-          new TableRow({
-            children: [
-              activity.phase,
-              activity.milestone,
-              activity.task,
-              activity.subTask,
-              activity.activityName,
-              activity.owner,
-              `${activity.progress}%`,
-              activity.executionStatus,
-            ].map(
-              (value) =>
-                new TableCell({
-                  children: [
-                    new Paragraph(String(value ?? "")),
-                  ],
-                })
-            ),
-          })
-      ),
-    ];
+      filteredActivities.forEach((activity) => {
+        rows.push([
+          activity.phase ?? "",
+          activity.milestone ?? "",
+          activity.task ?? "",
+          activity.subTask ?? "",
+          activity.activityName ?? "",
+          activity.owner ?? "",
+          `${activity.progress ?? 0}%`,
+          activity.executionStatus ?? "",
+          activity.scheduleHealth ?? "",
+          activity.plannedStartDate ?? "",
+          activity.plannedEndDate ?? "",
+          activity.actualStartDate ?? "",
+          activity.actualEndDate ?? "",
+        ]);
+      });
 
-    const doc = new Document({
-      sections: [
-        {
+      const csvContent = rows
+        .map((row) =>
+          row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(","),
+        )
+        .join("\n");
+
+      const blob = new Blob([csvContent], {
+        type: "text/csv;charset=utf-8;",
+      });
+
+      const link = document.createElement("a");
+
+      link.href = URL.createObjectURL(blob);
+
+      link.download = `${project.projectName}_Report.csv`;
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(link.href);
+
+      toast.success("CSV report downloaded successfully");
+    } catch (error) {
+      console.error("CSV Generation Error:", error);
+
+      toast.error("Failed to generate CSV report");
+    }
+  };
+
+  // const handleGenerateWord = () => {
+  //   // call Word generator
+
+  // };
+  const handleGenerateWord = async () => {
+    try {
+      if (!project) {
+        toast.error("No project selected");
+        return;
+      }
+
+      if (!filteredActivities || filteredActivities.length === 0) {
+        toast.error("No activities found for selected filters");
+        return;
+      }
+
+      const tableRows = [
+        new TableRow({
           children: [
-            new Paragraph({
-              text: "PROJECT PROGRESS REPORT",
-              heading: HeadingLevel.HEADING_1,
+            "Phase",
+            "Milestone",
+            "Task",
+            "Sub Task",
+            "Activity",
+            "Owner",
+            "Progress",
+            "Status",
+          ].map(
+            (value) =>
+              new TableCell({
+                children: [new Paragraph(String(value))],
+              }),
+          ),
+        }),
+
+        ...filteredActivities.map(
+          (activity) =>
+            new TableRow({
+              children: [
+                activity.phase,
+                activity.milestone,
+                activity.task,
+                activity.subTask,
+                activity.activityName,
+                activity.owner,
+                `${activity.progress}%`,
+                activity.executionStatus,
+              ].map(
+                (value) =>
+                  new TableCell({
+                    children: [new Paragraph(String(value ?? ""))],
+                  }),
+              ),
             }),
+        ),
+      ];
 
-            new Paragraph(""),
+      const doc = new Document({
+        sections: [
+          {
+            children: [
+              new Paragraph({
+                text: "PROJECT PROGRESS REPORT",
+                heading: HeadingLevel.HEADING_1,
+              }),
 
-            new Paragraph(
-              `Project : ${project.projectName}`
-            ),
+              new Paragraph(""),
 
-            new Paragraph(
-              `Bank : ${project.bankName}`
-            ),
+              new Paragraph(`Project : ${project.projectName}`),
 
-            new Paragraph(
-              `Generated : ${new Date().toLocaleString()}`
-            ),
+              new Paragraph(`Bank : ${project.bankName}`),
 
-            new Paragraph(""),
+              new Paragraph(`Generated : ${new Date().toLocaleString()}`),
 
-            new Table({
-              rows: tableRows,
-            }),
-          ],
-        },
-      ],
-    });
+              new Paragraph(""),
 
-    const blob = await Packer.toBlob(doc);
+              new Table({
+                rows: tableRows,
+              }),
+            ],
+          },
+        ],
+      });
 
-    saveAs(
-      blob,
-      `${project.projectName}_Report.docx`
-    );
+      const blob = await Packer.toBlob(doc);
 
-    toast.success("Word report downloaded successfully");
-  } catch (error) {
-    console.error("Word Generation Error:", error);
+      saveAs(blob, `${project.projectName}_Report.docx`);
 
-    toast.error("Failed to generate Word report");
-  }
-};
+      toast.success("Word report downloaded successfully");
+    } catch (error) {
+      console.error("Word Generation Error:", error);
+
+      toast.error("Failed to generate Word report");
+    }
+  };
   return (
     <div
       className="
-    flex
-    flex-col
-    lg:flex-row
-    lg:items-center
-    lg:justify-between
-    gap-4
-    mb-3
-    cursor-pointer
+      mb-4
+      flex
+      flex-col
+      gap-3
+
+      sm:flex-row
+      sm:items-center
+      sm:justify-between
     "
     >
-      {/* Action Buttons */}
+      {/* Buttons */}
+
       <div
         className="
-      flex
-      flex-wrap
-      gap-3
-      w-full
-      lg:w-auto
+        flex
+        w-full
+        flex-col
+        gap-3
+
+        sm:w-auto
+        sm:flex-row
       "
       >
+        {/* Generate Report */}
+
         <button
           onClick={() => setShowReportModal(true)}
           className="
-    bg-[#6D4AFF]
-    hover:bg-[#5B3DF4]
-    text-white
-    px-4
-    py-2.5
-    rounded-xl
-    text-sm
-    font-medium
-    cursor-pointer
-  "
+          flex
+          h-10
+          w-full
+          items-center
+          justify-center
+
+          rounded-xl
+          bg-[#6D4AFF]
+
+          px-5
+
+          text-sm
+          font-medium
+          text-white
+
+          transition
+          hover:bg-[#5B38E0]
+
+          cursor-pointer
+
+          sm:w-auto
+          sm:min-w-[170px]
+        "
         >
           Generate Report
         </button>
@@ -625,6 +734,9 @@ const handleGenerateCsv = () => {
           toDate={toDate}
         />
       </div>
+
+      {/* Report Modal */}
+
       <GenerateReportModal
         isOpen={showReportModal}
         onClose={() => setShowReportModal(false)}

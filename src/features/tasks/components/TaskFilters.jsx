@@ -1,6 +1,6 @@
-import { Search } from "lucide-react";
-import CustomDropdown from "../../../components/layout/CustomDropdown";
-import MultiSelectDropdown from "../../../components/layout/MultiSelectDropdown";
+import CustomDropdown from "../../../components/common/CustomDropdown";
+import MultiSelectDropdown from "../../../components/common/MultiSelectDropdown";
+import SearchInput from "../../../components/common/SearchInput";
 
 export default function TaskFilters({
   phases = [],
@@ -28,25 +28,30 @@ export default function TaskFilters({
   return (
     <div
       className="
-        bg-white
-        rounded-2xl
-        border
-        border-slate-200
-        p-3
-        mt-[10px]
-      "
+      mt-3
+      rounded-2xl
+      border
+      border-[#CDD7E3]
+      bg-white
+      p-4
+      lg:p-5
+    "
     >
       {/* First Row */}
+
       <div
         className="
-          grid
-          grid-cols-1
-          md:grid-cols-2
-          xl:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1fr)_minmax(0,1fr)]
-          gap-4
-        "
+        grid
+        grid-cols-1
+        gap-4
+
+        sm:grid-cols-2
+
+        xl:grid-cols-4
+      "
       >
         {/* Phase */}
+
         <CustomDropdown
           label="Phase"
           placeholder="All Phases"
@@ -65,9 +70,12 @@ export default function TaskFilters({
           options={milestones}
           selected={selectedMilestone}
           onChange={setSelectedMilestone}
+          width="w-full"
+          dropdownWidth="w-[350px]"
         />
 
         {/* Task */}
+
         <CustomDropdown
           label="Task"
           placeholder="All Tasks"
@@ -93,84 +101,69 @@ export default function TaskFilters({
       </div>
 
       {/* Second Row */}
+
       <div
         className="
-          grid
-          grid-cols-1
-          md:grid-cols-2
-          xl:grid-cols-[220px_minmax(0,1fr)_minmax(0,1.6fr)]
-          gap-4
-          mt-4
-        "
+        mt-4
+        grid
+        grid-cols-1
+        gap-4
+
+        sm:grid-cols-2
+
+        xl:grid-cols-12
+      "
       >
         {/* Status */}
-        <CustomDropdown
-          label="Status"
-          placeholder="All Status"
-          value={selectedStatus}
-          onChange={setSelectedStatus}
-          options={[
-            {
-              label: "Completed",
-              value: "Completed",
-            },
-            {
-              label: "In Progress",
-              value: "In Progress",
-            },
-            {
-              label: "Not Started",
-              value: "Not Started",
-            },
-          ]}
-        />
+
+        <div className="xl:col-span-2">
+          <CustomDropdown
+            label="Status"
+            placeholder="All Status"
+            value={selectedStatus}
+            onChange={setSelectedStatus}
+            options={[
+              {
+                label: "Completed",
+                value: "Completed",
+              },
+              {
+                label: "In Progress",
+                value: "In Progress",
+              },
+              {
+                label: "Not Started",
+                value: "Not Started",
+              },
+            ]}
+          />
+        </div>
 
         {/* Activity */}
-        <CustomDropdown
-          label="Activity"
-          placeholder="All Activities"
-          value={selectedActivity}
-          onChange={setSelectedActivity}
-          options={activities.map((activity) => ({
-            label: activity,
-            value: activity,
-          }))}
-        />
+
+        <div className="xl:col-span-4">
+          <CustomDropdown
+            label="Activity"
+            placeholder="All Activities"
+            value={selectedActivity}
+            onChange={setSelectedActivity}
+            options={activities.map((activity) => ({
+              label: activity,
+              value: activity,
+            }))}
+          />
+        </div>
 
         {/* Search */}
-        <div>
-          <label className="block mb-1 ml-1 text-sm font-semibold text-slate-600">
-            Search
-          </label>
 
-          <div className="relative">
-            <Search
-              size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-            />
-
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search Activity, Task, Milestone..."
-              className="
-                w-full
-                h-9
-                rounded-xl
-                border
-                border-slate-300
-                pl-11
-                pr-4
-                text-sm
-                outline-none
-                focus:border-blue-500
-              "
-            />
-          </div>
+        <div className="xl:col-span-6">
+          <SearchInput
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search Tasks..."
+          />
         </div>
       </div>
     </div>
   );
 }
- 

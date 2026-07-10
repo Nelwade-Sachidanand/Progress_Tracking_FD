@@ -19,6 +19,7 @@ import AddUserPage from "../../features/users/pages/AddUserPage";
 import EditUserPage from "../../features/users/pages/EditUserPage";
 import UserManagementPage from "../../features/users/pages/UserManagementPage";
 
+import ProjectsPage from "../../features/projects/pages/ProjectsPage";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 
@@ -89,7 +90,12 @@ const AppRoutes = () => {
           <Route path="/users/add" element={<AddUserPage />} />
           <Route path="/users/edit" element={<EditUserPage />} />
 
-          <Route path="/create-project" element={<CreateProjectPage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
+
+          <Route path="/projects/create" element={<CreateProjectPage />} />
+          <Route path="/projects/edit/:id" element={<CreateProjectPage />} />
+          <Route path="/projects/view/:id" element={<CreateProjectPage />} />
+
           <Route path="/upload-excel" element={<UploadExcel />} />
           <Route path="/audits" element={<AuditLogsPage />} />
 
@@ -97,6 +103,7 @@ const AppRoutes = () => {
             path="/authorization"
             element={<AuthorizationRequestsPage />}
           />
+          
         </Route>
       </Route>
     </Routes>

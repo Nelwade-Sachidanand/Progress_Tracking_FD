@@ -1,5 +1,6 @@
-import { CheckCircle, Search, UserRound, Workflow } from "lucide-react";
-import CustomDropdown from "../../../components/layout/CustomDropdown";
+import { CheckCircle, UserRound, Workflow } from "lucide-react";
+import CustomDropdown from "../../../components/common/CustomDropdown";
+import SearchInput from "../../../components/common/SearchInput";
 
 export default function AuthorizationFilters({
   logs = [],
@@ -34,9 +35,9 @@ export default function AuthorizationFilters({
     <div
       className="
         bg-white
-        rounded-3xl
+        rounded-2xl
         border
-        border-slate-200
+        border-[#CDD7E3]
         p-5
         mt-[-7px]
       "
@@ -46,45 +47,12 @@ export default function AuthorizationFilters({
           grid
           grid-cols-1
           md:grid-cols-2
-          xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]
+          xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,2fr)]
           gap-4
           mt-[-10px]
           mb-[-7px]
         "
       >
-        {/* Search */}
-
-        <div>
-          <label className="block mb-2 ml-1 text-sm font-semibold text-slate-700">
-            Search
-          </label>
-
-          <div className="relative">
-            <Search
-              size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-            />
-
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search Requests..."
-              className="
-                w-full
-                h-10
-                pl-11
-                pr-4
-                rounded-xl
-                border
-                border-slate-300
-                outline-none
-                focus:border-blue-500
-                text-sm
-              "
-            />
-          </div>
-        </div>
-
         {/* Request Type */}
 
         <CustomDropdown
@@ -125,6 +93,14 @@ export default function AuthorizationFilters({
             label: formatAction(user),
             value: user,
           }))}
+        />
+
+        {/* Search */}
+
+        <SearchInput
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search Requests..."
         />
       </div>
     </div>

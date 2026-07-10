@@ -1,7 +1,5 @@
 import { Save } from "lucide-react";
 
-// import {updateMilestoneWeightages} from "../services/milestoneService";
-
 export default function MilestoneTable({
   milestones,
   onWeightageChange,
@@ -9,17 +7,19 @@ export default function MilestoneTable({
   loading,
 }) {
   const getStatus = (progress) => {
-    if (progress >= 100)
+    if (progress >= 100) {
       return {
         label: "Completed",
         className: "bg-green-100 text-green-700",
       };
+    }
 
-    if (progress > 0)
+    if (progress > 0) {
       return {
         label: "In Progress",
         className: "bg-blue-100 text-blue-700",
       };
+    }
 
     return {
       label: "Not Started",
@@ -28,7 +28,7 @@ export default function MilestoneTable({
   };
 
   const totalWeightage = milestones.reduce(
-    (sum, milestone) => sum + (Number(milestone.weightage) || 0),
+    (sum, m) => sum + Number(m.weightage || 0),
     0,
   );
 
@@ -37,267 +37,222 @@ export default function MilestoneTable({
   const user = JSON.parse(sessionStorage.getItem("user"));
 
   return (
-    <div
-      className="
-            bg-white
-            border
-            border-[#E2E8F0]
-            rounded-2xl
-            p-4
-            xl:p-6
-            2xl:p-8
-            shadow-sm
-            "
-    >
+    <div className="bg-white rounded-2xl border border-[#CDD7E3] p-5">
+      {/* Header */}
+
       {/* Header */}
 
       <div
         className="
-                flex
-                flex-col
-                lg:flex-row
-                lg:items-center
-                lg:justify-between
-                gap-4
-                mb-6
-                "
+    flex
+    flex-col
+    lg:flex-row
+    lg:items-center
+    lg:justify-between
+    gap-4
+    mb-5
+    mt-[-5px]
+  "
       >
-        <div>
+        <div className="min-w-0">
           <h2
             className="
-                        text-xl
-                        xl:text-2xl
-                        2xl:text-3xl
-                        font-bold
-                        text-[#0B1F59]
-                        "
+        text-lg
+        sm:text-xl
+        font-bold
+        text-[#0B1F59]
+      "
           >
             Milestone Weightage Management
           </h2>
 
           <p
             className="
-                        text-sm
-                        xl:text-base
-                        text-slate-500
-                        mt-1
-                          "
+        mt-1
+        text-sm
+        text-slate-600
+      "
           >
-            Update milestone weightages for the selected bank
+            Update Milestone Weightages For The Selected Bank
           </p>
         </div>
 
         <div
           className="
-          flex
-          justify-end
-          mt-2
-        "
+      flex
+      flex-col
+      sm:flex-row
+      sm:items-center
+      gap-3
+      lg:gap-5
+      shrink-0
+    "
         >
           <div
             className="
-            px-5
-            py-3
-          "
+        text-sm
+        font-semibold
+        text-slate-600
+        whitespace-nowrap
+      "
           >
-            <h4
-              className="
-            text-[#0B1F59]
-            text-base
-            xl:text-lg
-            2xl:text-xl
-            font-semibold
-            tracking-wide
-          "
+            Total Weightage :
+            <span
+              className={`ml-2 font-bold ${
+                isValidWeightage ? "text-green-600" : "text-blue-600"
+              }`}
             >
-              Total Weightage :
-              <span
-                className="
-                ml-2
-                text-blue-600
-                font-bold
-              "
-              >
-                {totalWeightage}%
-              </span>
-            </h4>
+              {totalWeightage}%
+            </span>
           </div>
-        </div>
 
-        {user?.role !== "MANAGEMENT USER" && (
-          <button
-            onClick={onUpdate}
-            disabled={loading || !isValidWeightage}
-            className={`
-          h-11
-          xl:h-12
+          {user?.role !== "MANAGEMENT USER" && (
+            <button
+              onClick={onUpdate}
+              disabled={loading || !isValidWeightage}
+              className={`
+          h-9
+          sm:h-10
           px-5
-          xl:px-6
           rounded-xl
           text-sm
-          xl:text-base
-          font-medium
+          font-semibold
           flex
           items-center
+          justify-center
           gap-2
           transition
-          self-start
-          lg:self-auto
+          w-full
+          sm:w-auto
 
           ${
             loading || !isValidWeightage
               ? "bg-slate-300 text-slate-500 cursor-not-allowed"
-              : "bg-[#2563EB] hover:bg-[#1D4ED8] text-white cursor-pointer"
+              : "bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
           }
         `}
-          >
-            <Save size={18} />
+            >
+              <Save size={16} />
 
-            {loading ? "Updating..." : "Update Weightage"}
-          </button>
-        )}
+              {loading ? "Updating..." : "Update Weightage"}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Table */}
 
-      <div
-        className="
-                border
-                border-[#E2E8F0]
-                rounded-2xl
-                overflow-hidden
-                overflow-x-auto
-                "
-      >
-        <table className="w-full min-w-[700px]">
+      <div className="overflow-x-auto rounded-2xl border border-[#CDD7E3]">
+        <table className="w-full min-w-[650px]">
           <thead>
-            <tr className="bg-[#F8FAFC]">
-              <th className="w-[50%] px-4 py-4 text-left text-sm font-semibold text-[#0B1F59]">
-                Milestone Name
+            <tr className="border-b border-[#CDD7E3] bg-blue-100"> 
+              <th className="px-5 py-3 text-left text-sm lg:text-base font-semibold text-slate-700">
+                Milestone
               </th>
 
-              <th className="w-[20%] px-4 py-4 text-center text-sm font-semibold text-[#0B1F59]">
+              <th className="w-[150px] lg:w-[180px] px-4 py-3 text-center text-sm lg:text-base font-semibold text-slate-700">
                 Weightage (%)
               </th>
 
-              <th className="w-[15%] px-4 py-4 text-center text-sm font-semibold text-[#0B1F59]">
+              <th className="w-[140px] lg:w-[180px] px-4 py-3 text-center text-sm lg:text-base font-semibold text-slate-700">
                 Status
               </th>
-
-              {/* <th className="w-[15%] px-4 py-4 text-center text-sm font-semibold text-[#0B1F59]">
-                                Save
-                            </th> */}
             </tr>
           </thead>
 
           <tbody>
-            {milestones.map((milestone, index) => {
-              const status = getStatus(milestone.progress);
+            {milestones.length > 0 ? (
+              milestones.map((milestone, index) => {
+                const status = getStatus(milestone.progress);
 
-              return (
-                <tr
-                  key={milestone.id || index}
-                  className="
-                                        border-t
-                                        border-[#E2E8F0]
-                                        hover:bg-slate-50
-                                        "
-                >
-                  <td
-                    className="
-                                            px-4
-                                            py-4
-                                            text-sm
-                                            xl:text-base
-                                            text-[#0B1F59]
-                                            font-medium
-                                        "
+                return (
+                  <tr
+                    key={milestone.id || index}
+                    className="border-b border-[#CDD7E3]"
                   >
-                    <div
-                      className="
-                                                max-w-[500px]
-                                                truncate
-                                                "
-                      title={milestone.milestoneName}
-                    >
-                      {milestone.milestoneName}
-                    </div>
-                  </td>
+                    <td className="px-6 py-2">
+                      <span
+                        className="block truncate text-slate-700 text-sm xl:text-base font-semibold"
+                        title={milestone.milestoneName}
+                      >
+                        {milestone.milestoneName}
+                      </span>
+                    </td>
 
-                  <td className="px-4 py-4">
-                    <div className="flex justify-center">
-                      <input
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={milestone.weightage}
-                        onFocus={() => {
-                          if (milestone.weightage === 0) {
-                            onWeightageChange(index, "");
+                    <td className="px-4 py-2">
+                      <div className="flex justify-center">
+                        <input
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={milestone.weightage}
+                          onFocus={() => {
+                            if (milestone.weightage === 0) {
+                              onWeightageChange(index, "");
+                            }
+                          }}
+                          onBlur={() => {
+                            if (milestone.weightage === "") {
+                              onWeightageChange(index, "0");
+                            }
+                          }}
+                          onChange={(e) =>
+                            onWeightageChange(index, e.target.value)
                           }
-                        }}
-                        onBlur={() => {
-                          if (milestone.weightage === "") {
-                            onWeightageChange(index, "0");
-                          }
-                        }}
-                        onChange={(e) =>
-                          onWeightageChange(index, e.target.value)
-                        }
-                        onWheel={(e) => e.target.blur()}
-                        className="
-                                                    w-[80px]
-                                                    xl:w-[100px]
-                                                    2xl:w-[120px]
-                                                    h-10
-                                                    xl:h-11
-                                                    rounded-lg
-                                                    border
-                                                    border-[#CBD5E1]
-                                                    px-3
-                                                    text-center
-                                                    outline-none
-                                                    focus:border-[#2563EB]
-                                                    focus:ring-2
-                                                    focus:ring-blue-100
-                                                "
-                      />
-                    </div>
-                  </td>
+                          onWheel={(e) => e.target.blur()}
+                          className="
+                          h-8
+                          w-20
+                          sm:w-24
+                          rounded-lg
+                          border
+                          border-[#CDD7E3]
+                          text-center
+                          text-sm
+                          outline-none
+                          focus:border-blue-500
+                        "
+                        />
+                      </div>
+                    </td>
 
-                  <td className="text-center">
-                    <span
-                      className={`
-                                                inline-flex
-                                                items-center
-                                                px-3
-                                                py-1
-                                                rounded-full
-                                                text-xs
-                                                font-medium
-                                                ${status.className}
-                                            `}
-                    >
-                      {status.label}
-                    </span>
-                  </td>
-                </tr>
-              );
-            })}
-
-            {/* <WeightageSummary milestones={milestones} /> */}
+                    <td className="px-4 py-2 text-center">
+                      <span
+                        className={`
+                        inline-flex
+                        items-center
+                        justify-center
+                        rounded-full
+                        px-3
+                        py-1
+                        text-xs
+                        font-semibold
+                        whitespace-nowrap
+                        ${status.className}
+                      `}
+                      >
+                        {status.label}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })
+            ) : (
+              <tr>
+                <td
+                  colSpan={3}
+                  className="py-10 text-center text-sm text-slate-500"
+                >
+                  No milestones found
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
 
-      <p
-        className="
-                mt-4
-                text-sm
-                text-slate-500
-                "
-      >
-        * Total weightage must equal 100%
+      <p className="mt-3 text-sm text-slate-600">
+        * Total Weightage Must be Exactly <strong>100%</strong>.
       </p>
     </div>
   );

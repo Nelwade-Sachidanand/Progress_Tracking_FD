@@ -11,12 +11,13 @@ export default function ProjectStepper({ currentStep, setCurrentStep }) {
   return (
     <div
       className="
-      grid
-      grid-cols-2
-      lg:grid-cols-6
-      gap-2
-      mb-6
-    "
+        grid
+        grid-cols-2
+        md:grid-cols-3
+        xl:grid-cols-6
+        gap-2
+        mb-4
+      "
     >
       {steps.map((step, index) => (
         <button
@@ -27,34 +28,36 @@ export default function ProjectStepper({ currentStep, setCurrentStep }) {
             flex
             items-center
             gap-2
+            h-12
             px-3
-            py-2
             rounded-lg
             border
+            border-[#CDD7E3]
             transition-all
+            duration-200
             cursor-pointer
-            min-h-[58px]
+            text-left
 
             ${
               currentStep === index
                 ? "bg-[#2563EB] border-[#2563EB] text-white shadow-sm"
                 : currentStep > index
                   ? "bg-blue-50 border-blue-200 text-[#2563EB]"
-                  : "bg-white border-slate-200 text-slate-600 hover:border-blue-300"
+                  : "bg-white border-[#CDD7E3] text-slate-700 hover:border-blue-300 hover:bg-slate-50"
             }
           `}
         >
           {/* Step Number */}
           <div
             className={`
-              w-6
-              h-6
-              rounded-full
               flex
               items-center
               justify-center
-              text-xs
-              font-bold
+              w-5
+              h-5
+              rounded-full
+              text-[11px]
+              font-semibold
               flex-shrink-0
 
               ${
@@ -62,7 +65,7 @@ export default function ProjectStepper({ currentStep, setCurrentStep }) {
                   ? "bg-white text-[#2563EB]"
                   : currentStep > index
                     ? "bg-[#2563EB] text-white"
-                    : "bg-slate-200 text-slate-600"
+                    : "bg-slate-200 text-slate-700"
               }
             `}
           >
@@ -72,11 +75,11 @@ export default function ProjectStepper({ currentStep, setCurrentStep }) {
           {/* Step Name */}
           <span
             className="
-            text-xs
-            font-medium
-            text-left
-            leading-tight
-          "
+              text-xs
+              font-medium
+              leading-tight
+              line-clamp-2
+            "
           >
             {step}
           </span>

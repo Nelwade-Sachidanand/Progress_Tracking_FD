@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import {
+  deleteUser as deleteUserApi,
+  getProjectNames,
   getUsers,
   registerUser,
+  resetPassword as resetPasswordApi,
   updateUser as updateUserService,
-  getProjectNames,
-  deleteUser as deleteUserApi
 } from "../services/userService";
-import { toast } from "react-toastify";
 
 export const useUsers = () => {
   const [users, setUsers] = useState([]);
@@ -38,11 +39,12 @@ export const useUsers = () => {
 
       const usersWithProjectNames = users.map((user) => ({
         ...user,
-        projectNames: (user.projectIds || []).map((projectId) => projectMap[projectId]),
+        projectNames: (user.projectIds || []).map(
+          (projectId) => projectMap[projectId],
+        ),
       }));
 
       setUsers(usersWithProjectNames);
-
     } catch (error) {
       console.error(error);
     } finally {
@@ -64,9 +66,7 @@ export const useUsers = () => {
       toast.error(response?.statusDesc || "Failed to create user");
       return null;
     } catch (error) {
-      toast.error(
-        error?.response?.data?.statusDesc || "Failed to create user"
-      );
+      toast.error(error?.response?.data?.statusDesc || "Failed to create user");
       throw error;
     } finally {
       setLoading(false);
@@ -87,9 +87,7 @@ export const useUsers = () => {
       toast.error(response?.statusDesc || "Failed to update user");
       return null;
     } catch (error) {
-      toast.error(
-        error?.response?.data?.statusDesc || "Failed to update user"
-      );
+      toast.error(error?.response?.data?.statusDesc || "Failed to update user");
       throw error;
     } finally {
       setLoading(false);
@@ -110,8 +108,33 @@ export const useUsers = () => {
       toast.error(response?.statusDesc || "Failed to delete user");
       return null;
     } catch (error) {
+      toast.error(error?.response?.data?.statusDesc || "Failed to delete user");
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetPassword = async (userId, newPassword, confirmPassword) => {
+    try {
+      setLoading(true);
+
+      const response = await resetPasswordApi(
+        userId,
+        newPassword,
+        confirmPassword,
+      );
+
+      if (response?.statusType === "S") {
+        toast.success(response.statusDesc);
+        return response;
+      }
+
+      toast.error(response?.statusDesc || "Failed to reset password");
+      return null;
+    } catch (error) {
       toast.error(
-        error?.response?.data?.statusDesc || "Failed to delete user"
+        error?.response?.data?.statusDesc || "Failed to reset password",
       );
       throw error;
     } finally {
@@ -128,6 +151,7 @@ export const useUsers = () => {
     loading,
     fetchUsers,
     createUser,
+    resetPassword,
     updateUser: updateUserData,
     deleteUser,
   };

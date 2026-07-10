@@ -1,22 +1,17 @@
-import { Briefcase, Building2, MapPin, Phone } from "lucide-react";
-
-import { useNavigate } from "react-router-dom";
+import { Briefcase, Building2, Info, MapPin, Phone } from "lucide-react";
 import { toast } from "react-toastify";
+import CustomDropdown from "../../../../components/common/CustomDropdown";
+import NumberInput from "../../../../components/common/NumberInput";
 
-export default function BankDetailsTab({ data, updateRootFields }) {
-  const navigate = useNavigate();
-
+export default function BankDetailsTab({ data, updateRootFields,disabled = false }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Contact Number Validation
     if (name === "headOfficeContactNo") {
-      // Allow only digits
       if (!/^\d*$/.test(value)) {
         return;
       }
 
-      // Maximum 10 digits
       if (value.length > 10) {
         toast.error("Contact number cannot exceed 10 digits");
         return;
@@ -24,106 +19,102 @@ export default function BankDetailsTab({ data, updateRootFields }) {
     }
 
     updateRootFields({
-      [e.target.name]: e.target.value,
+      [name]: value,
+    });
+  };
+
+  const handleDropdownChange = (name, value) => {
+    updateRootFields({
+      [name]: value,
     });
   };
 
   const inputClass = `
-    w-full
-    h-11
-    px-3
-    border
-    border-blue-200
-    rounded-xl
-    bg-white
-    outline-none
-    transition-all
-    duration-200
-    focus:border-[#2563EB]
-    focus:ring-1
-    focus:ring-blue-200
-  `;
+  w-full
+  h-9
+  px-3
+  text-sm
+  text-slate-700
+
+  rounded-lg
+  border
+  border-[#B8C4D1]
+  bg-white
+
+  outline-none
+  transition-all
+  duration-200
+
+  focus:border-blue-500
+  placeholder:text-slate-
+  
+  disabled:bg-slate-100
+    disabled:text-slate-500
+    disabled:border-slate-300
+    disabled:cursor-not-allowed
+    disabled:opacity-100
+`;
 
   const iconInputClass = `
-    w-full
-    h-11
-    pl-10
-    border
-    border-blue-200
-    rounded-xl
-    bg-white
-    outline-none
-    transition-all
-    duration-200
-    focus:border-[#2563EB]
-    focus:ring-1
-    focus:ring-blue-200
-  `;
+  w-full
+  h-9
+  pl-10
+  pr-3
+  text-sm
+  text-slate-700
+
+  rounded-lg
+  border
+  border-[#B8C4D1]
+  bg-white
+
+  outline-none
+  transition-all
+  duration-200
+
+  focus:border-blue-500
+  placeholder:text-slate-500
+
+  disabled:bg-slate-100
+    disabled:text-slate-500
+    disabled:border-slate-300
+    disabled:cursor-not-allowed
+    disabled:opacity-100
+`;
 
   return (
-    <div className="space-y-6">
-      {/* Back Button */}
-
+    <div className="space-y-4 mb-10">
       {/* Header */}
+
       <div>
-        <h2
-          className="
-        text-lg
-        xl:text-xl
-        font-semibold
-        text-[#0B1F59]
-      "
-        >
+        <h2 className="text-xl font-semibold text-[#0B1F59]">
           Project Information
         </h2>
 
-        <p
-          className="
-        text-sm
-        text-slate-500
-        mt-1
-      "
-        >
-          Fill bank and project details
+        <p className="mt-1 text-sm text-slate-600">
+          Fill Bank and Project Details
         </p>
       </div>
 
-      {/* Form Container */}
-      <div
-        className="
-          bg-white
-          border
-          border-blue-200
-          rounded-2xl
-          p-5
-        "
-      >
-        {/* Row 1 */}
-        <div
-          className="
-            grid
-            grid-cols-1
-            md:grid-cols-2
-            xl:grid-cols-4
-            gap-4
-          "
-        >
+      {/* Card */}
+
+      <div className="rounded-xl border border-[#CDD7E3] bg-white p-4">
+        {/* ============================
+            Row 1
+        ============================ */}
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
           {/* Project Name */}
+
           <div>
-            <label className="block mb-2 text-sm font-medium">
+            <label className="mb-1 block text-sm font-medium text-slate-700">
               Project Name
             </label>
 
             <div className="relative">
               <Briefcase
                 size={16}
-                className="
-                  absolute
-                  left-3
-                  top-1/2
-                  -translate-y-1/2
-                  text-slate-400
-                "
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
               />
 
               <input
@@ -131,26 +122,26 @@ export default function BankDetailsTab({ data, updateRootFields }) {
                 name="projectName"
                 value={data.projectName || ""}
                 onChange={handleChange}
-                placeholder="Enter project name"
+                placeholder="Enter Project Name"
                 className={iconInputClass}
+                autoComplete="off"
+                disabled={disabled}
+
               />
             </div>
           </div>
 
           {/* Bank Name */}
+
           <div>
-            <label className="block mb-2 text-sm font-medium">Bank Name</label>
+            <label className="mb-1 block text-sm font-medium text-slate-700">
+              Bank Name
+            </label>
 
             <div className="relative">
               <Building2
                 size={16}
-                className="
-                  absolute
-                  left-3
-                  top-1/2
-                  -translate-y-1/2
-                  text-slate-400
-                "
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
               />
 
               <input
@@ -158,15 +149,18 @@ export default function BankDetailsTab({ data, updateRootFields }) {
                 name="bankName"
                 value={data.bankName || ""}
                 onChange={handleChange}
-                placeholder="Enter bank name"
+                placeholder="Enter Bank Name"
                 className={iconInputClass}
+                autoComplete="off"
+                disabled={disabled}
               />
             </div>
           </div>
 
           {/* Project Manager */}
+
           <div>
-            <label className="block mb-2 text-sm font-medium">
+            <label className="mb-1 block text-sm font-medium text-slate-700">
               Project Manager
             </label>
 
@@ -175,14 +169,17 @@ export default function BankDetailsTab({ data, updateRootFields }) {
               name="projectManager"
               value={data.projectManager || ""}
               onChange={handleChange}
-              placeholder="Enter project manager"
+              placeholder="Enter Project Manager"
               className={inputClass}
+              autoComplete="off"
+              disabled={disabled}
             />
           </div>
 
           {/* Sales Person */}
+
           <div>
-            <label className="block mb-2 text-sm font-medium">
+            <label className="mb-1 block text-sm font-medium text-slate-700">
               Sales Person
             </label>
 
@@ -191,82 +188,29 @@ export default function BankDetailsTab({ data, updateRootFields }) {
               name="salesPerson"
               value={data.salesPerson || ""}
               onChange={handleChange}
-              placeholder="Enter sales person"
+              placeholder="Enter Sales Person"
               className={inputClass}
+              autoComplete="off"
+              disabled={disabled}
             />
           </div>
         </div>
 
-        {/* Row 2 */}
-        <div
-          className="
-            grid
-            grid-cols-1
-            md:grid-cols-2
-            xl:grid-cols-4
-            gap-4
-            mt-5
-          "
-        >
-          {/* Head Office Address */}
-          <div className="xl:col-span-2">
-            <label className="block mb-2 text-sm font-medium">
-              Head Office Address
-            </label>
+        {/* ============================
+            Row 2 Starts
+        ============================ */}
 
-            <div className="relative">
-              <MapPin
-                size={16}
-                className="
-                  absolute
-                  left-3
-                  top-4
-                  text-slate-400
-                "
-              />
-
-              <textarea
-                rows={3}
-                name="headOfficeAddress"
-                value={data.headOfficeAddress || ""}
-                onChange={handleChange}
-                placeholder="Enter head office address"
-                className="
-                  w-full
-                  pl-10
-                  pt-3
-                  border
-                  border-blue-200
-                  rounded-xl
-                  bg-white
-                  outline-none
-                  resize-none
-                  transition-all
-                  duration-200
-                  focus:border-[#2563EB]
-                  focus:ring-1
-                  focus:ring-blue-200
-                "
-              />
-            </div>
-          </div>
-
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
           {/* Contact Number */}
           <div>
-            <label className="block mb-2 text-sm font-medium">
+            <label className="mb-1 block text-sm font-medium text-slate-700">
               Head Office Contact No
             </label>
 
             <div className="relative">
               <Phone
                 size={16}
-                className="
-                  absolute
-                  left-3
-                  top-1/2
-                  -translate-y-1/2
-                  text-slate-400
-                "
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
               />
 
               <input
@@ -275,95 +219,133 @@ export default function BankDetailsTab({ data, updateRootFields }) {
                 name="headOfficeContactNo"
                 value={data.headOfficeContactNo || ""}
                 onChange={handleChange}
-                placeholder="Enter contact no"
+                placeholder="Enter Contact Number"
                 className={iconInputClass}
+                autoComplete="off"
+                disabled={disabled}
               />
             </div>
           </div>
 
-          {/* Branches */}
+          {/* Type Of Bank */}
+          <CustomDropdown
+            label="Type Of Bank"
+            placeholder="Select Type"
+            value={data.bankType || ""}
+            onChange={(value) => handleDropdownChange("bankType", value)}
+            disabled={disabled}
+            options={[
+              {
+                label: "UCB",
+                value: "UCB",
+              },
+              {
+                label: "Co-Operative",
+                value: "Co-Operative",
+              },
+              {
+                label: "Private",
+                value: "Private",
+              },
+              {
+                label: "Nationalized",
+                value: "Nationalized",
+              },
+            ]}
+          />
+
+          {/* Number Of Branches */}
           <div>
-            <label className="block mb-2 text-sm font-medium">
+            <label className="mb-1 block text-sm font-medium text-slate-700">
               No. Of Branches
             </label>
 
-            <input
-              type="number"
+            <NumberInput
               name="noOfBranches"
-              value={data.noOfBranches || ""}
+              value={data.noOfBranches}
               onChange={handleChange}
-              placeholder="Enter branches"
+              disabled={disabled}
+              placeholder="Enter number of branches"
               className={inputClass}
             />
           </div>
-        </div>
 
-        {/* Row 3 */}
-        <div
-          className="
-            grid
-            grid-cols-1
-            md:grid-cols-2
-            xl:grid-cols-4
-            gap-4
-            mt-5
-           
-            
-          "
-        >
-          <div>
-            <label className="block mb-2 text-sm font-medium ">
-              Type Of Bank
+          {/* Head Office Address */}
+          <div className="xl:col-span-2">
+            <label className="mb-1 block text-sm font-medium text-slate-700">
+              Head Office Address
             </label>
 
-            <select
-              name="bankType"
-              value={data.bankType || ""}
-              onChange={handleChange}
-              className={`${inputClass} cursor-pointer`}
-            >
-              <option value="">Select Type</option>
+            <div className="relative">
+              <MapPin
+                size={16}
+                className="absolute left-3 top-3 text-slate-500"
+              />
 
-              <option value="UCB">UCB</option>
+              <textarea
+                disabled={disabled}
+                rows={2}
+                name="headOfficeAddress"
+                value={data.headOfficeAddress || ""}
+                onChange={handleChange}
+                placeholder="Enter Head Office Address"
+                autoComplete="off"
+                className="
+                w-full
+                resize-none
 
-              <option value="Co-Operative">Co-Operative</option>
+                rounded-lg
+                border
+                border-[#B8C4D1]
+                bg-white
 
-              <option value="Private">Private</option>
+                pl-10
+                pr-3
+                pt-2.5
 
-              <option value="Nationalized">Nationalized</option>
-            </select>
+                text-sm
+                text-slate-700
+                placeholder:text-slate-500
+
+                outline-none
+
+                transition-all
+                duration-200
+
+                focus:border-blue-500
+
+                disabled:bg-slate-100
+                disabled:text-slate-500
+                disabled:border-slate-300
+                disabled:cursor-not-allowed
+                disabled:opacity-100
+              "
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Note */}
+      {/* Compact Note */}
+
       <div
         className="
-          bg-green-50
-          border
-          border-green-200
-          rounded-xl
-          p-4
-        "
+    flex
+    items-start
+    gap-3
+    rounded-lg
+    border
+    border-green-200
+    bg-green-50
+    px-4
+    py-3
+    w-[600px]
+  "
       >
-        <h4
-          className="
-            text-green-700
-            font-semibold
-            text-sm
-          "
-        >
-          Note
-        </h4>
+        <Info size={18} className="mt-0.5 shrink-0 text-green-600" />
 
-        <p
-          className="
-            text-green-600
-            text-sm
-            mt-1
-          "
-        >
-          You can save the project as draft at any stage and continue later.
+        <p className="text-sm text-green-700">
+          This Project Can Be Saved as a Draft at Any Stage and Continued Later.
         </p>
       </div>
     </div>

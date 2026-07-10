@@ -2,10 +2,10 @@ import {
   AlertTriangle,
   ArrowRight,
   Building2,
+  Calendar,
   CalendarDays,
   Clock3,
   Flag,
-  Calendar
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getProjectMetrics } from "../utils/projectMetrics";
@@ -41,9 +41,9 @@ export default function ProgressCard({ projects = [] }) {
       <div
         className="
         bg-white
-        rounded-3xl
+        rounded-2xl
         border
-        border-slate-200
+        border-[#CDD7E3]
         p-10
         text-center
         text-slate-500
@@ -55,12 +55,12 @@ export default function ProgressCard({ projects = [] }) {
   }
 
   return (
-    <div>
+    <div className="mt-[-10px]">
       <div className="flex items-center justify-between mb-6">
         <h2
           className="
-          text-2xl
-          xl:text-3xl
+          text-xl
+          xl:text-2xl
           font-bold
           text-[#0B1F59]
         "
@@ -71,7 +71,7 @@ export default function ProgressCard({ projects = [] }) {
         <span
           className="
           text-sm
-          text-slate-500
+          text-slate-600
         "
         >
           {projects.length} Project
@@ -85,8 +85,9 @@ export default function ProgressCard({ projects = [] }) {
         grid-cols-1
         md:grid-cols-2
         xl:grid-cols-3
-        2xl:grid-cols-4
+        2xl:grid-cols-3
         gap-6
+        mt-[-10px]
       "
       >
         {projects.map((project) => {
@@ -105,9 +106,9 @@ export default function ProgressCard({ projects = [] }) {
               className="
               group
               bg-white
-              rounded-3xl
+              rounded-2xl
               border
-              border-slate-200
+              border-[#CDD7E3]
               shadow-sm
               duration-300
               p-5
@@ -151,7 +152,7 @@ export default function ProgressCard({ projects = [] }) {
                       className="
                       text-sm
                       2xl:base
-                      text-slate-500
+                      text-slate-600
                       truncate
                     "
                     >
@@ -169,12 +170,13 @@ export default function ProgressCard({ projects = [] }) {
                   2xl-text-sm
                   font-semibold
                   shrink-0
-                  ${metrics.status === "On Track"
+                  ${
+                    metrics.status === "On Track"
                       ? "bg-green-100 text-green-700"
                       : metrics.status === "At Risk"
                         ? "bg-yellow-100 text-yellow-700"
                         : "bg-red-100 text-red-700"
-                    }
+                  }
                 `}
                 >
                   {metrics.status}
@@ -233,7 +235,8 @@ export default function ProgressCard({ projects = [] }) {
                     <span
                       className="
                       text-[12px]
-                      text-slate-500
+                      text-slate-600
+                      font-semibold
                     "
                     >
                       Progress
@@ -245,30 +248,30 @@ export default function ProgressCard({ projects = [] }) {
                   <div className="flex items-center gap-2">
                     <Calendar size={16} className="text-green-600" />
 
-                    <span className="text-sm text-slate-500 font-medium 2xl:text-base">
+                    <span className="text-sm text-slate-600 font-medium 2xl:text-base">
                       Start Date
                     </span>
 
                     <span className="ml-auto font-semibold text-slate-700">
                       {metrics.projectStartDate
-                        ? new Date(
-                          metrics.projectStartDate
-                        ).toLocaleDateString("en-GB")
+                        ? new Date(metrics.projectStartDate)
+                            .toLocaleDateString("en-GB")
+                            .replace(/\//g, "-")
                         : "-"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CalendarDays size={16} className="text-blue-600" />
 
-                    <span className="text-sm text-slate-500 font-medium 2xl:text-base">
+                    <span className="text-sm text-slate-600 font-medium 2xl:text-base">
                       Go Live
                     </span>
 
                     <span className="ml-auto font-semibold text-slate-700">
                       {metrics.goLiveDate
-                        ? new Date(metrics.goLiveDate).toLocaleDateString(
-                          "en-GB",
-                        )
+                        ? new Date(metrics.goLiveDate)
+                            .toLocaleDateString("en-GB")
+                            .replace(/\//g, "-")
                         : "-"}
                     </span>
                   </div>
@@ -276,7 +279,7 @@ export default function ProgressCard({ projects = [] }) {
                   <div className="flex items-center gap-2">
                     <Clock3 size={16} className="text-indigo-600" />
 
-                    <span className="text-sm text-slate-500 font-medium 2xl:text-base">
+                    <span className="text-sm text-slate-600 font-medium 2xl:text-base">
                       Days Left
                     </span>
 
@@ -288,7 +291,7 @@ export default function ProgressCard({ projects = [] }) {
                   <div className="flex items-center gap-2">
                     <AlertTriangle size={16} className="text-orange-500" />
 
-                    <span className="text-sm text-slate-500 font-medium 2xl:text-base">
+                    <span className="text-sm text-slate-600 font-medium 2xl:text-base">
                       Delay
                     </span>
 
@@ -296,15 +299,16 @@ export default function ProgressCard({ projects = [] }) {
                       className={`
                       ml-auto
                       font-semibold
-                      ${metrics.delayDays > 15
+                      ${
+                        metrics.delayWeeks > 3
                           ? "text-red-600"
-                          : metrics.delayDays > 5
+                          : metrics.delayWeeks > 1
                             ? "text-yellow-600"
                             : "text-green-600"
-                        }
+                      }
                     `}
                     >
-                      {metrics.delayDays} Days
+                      {metrics.delayWeeks} weeks
                     </span>
                   </div>
                 </div>
@@ -328,7 +332,7 @@ export default function ProgressCard({ projects = [] }) {
                     2xl:text-sm
                     uppercase
                     tracking-wide
-                    text-slate-500
+                    text-slate-600
                     font-medium
                   "
                   >
@@ -352,7 +356,7 @@ export default function ProgressCard({ projects = [] }) {
                   mt-1
                   text-sm
                   2xl:text-base
-                  text-slate-500
+                  text-slate-600
                   truncate
                   font-medium
                 "
@@ -379,7 +383,7 @@ export default function ProgressCard({ projects = [] }) {
                   text-center
                 "
                 >
-                  <p className="text-sm text-slate-500 font-medium 2xl:text-base">
+                  <p className="text-sm text-slate-600 font-medium 2xl:text-base">
                     Readiness
                   </p>
 
@@ -403,7 +407,7 @@ export default function ProgressCard({ projects = [] }) {
                   text-center
                 "
                 >
-                  <p className="text-sm text-slate-500 font-medium 2xl:text-base">
+                  <p className="text-sm text-slate-600 font-medium 2xl:text-base">
                     Health
                   </p>
 

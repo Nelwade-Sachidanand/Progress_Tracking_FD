@@ -1,4 +1,7 @@
-import { Calendar, Search } from "lucide-react";
+import { Database, Workflow } from "lucide-react";
+import CustomDropdown from "../../../components/common/CustomDropdown";
+import DateInput from "../../../components/common/DateInput";
+import SearchInput from "../../../components/common/SearchInput";
 
 export default function AuditFilters({
   logs = [],
@@ -24,158 +27,72 @@ export default function AuditFilters({
       .toLowerCase()
       .split("_")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join("_");
+      .join(" ");
   };
 
   return (
     <div
       className="
-      bg-white
-      rounded-3xl
-      border
-      border-slate-200
-      p-5
-      mt-5
-    "
+        bg-white
+        rounded-2xl
+        border
+        border-[#CDD7E3]
+        p-5
+        mt-[-7px]
+      "
     >
       <div
         className="
-        grid
-        grid-cols-1
-        md:grid-cols-2
-        xl:grid-cols-5
-        gap-4
-      "
+          grid
+          grid-cols-1
+          md:grid-cols-2
+          xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,2fr)]
+          gap-4
+          mt-[-10px]
+          mb-[-7px]
+        "
       >
-        {/* Search */}
-
-        <div className="xl:col-span-2 relative">
-          <Search
-            size={18}
-            className="
-              absolute
-              left-4
-              top-1/2
-              -translate-y-1/2
-              text-slate-400
-            "
-          />
-
-          <input
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search entity name, user..."
-            className="
-              w-full
-              h-12
-              pl-11
-              pr-4
-              rounded-xl
-              border
-              border-slate-300
-              outline-none
-              focus:border-blue-500
-              text-sm
-              2xl:text-[17px]
-              2xl:font-medium
-              2xl:tracking-wide
-            "
-          />
-        </div>
-
         {/* Entity Type */}
 
-        <select
+        <CustomDropdown
+          label="Entity Type"
+          placeholder="All Entity Types"
           value={entityType}
-          onChange={(e) => setEntityType(e.target.value)}
-          className="
-            h-12
-            px-4
-            rounded-xl
-            border
-            border-slate-300
-            outline-none
-            focus:border-blue-500
-            cursor-pointer
-            text-sm
-            2xl:text-[17px]
-            2xl:font-medium
-            2xl:tracking-wide
-          "
-        >
-          <option value="">All Entity Types</option>
-
-          {entityTypes.map((type) => (
-            <option key={type} value={type}>
-              {formatAction(type)}
-            </option>
-          ))}
-        </select>
+          onChange={setEntityType}
+          icon={Database}
+          options={entityTypes.map((type) => ({
+            label: formatAction(type),
+            value: type,
+          }))}
+        />
 
         {/* Action Type */}
 
-        <select
+        <CustomDropdown
+          label="Action Type"
+          placeholder="All Actions"
           value={actionType}
-          onChange={(e) => setActionType(e.target.value)}
-          className="
-            h-12
-            px-4
-            rounded-xl
-            border
-            border-slate-300
-            outline-none
-            focus:border-blue-500
-            cursor-pointer
-            text-sm
-            2xl:text-[17px]
-            2xl:font-medium
-            2xl:tracking-wide
-          "
-        >
-          <option value="">All Actions</option>
-
-          {actionTypes.map((action) => (
-            <option key={action} value={action}>
-              {formatAction(action)}
-            </option>
-          ))}
-        </select>
+          onChange={setActionType}
+          icon={Workflow}
+          options={actionTypes.map((action) => ({
+            label: formatAction(action),
+            value: action,
+          }))}
+        />
 
         {/* Date */}
 
-        <div className="relative">
-          <Calendar
-            size={18}
-            className="
-              absolute
-              left-4
-              top-1/2
-              -translate-y-1/2
-              text-slate-400
-            "
-          />
+        <DateInput
+          label="Date"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+        />
 
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="
-              w-full
-              h-12
-              pl-11
-              pr-4
-              rounded-xl
-              border
-              border-slate-300
-              outline-none
-              focus:border-blue-500
-              text-sm
-              2xl:text-[17px]
-              2xl:font-medium
-              2xl:tracking-wide
-            "
-          />
-        </div>
+        <SearchInput
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search Entity Name or User..."
+        />
       </div>
     </div>
   );

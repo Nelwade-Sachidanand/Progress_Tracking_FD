@@ -52,6 +52,13 @@ export default function EditTaskForm() {
   };
 
 
+  const getStatus = (p) => {
+    const progress = Number(p || 0);
+    if (progress === 0) return "Not Started";
+    if (progress === 100) return "Completed";
+    if (progress > 0 && progress < 100) return "In Progress";
+    return "Not Started";
+  };
 
   useEffect(() => {
     if (formData.plannedStartDate || formData.plannedEndDate) {

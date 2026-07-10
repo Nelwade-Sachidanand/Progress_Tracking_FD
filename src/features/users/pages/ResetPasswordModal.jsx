@@ -1,40 +1,40 @@
-import { X, KeyRound } from "lucide-react";
+import { KeyRound, X } from "lucide-react";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
-export default function ResetPasswordModal({
-  isOpen,
-  onClose,
-  user,
-  onReset,
-}) {
-  const [newPassword, setNewPassword] =
-    useState("");
+export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
+  const [newPassword, setNewPassword] = useState("");
 
-  const [confirmPassword, setConfirmPassword] =
-    useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   if (!isOpen) return null;
 
   const handleSubmit = () => {
     if (!newPassword.trim()) {
-      alert("Password is required");
+      toast.error("Password is required");
       return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return false;
     }
 
     if (
-      newPassword !==
-      confirmPassword
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/.test(newPassword)
     ) {
-      alert(
-        "Passwords do not match"
+      toast.error(
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
       );
-      return;
+      return false;
     }
 
-    onReset?.(
-      user,
-      newPassword
-    );
+    onReset?.(user, newPassword, confirmPassword);
 
     setNewPassword("");
     setConfirmPassword("");
@@ -71,37 +71,29 @@ export default function ResetPasswordModal({
           px-6
           py-4
           border-b
+          border-[#CDD7E3]
           "
         >
           <div className="flex items-center gap-2">
-            <KeyRound
-              size={20}
-              className="text-[#2563EB]"
-            />
+            <KeyRound size={20} className="text-[#2563EB]" />
 
-            <h2 className="text-lg font-bold text-[#0F172A]">
-              Reset Password
-            </h2>
+            <h2 className="text-lg font-bold text-[#0F172A]">Reset Password</h2>
           </div>
 
-          <button
-            onClick={onClose}
-            className="cursor-pointer"
-          >
+          <button onClick={onClose} className="cursor-pointer">
             <X size={20} />
           </button>
         </div>
 
         {/* Body */}
         <div className="p-6">
-
           <div className="mb-5">
             <label
               className="
               block
               text-sm
               font-medium
-              text-slate-600
+              text-slate-700
               mb-2
               "
             >
@@ -109,15 +101,15 @@ export default function ResetPasswordModal({
             </label>
 
             <input
-              value={
-                user?.username || ""
-              }
+              value={user?.username || ""}
               disabled
               className="
+              h-9
               w-full
               p-3
-              rounded-xl
+              rounded-lg
               border
+              border-[#B8C4D1]
               bg-slate-100
               "
             />
@@ -129,32 +121,29 @@ export default function ResetPasswordModal({
               block
               text-sm
               font-medium
+              text-slate-700
               mb-2
               "
             >
               New Password
-              <span className="text-red-500">
-                *
-              </span>
+              <span className="text-red-500">*</span>
             </label>
 
             <input
               type="password"
               value={newPassword}
-              onChange={(e) =>
-                setNewPassword(
-                  e.target.value
-                )
-              }
+              onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Enter new password"
               className="
               w-full
               p-3
-              rounded-xl
+              h-9
+              rounded-lg
               border
-              border-[#DCE3EE]
+              border-[#B8C4D1]
               outline-none
-              focus:border-[#2563EB]
+              focus:border-blue-500
+              placeholder:text-slate-500
               "
             />
           </div>
@@ -165,36 +154,32 @@ export default function ResetPasswordModal({
               block
               text-sm
               font-medium
+              text-slate-700
               mb-2
               "
             >
               Confirm Password
-              <span className="text-red-500">
-                *
-              </span>
+              <span className="text-red-500">*</span>
             </label>
 
             <input
               type="password"
               value={confirmPassword}
-              onChange={(e) =>
-                setConfirmPassword(
-                  e.target.value
-                )
-              }
+              onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm password"
               className="
               w-full
               p-3
-              rounded-xl
+              h-9
+              rounded-lg
               border
-              border-[#DCE3EE]
+              border-[#B8C4D1]
               outline-none
-              focus:border-[#2563EB]
+              focus:border-blue-500
+              placeholder:text-slate-500
               "
             />
           </div>
-
         </div>
 
         {/* Footer */}
@@ -206,16 +191,19 @@ export default function ResetPasswordModal({
           px-6
           py-4
           border-t
+          border-[#CDD7E3]
           "
         >
           <button
             onClick={onClose}
             className="
             px-5
-            py-2.5
+            py-2
             rounded-xl
             border
+            border-[#CDD7E3]
             cursor-pointer
+            h-10
             "
           >
             Cancel
@@ -225,12 +213,13 @@ export default function ResetPasswordModal({
             onClick={handleSubmit}
             className="
             px-5
-            py-2.5
+            py-2
             rounded-xl
             bg-[#2563EB]
             text-white
             font-medium
             cursor-pointer
+            h-10
             "
           >
             Reset Password

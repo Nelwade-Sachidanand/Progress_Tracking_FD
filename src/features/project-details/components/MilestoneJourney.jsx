@@ -194,7 +194,6 @@ if (avg >= 100) {
         };
       }) || []
   ) || [];
- 
   /* ── Serpentine row grouping ── */
   const rows = useMemo(() => {
     const out = [];
@@ -282,123 +281,108 @@ const svgW = PAD * 2 + ITEMS_PER_ROW * colW;
   };
  
   return (
-<div
-  className="w-full bg-white rounded-2xl border border-[#E5EAF2] p-3 sm:p-4 lg:p-5 mt-4"
-  style={{
-    fontFamily: "var(--kimi-font-sans, sans-serif)",
-  }}
->
+    <div
+      className="w-full bg-white rounded-2xl border border-[#CDD7E3] p-3 sm:p-4 lg:p-5"
+      style={{
+        fontFamily: "var(--kimi-font-sans, sans-serif)",
+      }}
+    >
       {/* Header */}
-<div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-<div
-          className="w-8 h-8 rounded-full bg-[#2563EB] text-white flex items-center justify-center text-sm font-bold"
->
-          3
-</div>
-<h2 className="text-base sm:text-lg font-bold text-[#0B1F59]">Milestone Journey</h2>
-</div>
- 
+      <div className="flex items-center gap-2 sm:gap-2 mb-4 sm:mb-6"><div
+        className="w-7 h-7 rounded-full bg-[#2563EB] text-white flex items-center justify-center text-sm font-bold"
+      >
+        3
+      </div><h2 className="text-base sm:text-lg lg:text-xl font-bold text-[#0B1F59]">Milestone Journey</h2></div>
+
       {/* SVG diagram */}
-<div className="w-full overflow-x-auto scrollbar-thin">
-<svg
-  width={svgW}
-  height={svgH}
-  className="mx-auto block"
-  style={{
-    minWidth: svgW,
-    display: "block",
-  }}
->
-<path
-            d={pathD}
-            fill="none"
-            stroke="#CBD5E1"
-            strokeWidth="2"
-            strokeDasharray="6 5"
-            strokeLinecap="round"
-          />
- 
-          {rows.map((row, rIdx) => {
-            const isRev = rIdx % 2 === 1;
-            const cy = PAD + rIdx * (NODE_R * 2 + GAP_Y + 50) + NODE_R;
- 
-            return row.map((m, cIdx) => {
-              const origIdx = rIdx * ITEMS_PER_ROW + (isRev ? row.length - 1 - cIdx : cIdx);
-              const colors = statusColors[m.status] || statusColors["Not Started"];
-             
- const colW = NODE_R * 2 + GAP_X;
+      <div className="w-full overflow-x-auto scrollbar-thin"><svg
+        width={svgW}
+        height={svgH}
+        className="mx-auto block"
+        style={{
+          minWidth: svgW,
+          display: "block",
+        }}
+      ><path
+          d={pathD}
+          fill="none"
+          stroke="#CBD5E1"
+          strokeWidth="2"
+          strokeDasharray="6 5"
+          strokeLinecap="round"
+        />
 
-let visualColumn;
+        {rows.map((row, rIdx) => {
+          const isRev = rIdx % 2 === 1;
+          const cy = PAD + rIdx * (NODE_R * 2 + GAP_Y + 50) + NODE_R;
 
-if (rIdx % 2 === 0) {
-  visualColumn = cIdx;
-} else {
-  visualColumn = ITEMS_PER_ROW - row.length + cIdx;
-}
+          return row.map((m, cIdx) => {
+            const origIdx = rIdx * ITEMS_PER_ROW + (isRev ? row.length - 1 - cIdx : cIdx);
+            const colors = statusColors[m.status] || statusColors["Not Started"];
 
-const cx = PAD + visualColumn * colW + NODE_R;
-              return (
-<g
-                  key={`${rIdx}-${cIdx}`}
-                  style={{ cursor: 'pointer' }}
-                  onMouseEnter={(e) => handleNodeEnter(e, m, origIdx)}
-                  onMouseLeave={() => setTooltip(null)}
->
-<circle
-                    cx={cx} cy={cy} r={NODE_R}
-                    fill="#fff"
-                    stroke={colors.border}
-                    strokeWidth="2"
-                  />
-<foreignObject x={cx - 11} y={cy - 11} width={22} height={22}>
-<div
-                      className="flex items-center justify-center w-full h-full"
-                      style={{ color: colors.text }}
->
-                     {(() => {
-  const Icon = icons[origIdx % icons.length];
+            const colW = NODE_R * 2 + GAP_X;
 
-  return <Icon size={20} color={colors.text} strokeWidth={1.8} />;
-})()}
-</div>
-</foreignObject>
- 
-   <text
-  x={cx}
-  y={cy + NODE_R + 18}
-  textAnchor="middle"
-  className="text-[10px] sm:text-[12px] font-bold"
-  style={{
-    fill: "#0B1F59",
-    fontFamily: "var(--kimi-font-sans, sans-serif)",
-  }}
->
-  {(m.name.match(/^M\d+/)?.[0]) || m.name}
-</text>
-<text
-                    x={cx} y={cy + NODE_R + 36} textAnchor="middle"
-                    className="text-[12px] sm:text-[14px] font-bold"
-                    style={{ fill: colors.pct, fontFamily: 'var(--kimi-font-sans, sans-serif)' }}
->
-                    {m.percentage}
-</text>
-<text
-                    x={cx} y={cy + NODE_R + 52} textAnchor="middle"
-                   className="text-[9px] sm:text-[10px]"
-                    style={{ fill: colors.label, fontFamily: 'var(--kimi-font-sans, sans-serif)' }}
->
-                    {m.status}
-</text>
-</g>
-              );
-            });
-          })}
-</svg>
-</div>
- 
+            let visualColumn;
+
+            if (rIdx % 2 === 0) {
+              visualColumn = cIdx;
+            } else {
+              visualColumn = ITEMS_PER_ROW - row.length + cIdx;
+            }
+
+            const cx = PAD + visualColumn * colW + NODE_R;
+            return (
+              <g
+                key={`${rIdx}-${cIdx}`}
+                style={{ cursor: 'pointer' }}
+                onMouseEnter={(e) => handleNodeEnter(e, m, origIdx)}
+                onMouseLeave={() => setTooltip(null)}
+              ><circle
+                  cx={cx} cy={cy} r={NODE_R}
+                  fill="#fff"
+                  stroke={colors.border}
+                  strokeWidth="2"
+                /><foreignObject x={cx - 11} y={cy - 11} width={22} height={22}><div
+                  className="flex items-center justify-center w-full h-full"
+                  style={{ color: colors.text }}
+                >
+                  {(() => {
+                    const Icon = icons[origIdx % icons.length];
+
+                    return <Icon size={20} color={colors.text} strokeWidth={1.8} />;
+                  })()}
+                </div></foreignObject><text
+                  x={cx}
+                  y={cy + NODE_R + 18}
+                  textAnchor="middle"
+                  className="text-[10px] sm:text-[12px] font-bold"
+                  style={{
+                    fill: "#0B1F59",
+                    fontFamily: "var(--kimi-font-sans, sans-serif)",
+                  }}
+                >
+                  {(m.name.match(/^M\d+/)?.[0]) || m.name}
+                </text><text
+                  x={cx} y={cy + NODE_R + 36} textAnchor="middle"
+                  className="text-[12px] sm:text-[14px] font-bold"
+                  style={{ fill: colors.pct, fontFamily: 'var(--kimi-font-sans, sans-serif)' }}
+                >
+                  {m.percentage}
+                </text><text
+                  x={cx} y={cy + NODE_R + 52} textAnchor="middle"
+                  className="text-[9px] sm:text-[10px]"
+                  style={{ fill: colors.label, fontFamily: 'var(--kimi-font-sans, sans-serif)' }}
+                >
+                  {m.status}
+                </text></g>
+            );
+          });
+        })}
+      </svg></div>
+
       {/* Tooltip portal */}
       {tooltip && (
-<Tooltip
+        <Tooltip
           milestone={tooltip.milestone}
           index={tooltip.index}
           x={tooltip.x}
@@ -407,6 +391,10 @@ const cx = PAD + visualColumn * colW + NODE_R;
           onClose={() => setTooltip(null)}
         />
       )}
+<<<<<<< HEAD
 </div>
+=======
+    </div>
+>>>>>>> 2d88949adea6db5594771bf9c2efb472e782275b
   );
 }

@@ -25,162 +25,169 @@ export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
   };
 
   return (
-    <div className="mt-5 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-      <table className="w-full table-fixed">
-        <thead>
-          <tr className="border-b border-slate-200 bg-slate-100">
-            <th className="w-[60px] px-3 py-4 text-left text-base font-semibold text-slate-600">
-              Sr.
-            </th>
-
-            <th className="w-[26%] px-4 py-4 text-left text-base font-semibold text-slate-600">
-              Activity / Task
-            </th>
-
-            <th className="w-[25%] px-4 py-4 text-left text-base font-semibold text-slate-600">
-              Phase / Milestone
-            </th>
-
-            <th className="w-[12%] px-4 py-4 text-left text-base font-semibold text-slate-600">
-              Duration
-            </th>
-
-            <th className="w-[14%] px-4 py-4 text-left text-base font-semibold text-slate-600">
-              Progress
-            </th>
-
-            <th className="w-[10%] px-4 py-4 text-left text-base font-semibold text-slate-600">
-              Status
-            </th>
-
-            {["ADMIN", "MANAGEMENT USER", "IMPLEMENTATION USER"].includes(
-              user?.role,
-            ) && (
-              <th className="w-[90px] px-4 py-4 text-center text-base font-semibold text-slate-600">
-                Edit
+    <div className="mt-5 overflow-hidden rounded-2xl border border-[#CDD7E3] bg-white shadow-sm">
+      <div className="overflow-x-auto xl:overflow-visible">
+        <table className="w-full min-w-[1100px] xl:min-w-full table-fixed">
+          <thead>
+            <tr className="border-b border-[#CDD7E3] bg-blue-100">
+              <th className="w-[60px] px-3 py-3 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
+                Sr. No.
               </th>
-            )}
 
-            <th className="w-[90px] px-4 py-4 text-center text-base font-semibold text-slate-600">
-              Remark
-            </th>
-          </tr>
-        </thead>
+              <th className="w-[22%] px-4 py-3 text-left text-base font-semibold text-slate-600">
+                Activity / Task
+              </th>
 
-        <tbody>
-          {tasks.length > 0 ? (
-            tasks.map((task, index) => (
-              <tr
-                key={`${task.activity}-${index}`}
-                className="
+              <th className="w-[22%] px-4 py-3 text-left text-base font-semibold text-slate-600">
+                Phase / Milestone
+              </th>
+
+              <th className="w-[15%] px-4 py-3 text-left text-base font-semibold text-slate-600">
+                Duration
+              </th>
+
+              <th className="w-[13%] px-4 py-3 text-left text-base font-semibold text-slate-600">
+                Progress
+              </th>
+
+              <th className="w-[10%] px-4 py-3 text-left text-base font-semibold text-slate-600">
+                Status
+              </th>
+
+              {["ADMIN", "MANAGEMENT USER", "IMPLEMENTATION USER"].includes(
+                user?.role,
+              ) && (
+                  <th className="w-[60px] px-4 py-3 text-center text-base font-semibold text-slate-600">
+                    Edit
+                  </th>
+                )}
+
+              <th className="w-[80px] px-4 py-3 text-center text-base font-semibold text-slate-600">
+                Remark
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {tasks.length > 0 ? (
+              tasks.map((task, index) => (
+                <tr
+                  key={`${task.activity}-${index}`}
+                  className="
           border-b
-          border-slate-200
-          hover:bg-slate-50
-          transition-colors
+          border-[#CDD7E3]
         "
-              >
-                {/* Sr */}
-                <td className="px-3 py-3">
-                  <span className="text-base font-medium text-slate-700">
-                    {index + 1}
-                  </span>
-                </td>
-
-                {/* Activity */}
-                <td className="px-4 py-3">
-                  <div>
-                    <p
-                      className="truncate text-base font-semibold text-slate-700"
-                      title={task.activity}
-                    >
-                      {task.activity}
-                    </p>
-
-                    <p
-                      className="truncate text-sm text-slate-500"
-                      title={task.task}
-                    >
-                      {task.task}
-                    </p>
-                  </div>
-                </td>
-
-                {/* Phase + Milestone */}
-                <td className="px-4 py-3">
-                  <p
-                    className="truncate text-base font-medium text-slate-700"
-                    title={task.phase}
-                  >
-                    {task.phase}
-                  </p>
-
-                  <p
-                    className="truncate text-sm text-slate-500"
-                    title={task.milestone}
-                  >
-                    {task.milestone}
-                  </p>
-                </td>
-
-                {/* Dates */}
-                <td className="px-4 py-3">
-                  <div className="text-base text-slate-700">
-                    <div>{formatDate(task.startDate)}</div>
-
-                    <div className="text-base text-slate-500">
-                      {formatDate(task.endDate)}
-                    </div>
-                  </div>
-                </td>
-
-                {/* Progress */}
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 flex-1 rounded-full bg-slate-200">
-                      <div
-                        className="h-2 rounded-full bg-[#6D4AFF]"
-                        style={{
-                          width: `${task.progress}%`,
-                        }}
-                      />
-                    </div>
-
-                    <span className="w-8 text-right text-sm font-semibold text-slate-700">
-                      {task.progress}%
+                >
+                  {/* Sr */}
+                  <td className="px-5 py-3">
+                    <span className="text-sm font-medium text-slate-700">
+                      {index + 1}
                     </span>
-                  </div>
-                </td>
+                  </td>
 
-                {/* Status */}
-                <td className="px-4 py-3 text-center">
-                  <span
-                    className={`
+                  {/* Activity */}
+                  <td className="px-4 py-2">
+                    <div>
+                      <p
+                        className="truncate text-sm font-semibold text-slate-700"
+                        title={task.activity}
+                      >
+                        {task.activity}
+                      </p>
+
+                      <p
+                        className="truncate text-sm text-slate-600"
+                        title={task.task}
+                      >
+                        {task.task}
+                      </p>
+                    </div>
+                  </td>
+
+                  {/* Phase + Milestone */}
+                  <td className="px-4 py-2">
+                    <p
+                      className="truncate text-sm font-medium text-slate-700"
+                      title={task.phase}
+                    >
+                      {task.phase}
+                    </p>
+
+                    <p
+                      className="truncate text-sm text-slate-600"
+                      title={task.milestone}
+                    >
+                      {task.milestone}
+                    </p>
+                  </td>
+
+                  {/* Dates */}
+                  <td className="px-4 py-2">
+                    <div className="space-y-1 text-sm">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-slate-600">Start:</span>
+                        <span className="text-slate-700">
+                          {formatDate(task.startDate)}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-slate-600">End:</span>
+                        <span className="text-slate-700">
+                          {formatDate(task.endDate)}
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* Progress */}
+                  <td className="px-4 py-2">
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 flex-1 rounded-full bg-slate-200">
+                        <div
+                          className="h-2 rounded-full bg-[#6D4AFF]"
+                          style={{
+                            width: `${task.progress}%`,
+                          }}
+                        />
+                      </div>
+
+                      <span className="w-8 text-right text-sm font-semibold text-slate-700">
+                        {task.progress}%
+                      </span>
+                    </div>
+                  </td>
+
+                  {/* Status */}
+                  <td className="px-4 py-2 text-center">
+                    <span
+                      className={`
               inline-flex
               items-center
               justify-center
               rounded-full
               px-3
               py-1
-              text-sm
+              text-xs
               font-semibold
               whitespace-nowrap
               ${getStatusColor(task.status)}
             `}
-                  >
-                    {task.status}
-                  </span>
-                </td>
+                    >
+                      {task.status}
+                    </span>
+                  </td>
 
-                {/* Edit */}
-                {["ADMIN", "MANAGEMENT USER", "IMPLEMENTATION USER"].includes(
-                  user?.role,
-                ) && (
-                  <td className="px-4 py-3">
-                    <div className="flex justify-center">
-                      <button
-                        onClick={() => onEdit?.(task)}
-                        title="Edit"
-                        className="
+                  {/* Edit */}
+                  {["ADMIN", "MANAGEMENT USER", "IMPLEMENTATION USER"].includes(
+                    user?.role,
+                  ) && (
+                      <td className="px-4 py-2">
+                        <div className="flex justify-center">
+                          <button
+                            onClick={() => onEdit?.(task)}
+                            title="Edit"
+                            className="
                   flex
                   h-8
                   w-8
@@ -193,20 +200,20 @@ export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
                   hover:bg-blue-100
                   cursor-pointer
                 "
-                      >
-                        <Pencil size={15} />
-                      </button>
-                    </div>
-                  </td>
-                )}
+                          >
+                            <Pencil size={15} />
+                          </button>
+                        </div>
+                      </td>
+                    )}
 
-                {/* Remark */}
-                <td className="px-4 py-3">
-                  <div className="flex justify-center">
-                    <button
-                      onClick={() => onRemark?.(task)}
-                      title="Remark"
-                      className="
+                  {/* Remark */}
+                  <td className="px-4 py-2">
+                    <div className="flex justify-center">
+                      <button
+                        onClick={() => onRemark?.(task)}
+                        title="Remark"
+                        className="
                 flex
                 h-8
                 w-8
@@ -219,31 +226,32 @@ export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
                 hover:bg-purple-100
                 cursor-pointer
               "
-                    >
-                      <MessageSquare size={15} />
-                    </button>
-                  </div>
+                      >
+                        <MessageSquare size={15} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={
+                    ["ADMIN", "MANAGEMENT USER", "IMPLEMENTATION USER"].includes(
+                      user?.role,
+                    )
+                      ? 8
+                      : 7
+                  }
+                  className="py-14 text-center text-sm text-slate-500"
+                >
+                  No Tasks Found
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td
-                colSpan={
-                  ["ADMIN", "MANAGEMENT USER", "IMPLEMENTATION USER"].includes(
-                    user?.role,
-                  )
-                    ? 8
-                    : 7
-                }
-                className="py-14 text-center text-sm text-slate-500"
-              >
-                No Tasks Found
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

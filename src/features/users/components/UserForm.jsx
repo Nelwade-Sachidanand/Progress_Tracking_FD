@@ -1,59 +1,82 @@
-import { ArrowLeft, Eye, EyeOff, Save, UserPlus, X } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff, Save, UserPlus, X } from "lucide-react";
+
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
+
+import CustomDropdown from "../../../components/common/CustomDropdown";
+import MultiSelectDropdown from "../../../components/common/MultiSelectDropdown";
+
+import { useNavigate } from "react-router-dom";
 import { useProjects } from "../../../context/ProjectContext";
 import { useUsers } from "../hooks/useUsers";
 
 const UserForm = ({ mode = "add", userData = null }) => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-
   const { createUser, updateUser } = useUsers();
-
-  const [id, setId] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("USER");
-  const [status, setStatus] = useState(true);
-  const [selectedProjects, setSelectedProjects] = useState([]);
-  const [showPassword, setShowPassword] = useState(false);
 
   const { projects } = useProjects();
 
-  const availableProjects = projects;
+  const [loading, setLoading] = useState(false);
+
+  const [id, setId] = useState("");
+
+  const [fullName, setFullName] = useState("");
+
+  const [username, setUsername] = useState("");
+
+  const [email, setEmail] = useState("");
+
+  const [password, setPassword] = useState("");
+
+  const [role, setRole] = useState("USER");
+
+  const [status, setStatus] = useState(true);
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [selectedProjects, setSelectedProjects] = useState([]);
 
   useEffect(() => {
     if (mode === "edit" && userData) {
       setId(userData.id || "");
+
       setFullName(userData.fullname || "");
+
       setUsername(userData.username || "");
-      setRole(userData.role || "USER");
+
       setEmail(userData.email || "");
+
+      setRole(userData.role || "USER");
+
       setStatus(userData.status);
 
-      const assignedProjects = availableProjects.filter((project) =>
+      const assigned = projects.filter((project) =>
         userData.projectNames?.includes(project.projectName),
       );
 
-      setSelectedProjects(assignedProjects);
+      setSelectedProjects(assigned);
     }
-  }, [mode, userData]);
+  }, [mode, userData, projects]);
 
-  const addProject = (project) => {
-    const exists = selectedProjects.some((p) => p.id === project.id);
+  const projectOptions = useMemo(() => {
+    return [...projects]
+      .sort((a, b) => a.projectName.localeCompare(b.projectName))
+      .map((project) => ({
+        label: project.projectName,
+        value: project.id,
+      }));
+  }, [projects]);
 
-    if (!exists) {
-      setSelectedProjects((prev) => [...prev, project]);
-    }
+  const selectedProjectIds = selectedProjects.map((project) => project.id);
+
+  const handleProjectChange = (ids) => {
+    const selected = projects.filter((project) => ids.includes(project.id));
+
+    setSelectedProjects(selected);
   };
 
-  const removeProject = (projectId) => {
-    setSelectedProjects((prev) =>
-      prev.filter((project) => project.id !== projectId),
-    );
+  const removeProject = (id) => {
+    setSelectedProjects((prev) => prev.filter((project) => project.id !== id));
   };
 
   const validateForm = () => {
@@ -82,7 +105,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
       return false;
     }
 
-    if (!/^[a-zA-Z0-9._]+$/.test(username.trim())) {
+    if (!/^[A-Za-z0-9._]+$/.test(username.trim())) {
       toast.error(
         "Username can contain only letters, numbers, dot (.) and underscore (_)",
       );
@@ -97,11 +120,10 @@ const UserForm = ({ mode = "add", userData = null }) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(email)) {
-      toast.error("Please enter a valid email address");
+      toast.error("Please enter a valid email");
       return false;
     }
 
-    // Password validation only for Add User
     if (mode === "add") {
       if (!password.trim()) {
         toast.error("Password is required");
@@ -113,9 +135,11 @@ const UserForm = ({ mode = "add", userData = null }) => {
         return false;
       }
 
-      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/.test(password)) {
+      if (
+        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/.test(password)
+      ) {
         toast.error(
-          "Password must contain at least one uppercase letter, one lowercase letter and one number",
+          "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
         );
         return false;
       }
@@ -131,6 +155,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
 
   const handleSubmitUser = async () => {
     if (!validateForm()) return;
+
     try {
       setLoading(true);
 
@@ -141,17 +166,15 @@ const UserForm = ({ mode = "add", userData = null }) => {
         email,
         password,
         role,
-        status: status === "ACTIVE" ? true : false,
+        status,
         projectIds: selectedProjects.map((project) => project.id),
       };
-
-      console.log(payload);
 
       const response =
         mode === "add" ? await createUser(payload) : await updateUser(payload);
 
       if (response?.statusType === "S") {
-        navigate("/users");
+        onClose?.();
       }
     } catch (error) {
       console.error(error);
@@ -160,83 +183,48 @@ const UserForm = ({ mode = "add", userData = null }) => {
     }
   };
 
-  return (
-    <div
-      className="
-      bg-white
-      rounded-3xl
-      border
-      border-slate-200
-      shadow-sm
-      overflow-hidden
-      "
-    >
-      {/* Header */}
+  if (!open) return null;
 
+  const inputClass = `
+    w-full
+    h-9
+    rounded-lg
+    border
+    border-[#B8C4D1] 
+    px-4
+    text-sm
+    outline-none
+    focus:border-blue-500
+    placeholder:text-slate-500`;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
       <div
         className="
-        px-5
-        md:px-8
-        xl:px-10
-        py-5
-        xl:py-4
-        border-b
-        border-slate-200
-        "
-      >
-        <div
-          className="
-          flex
-          items-center
-          justify-between
-          "
-        >
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate("/users")}
-              className="
-              h-10
-              w-10
-              rounded-xl
-              border
-              border-slate-200
-              flex
-              items-center
-              justify-center
-              hover:bg-slate-50
-              transition
-              cursor-pointer
-              "
-            >
-              <ArrowLeft size={18} />
-            </button>
+        w-full
+        max-w-[850px]
+        rounded-2xl
+        bg-white
+        shadow-2xl
+        border
+        border-[#CDD7E3]
+        overflow-visible
+      "
+      > 
+        {/* Header */}
+
+        <div className="flex items-center justify-between border-b border-[#CDD7E3] px-6 py-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100">
+              <UserPlus className="text-blue-600" size={22} />
+            </div>
 
             <div>
-              <h1
-                className="
-                text-[24px]
-                md:text-[24px]
-                xl:text-[24px]
-                font-bold
-                text-[#142850]
-                2xl:text-[28px]
-                2xl:font-bold
-                2xl:tracking-wide
-                "
-              >
+              <h2 className="text-xl font-bold text-[#142850]">
                 {mode === "add" ? "Add User" : "Edit User"}
-              </h1>
+              </h2>
 
-              <p
-                className="
-                text-slate-500
-                text-sm
-                xl:text-base
-                2xl:text-[16px]
-                2xl:font-medium
-                2xl:tracking-wide
-                "
-              >
+              <p className="text-sm text-slate-600">
                 {mode === "add"
                   ? "Create and assign a new user"
                   : "Update user information"}
@@ -244,462 +232,309 @@ const UserForm = ({ mode = "add", userData = null }) => {
             </div>
           </div>
 
-          <UserPlus size={30} className="text-blue-600 mt-[-20px]" />
-        </div>
-      </div>
-
-      {/* Form */}
-
-      <div
-        className="
-        p-5
-        md:p-8
-        xl:p-5 mt-[-10px]
-        "
-      >
-        <div
-          className="
-          grid
-          grid-cols-1
-          md:grid-cols-2
-          xl:grid-cols-3
-          gap-5
-          xl:gap-7
-          "
-        >
-          {/* Full Name */}
-
-          <div>
-            <label
-              className="
-              block
-              px-1
-              mb-2
-              font-semibold
-              text-slate-700
-              2xl:text-[17px]
-              2xl:font-medium
-              2xl:tracking-wide
-              "
-            >
-              Full Name
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter full name"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              className="
-              w-full
-              h-10
-              xl:h-10
-              px-4
-              rounded-xl
-              border
-              border-slate-300
-              focus:border-blue-500
-              outline-none
-              2xl:text-[17px]
-              2xl:font-medium
-              2xl:tracking-wide
-              "
-            />
-          </div>
-
-          {/* Username */}
-
-          <div>
-            <label
-              className="
-              block
-              px-1
-              mb-2
-              font-semibold
-              text-slate-700
-              2xl:text-[17px]
-              2xl:font-medium
-              2xl:tracking-wide
-              block mb-2 font-semibold text-slate-700
-              "
-            >
-              Username
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="
-              w-full
-              h-10
-              xl:h-10
-              px-4
-              rounded-xl
-              border
-              border-slate-300
-              focus:border-blue-500
-              outline-none
-              2xl:text-[17px]
-              2xl:font-medium
-              2xl:tracking-wide
-              "
-            />
-          </div>
-
-          {/* Email */}
-
-          <div>
-            <label
-              className="
-              block
-              px-1
-              mb-2
-              font-semibold
-              text-slate-700
-              "
-            >
-              Email
-            </label>
-
-            <input
-              type="email"
-              placeholder="Enter email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="
-              w-full
-              h-10
-              px-4
-              rounded-xl
-              border
-              border-slate-300
-              focus:border-blue-500
-              outline-none
-              "
-            />
-          </div>
-
-          {/* Password */}
-
-          <div>
-            <label
-              className="
-              block
-              px-1
-              mb-2
-              font-semibold
-              text-slate-700
-              2xl:text-[17px]
-              2xl:font-medium
-              2xl:tracking-wide
-              block mb-2 font-semibold text-slate-700
-              "
-            >
-              Password
-            </label>
-
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="
-      w-full
-      h-10
-      xl:h-10
-      px-4
-      pr-12
-      rounded-xl
-      border
-      border-slate-300
-      focus:border-blue-500
-      outline-none
-      2xl:text-[17px]
-      2xl:font-medium
-      2xl:tracking-wide
-    "
-              />
-
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="
-      absolute
-      right-3
-      top-1/2
-      -translate-y-1/2
-      text-slate-500
-      hover:text-slate-700
-      cursor-pointer
-    "
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-          </div>
-
-          {/* Role */}
-
-          <div>
-            <label
-              className="
-              block
-              px-1
-              mb-2
-              font-semibold
-              text-slate-700
-              2xl:text-[17px]
-              2xl:font-medium
-              2xl:tracking-wide
-              "
-            >
-              Role
-            </label>
-
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="
-              w-full
-              h-10
-              xl:h-10
-              px-4
-              rounded-xl
-              border
-              border-slate-300
-              outline-none
-              focus:border-blue-500
-              cursor-pointer
-              text-sm
-              2xl:text-[17px]
-              2xl:font-medium
-              2xl:tracking-wide
-              "
-            >
-              <option>ADMIN</option>
-              <option>MANAGEMENT USER</option>
-              <option>IMPLEMENTATION USER</option>
-              <option>USER</option>
-            </select>
-          </div>
-
-          {/* Status */}
-
-          <div>
-            <label
-              className="
-              block
-              mb-2
-              font-semibold
-              text-slate-700
-              2xl:text-[17px]
-              2xl:font-medium
-              2xl:tracking-wide
-              "
-            >
-              Status
-            </label>
-
-            <select
-              value={status === true ? "ACTIVE" : "INACTIVE"}
-              onChange={(e) => setStatus(e.target.value === "ACTIVE")}
-              className="
-              w-full
-              h-10
-              xl:h-10
-              px-4
-              rounded-xl
-              border
-              border-slate-300
-              outline-none
-              focus:border-blue-500
-              text-sm
-              cursor-pointer
-              2xl:text-[17px]
-              2xl:font-medium
-              2xl:tracking-wide
-              "
-            >
-              <option value="ACTIVE">ACTIVE</option>
-              <option value="INACTIVE">INACTIVE</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Assigned Projects */}
-
-        <div className="mt-8 xl:mt-8">
-          <h3
-            className="
-            text-lg
-            xl:text-lg
-            font-bold
-            text-[#142850]
-            mb-4
-            2xl:text-[18px]
-            2xl:font-semibold
-            2xl:tracking-wide
-            "
-          >
-            Assigned Projects
-          </h3>
-
-          <div
-            className="
-            min-h-[40px]
-            rounded-xl
-            border
-            border-slate-300
-            p-1
-            flex
-            flex-wrap
-            gap-3
-            mt-[-7px]
-            "
-          >
-            {selectedProjects.map((project) => (
-              <div
-                key={project.id}
-                data-testid={`selected-project-${project.projectName.replace(/\s/g, "")}`}
-                className="
-                px-4
-                py-2
-                rounded-lg
-                bg-blue-100
-                text-blue-700
-                font-medium
-                flex
-                items-center
-                gap-2
-                2xl:text-[17px]
-                2xl:font-medium
-                2xl:tracking-wide
-                "
-              >
-                {project.projectName}
-
-                <button
-                  className="cursor-pointer"
-                  onClick={() => removeProject(project.id)}
-                >
-                  <X size={16} />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Available Projects */}
-
-        <div className="mt-5">
-          <h3
-            className="
-            text-lg
-            xl:text-lg
-            font-bold
-            text-[#142850]
-            mb-4
-            2xl:text-[18px]
-            2xl:font-semibold
-            2xl:tracking-wide
-            "
-          >
-            Available Projects
-          </h3>
-
-          <div className="flex flex-wrap gap-3 mt-[-7px]">
-            {availableProjects.map((project) => (
-              <button
-                key={project.id}
-                type="button"
-                onClick={() => addProject(project)}
-                className="
-                text-sm
-                px-4
-                py-2
-                rounded-xl
-                border
-                border-slate-300
-                hover:bg-blue-50
-                hover:border-blue-500
-                transition
-                cursor-pointer
-                2xl:px-5
-                2xl:py-3
-                2xl:text-[17px]
-                "
-              >
-                {project.projectName}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Footer */}
-
-        <div
-          className="
-          mt-6
-          pt-6
-          border-t
-          flex
-          flex-col
-          sm:flex-row
-          justify-end
-          gap-4
-          "
-        >
           <button
             onClick={() => navigate("/users")}
             className="
-            h-12
-            px-6
-            rounded-xl
-            bg-slate-200
-            font-semibold
-            cursor-pointer
-            2xl:px-8
-            2xl:text-[17px]
-            2xl:font-medium
-            2xl:tracking-wide
-            "
-          >
-            Cancel
-          </button>
-
-          <button
-            onClick={handleSubmitUser}
-            className="
-            h-12
-            px-8
-            rounded-xl
-            bg-gradient-to-r
-            from-[#2563EB]
-            to-[#3B82F6]
-            text-white
-            font-semibold
             flex
+            h-9
+            w-9
             items-center
             justify-center
-            gap-2
+            rounded-lg
+            hover:bg-slate-100
+            transition
             cursor-pointer
-            2xl:px-8
-            2xl:h-12
-            2xl:text-[17px]
-            2xl:font-medium
-            2xl:tracking-wide
-            "
+          "
           >
-            {mode === "edit" ? (
-              <UserPlus size={20} className="text-white-600 mt-[-5px]" />
-            ) : (
-              <Save size={20} className="text-white-600 mt-[-5px]" />
-            )}
-            {mode === "add" ? "Save User" : "Update User"}
+            <X size={20} />
           </button>
+        </div>
+
+        {/* Body */}
+
+        <div className="p-6 overflow-visible">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Full Name */}
+
+            <div>
+              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-700">
+                Full Name
+              </label>
+
+              <input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="Enter Full Name"
+                className={inputClass}
+              />
+            </div>
+
+            {/* Username */}
+
+            <div>
+              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-700">
+                Username
+              </label>
+
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter Username"
+                className={inputClass}
+              />
+            </div>
+
+            {/* Email */}
+
+            <div>
+              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-700">
+                Email
+              </label>
+
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter Email"
+                className={inputClass}
+              />
+            </div>
+
+            {/* Password */}
+
+            {mode === "add" && (
+              <div>
+                <label className="block mb-1 ml-1 text-sm font-semibold text-slate-700">
+                  Password
+                </label>
+
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter Password"
+                    className={inputClass}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="
+                    absolute
+                    right-3
+                    top-1/2
+                    -translate-y-1/2
+                    text-slate-500
+                    cursor-pointer
+                  "
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Role */}
+
+            <CustomDropdown
+              label="Role"
+              placeholder="Select Role"
+              value={role}
+              onChange={setRole}
+              options={[
+                {
+                  label: "Administrator",
+                  value: "ADMIN",
+                },
+                {
+                  label: "Management User",
+                  value: "MANAGEMENT USER",
+                },
+                {
+                  label: "Implementation User",
+                  value: "IMPLEMENTATION USER",
+                },
+                {
+                  label: "Bank User",
+                  value: "USER",
+                },
+              ]}
+            />
+
+            {/* Status */}
+
+            <CustomDropdown
+              label="Status"
+              placeholder="Select Status"
+              value={status ? "ACTIVE" : "INACTIVE"}
+              onChange={(value) => setStatus(value === "ACTIVE")}
+              options={[
+                {
+                  label: "Active",
+                  value: "ACTIVE",
+                },
+                {
+                  label: "Inactive",
+                  value: "INACTIVE",
+                },
+              ]}
+            />
+          </div>
+
+          <div
+            className="
+            mt-5
+            grid
+            grid-cols-1
+            lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]
+            gap-5
+            items-start
+          "
+          >
+            {/* Left Column */}
+            <div className="relative z-50">
+              <MultiSelectDropdown
+                label="Assign Project"
+                placeholder="Select Projects"
+                options={projectOptions.map((p) => p.label)}
+                selected={selectedProjects.map((p) => p.projectName)}
+                onChange={(names) => {
+                  const selected = projects.filter((project) =>
+                    names.includes(project.projectName),
+                  );
+                  setSelectedProjects(selected);
+                }}
+              />
+            </div>
+
+            {/* Right Column */}
+            <div>
+              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-700">
+                Selected Projects ({selectedProjects.length})
+              </label>
+
+              <div
+                className="
+                min-h-[150px]
+                overflow-y-auto
+                rounded-lg
+                border
+                border-[#B8C4D1]
+                bg-slate-100
+                p-3
+              "
+              >
+                {selectedProjects.length === 0 ? (
+                  <div className="flex h-full items-center justify-center text-sm text-slate-600">
+                    No project selected
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    {selectedProjects.map((project) => (
+                      <div
+                        key={project.id}
+                        className="
+                flex
+                items-center
+                gap-2
+                rounded-full
+                bg-blue-100
+                px-3
+                py-1.5
+                text-sm
+                font-medium
+                text-blue-700
+              "
+                      >
+                        <span className="truncate max-w-[180px]">
+                          {project.projectName}
+                        </span>
+
+                        <button
+                          type="button"
+                          onClick={() => removeProject(project.id)}
+                          className="rounded-full p-0.5 hover:bg-blue-200 cursor-pointer"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+
+          <div
+            className="
+            mt-6
+            pt-5
+            border-t
+            border-slate-200
+            flex
+            justify-end
+            gap-3
+          "
+          >
+            <button
+              type="button"
+              onClick={() => navigate("/users")}
+              className="
+              h-9
+              rounded-xl
+              border
+              border-slate-300
+              bg-white
+              px-6
+              text-sm
+              font-semibold
+              text-slate-700
+              hover:bg-slate-50
+              transition
+              cursor-pointer
+            "
+            >
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              onClick={handleSubmitUser}
+              disabled={loading}
+              className="
+              flex
+              h-9
+              items-center
+              justify-center
+              gap-2
+              rounded-xl
+              bg-gradient-to-r
+              from-[#2563EB]
+              to-[#3B82F6]
+              px-6
+              text-sm
+              font-semibold
+              text-white
+              hover:opacity-95
+              disabled:cursor-not-allowed
+              disabled:opacity-60
+              cursor-pointer 
+            "
+            >
+              {mode === "add" ? <Save size={18} /> : <UserPlus size={18} />}
+
+              {loading
+                ? "Please wait..."
+                : mode === "add"
+                  ? "Save User"
+                  : "Update User"}
+            </button>
+          </div>
         </div>
       </div>
     </div>

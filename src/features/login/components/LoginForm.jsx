@@ -218,7 +218,7 @@ const LoginForm = () => {
             <input
               data-testid="username-input"
               type="text"
-              placeholder="Enter your username"
+              placeholder="Enter Your Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="
@@ -288,7 +288,7 @@ const LoginForm = () => {
             <input
               data-testid="password-input"
               type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
+              placeholder="Enter Your Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="
@@ -378,7 +378,7 @@ const LoginForm = () => {
                   accent-[#2563EB]
                 "
               />
-              Remember me
+              Remember Me
             </label>
 
             <button
@@ -439,7 +439,7 @@ const LoginForm = () => {
               cursor-pointer
             "
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Logging In..." : "Login"}
           </button>
         </form>
       </div>
@@ -459,7 +459,7 @@ const LoginForm = () => {
           2xl:text-[16px]
         "
       >
-        © 2026 Novillex Technologies. All rights reserved.
+        © 2026 Novillex Technologies. All Rights Reserved.
       </p>
 
       {/* Session Expired Modal */}
@@ -669,7 +669,7 @@ const LoginForm = () => {
                 leading-7
               "
             >
-              Please contact your administrator to reset your password.
+              Please Contact Your Administrator To Reset Your Password.
             </p>
 
             <div

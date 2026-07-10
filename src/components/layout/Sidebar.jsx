@@ -21,7 +21,7 @@ import {
 import { useState } from "react";
 
 import { NavLink } from "react-router-dom";
-import logo from "../../assets/images/Novillex-Logo.png";
+import logo from "../../assets/images/suite1.png";
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
@@ -206,7 +206,7 @@ export default function Sidebar() {
           <img
             src={logo}
             alt="Logo"
-            className="w-[156px] object-contain scale-160 2xl:w-[180px] 2xl:scale-170"
+            className="mt-[10px] ml-[30px] w-[120px] object-contain scale-150 2xl:w-[140px] 2xl:scale-150"
           />
 
           <button

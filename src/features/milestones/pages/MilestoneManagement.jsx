@@ -81,11 +81,11 @@ export default function MilestoneManagement() {
   return (
     <div
       className="
-        p-4
-        xl:p-6
-        2xl:p-8
-        space-y-6
-      "
+      p-4
+      xl:p-5
+      2xl:p-6
+      space-y-4
+    "
     >
       <BankSelector
         banks={banks}

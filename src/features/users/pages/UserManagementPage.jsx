@@ -1,18 +1,27 @@
 import { useState } from "react";
 
+import Swal from "sweetalert2";
+import { useProjects } from "../../../context/ProjectContext";
 import UserFilters from "../components/UserFilters";
-import UserManagementHeader from "../components/UserManagementHeader";
 import UserStatsCards from "../components/UserStatsCards";
 import UserTable from "../components/UserTable";
-import Swal from "sweetalert2";
+import ResetPasswordModal from "./ResetPasswordModal";
 
 import { useUsers } from "../hooks/useUsers";
 
 const UserManagementPage = () => {
-  const { users, loading, deleteUser, fetchUsers, } = useUsers();
+  const { projects } = useProjects();
+  const { users, loading, deleteUser, fetchUsers, resetPassword } = useUsers();
   const [searchTerm, setSearchTerm] = useState("");
 
   const [roleFilter, setRoleFilter] = useState("");
+
+  const [statusFilter, setStatusFilter] = useState("");
+  const [bankFilter, setBankFilter] = useState("");
+
+  const banks = [
+    ...new Set(projects.map((project) => project.bankName).filter(Boolean)),
+  ];
 
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
@@ -21,7 +30,18 @@ const UserManagementPage = () => {
 
     const matchesRole = !roleFilter || user.role === roleFilter;
 
-    return matchesSearch && matchesRole;
+    const matchesStatus = !statusFilter || String(user.status) === statusFilter;
+
+    const matchesBank =
+      !bankFilter ||
+      (user.role === "USER" &&
+        projects.some(
+          (project) =>
+            project.bankName === bankFilter &&
+            user.projectIds?.includes(project.id),
+        ));
+
+    return matchesSearch && matchesRole && matchesStatus && matchesBank;
   });
 
   const handleDeleteUser = async (userId) => {
@@ -43,15 +63,20 @@ const UserManagementPage = () => {
       await fetchUsers();
     }
   };
-const [
-  showResetPasswordModal,
-  setShowResetPasswordModal,
-] = useState(false);
 
-const [
-  selectedUser,
-  setSelectedUser,
-] = useState(null);
+  const handleResetPassword = async (user, newPassword, confirmPassword) => {
+    const response = await resetPassword(user.id, newPassword, confirmPassword);
+
+    if (response?.statusType === "S") {
+      toast.success(response.statusDesc);
+    } else {
+      toast.error(response?.statusDesc || "Failed to reset password");
+    }
+  };
+
+  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
+
+  const [selectedUser, setSelectedUser] = useState(null);
   return (
     <div
       className="
@@ -70,28 +95,43 @@ const [
         lg:space-y-6
         "
       >
-        <UserManagementHeader />
+        {/* <UserManagementHeader /> */}
 
         <UserStatsCards users={users} />
 
         <UserFilters
-         users={users}
-  loading={loading}
-  //onDelete={handleDelete}
-  onResetPassword={(user) => {
-    setSelectedUser(user);
-    setShowResetPasswordModal(true);
-  }}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           roleFilter={roleFilter}
           setRoleFilter={setRoleFilter}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          bankFilter={bankFilter}
+          setBankFilter={setBankFilter}
+          banks={banks}
         />
 
-        <div className="overflow-x-auto">
-          <UserTable users={filteredUsers} loading={loading} onDelete={handleDeleteUser}
+        <div className="overflow-x-auto mt-[-7px]">
+          <UserTable
+            users={filteredUsers}
+            loading={loading}
+            onDelete={handleDeleteUser}
+            onResetPassword={(user) => {
+              setSelectedUser(user);
+              setShowResetPasswordModal(true);
+            }}
           />
         </div>
+
+        <ResetPasswordModal
+          isOpen={showResetPasswordModal}
+          user={selectedUser}
+          onClose={() => setShowResetPasswordModal(false)}
+          onReset={(user, password, confirmPassword) => {
+            console.log(user, password, confirmPassword);
+            handleResetPassword(user, password, confirmPassword);
+          }}
+        />
       </div>
     </div>
   );
