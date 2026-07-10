@@ -37,7 +37,7 @@ export default function Sidebar() {
 
   const menuGroups = [
     {
-      title: "PORTFOLIO",
+      title: "PROJECT MANAGEMENT",
       items: isUser
         ? [
             {

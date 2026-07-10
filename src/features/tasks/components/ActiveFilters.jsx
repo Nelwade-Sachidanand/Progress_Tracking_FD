@@ -14,7 +14,7 @@ function ActiveFilters({
   clearFilters,
 }) {
   const filters = [];
-  if (selectedPhase && selectedPhase !== "All Phases") {
+  if (selectedPhase) {
     filters.push({
       type: "phase",
       label: `Phase: ${selectedPhase}`,
@@ -29,14 +29,14 @@ function ActiveFilters({
     });
   });
 
-  if (selectedTask && selectedTask !== "All Tasks") {
+  if (selectedTask) {
     filters.push({
       type: "task",
       label: `Task: ${selectedTask}`,
     });
   }
 
-  if (selectedStatus && selectedStatus !== "All Status") {
+  if (selectedStatus) {
     filters.push({
       type: "status",
       label: `Status: ${selectedStatus}`,
@@ -46,57 +46,97 @@ function ActiveFilters({
   if (filters.length === 0) return null;
 
   return (
-    <div className="flex items-center justify-between mb-4">
-      <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-xs font-semibold text-[#64748B] uppercase">
-          Active Filters:
+    <div className="mb-4 mt-4">
+      {/* Active Filters */}
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="mr-2 whitespace-nowrap text-sm font-semibold text-slate-600">
+          Active Filters :
         </span>
 
         {filters.map((filter, index) => (
           <div
             key={index}
-            className="bg-[#F3F0FF] text-[#6D4AFF] px-3 py-1 rounded-full text-sm flex items-center gap-2"
+            className="
+            flex
+            items-center
+            gap-2
+            rounded-xl
+            border
+            border-blue-200
+            bg-blue-50
+            px-3
+            py-1.5
+            text-sm
+            text-blue-700
+          "
           >
-            {filter.label}
-            <X
-              size={14}
-              className="cursor-pointer"
+            <span>{filter.label}</span>
+
+            <button
+              type="button"
               onClick={() => {
                 if (filter.type === "phase") {
-                  setSelectedPhase("All Phases");
+                  setSelectedPhase("");
                 }
 
                 if (filter.type === "milestone") {
-                  setSelectedMilestone([]);
+                  setSelectedMilestone((prev) =>
+                    prev.filter((m) => m !== filter.value),
+                  );
                 }
 
                 if (filter.type === "task") {
-                  setSelectedTask("All Tasks");
+                  setSelectedTask("");
                 }
 
                 if (filter.type === "status") {
-                  setSelectedStatus("All Status");
+                  setSelectedStatus("");
                 }
               }}
-            />
+              className="
+              flex
+              h-5
+              w-5
+              items-center
+              justify-center
+              rounded-full
+              transition
+              hover:bg-blue-100
+              cursor-pointer
+            "
+            >
+              <X size={14} />
+            </button>
           </div>
         ))}
       </div>
 
-      <button
-        onClick={clearFilters}
-        className="border border-gray-200 px-4 py-2    
-         bg-red-50
-    text-red-600
-    border-red-200
-    cursor-pointer
-    rounded-xl 
-    text-sm"
-      >
-        Clear All Filters
-      </button>
+      {/* Clear All */}
+      <div className="mt-3 flex justify-end">
+        <button
+          type="button"
+          onClick={clearFilters}
+          className="
+          h-9
+          rounded-xl
+          border
+          border-red-200
+          bg-red-50
+          px-4
+          text-sm
+          font-semibold
+          text-red-600
+          transition
+          hover:bg-red-100
+          cursor-pointer
+        "
+        >
+          Clear All Filters
+        </button>
+      </div>
     </div>
   );
 }
 
 export default ActiveFilters;
+ 

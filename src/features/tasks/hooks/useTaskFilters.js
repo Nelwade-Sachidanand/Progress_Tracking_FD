@@ -1,16 +1,12 @@
 import { useMemo, useState } from "react";
 
 export default function useTaskFilters(tasks = []) {
-  const [selectedPhase, setSelectedPhase] = useState("All Phases");
-
   const [selectedMilestone, setSelectedMilestone] = useState([]);
-  const [selectedTask, setSelectedTask] = useState("All Tasks");
-
-  const [selectedSubTask, setSelectedSubTask] = useState("All Sub Tasks");
-
-  const [selectedActivity, setSelectedActivity] = useState("All Activities");
-
-  const [selectedStatus, setSelectedStatus] = useState("All Status");
+  const [selectedPhase, setSelectedPhase] = useState("");
+  const [selectedTask, setSelectedTask] = useState("");
+  const [selectedSubTask, setSelectedSubTask] = useState("");
+  const [selectedActivity, setSelectedActivity] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -25,9 +21,7 @@ export default function useTaskFilters(tasks = []) {
     return [
       ...new Set(
         tasks
-          .filter(
-            (t) => selectedPhase === "All Phases" || t.phase === selectedPhase,
-          )
+          .filter((t) => !selectedPhase || t.phase === selectedPhase)
           .map((t) => t.milestone),
       ),
     ];
@@ -50,9 +44,7 @@ export default function useTaskFilters(tasks = []) {
     return [
       ...new Set(
         tasks
-          .filter(
-            (t) => selectedTask === "All Tasks" || t.task === selectedTask,
-          )
+          .filter((t) => !selectedTask || t.task === selectedTask)
           .map((t) => t.subTask),
       ),
     ];
@@ -62,11 +54,7 @@ export default function useTaskFilters(tasks = []) {
     return [
       ...new Set(
         tasks
-          .filter(
-            (t) =>
-              selectedSubTask === "All Sub Tasks" ||
-              t.subTask === selectedSubTask,
-          )
+          .filter((t) => !selectedSubTask || t.subTask === selectedSubTask)
           .map((t) => t.activity),
       ),
     ];
@@ -75,26 +63,26 @@ export default function useTaskFilters(tasks = []) {
     setSelectedPhase(value);
 
     setSelectedMilestone([]);
-    setSelectedTask("All Tasks");
-    setSelectedSubTask("All Sub Tasks");
-    setSelectedActivity("All Activities");
+    setSelectedTask("");
+    setSelectedSubTask("");
+    setSelectedActivity("");
   };
   const handleTaskChange = (value) => {
     setSelectedTask(value);
 
-    setSelectedSubTask("All Sub Tasks");
-    setSelectedActivity("All Activities");
+    setSelectedSubTask("");
+    setSelectedActivity("");
   };
   const handleSubTaskChange = (value) => {
     setSelectedSubTask(value);
 
-    setSelectedActivity("All Activities");
+    setSelectedActivity("");
   };
   // Filtered Data
 
   const filteredTasks = useMemo(() => {
     return tasks.filter((task) => {
-      if (selectedPhase !== "All Phases" && task.phase !== selectedPhase) {
+      if (selectedPhase && task.phase !== selectedPhase) {
         return false;
       }
 
@@ -105,25 +93,19 @@ export default function useTaskFilters(tasks = []) {
         return false;
       }
 
-      if (selectedTask !== "All Tasks" && task.task !== selectedTask) {
+      if (selectedTask && task.task !== selectedTask) {
         return false;
       }
 
-      if (
-        selectedSubTask !== "All Sub Tasks" &&
-        task.subTask !== selectedSubTask
-      ) {
+      if (selectedSubTask && task.subTask !== selectedSubTask) {
         return false;
       }
 
-      if (
-        selectedActivity !== "All Activities" &&
-        task.activity !== selectedActivity
-      ) {
+      if (selectedActivity && task.activity !== selectedActivity) {
         return false;
       }
 
-      if (selectedStatus !== "All Status" && task.status !== selectedStatus) {
+      if (selectedStatus && task.status !== selectedStatus) {
         return false;
       }
 
@@ -160,9 +142,9 @@ export default function useTaskFilters(tasks = []) {
         : [...prev, milestone],
     );
 
-    setSelectedTask("All Tasks");
-    setSelectedSubTask("All Sub Tasks");
-    setSelectedActivity("All Activities");
+    setSelectedTask("");
+    setSelectedSubTask("");
+    setSelectedActivity("");
   };
   return {
     phases,
@@ -197,3 +179,4 @@ export default function useTaskFilters(tasks = []) {
     handleMilestoneChange,
   };
 }
+ 

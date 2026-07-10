@@ -6,7 +6,7 @@ import ExecutiveSummary from "../components/ExecutiveSummary";
 import MilestoneJourney from "../components/MilestoneJourney";
 import ActivityStatusOverview from "../components/ActivityStatusOverview";
 import RiskAndIssues from "../components/RiskAndIssues";
-import GoLiveReadiness from "../components/GoLiveReadiness";
+//import GoLiveReadiness from "../components/GoLiveReadiness";
 import ExecutiveHealth from "../components/ExecutiveHealth";
 import Footer from "../../../components/layout/Footer";
 import { useProjects } from "../../../context/ProjectContext";
@@ -49,8 +49,8 @@ export default function ProjectDetailPage() {
       <RiskAndIssues project={project} />
       <div className="h-5"></div>
 
-      <GoLiveReadiness project={project} />
-      <div className="h-5"></div>
+      {/* <GoLiveReadiness project={project} />
+      <div className="h-5"></div> */}
 
       <ExecutiveHealth />
 

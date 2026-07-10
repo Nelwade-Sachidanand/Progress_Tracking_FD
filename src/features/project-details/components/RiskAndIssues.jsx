@@ -227,59 +227,7 @@ const getOpenRiskDetails = (activity) => {
     action: "Continue monitoring"
   };
 };
-// const cards = [
-//   {
-//     value: criticalRiskActivities.length,
-//     title: "Critical Risks / Issues",
-//     subtitle: "Require immediate attention",
-//     activities: criticalRiskActivities,
-//     icon: AlertTriangle,
-//     iconBg: "#EF4444",
-//     textColor: "#DC2626",
-//     bg: "#FFF8F8",
-//     border: "#FEE2E2",
-//     linkColor: "#DC2626",
-//   },
 
-//   {
-//     value: escalationActivities.length,
-//     title: "Escalations",
-//     subtitle: "Past due activities",
-//     activities: escalationActivities,
-//     icon: CircleAlert,
-//     iconBg: "#F59E0B",
-//     textColor: "#B45309",
-//     bg: "#FFFDF7",
-//     border: "#FDE7C3",
-//     linkColor: "#B45309",
-//   },
-
-//   {
-//     value: dependencyActivities.length,
-//     title: "Dependencies",
-//     subtitle: "Pending dependencies",
-//     activities: dependencyActivities,
-//     icon: Link2,
-//     iconBg: "#2563EB",
-//     textColor: "#2563EB",
-//     bg: "#F8FAFF",
-//     border: "#E3EBFF",
-//     linkColor: "#2563EB",
-//   },
-
-//   {
-//     value: openRiskActivities.length,
-//     title: "Open Risks",
-//     subtitle: "Active open risks",
-//     activities: openRiskActivities,
-//     icon: Flag,
-//     iconBg: "#10B981",
-//     textColor: "#059669",
-//     bg: "#F8FFFC",
-//     border: "#DDF7EC",
-//     linkColor: "#059669",
-//   },
-// ];
 const cards = [
   {
     value: criticalRiskActivities.length,
@@ -480,6 +428,7 @@ lg:text-[13px]
   gap-2
   text-sm
   font-semibold
+  cursor-pointer
   "
   style={{
     color: card.linkColor,
@@ -550,6 +499,7 @@ hover:bg-slate-100
 text-slate-500
 hover:text-slate-800
 transition
+cursor-pointer
 
 "
         >

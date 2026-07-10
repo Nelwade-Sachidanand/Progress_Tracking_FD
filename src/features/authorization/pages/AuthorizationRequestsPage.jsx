@@ -80,48 +80,59 @@ const AuthorizationRequestsPage = () => {
   return (
     <div
       className="
-      w-full
-      px-4
-      md:px-6
-      xl:px-8
-      2xl:px-10
-      py-5
-      space-y-5
-      "
+      p-4
+      sm:p-5
+      md:p-6
+      lg:p-8
+    "
     >
-      <AuthorizationSummaryCards auths={allAuths} />
+      <div
+        className="
+        w-full
+        mx-auto
+        space-y-4
+        md:space-y-5
+        lg:space-y-6
+        mt-[-15px]
+      "
+      >
+        <AuthorizationSummaryCards auths={allAuths} />
 
-      <AuthorizationFilters
-        logs={allAuths}
-        search={search}
-        setSearch={setSearch}
-        requestType={requestType}
-        setRequestType={setRequestType}
-        status={status}
-        setStatus={setStatus}
-        requestedBy={requestedBy}
-        setRequestedBy={setRequestedBy}
-      />
-
-      <AuthorizationTable
-        logs={sortedLogs}
-        loading={loading}
-        onView={setSelectedRequest}
-        approveSelectedRequests={approveSelectedRequests}
-        rejectSelectedRequests={rejectSelectedRequests}
-      />
-
-      {selectedRequest && (
-        <AuthorizationRequestModal
-          request={selectedRequest}
-          onClose={() => setSelectedRequest(null)}
-          onApprove={handleApprove}
-          onReject={handleReject}
-          onRollback={handleRollback}
+        <AuthorizationFilters
+          logs={allAuths}
+          search={search}
+          setSearch={setSearch}
+          requestType={requestType}
+          setRequestType={setRequestType}
+          status={status}
+          setStatus={setStatus}
+          requestedBy={requestedBy}
+          setRequestedBy={setRequestedBy}
         />
-      )}
+
+        <div className="overflow-x-auto mt-[-25px]">
+          <AuthorizationTable
+            logs={sortedLogs}
+            loading={loading}
+            onView={setSelectedRequest}
+            approveSelectedRequests={approveSelectedRequests}
+            rejectSelectedRequests={rejectSelectedRequests}
+          />
+        </div>
+
+        {selectedRequest && (
+          <AuthorizationRequestModal
+            request={selectedRequest}
+            onClose={() => setSelectedRequest(null)}
+            onApprove={handleApprove}
+            onReject={handleReject}
+            onRollback={handleRollback}
+          />
+        )}
+      </div>
     </div>
   );
 };
 
 export default AuthorizationRequestsPage;
+ 

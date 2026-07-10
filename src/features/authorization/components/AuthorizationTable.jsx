@@ -92,7 +92,11 @@ export default function AuthorizationTable({
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      setSelectedRows(paginatedLogs.map((log) => log.id));
+      const pendingIds = paginatedLogs
+        .filter((log) => log.status === "PENDING")
+        .map((log) => log.id);
+
+      setSelectedRows(pendingIds);
     } else {
       setSelectedRows([]);
     }
@@ -121,55 +125,49 @@ export default function AuthorizationTable({
     }
   };
 
+  const formatAction = (value = "") => {
+    return value
+      .toLowerCase()
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   return (
     <div
       className="
-    bg-white
-    rounded-[24px]
-    overflow-hidden
-    border
-    border-[#E8EDF5]
-    shadow-sm
-    mt-5
+      bg-white
+      rounded-3xl
+      border
+      border-slate-200
+      shadow-sm
+      overflow-hidden
+      mt-5
     "
     >
       {/* Bulk Actions */}
 
       <div
         className="
-      px-4
-      xl:px-5
-      py-4
-      border-b
-      border-[#EDF2F7]
-      flex
-      flex-col
-      md:flex-row
-      md:items-center
-      md:justify-between
-      gap-3
-      "
-      >
-        <div
-          className="
+        px-4
+        py-4
+        border-b
+        border-slate-200
+
         flex
-        flex-wrap
-        items-center
-        gap-3
+        flex-col
         md:flex-row
         md:items-center
         md:justify-between
-        "
-        >
+        gap-3
+      "
+      >
+        <div className="flex flex-wrap items-center gap-3">
           <span
             className="
-          text-xs
-          xl:text-sm
-          font-medium
-          text-slate-600
-          2xl:text-[17px]
-          2xl:font-medium
-          2xl:tracking-wide
+            text-sm
+            font-medium
+            text-slate-600
           "
           >
             {selectedRows.length} Requests Selected
@@ -179,21 +177,17 @@ export default function AuthorizationTable({
             disabled={selectedRows.length === 0}
             onClick={() => setShowApproveModal(true)}
             className="
-          h-9
-          xl:h-10
-          px-4
-          rounded-xl
-          bg-green-600
-          text-white
-          text-xs
-          xl:text-sm
-          font-semibold
-          hover:bg-green-700
-          transition
-          cursor-pointer
-          2xl:h-11
-          2xl:px-5
-          2xl:text-[17px]
+            h-10
+            px-4
+            rounded-xl
+            bg-green-600
+            text-white
+            text-sm
+            font-semibold
+            hover:bg-green-700
+            disabled:opacity-50
+            transition-colors
+            cursor-pointer
           "
           >
             Approve Selected
@@ -203,21 +197,17 @@ export default function AuthorizationTable({
             disabled={selectedRows.length === 0}
             onClick={() => setShowRejectModal(true)}
             className="
-          h-9
-          xl:h-10
-          px-4
-          rounded-xl
-          bg-red-500
-          text-white
-          text-xs
-          xl:text-sm
-          font-semibold
-          hover:bg-red-600
-          transition
-          cursor-pointer
-          2xl:h-11
-          2xl:px-5
-          2xl:text-[17px]
+            h-10
+            px-4
+            rounded-xl
+            bg-red-600
+            text-white
+            text-sm
+            font-semibold
+            hover:bg-red-700
+            disabled:opacity-50
+            transition-colors
+            cursor-pointer
           "
           >
             Reject Selected
@@ -228,58 +218,65 @@ export default function AuthorizationTable({
       {/* Table */}
 
       <div className="overflow-x-auto">
-        <table
-          className="
-        w-full
-        min-w-[950px]
-        xl:min-w-full
-        "
-        >
+        <table className="w-full table-auto">
           <thead>
-            <tr
-              className="
-            border-b
-            border-[#EDF2F7]
-            bg-white
-            "
-            >
-              <th className="w-[4%] px-3 xl:px-4 py-4">
+            <tr className="border-b border-slate-200 bg-slate-50">
+              {/* Checkbox */}
+
+              <th className="w-[60px] px-4 py-4 text-center">
                 <input
-                  className="cursor-pointer 2xl:w-5 2xl:h-5"
                   type="checkbox"
+                  className="h-4 w-4 cursor-pointer"
                   checked={
-                    paginatedLogs.length > 0 &&
-                    paginatedLogs.every((log) => selectedRows.includes(log.id))
+                    paginatedLogs.filter((log) => log.status === "PENDING")
+                      .length > 0 &&
+                    paginatedLogs
+                      .filter((log) => log.status === "PENDING")
+                      .every((log) => selectedRows.includes(log.id))
                   }
                   onChange={handleSelectAll}
                 />
               </th>
 
-              <th className="w-[6%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
-                Sr No.
+              {/* Sr No */}
+
+              <th className="w-[80px] px-4 py-4 text-left text-sm font-semibold text-slate-700">
+                Sr. No.
               </th>
 
-              <th className="w-[14%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
+              {/* Request Type */}
+
+              <th className="w-[170px] px-4 py-4 text-left text-sm font-semibold text-slate-700 whitespace-nowrap">
                 Request Type
               </th>
 
-              <th className="w-[12%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
+              {/* Requested By */}
+
+              <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700 whitespace-nowrap">
                 Requested By
               </th>
 
-              <th className="w-[28%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
+              {/* Resource */}
+
+              <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700 whitespace-nowrap">
                 Resource
               </th>
 
-              <th className="w-[18%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
-                Requested At
+              {/* Requested Date */}
+
+              <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700 whitespace-nowrap">
+                Requested Date
               </th>
 
-              <th className="w-[10%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
+              {/* Status */}
+
+              <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700 whitespace-nowrap">
                 Status
               </th>
 
-              <th className="w-[8%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg font-semibold text-[#64748B]">
+              {/* Actions */}
+
+              <th className="px-4 py-4 text-center text-sm font-semibold text-slate-700 whitespace-nowrap">
                 Actions
               </th>
             </tr>
@@ -289,15 +286,13 @@ export default function AuthorizationTable({
             {paginatedLogs.length === 0 ? (
               <tr>
                 <td
-                  colSpan="8"
+                  colSpan={8}
                   className="
-                  py-10
-                  text-center
-                  text-slate-500
-                  text-sm
-                  xl:text-base
-                  2xl:text-lg
-                "
+          py-14
+          text-center
+          text-slate-500
+          text-sm
+        "
                 >
                   No requests found
                 </td>
@@ -310,118 +305,144 @@ export default function AuthorizationTable({
                   <tr
                     key={log.id || srNo}
                     className="
-                  border-b
-                  border-[#EDF2F7]
-                  hover:bg-slate-50
-                  transition
-                  "
+            border-b
+            border-slate-200
+            hover:bg-slate-50
+            transition-colors
+          "
                   >
-                    <td className="w-[4%] px-3 xl:px-4 py-3 text-center">
+                    {/* Checkbox */}
+
+                    <td className="px-4 py-4 text-center">
                       {log.status === "PENDING" && (
                         <input
-                          className="cursor-pointer 2xl:w-5 2xl:h-5"
                           type="checkbox"
+                          className="h-4 w-4 cursor-pointer"
                           checked={selectedRows.includes(log.id)}
                           onChange={() => handleRowSelect(log.id)}
                         />
                       )}
                     </td>
 
-                    <td className="w-[6%] px-3 xl:px-4 py-3 text-center text-xs xl:text-sm font-medium text-[#0F172A] 2xl:text-lg 2xl:font-medium 2xl:tracking-wide">
-                      {srNo}
-                    </td>
+                    {/* Sr No */}
 
-                    <td className="w-[14%] px-3 xl:px-4 py-3 text-center">
-                      <span
-                        className={`
-                      px-3
-                      py-1
-                      rounded-full
-                      xl:text-[14px]
-                      2xl:text-[16px]
-                      font-medium
-                      whitespace-nowrap
-                      ${getRequestTypeStyle(log.requestSource)}
-                      `}
-                      >
-                        {log.requestSource}
+                    <td className="px-4 py-4">
+                      <span className="text-slate-700 text-sm xl:text-[15px] font-medium">
+                        {srNo}
                       </span>
                     </td>
 
-                    <td className="w-[12%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg font-medium text-[#0F172A] 2xl:font-medium 2xl:tracking-wide">
-                      {log.requestedBy}
+                    {/* Request Type */}
+
+                    <td className="px-4 py-4">
+                      <span
+                        className={`
+                inline-flex
+                items-center
+                px-3
+                py-1.5
+                rounded-full
+                text-xs
+                font-semibold
+                whitespace-nowrap
+                ${getRequestTypeStyle(log.requestSource)}
+              `}
+                      >
+                        {formatAction(log.requestSource)}
+                      </span>
                     </td>
 
-                    <td className="w-[28%] px-3 xl:px-4 py-4 text-center">
-                      <div
+                    {/* Requested By */}
+
+                    <td className="px-4 py-4">
+                      <span
                         className="
-                        mx-auto
-                        max-w-[140px]
-                        md:max-w-[200px]
-                        xl:max-w-[280px]
-                        2xl:max-w-[350px]
-                        truncate
-                        overflow-hidden
-                        whitespace-nowrap
-                        text-slate-600
-                        text-sm
-                        xl:text-[15px]
-                        2xl:text-[18px]
-                      "
+                block
+                truncate
+                text-slate-700
+                text-sm
+                xl:text-[15px]
+                2xl:text-base
+              "
+                        title={log.requestedBy}
+                      >
+                        {formatAction(log.requestedBy)}
+                      </span>
+                    </td>
+
+                    {/* Resource */}
+
+                    <td className="px-4 py-4">
+                      <span
+                        className="
+                block
+                truncate
+                text-slate-700
+                text-sm
+                xl:text-[15px]
+                2xl:text-base
+              "
                         title={log.activityName}
                       >
                         {log.activityName}
-                      </div>
-                    </td>
-
-                    <td className="w-[18%] px-3 xl:px-4 py-4 text-center text-sm xl:text-base 2xl:text-lg text-[#475569] 2xl:font-medium 2xl:tracking-wide">
-                      {new Date(log.requestedAt).toLocaleString()}
-                    </td>
-
-                    <td className="w-[10%] px-3 xl:px-4 py-4 text-center">
-                      <span
-                        className={`
-                      px-3
-                      py-1
-                      rounded-full
-                      xl:text-[14px]
-                      2xl:text-[15px]
-                      font-medium
-                      whitespace-nowrap
-                      ${getStatusStyle(log.status)}
-                      `}
-                      >
-                        ● {log.status}
                       </span>
                     </td>
 
-                    <td className="w-[8%] px-3 xl:px-4 py-4">
-                      <div className="flex justify-center">
+                    {/* Requested Date */}
+
+                    <td className="px-4 py-4 whitespace-nowrap">
+                      <span className="text-slate-700 text-sm xl:text-[15px] 2xl:text-base">
+                        {new Date(log.requestedAt)
+                          .toLocaleDateString("en-GB")
+                          .replace(/\//g, "-")}
+                      </span>
+                    </td>
+
+                    {/* Status */}
+
+                    <td className="px-4 py-4">
+                      <span
+                        className={`
+                inline-flex
+                items-center
+                gap-2
+                px-3
+                py-1.5
+                rounded-full
+                text-xs
+                font-semibold
+                whitespace-nowrap
+                ${getStatusStyle(log.status)}
+              `}
+                      >
+                        ● {formatAction(log.status)}
+                      </span>
+                    </td>
+
+                    {/* Actions */}
+
+                    <td className="px-4 py-4">
+                      <div className="flex items-center justify-center">
                         <button
                           onClick={() => onView(log)}
+                          title="View Request"
                           className="
-                        w-8
-                        h-8
-                        xl:w-9
-                        xl:h-9
-                        2xl:w-10
-                        2xl:h-10
-                        rounded-xl
-                        bg-[#EEF4FF]
-                        hover:bg-blue-100
-                        flex
-                        items-center
-                        justify-center
-                        transition
-                        cursor-pointer
-                        2xl:w-10
-                        2xl:h-10
-                        "
+                  h-9
+                  w-9
+                  rounded-lg
+                  bg-blue-50
+                  text-blue-600
+
+                  flex
+                  items-center
+                  justify-center
+
+                  hover:bg-blue-100
+                  transition-colors
+                  cursor-pointer
+                "
                         >
-                          <Eye
-                            size={14}
-                            className="text-[#2563EB] 2xl:w-5 h-5"
-                          />
+                          <Eye size={16} />
                         </button>
                       </div>
                     </td>
@@ -432,8 +453,6 @@ export default function AuthorizationTable({
           </tbody>
         </table>
       </div>
-
-      {/* Pagination */}
 
       <Pagination
         currentPage={currentPage}
@@ -561,3 +580,4 @@ export default function AuthorizationTable({
     </div>
   );
 }
+ 

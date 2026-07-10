@@ -113,39 +113,15 @@ const filteredActivities = allActivities.filter((activity) => {
   );
 });
 
-  // const handleGenerate = () => {
-  //   switch (reportType) {
-  //     case "pdf":
-  //       handleGeneratePdf();
-  //       break;
-
-  //     case "excel":
-  //       handleExportExcel();
-  //       break;
-
-  //     case "csv":
-  //       handleGenerateCsv();
-  //       break;
-
-  //     case "word":
-  //       handleGenerateWord();
-  //       break;
-
-  //     default:
-  //       toast.error("Please select report format");
-  //       return;
-  //   }
-
-  //   setShowReportModal(false);
-  // };
+  
 const handleGenerate = () => {
-  // ✅ 1. CHECK PROJECT FIRST
+ 
   if (!project || !selectedProjectId) {
     toast.error("No project selected. No permission to generate report.");
     return;
   }
 
-  // (optional extra safety)
+
   if (!project.projectName) {
     toast.error("Invalid project selection.");
     return;
@@ -378,53 +354,7 @@ const handleGenerate = () => {
       printWindow.close();
     }, 500);
   };
-  // const handleGenerateCsv = () => {
-  //   const rows = [
-  //     [
-  //       "Phase",
-  //       "Milestone",
-  //       "Task",
-  //       "Sub Task",
-  //       "Activity",
-  //       "Owner",
-  //       "Progress",
-  //       "Status",
-  //       "Schedule Health",
-  //     ],
-  //   ];
 
-  //   filteredActivities.forEach((activity) => {
-  //     rows.push([
-  //       activity.phase,
-  //       activity.milestone,
-  //       activity.task,
-  //       activity.subTask,
-  //       activity.activityName,
-  //       activity.owner,
-  //       activity.progress,
-  //       activity.executionStatus,
-  //       activity.scheduleHealth,
-  //     ]);
-  //   });
-
-  //   const csv = rows.map((row) => row.join(",")).join("\n");
-
-  //   const blob = new Blob([csv], {
-  //     type: "text/csv;charset=utf-8;",
-  //   });
-
-  //   const link = document.createElement("a");
-
-  //   link.href = URL.createObjectURL(blob);
-
-  //   link.download = `${project.projectName}.csv`;
-
-  //   link.click();
-
-  //   URL.revokeObjectURL(link.href);
-
-  //   toast.success("CSV downloaded successfully");
-  // };
 const handleGenerateCsv = () => {
   try {
     if (!project) {
@@ -507,10 +437,7 @@ const handleGenerateCsv = () => {
   }
 };
  
-// const handleGenerateWord = () => {
-  //   // call Word generator
-    
-  // };
+
  const handleGenerateWord = async () => {
   try {
     if (!project) {
@@ -653,38 +580,7 @@ const handleGenerateCsv = () => {
           Generate Report
         </button>
 
-        {/* <button
-        onClick={handleExportExcel}
-        className="
-        bg-[#10B981]
-        text-white
-        px-4
-        py-2.5
-        rounded-xl
-        text-sm
-        font-medium
-        hover:bg-[#059669]
-        flex-1
-        sm:flex-none
-        cursor-pointer
-        "
-        
-      >
-        Export Excel
-      </button> */}
-
-        {/* <button
- onClick={handlePrintReport}
-  className="
-  bg-[#2563EB]
-  text-white
-  px-4
-  py-2.5
-  rounded-xl
-  "
->
-  Print Report
-</button> */}
+    
       </div>
 
       {(user?.role === "ADMIN" || user?.role === "IMPLEMENTATION USER") && (
@@ -706,7 +602,7 @@ const handleGenerateCsv = () => {
         "
         >
           <Plus size={18} />
-          Add Task
+          Add Activity
         </button>
       )}
       <div

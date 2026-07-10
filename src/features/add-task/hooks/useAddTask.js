@@ -16,22 +16,39 @@ export default function useAddTask() {
 
   //const selectedProject = projects[0];
 
-  const [formData, setFormData] = useState({
-    phaseName: "",
-    milestoneName: "",
-    taskName: "",
-    subTaskName: "",
-    activityName: "",
-    owner: "",
-    estimatedPeriodWeek: "",
-    plannedStartDate: "",
-    plannedEndDate: "",
-    actualStartDate: "",
-    actualEndDate: "",
-    progress: 0,
-    executionStatus: "",
-    scheduleHealth: "",
-  });
+ const [formData, setFormData] = useState({
+  phaseId: "",
+  phaseName: "",
+  newPhase: false,
+
+  milestoneId: "",
+  milestoneName: "",
+  newMilestone: false,
+
+  taskId: "",
+  taskName: "",
+  newTask: false,
+
+  subTaskId: "",
+  subTaskName: "",
+  newSubTask: false,
+
+  activityName: "",
+  owner: "",
+
+  estimatedPeriodWeek: "",
+actualPeriodWeek: "",
+  plannedStartDate: "",
+  plannedEndDate: "",
+
+  actualStartDate: "",
+  actualEndDate: "",
+
+  progress: 0,
+
+  executionStatus: "",
+  scheduleHealth: "",
+});
   const handleSubmit = async () => {
     try {
       console.log(formData);
@@ -61,38 +78,43 @@ export default function useAddTask() {
         return;
       }
 
-      const payload = {
-        projectId: selectedProject?.id,
-        projectName: selectedProject?.projectName,
+     const payload = {
+  projectId: selectedProject?.id,
 
-        phaseName: formData.phaseName,
+  phaseId: formData.phaseId || null,
+  phaseName: formData.phaseName,
+  newPhase: formData.newPhase,
 
-        milestoneName: formData.milestoneName,
+  milestoneId: formData.milestoneId || null,
+  milestoneName: formData.milestoneName,
+  newMilestone: formData.newMilestone,
 
-        taskName: formData.taskName,
+  taskId: formData.taskId || null,
+  taskName: formData.taskName,
+  newTask: formData.newTask,
 
-        subTaskName: formData.subTaskName,
+  subTaskId: formData.subTaskId || null,
+  subTaskName: formData.subTaskName,
+  newSubTask: formData.newSubTask,
 
-        activityName: formData.activityName,
+  activityName: formData.activityName,
 
-        owner: formData.owner,
+  owner: formData.owner,
 
-        estimatedPeriodWeek: Number(formData.estimatedPeriodWeek),
+  estimatedPeriodWeek: Number(formData.estimatedPeriodWeek),
 
-        plannedStartDate: formData.plannedStartDate || null,
+  plannedStartDate: formData.plannedStartDate || null,
+  plannedEndDate: formData.plannedEndDate || null,
 
-        plannedEndDate: formData.plannedEndDate || null,
+  actualStartDate: formData.actualStartDate || null,
+  actualEndDate: formData.actualEndDate || null,
 
-        actualStartDate: formData.actualStartDate || null,
+  progress: Number(formData.progress),
 
-        actualEndDate: formData.actualEndDate || null,
+  executionStatus: formData.executionStatus,
 
-        progress: Number(formData.progress),
-
-        executionStatus: formData.executionStatus,
-
-        scheduleHealth: formData.scheduleHealth || "GREEN",
-      };
+  scheduleHealth: formData.scheduleHealth || "GREEN",
+};
 
       const response = await createActivity(payload);
 
@@ -112,95 +134,263 @@ export default function useAddTask() {
       );
     }
   };
-  const resetForm = () => {
-    setFormData({
-      phaseName: "",
-      milestoneName: "",
-      taskName: "",
-      subTaskName: "",
-      activityName: "",
-      owner: "",
-      estimatedPeriodWeek: "",
-      plannedStartDate: "",
-      plannedEndDate: "",
-      actualStartDate: "",
-      actualEndDate: "",
-      progress: 0,
-      executionStatus: " ",
-      scheduleHealth: "",
-    });
-  };
+ const resetForm = () => {
+  setFormData({
+    phaseId: "",
+    phaseName: "",
+    newPhase: false,
 
-  const phases = useMemo(() => {
-    return selectedProject?.phases?.map((p) => p.phaseName) || [];
-  }, [selectedProject]);
+    milestoneId: "",
+    milestoneName: "",
+    newMilestone: false,
 
-  const milestones = useMemo(() => {
-    const phase = selectedProject?.phases?.find(
-      (p) => p.phaseName === formData.phaseName,
-    );
+    taskId: "",
+    taskName: "",
+    newTask: false,
 
-    return phase?.milestones?.map((m) => m.milestoneName) || [];
-  }, [selectedProject, formData.phaseName]);
+    subTaskId: "",
+    subTaskName: "",
+    newSubTask: false,
+actualPeriodWeek: "",
+    activityName: "",
+    owner: "",
 
-  const taskOptions = useMemo(() => {
-    const phase = selectedProject?.phases?.find(
-      (p) => p.phaseName === formData.phaseName,
-    );
+    estimatedPeriodWeek: "",
 
-    const milestone = phase?.milestones?.find(
-      (m) => m.milestoneName === formData.milestoneName,
-    );
+    plannedStartDate: "",
+    plannedEndDate: "",
 
-    return milestone?.tasks?.map((t) => t.taskName) || [];
-  }, [selectedProject, formData.phaseName, formData.milestoneName]);
+    actualStartDate: "",
+    actualEndDate: "",
 
-  const subTasks = useMemo(() => {
-    const phase = selectedProject?.phases?.find(
-      (p) => p.phaseName === formData.phaseName,
-    );
+    progress: 0,
 
-    const milestone = phase?.milestones?.find(
-      (m) => m.milestoneName === formData.milestoneName,
-    );
+    executionStatus: "",
+    scheduleHealth: "",
+  });
+};
 
-    const task = milestone?.tasks?.find(
-      (t) => t.taskName === formData.taskName,
-    );
+// const phases = useMemo(() => {
+//   return (
+//     selectedProject?.phases?.map((phase) => ({
+//       id: phase.phaseId,
+//       name: phase.phaseName,
+//     })) || []
+//   );
+// }, [selectedProject]);
+const phases = useMemo(() => {
+  return (
+    selectedProject?.phases?.map((phase) => ({
+      id: phase.phaseId,
+      name: phase.phaseName,
+      isNew: phase.isNew || false,
+    })) || []
+  );
+}, [selectedProject]);
 
-    return task?.subTasks?.map((s) => s.subTaskName) || [];
-  }, [
-    selectedProject,
-    formData.phaseName,
-    formData.milestoneName,
-    formData.taskName,
-  ]);
+const milestones = useMemo(() => {
+  const phase = selectedProject?.phases?.find(
+    (p) => p.phaseId === formData.phaseId
+  );
 
-  const handleChange = (field, value) => {
-    setFormData((prev) => {
-      const updated = {
-        ...prev,
-        [field]: value,
-      };
+  return (
+    phase?.milestones?.map((milestone) => ({
+      id: milestone.milestoneId,
+      name: milestone.milestoneName,
+      isNew: milestone.isNew || false,
+    })) || []
+  );
+}, [selectedProject, formData.phaseId]);
 
-      if (field === "phaseName") {
-        updated.milestoneName = "";
-        updated.taskName = "";
-        updated.subTaskName = "";
+ const taskOptions = useMemo(() => {
+  const phase = selectedProject?.phases?.find(
+    (p) => p.phaseId === formData.phaseId
+  );
+
+  const milestone = phase?.milestones?.find(
+    (m) => m.milestoneId === formData.milestoneId
+  );
+
+  return (
+    milestone?.tasks?.map((task) => ({
+      id: task.taskId,
+      name: task.taskName,
+      isNew: task.isNew || false,
+    })) || []
+  );
+}, [selectedProject, formData.phaseId, formData.milestoneId]);
+
+const subTasks = useMemo(() => {
+  const phase = selectedProject?.phases?.find(
+    (p) => p.phaseId === formData.phaseId
+  );
+
+  const milestone = phase?.milestones?.find(
+    (m) => m.milestoneId === formData.milestoneId
+  );
+
+  const task = milestone?.tasks?.find(
+    (t) => t.taskId === formData.taskId
+  );
+
+  return (
+    task?.subTasks?.map((subTask) => ({
+      id: subTask.subTaskId,
+      name: subTask.subTaskName,
+      isNew: subTask.isNew || false,
+    })) || []
+  );
+}, [
+  selectedProject,
+  formData.phaseId,
+  formData.milestoneId,
+  formData.taskId,
+]);
+
+ const handleChange = (field, value) => {
+  setFormData((prev) => {
+   const updated = {
+  ...prev,
+  [field]: value,
+};
+
+// ======================================
+// Calculate Estimated Period Week
+// ======================================
+
+
+
+if (
+  field === "plannedStartDate" ||
+  field === "plannedEndDate"
+) {
+  const start =
+    field === "plannedStartDate"
+      ? value
+      : updated.plannedStartDate;
+
+  const end =
+    field === "plannedEndDate"
+      ? value
+      : updated.plannedEndDate;
+
+  if (start && end) {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    if (endDate >= startDate) {
+      let workingDays = 0;
+
+      const current = new Date(startDate);
+
+      while (current <= endDate) {
+        const day = current.getDay();
+
+        // Monday-Friday
+        if (day !== 0 && day !== 6) {
+          workingDays++;
+        }
+
+        current.setDate(current.getDate() + 1);
       }
 
-      if (field === "milestoneName") {
-        updated.taskName = "";
-        updated.subTaskName = "";
+      updated.estimatedPeriodWeek = Number(
+        (workingDays / 5).toFixed(2)
+      );
+    } else {
+      updated.estimatedPeriodWeek = "";
+    }
+  } else {
+    updated.estimatedPeriodWeek = "";
+  }
+}
+
+// ======================================
+// Calculate Actual Period Week
+// ======================================
+
+
+if (
+  field === "actualStartDate" ||
+  field === "actualEndDate"
+) {
+  const start =
+    field === "actualStartDate"
+      ? value
+      : updated.actualStartDate;
+
+  const end =
+    field === "actualEndDate"
+      ? value
+      : updated.actualEndDate;
+
+  if (start && end) {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    if (endDate >= startDate) {
+      let workingDays = 0;
+
+      const current = new Date(startDate);
+
+      while (current <= endDate) {
+        const day = current.getDay();
+
+        // Monday-Friday
+        if (day !== 0 && day !== 6) {
+          workingDays++;
+        }
+
+        current.setDate(current.getDate() + 1);
       }
 
-      if (field === "taskName") {
-        updated.subTaskName = "";
-      }
+      updated.actualPeriodWeek = Number(
+        (workingDays / 5).toFixed(1)
+      );
+    } else {
+      updated.actualPeriodWeek = "";
+    }
+  } else {
+    updated.actualPeriodWeek = "";
+  }
+}
 
-      return updated;
-    });
-  };
+    // Phase changed
+    if (field === "phaseId" || field === "phaseName") {
+      updated.milestoneId = "";
+      updated.milestoneName = "";
+      updated.newMilestone = false;
+
+      updated.taskId = "";
+      updated.taskName = "";
+      updated.newTask = false;
+
+      updated.subTaskId = "";
+      updated.subTaskName = "";
+      updated.newSubTask = false;
+    }
+
+    // Milestone changed
+    if (field === "milestoneId" || field === "milestoneName") {
+      updated.taskId = "";
+      updated.taskName = "";
+      updated.newTask = false;
+
+      updated.subTaskId = "";
+      updated.subTaskName = "";
+      updated.newSubTask = false;
+    }
+
+    // Task changed
+    if (field === "taskId" || field === "taskName") {
+      updated.subTaskId = "";
+      updated.subTaskName = "";
+      updated.newSubTask = false;
+    }
+
+    return updated;
+  });
+};
 
   return {
     selectedProject,

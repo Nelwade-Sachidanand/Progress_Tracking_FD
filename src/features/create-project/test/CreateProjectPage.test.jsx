@@ -6,6 +6,13 @@ import useProjectForm from "../hooks/useProjectForm";
 import CreateProjectPage from "../pages/CreateProjectPage";
 import { getProjectInformation } from "../services/createProjectService";
 
+vi.mock("../components/tabs/BackButton", () => ({
+  default: () => (
+    <button data-testid="back-button">
+      Back
+    </button>
+  ),
+}));
 vi.mock("../hooks/useProjectForm");
 const mockLoadProjectInformation = vi.fn();
 

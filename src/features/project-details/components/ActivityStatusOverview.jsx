@@ -1,4 +1,8 @@
-import { Building2, Flag } from "lucide-react";
+import {
+  Building2,
+  Flag,
+  CircleDashed,
+} from "lucide-react";
 
 
 export default function ActivityStatusOverview({
@@ -45,7 +49,10 @@ const upcomingActivities =
         activity.executionStatus ===
           "Delayed"
     );
-
+const inProgressActivities = activities.filter(
+  (activity) =>
+    activity.executionStatus === "In Progress"
+);
   return (
     <div className="bg-white rounded-2xl border border-[#E5EAF2] p-5">
 
@@ -82,11 +89,11 @@ const upcomingActivities =
 
       </div>
 
-      <div
+    <div
   className="
   grid
   grid-cols-1
-  lg:grid-cols-2
+  lg:grid-cols-3
   gap-4
   "
 >
@@ -208,7 +215,133 @@ flex-col
          
 
         </div>
+{/* In Progress Activities */}
 
+<div
+  className="
+  bg-white
+  border
+  border-[#FDE68A]
+  rounded-xl
+  overflow-hidden
+  h-[420px]
+  flex
+  flex-col
+  "
+>
+
+  {/* Header */}
+  <div
+    className="
+    flex
+    items-center
+    justify-between
+    px-4
+    py-3
+    bg-[#FFFBEB]
+    border-b
+    border-[#FDE68A]
+    "
+  >
+
+    <div className="flex items-center gap-3">
+
+      <CircleDashed
+        size={15}
+        className="text-[#D97706]"
+      />
+
+      <span className="text-[14px] font-semibold text-[#D97706]">
+        In Progress Activities (
+        {inProgressActivities.length}
+        )
+      </span>
+
+    </div>
+
+  </div>
+
+  {/* Body */}
+  <div
+    className="
+    flex-1
+    overflow-y-auto
+    "
+  >
+
+    {inProgressActivities.map(
+      (activity, index) => (
+
+        <div
+          key={index}
+          className="
+          flex
+          items-center
+          justify-between
+          px-4
+          py-3
+          border-b
+          border-[#F8E8C8]
+          "
+        >
+
+          <div>
+
+            <p
+              className="
+              text-[12px]
+              lg:text-[13px]
+              text-[#334155]
+              font-medium
+              break-words
+              "
+            >
+              {activity.activityName}
+            </p>
+
+            <p
+              className="
+              text-[10px]
+              lg:text-[11px]
+              text-[#94A3B8]
+              break-words
+              "
+            >
+              {activity.milestoneName}
+            </p>
+
+          </div>
+
+          <span
+            className="
+            px-2
+            py-0.5
+            rounded-full
+            bg-[#FEF3C7]
+            text-[#D97706]
+            text-[10px]
+            font-semibold
+            "
+          >
+            In Progress
+          </span>
+
+        </div>
+
+      )
+    )}
+
+    {inProgressActivities.length === 0 && (
+
+      <div className="flex items-center justify-center h-full text-sm text-slate-500">
+        No activities in progress
+      </div>
+
+    )}
+
+  </div>
+
+</div>
         {/* Delayed Activities */}
 
         <div

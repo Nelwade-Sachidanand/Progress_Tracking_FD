@@ -14,8 +14,79 @@ import {
 
 export default function ExecutiveSummary({
   project,
+  
 }){
-  const dropdownRef = useRef(null);
+
+function SmallCard({
+  title,
+  value,
+  icon: Icon,
+  color,
+  bg,
+  border,
+}) {
+  return (
+    <div
+      className="
+        relative
+     w-full
+h-[78px]
+        rounded-xl
+        border
+        shadow-sm
+      "
+      style={{
+        backgroundColor: bg,
+        borderColor: border,
+        boxShadow: "0 6px 18px rgba(15,23,42,.06)",
+      }}
+    >
+      {/* Icon */}
+      <div
+        className="
+          absolute
+          top-3
+          left-3
+          w-7
+          h-7
+          rounded-lg
+          flex
+          items-center
+          justify-center
+        "
+        style={{
+          backgroundColor: `${color}15`,
+        }}
+      >
+        <Icon
+          size={14}
+          color={color}
+        />
+      </div>
+
+      {/* Center Content */}
+      <div className="h-full flex flex-col items-center justify-center">
+        <h2
+          className="text-[22px] font-bold leading-none"
+          style={{ color }}
+        >
+          {value}
+        </h2>
+
+        <p
+          className="mt-2 text-[11px] font-semibold text-center"
+          style={{ color }}
+        >
+          {title}
+        </p>
+      </div>
+    </div>
+  );
+}
+ // const dropdownRef = useRef(null);
+  const milestoneDropdownRef = useRef(null);
+const dateDropdownRef = useRef(null);
+  const [showDateDropdown, setShowDateDropdown] = useState(false);
 const [selectedMilestones,
   setSelectedMilestones] =
   useState([]);
@@ -30,6 +101,7 @@ const [toDate,
 
   const [quickSelect, setQuickSelect] =
   useState("");
+
 
 const [showMilestoneDropdown,
   setShowMilestoneDropdown] =
@@ -46,23 +118,31 @@ const [showMilestoneDropdown,
         milestone.milestoneName
     ) || [];
 
-const handleMilestoneChange = (
-  milestone
-) => {
-  setSelectedMilestones(
-    (prev) =>
-      prev.includes(milestone)
-        ? prev.filter(
-            (m) =>
-              m !== milestone
-          )
-        : [
-            ...prev,
-            milestone,
-          ]
+// const handleMilestoneChange = (
+//   milestone
+// ) => {
+//   setSelectedMilestones(
+//     (prev) =>
+//       prev.includes(milestone)
+//         ? prev.filter(
+//             (m) =>
+//               m !== milestone
+//           )
+//         : [
+//             ...prev,
+//             milestone,
+//           ]
+//   );
+// };
+
+
+const handleMilestoneChange = (milestone) => {
+  setSelectedMilestones((prev) =>
+    prev.includes(milestone)
+      ? prev.filter((m) => m !== milestone)
+      : [...prev, milestone]
   );
 };
-
 const activities =
   project?.phases
     ?.flatMap(
@@ -129,12 +209,14 @@ const activities =
         "Delayed"
     ).length;
 
-  const openActivities =
-    activities.filter(
-      (activity) =>
-        activity.executionStatus !==
-        "Completed"
-    ).length;
+  const inProgressActivities = activities.filter(
+  (activity) => activity.executionStatus === "In Progress"
+).length;
+
+const notStartedActivities = activities.filter(
+  (activity) =>
+    activity.executionStatus === "Not Yet Started"
+).length;
 
   const overallProgress =
     totalActivities > 0
@@ -147,35 +229,33 @@ const activities =
           ) / totalActivities
         )
       : 0;
-      useEffect(() => {
-  const handleClickOutside = (
-    event
-  ) => {
+  
+
+useEffect(() => {
+  const handleClickOutside = (event) => {
     if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(
-        event.target
-      )
+      milestoneDropdownRef.current &&
+      !milestoneDropdownRef.current.contains(event.target)
     ) {
-      setShowMilestoneDropdown(
-        false
-      );
+      setShowMilestoneDropdown(false);
+    }
+
+    if (
+      dateDropdownRef.current &&
+      !dateDropdownRef.current.contains(event.target)
+    ) {
+      setShowDateDropdown(false);
     }
   };
 
-  document.addEventListener(
-    "mousedown",
-    handleClickOutside
-  );
+  document.addEventListener("mousedown", handleClickOutside);
 
-  return () => {
+  return () =>
     document.removeEventListener(
       "mousedown",
       handleClickOutside
     );
-  };
 }, []);
-
 const handleQuickSelect = (
   type
 ) => {
@@ -185,34 +265,34 @@ const handleQuickSelect = (
   let end = new Date();
 
   switch (type) {
-    case "today":
+    case "Today":
       break;
 
-    case "week":
+    case "Week":
       start.setDate(
         today.getDate() - 7
       );
       break;
 
-    case "month":
+    case "Month":
       start.setMonth(
         today.getMonth() - 1
       );
       break;
 
-    case "quarter":
+    case "Quarter":
       start.setMonth(
         today.getMonth() - 3
       );
       break;
 
-    case "half-yearly":
+    case "Half-Yearly":
       start.setMonth(
         today.getMonth() - 6
       );
       break;
 
-    case "year":
+    case "Year":
       start.setFullYear(
         today.getFullYear() - 1
       );
@@ -292,19 +372,19 @@ const clearDateFilter = () => {
     border: "#FFE3E3",
   },
 
-  {
-    title: "Open / Remaining",
-    value: openActivities,
-    subText: `${Math.round(
-      (openActivities /
-        (totalActivities || 1)) *
-        100
-    )}% of total`,
-    icon: ClipboardList,
-    iconColor: "#6D4AFF",
-    bg: "#FCFAFF",
-    border: "#ECE5FF",
-  },
+  // {
+  //   title: "Open / Remaining",
+  //   value: openActivities,
+  //   subText: `${Math.round(
+  //     (openActivities /
+  //       (totalActivities || 1)) *
+  //       100
+  //   )}% of total`,
+  //   icon: ClipboardList,
+  //   iconColor: "#6D4AFF",
+  //   bg: "#FCFAFF",
+  //   border: "#ECE5FF",
+  // },
 ];
 
   return (
@@ -366,334 +446,273 @@ const clearDateFilter = () => {
   xl:w-auto
   "
 >
-<div
-  className="relative"
-  ref={dropdownRef}
->
 
-  <button
-    type="button"
-    onClick={() =>
-      setShowMilestoneDropdown(
-        !showMilestoneDropdown
-      )
-    }
-    className="
-    h-11
-    w-full lg:w-[220px]
-    px-4
-    rounded-xl
-    border
-    border-[#E5EAF2]
-    bg-white
-    flex
-    items-center
-    justify-between
-    text-sm
-    "
-  >
-    <span>
-      {selectedMilestones.length
-        ? `${selectedMilestones.length} Selected`
-        : "All Milestones"}
-    </span>
-
-    <span>▼</span>
-  </button>
-
-  {showMilestoneDropdown && (
-    <div
-      className="
-      absolute
-      top-full
-      left-0
-      mt-2
-      w-full
-      bg-white
-      border
-      border-[#E5EAF2]
-      rounded-xl
-      shadow-lg
-      z-50
-      max-h-64
-      overflow-y-auto
-      "
-    >
-
-      {/* All Milestones */}
-
-      <label
-        className="
-        flex
-        items-center
-        gap-3
-        px-4
-        py-3
-        border-b
-        font-medium
-        "
-      >
-        <input
-          type="checkbox"
-          checked={
-            selectedMilestones.length ===
-            0
-          }
-          onChange={() =>
-            setSelectedMilestones([])
-          }
-        />
-
-        All Milestones
-      </label>
-
-      {milestones.map(
-        (milestone) => (
-          <label
-            key={milestone}
-            className="
-            flex
-            items-center
-            gap-3
-            px-4
-            py-3
-            hover:bg-[#F8FAFC]
-            cursor-pointer
-            "
-          >
-            <input
-              type="checkbox"
-              checked={selectedMilestones.includes(
-                milestone
-              )}
-              onChange={() =>
-                handleMilestoneChange(
-                  milestone
-                )
-              }
-            />
-
-            {milestone}
-          </label>
-        )
-      )}
-    </div>
-  )}
-
-</div>
-
-  <div
-  className="
-  flex
-  flex-wrap
-  lg:flex-nowrap
-  gap-2
-  overflow-x-auto
-  "
-  cursor-pointer
->
-  <input
-    type="date"
-    value={fromDate}
-    onChange={(e) => {
-      setFromDate(e.target.value);
-      setQuickSelect("custom");
-    }}
-    className="
-    h-10
-    px-3
-    rounded-lg
-    border
-    border-[#E5EAF2]
-    text-xs
-    "
-    cursor-pointer
-  />
 
  <div
-  className="
-  h-10
-  flex
-  items-center
-  justify-center
-  px-1
-  "
+  className="relative"
+  ref={milestoneDropdownRef}
 >
-  <span className="text-base font-bold text-slate-500">
-    →
-  </span>
+
+  {/* LABEL */}
+  <p className="text-xs font-semibold text-[#0B1F59] mb-1">
+    Milestone Filter
+  </p>
+
+  {/* BUTTON ROW */}
+  <div className="flex items-center gap-2">
+
+    {/* DROPDOWN BUTTON */}
+    <button
+      onClick={() =>
+        setShowMilestoneDropdown(!showMilestoneDropdown)
+      }
+      className="
+        h-10
+        w-[350px]
+        px-3
+        rounded-lg
+        border
+        border-[#E5EAF2]
+        bg-white
+        flex
+        items-center
+        justify-between
+        text-sm
+         cursor-pointer
+      "
+    >
+     <span className="truncate">
+  {selectedMilestones.length === 0
+    ? "All Milestones"
+    : selectedMilestones.length === milestones.length
+      ? "All Milestones"
+      : selectedMilestones.length <= 2
+        ? selectedMilestones.join(", ")
+        : `${selectedMilestones.slice(0, 2).join(", ")} +${selectedMilestones.length - 2}`}
+</span>
+
+      <span>▼</span>
+    </button>
+
+    
+
+  </div>
+
+ {showMilestoneDropdown && (
+  <div className="
+    absolute
+    top-full
+    left-0
+    mt-2
+    w-[350px]
+    bg-white
+    border
+    rounded-lg
+    shadow-lg
+    z-50
+    max-h-50
+    overflow-y-auto
+  ">
+
+    {/* ALL MILESTONES */}
+    <label className="
+      flex items-center gap-2 px-3 py-2 text-sm border-b hover:bg-slate-50
+    ">
+ <input
+  type="checkbox"
+  checked={selectedMilestones.length === milestones.length}
+  onChange={() =>
+    setSelectedMilestones(
+      selectedMilestones.length === milestones.length
+        ? []
+        : [...milestones]
+    )
+  }
+/>
+      All Milestones
+    </label>
+
+    {/* MILESTONE LIST */}
+    {milestones.map((milestone) => (
+  <label
+    key={milestone}
+    className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-slate-100"
+  >
+    <input
+      type="checkbox"
+      checked={selectedMilestones.includes(milestone)}
+      onChange={() => handleMilestoneChange(milestone)}
+    />
+
+    <span>{milestone}</span>
+  </label>
+))}
+
+    {/* CLEAR BUTTON (INSIDE DROPDOWN) */}
+    <div className="border-t px-2 py-2 sticky bottom-0 bg-white">
+      <button
+        onClick={() => setSelectedMilestones([])}
+        className="
+          w-full
+          py-2
+          text-sm
+          text-red-600
+          hover:bg-red-50
+          rounded
+        "
+      >
+        Clear Selection
+      </button>
+    </div>
+
+  </div>
+)}
 </div>
 
-  <input
-    type="date"
-    value={toDate}
-    onChange={(e) => {
-      setToDate(e.target.value);
-      setQuickSelect("custom");
-    }}
-    className="
-    h-10
-    px-3
-    rounded-lg
+
+<div className="flex flex-col lg:flex-row gap-3 items-start lg:items-center">
+
+  {/* DATE FILTER LABEL */}
+<div className="flex flex-col gap-1">
+
+  <p className="text-xs font-semibold text-[#0B1F59]">
+    Date Filter
+  </p>
+
+  {/* QUICK SELECT */}
+  <div className="relative" ref={dateDropdownRef}>
+
+    <button
+      onClick={() => setShowDateDropdown(!showDateDropdown)}
+      className="
+        h-10
+        w-[180px]
+        px-3
+        rounded-lg
+        border
+        border-[#E5EAF2]
+        bg-white
+        text-sm
+        flex
+        items-center
+        justify-between
+        cursor-pointer
+      "
+    >
+      <span>
+        {quickSelect ? quickSelect : "Quick Select"}
+      </span>
+      <span>▼</span>
+    </button>
+
+    {/* DROPDOWN */}
+   {showDateDropdown && (
+<div
+  className="
+    absolute
+    top-full
+    left-0
+    mt-2
+    w-[220px]
+    max-h-48
+    bg-white
     border
     border-[#E5EAF2]
-    text-xs
-    "
-    cursor-pointer
-  />
-
-  <button
-    onClick={() =>
-      handleQuickSelect("today")
-    }
-    className={`
-    h-8.5
-    px-2
     rounded-lg
-    text-xs
-    border
-    whitespace-nowrap
-    cursor-pointer
-    ${
-      quickSelect === "today"
-        ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
-        : "bg-white"
-    }
-    `}
-  >
-    Today
-  </button>
+    shadow-lg
+    z-50
+    overflow-y-auto
+  "
+>
+    <div className="px-4 py-3 border-b bg-slate-50">
+      <p className="text-sm font-semibold text-[#0B1F59]">
+        Quick Select
+      </p>
+    </div>
 
-  <button
-    onClick={() =>
-      handleQuickSelect("week")
-    }
-    className={`
-    h-8.5
-    px-2
-    rounded-lg
-    text-xs
-    border
-    whitespace-nowrap
-    cursor-pointer
-    ${
-      quickSelect === "week"
-        ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
-        : "bg-white"
-    }
-    `}
-  >
-    Week
-  </button>
+    {[
+      "Today",
+      "Week",
+      "Month",
+      "Quarter",
+      "Half-Yearly",
+      "Year",
+    ].map((item) => (
+      <button
+        key={item}
+        onClick={() => {
+          handleQuickSelect(item);
+          setShowDateDropdown(false);
+        }}
+        className={`
+          w-full
+          text-left
+          px-4
+          py-3
+          text-sm
+          hover:bg-slate-100
+          transition-colors
+          ${
+            quickSelect === item
+              ? "bg-blue-50 text-blue-700 font-semibold"
+              : ""
+          }
+        `}
+      >
+        {item}
+      </button>
+    ))}
 
-  <button
-    onClick={() =>
-      handleQuickSelect("month")
-    }
-    className={`
-    h-8.5
-    px-2
-    rounded-lg
-    text-xs
-    border
-    whitespace-nowrap
-    cursor-pointer
-    ${
-      quickSelect === "month"
-        ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
-        : "bg-white"
-    }
-    `}
-  >
-    Month
-  </button>
+    <div className="border-t p-2">
+      <button
+        onClick={() => {
+          clearDateFilter();
+          setShowDateDropdown(false);
+        }}
+        className="
+          w-full
+          rounded-lg
+          py-2
+          text-sm
+          text-red-600
+          hover:bg-red-50
+        "
+      >
+        Clear Filter
+      </button>
+    </div>
+  </div>
+)}
+  </div>
 
-  <button
-    onClick={() =>
-      handleQuickSelect("quarter")
-    }
-    className={`
-    h-8.5
-    px-2
-    rounded-lg
-    text-xs
-    border
-    whitespace-nowrap
-    cursor-pointer
-    ${
-      quickSelect === "quarter"
-        ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
-        : "bg-white"
-    }
-    `}
-  >
-    Quarter
-  </button>
+</div>
 
-  <button
-    onClick={() =>
-      handleQuickSelect(
-        "half-yearly"
-      )
-    }
-    className={`
-    h-8.5
-    px-2
-    rounded-lg
-    text-xs
-    border
-    whitespace-nowrap
-    cursor-pointer
-    ${
-      quickSelect ===
-      "half-yearly"
-        ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
-        : "bg-white"
-    }
-    `}
-  >
-    Half-Yearly
-  </button>
+  {/* DATE RANGE LABELS */}
+<div className="flex items-end gap-2">
 
-  <button
-    onClick={() =>
-      handleQuickSelect("year")
-    }
-    className={`
-    h-8.5
-    px-2
-    rounded-lg
-    text-xs
-    border
-    whitespace-nowrap
-    cursor-pointer
-    ${
-      quickSelect === "year"
-        ? "bg-[#6D4AFF] text-white border-[#6D4AFF]"
-        : "bg-white"
-    }
-    `}
-  >
-    Year
-  </button>
+  <div className="flex flex-col">
+    <p className="text-[12px] text-[#0B1F59] font-semibold">From</p>
+    <input
+      type="date"
+      value={fromDate}
+      onChange={(e) => setFromDate(e.target.value)}
+      className="h-10 px-3 rounded-lg border text-xs   border-[#E5EAF2]"
+    />
+  </div>
 
-  <button
-    onClick={clearDateFilter}
-    className="
-    h-8.5
-    px-2
-    rounded-lg
-    text-xs
-    border
-    bg-red-50
-    text-red-600
-    border-red-200
-    whitespace-nowrap
-    "
-    cursor-pointer
-  >
-    Clear
-  </button>
+  <div className="flex flex-col">
+    <p className="text-[12px] text-[#0B1F59] font-semibold">To</p>
+    <input
+      type="date"
+      value={toDate}
+      onChange={(e) => setToDate(e.target.value)}
+      className="h-10 px-3 rounded-lg border text-xs   border-[#E5EAF2]"
+    />
+  </div>
+
+</div>
+
+  
 
 </div>
         </div>
@@ -701,98 +720,138 @@ const clearDateFilter = () => {
       </div>
 
       {/* Cards */}
-     <div
-  className="
-  grid
-  grid-cols-1
-  sm:grid-cols-2
-  lg:grid-cols-3
-  xl:grid-cols-5
-  gap-4
-  "
->
+     {/* Cards */}
+<div className="grid grid-cols-12 gap-3">
 
-        {cards.map((card) => {
-          const Icon = card.icon;
-
-          return (
-            <div
-  key={card.title}
+  {/* ================= LEFT : OVERALL PROGRESS ================= */}
+ <div className="col-span-12 lg:col-span-3 flex">
+ <div
   className="
-  rounded-2xl
-  border
-  p-4
-  min-h-[150px] lg:min-h-[170px]
-  "
-  style={{
-    backgroundColor: card.bg,
-    borderColor: card.border,
-  }}
->
-  <div
-    className="
-    w-12
-    h-12
-    rounded-full
-    flex
-    items-center
-    justify-center
-    mb-3
+      relative
+      w-full
+      h-[168px]
+      rounded-xl
+      border
+      px-6
+      py-4
+      shadow-lg
     "
     style={{
-      backgroundColor: `${card.iconColor}15`,
+      backgroundColor: "#F8FBFF",
+      borderColor: "#E5EDF8",
+      boxShadow: "0 8px 24px rgba(15, 23, 42, 0.08)",
     }}
   >
-    <Icon
-      size={22}
+    {/* Top Left Icon */}
+    <div
+      className="
+        absolute
+        top-5
+        left-5
+        w-12
+        h-12
+        rounded-xl
+        flex
+        items-center
+        justify-center
+      "
       style={{
-        color: card.iconColor,
+        backgroundColor: "#2563EB15",
       }}
-    />
-  </div>
+    >
+      <CircleDashed size={24} color="#2563EB" />
+    </div>
 
-  <h3
-    className="
-   text-[28px] lg:text-[34px]
-    font-bold
-    leading-none
-    "
-    style={{
-      color: card.iconColor,
-    }}
-  >
-    {card.value}
-  </h3>
+    {/* Center Content */}
+  <div className="h-full flex flex-col items-center justify-center gap-3">
+      <h1
+        className="text-[52px] font-bold leading-none"
+        style={{ color: "#2563EB" }}
+      >
+        {overallProgress}%
+      </h1>
 
-  <p
-    className="
-    mt-2
-    text-[13px] lg:text-[15px]
-    font-semibold
-    "
-    style={{
-      color: card.iconColor,
-    }}
-  >
-    {card.title}
-  </p>
-
-  <div className="mt-4">
-    <span className="text-xs text-[#64748B]">
-      {card.subText}
-    </span>
-
-    {card.extra && (
-      <span className="ml-2 text-green-600 text-xs font-semibold">
-        {card.extra}
-      </span>
-    )}
+      <p
+        className="mt-2 text-[16px] font-semibold"
+        style={{ color: "#2563EB" }}
+      >
+        Overall Progress
+      </p>
+    </div>
   </div>
 </div>
-          );
-        })}
 
-      </div>
+  {/* ================= RIGHT ================= */}
+<div className="col-span-12 lg:col-span-9 flex flex-col gap-3">
+
+    {/* Row 1 */}
+  <div className="grid grid-cols-3 gap-3">
+
+      {/* Total */}
+      <SmallCard
+       
+        title="Total Activities"
+         value={totalActivities}
+        icon={ListTodo}
+        color="#D97706"
+        bg="#FFFDF8"
+        border="#F5E8C7"
+      />
+
+      {/* Completed */}
+      <SmallCard
+        title="Completed"
+        value={completedActivities}
+        subText={`${Math.round(
+          (completedActivities / (totalActivities || 1)) * 100
+        )}% of total`}
+        icon={CheckCircle2}
+        color="#16A34A"
+        bg="#F8FFFB"
+        border="#DDF7E7"
+      />
+
+      {/* Delayed */}
+      <SmallCard
+        title="Delayed"
+        value={delayedActivities}
+        subText={`${Math.round(
+          (delayedActivities / (totalActivities || 1)) * 100
+        )}% of total`}
+        icon={AlertTriangle}
+        color="#EF4444"
+        bg="#FFF9F9"
+        border="#FFE3E3"
+      />
+
+    </div>
+
+    {/* Row 2 */}
+    <div className="grid grid-cols-3 gap-4">
+
+  <SmallCard
+    title="In Progress"
+    value={inProgressActivities}
+    icon={CircleDashed}
+    color="#2563EB"
+    bg="#F8FBFF"
+    border="#E5EDF8"
+  />
+
+  <SmallCard
+    title="Not Yet Started"
+    value={notStartedActivities}
+    icon={ClipboardList}
+    color="#6D4AFF"
+    bg="#FCFAFF"
+    border="#ECE5FF"
+  />
+
+</div>
+
+  </div>
+
+</div>
 
     </div>
   );

@@ -1,7 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import DocumentFilters from "../DocumentFilters";
-
+import DocumentFilters from "../components/DocumentFilters";
 const mockProps = {
   phases: ["Phase 1"],
   milestones: ["M1", "M2"],
