@@ -305,6 +305,7 @@ export default function ExecutiveSummary({ project }) {
             selected={selectedMilestones}
             onChange={setSelectedMilestones}
             width="w-full"
+            dropdownWidth="w-[350px]"
           />
 
           {/* Quick Filter */}

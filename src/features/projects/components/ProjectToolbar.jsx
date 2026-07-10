@@ -110,7 +110,7 @@ export default function ProjectToolbar({
           <div className="flex justify-end">
             <button
               type="button"
-              onClick={() => navigate("/create-project")}
+              onClick={() => navigate("create")}
               className="
               flex
               items-center

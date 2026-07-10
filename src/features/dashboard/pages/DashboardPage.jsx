@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import DashboardToolbar from "../components/DashboardToolbar";
+// import DashboardToolbar from "../components/DashboardToolbar";
 import KpiCards from "../components/KpiCards";
 import PortfolioProgress from "../components/PortfolioProgress";
 import ProgressCard from "../components/ProgressCard";
@@ -131,7 +131,7 @@ export default function DashboardPage() {
       space-y-6
       "
     >
-      <DashboardToolbar onCreateProject={handleCreateProject} />
+      {/* <DashboardToolbar onCreateProject={handleCreateProject} /> */}
       <KpiCards data={dashboardData} />
 
       <PortfolioProgress data={dashboardData} />

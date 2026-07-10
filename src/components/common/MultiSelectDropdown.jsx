@@ -9,6 +9,7 @@ export default function MultiSelectDropdown({
   onChange,
   icon: Icon,
   width = "w-full",
+  dropdownWidth,
 }) {
   const dropdownRef = useRef(null);
 
@@ -94,6 +95,11 @@ export default function MultiSelectDropdown({
           min-w-0
 
           cursor-pointer
+          disabled:bg-slate-100
+          disabled:text-slate-500
+          disabled:border-slate-300
+          disabled:cursor-not-allowed
+          disabled:opacity-100
         "
         >
           <div className="flex items-center gap-3 flex-1 min-w-0 overflow-hidden">
@@ -139,30 +145,27 @@ export default function MultiSelectDropdown({
         {/* Dropdown */}
         {open && (
           <div
-            className="
+          className={`
             absolute
-            left-0
+            right-0
             top-11
 
-            w-full
+            ${dropdownWidth || width || "w-full"}
 
             bg-white
             rounded-xl
             border
             border-[#CDD7E3]
-
             shadow-xl
-
             z-60
-
             overflow-x-hidden
             overflow-y-auto
 
             animate-in
             fade-in
             zoom-in-95
-          "
-          >
+          `}
+        >
             {/* Search */}
             <div className="border-b border-[#E1E7EF] p-3">
               <div className="relative">

@@ -104,7 +104,7 @@ function Tooltip({ milestone, index, x, y, visible, onClose }) {
 export default function MilestoneJourney({ project }) {
   const [tooltip, setTooltip] = useState(null);
 
-  const ITEMS_PER_ROW = 9;
+  const ITEMS_PER_ROW = 8;
   const NODE_R = window.innerWidth < 640 ? 20 : 26;
 
   const GAP_X = window.innerWidth < 640 ? 42 : 73;

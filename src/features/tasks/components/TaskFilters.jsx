@@ -72,6 +72,7 @@ export default function TaskFilters({
           selected={selectedMilestone}
           onChange={setSelectedMilestone}
           width="w-full"
+          dropdownWidth="w-[350px]"
         />
 
         {/* Task */}

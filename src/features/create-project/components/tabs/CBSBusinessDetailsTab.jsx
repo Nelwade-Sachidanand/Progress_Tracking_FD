@@ -5,6 +5,7 @@ export default function CBSBusinessDetailsTab({
   cbsInformation,
   businessStatistics,
   updateSection,
+  disabled = false,
 }) {
   const handleCbsChange = (e) => {
     updateSection("cbsInformation", {
@@ -38,6 +39,12 @@ export default function CBSBusinessDetailsTab({
   duration-200
 
   focus:border-blue-500
+
+  disabled:bg-slate-100
+    disabled:text-slate-500
+    disabled:border-slate-300
+    disabled:cursor-not-allowed
+    disabled:opacity-100
 `;
 
   const iconInputClass = `
@@ -61,6 +68,12 @@ export default function CBSBusinessDetailsTab({
   duration-200
 
   focus:border-blue-500
+
+  disabled:bg-slate-100
+    disabled:text-slate-500
+    disabled:border-slate-300
+    disabled:cursor-not-allowed
+    disabled:opacity-100
 `;
 
   return (
@@ -106,6 +119,7 @@ export default function CBSBusinessDetailsTab({
                 name="previousCBSVendor"
                 value={cbsInformation.previousCBSVendor || ""}
                 onChange={handleCbsChange}
+                disabled={disabled}
                 placeholder="Enter Previous Vendor"
                 className={iconInputClass}
               />
@@ -125,6 +139,7 @@ export default function CBSBusinessDetailsTab({
               name="previousVendorPeriod"
               value={cbsInformation.previousVendorPeriod || ""}
               onChange={handleCbsChange}
+              disabled={disabled}
               placeholder="Example: 2016 - 2022"
               className={inputClass}
             />
@@ -143,6 +158,7 @@ export default function CBSBusinessDetailsTab({
               name="existingCBSVendor"
               value={cbsInformation.existingCBSVendor || ""}
               onChange={handleCbsChange}
+              disabled={disabled}
               placeholder="Enter Existing Vendor"
               className={inputClass}
             />
@@ -167,6 +183,7 @@ export default function CBSBusinessDetailsTab({
                 value={cbsInformation.cbsSince || ""}
                 onChange={handleCbsChange}
                 className={iconInputClass}
+                disabled={disabled}
               />
             </div>
           </div>
@@ -182,13 +199,14 @@ export default function CBSBusinessDetailsTab({
           Business Statistics
         </h3>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-6">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-5">
           <InputField
             type="number"
             label="Total Active Customers"
             name="totalActiveCustomers"
             value={businessStatistics.totalActiveCustomers}
             onChange={handleBusinessChange}
+            disabled={disabled}
           />
 
           <InputField
@@ -197,6 +215,7 @@ export default function CBSBusinessDetailsTab({
             name="totalAccounts"
             value={businessStatistics.totalAccounts}
             onChange={handleBusinessChange}
+            disabled={disabled}
           />
 
           <InputField
@@ -205,6 +224,7 @@ export default function CBSBusinessDetailsTab({
             name="totalUsers"
             value={businessStatistics.totalUsers}
             onChange={handleBusinessChange}
+            disabled={disabled}
           />
 
           <InputField
@@ -213,6 +233,7 @@ export default function CBSBusinessDetailsTab({
             name="concurrentUsers"
             value={businessStatistics.concurrentUsers}
             onChange={handleBusinessChange}
+            disabled={disabled}
           />
 
           <InputField
@@ -221,6 +242,7 @@ export default function CBSBusinessDetailsTab({
             name="accountsPerYear"
             value={businessStatistics.accountsPerYear}
             onChange={handleBusinessChange}
+            disabled={disabled}
           />
 
           <InputField
@@ -229,6 +251,7 @@ export default function CBSBusinessDetailsTab({
             name="dailyTransactions"
             value={businessStatistics.dailyTransactions}
             onChange={handleBusinessChange}
+            disabled={disabled}
           />
 
           <InputField
@@ -237,6 +260,7 @@ export default function CBSBusinessDetailsTab({
             name="digitalTransactions"
             value={businessStatistics.digitalTransactions}
             onChange={handleBusinessChange}
+            disabled={disabled}
           />
 
           <InputField
@@ -245,6 +269,7 @@ export default function CBSBusinessDetailsTab({
             name="upiTransactions"
             value={businessStatistics.upiTransactions}
             onChange={handleBusinessChange}
+            disabled={disabled}
           />
 
           <InputField
@@ -253,6 +278,7 @@ export default function CBSBusinessDetailsTab({
             name="businessMix"
             value={businessStatistics.businessMix}
             onChange={handleBusinessChange}
+            disabled={disabled}
           />
 
           <InputField
@@ -261,6 +287,7 @@ export default function CBSBusinessDetailsTab({
             name="customerOnboarding"
             value={businessStatistics.customerOnboarding}
             onChange={handleBusinessChange}
+            disabled={disabled}
           />
 
           <InputField
@@ -269,6 +296,7 @@ export default function CBSBusinessDetailsTab({
             name="loanIssues"
             value={businessStatistics.loanIssues}
             onChange={handleBusinessChange}
+            disabled={disabled}
           />
         </div>
       </div>
@@ -306,7 +334,7 @@ export default function CBSBusinessDetailsTab({
    Reusable Input Field
 ========================================================== */
 
-function InputField({ label, name, value, onChange, type = "text" }) {
+function InputField({ label, name, value, onChange, type = "text", disabled }) {
   return (
     <div>
       <label className="mb-1 block text-sm font-medium text-slate-700">
@@ -318,6 +346,7 @@ function InputField({ label, name, value, onChange, type = "text" }) {
           name={name}
           value={value}
           onChange={onChange}
+          disabled={disabled}
           className="
             h-9
             w-full
@@ -330,6 +359,11 @@ function InputField({ label, name, value, onChange, type = "text" }) {
             outline-none
             transition-all
             focus:border-blue-500
+            disabled:bg-slate-100
+            disabled:text-slate-500
+            disabled:border-slate-300
+            disabled:cursor-not-allowed
+            disabled:opacity-100
           "
         />
       ) : (
@@ -351,7 +385,13 @@ function InputField({ label, name, value, onChange, type = "text" }) {
             outline-none
             transition-all
             focus:border-blue-500
+            disabled:bg-slate-100
+            disabled:text-slate-500
+            disabled:border-slate-300
+            disabled:cursor-not-allowed
+            disabled:opacity-100
           "
+          disabled={disabled}
         />
       )}
     </div>

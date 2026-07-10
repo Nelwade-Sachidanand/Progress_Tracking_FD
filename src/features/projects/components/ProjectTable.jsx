@@ -1,8 +1,12 @@
 import { Building2, Download, Eye, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import Pagination from "../../../components/layout/Pagination";
+import { calculateOverallProgress } from "../../dashboard/utils/dashboardUtils";
+import { useNavigate } from "react-router-dom";
 
 export default function ProjectTable({ projects = [] }) {
+
+  const navigate = useNavigate();
 
   const RECORDS_PER_PAGE = 10;
 
@@ -60,7 +64,7 @@ export default function ProjectTable({ projects = [] }) {
               Project Manager
             </th>
 
-            <th className="w-[15%] px-4 py-4 text-center text-base font-semibold text-slate-600 whitespace-nowrap">
+            <th className="w-[17%] px-1 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
               Progress
             </th>
 
@@ -78,6 +82,8 @@ export default function ProjectTable({ projects = [] }) {
           {projects.length > 0 ? (
             pageProjects.map((project, index) => {
               const status = getStatus(project.progress || 0);
+
+              const progress = calculateOverallProgress([project]);
 
               return (
                 <tr
@@ -161,13 +167,13 @@ export default function ProjectTable({ projects = [] }) {
 
                   {/* Progress */}
 
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
+                  <td className="px-1 py-3">
+                    <div className="flex items-center gap-1">
                       <div className="h-2 flex-1 rounded-full bg-slate-200">
                         <div
                           className="h-2 rounded-full bg-[#2563EB] transition-all duration-500"
                           style={{
-                            width: `${project.progress || 0}%`,
+                            width: `${progress || 0}%`,
                           }}
                         />
                       </div>
@@ -182,7 +188,7 @@ export default function ProjectTable({ projects = [] }) {
                         text-slate-700
                       "
                       >
-                        {project.progress || 0}%
+                        {progress || 0}%
                       </span>
                     </div>
                   </td>
@@ -213,6 +219,7 @@ export default function ProjectTable({ projects = [] }) {
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-center gap-2">
                       <button
+                        onClick={() => navigate(`/projects/view/${project.projectInformationId}`)}
                         title="View Project"
                         className="
                         h-9
@@ -232,6 +239,7 @@ export default function ProjectTable({ projects = [] }) {
                       </button>
 
                       <button
+                        onClick={() => navigate(`/projects/edit/${project.projectInformationId}`)}
                         title="Edit Project"
                         className="
                         h-9

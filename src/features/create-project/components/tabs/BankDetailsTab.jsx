@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import CustomDropdown from "../../../../components/common/CustomDropdown";
 import NumberInput from "../../../../components/common/NumberInput";
 
-export default function BankDetailsTab({ data, updateRootFields }) {
+export default function BankDetailsTab({ data, updateRootFields,disabled = false }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -46,7 +46,13 @@ export default function BankDetailsTab({ data, updateRootFields }) {
   duration-200
 
   focus:border-blue-500
-  placeholder:text-slate-500
+  placeholder:text-slate-
+  
+  disabled:bg-slate-100
+    disabled:text-slate-500
+    disabled:border-slate-300
+    disabled:cursor-not-allowed
+    disabled:opacity-100
 `;
 
   const iconInputClass = `
@@ -68,6 +74,12 @@ export default function BankDetailsTab({ data, updateRootFields }) {
 
   focus:border-blue-500
   placeholder:text-slate-500
+
+  disabled:bg-slate-100
+    disabled:text-slate-500
+    disabled:border-slate-300
+    disabled:cursor-not-allowed
+    disabled:opacity-100
 `;
 
   return (
@@ -113,6 +125,8 @@ export default function BankDetailsTab({ data, updateRootFields }) {
                 placeholder="Enter Project Name"
                 className={iconInputClass}
                 autoComplete="off"
+                disabled={disabled}
+
               />
             </div>
           </div>
@@ -138,6 +152,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
                 placeholder="Enter Bank Name"
                 className={iconInputClass}
                 autoComplete="off"
+                disabled={disabled}
               />
             </div>
           </div>
@@ -157,6 +172,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
               placeholder="Enter Project Manager"
               className={inputClass}
               autoComplete="off"
+              disabled={disabled}
             />
           </div>
 
@@ -175,6 +191,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
               placeholder="Enter Sales Person"
               className={inputClass}
               autoComplete="off"
+              disabled={disabled}
             />
           </div>
         </div>
@@ -205,6 +222,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
                 placeholder="Enter Contact Number"
                 className={iconInputClass}
                 autoComplete="off"
+                disabled={disabled}
               />
             </div>
           </div>
@@ -215,6 +233,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
             placeholder="Select Type"
             value={data.bankType || ""}
             onChange={(value) => handleDropdownChange("bankType", value)}
+            disabled={disabled}
             options={[
               {
                 label: "UCB",
@@ -245,6 +264,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
               name="noOfBranches"
               value={data.noOfBranches}
               onChange={handleChange}
+              disabled={disabled}
               placeholder="Enter number of branches"
               className={inputClass}
             />
@@ -263,6 +283,7 @@ export default function BankDetailsTab({ data, updateRootFields }) {
               />
 
               <textarea
+                disabled={disabled}
                 rows={2}
                 name="headOfficeAddress"
                 value={data.headOfficeAddress || ""}
@@ -292,6 +313,12 @@ export default function BankDetailsTab({ data, updateRootFields }) {
                 duration-200
 
                 focus:border-blue-500
+
+                disabled:bg-slate-100
+                disabled:text-slate-500
+                disabled:border-slate-300
+                disabled:cursor-not-allowed
+                disabled:opacity-100
               "
               />
             </div>

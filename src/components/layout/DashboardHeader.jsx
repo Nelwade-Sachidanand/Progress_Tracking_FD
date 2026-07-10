@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   User,
   Users,
+  Eye,
 } from "lucide-react";
 
 import { useEffect, useRef, useState } from "react";
@@ -36,6 +37,7 @@ const DashboardHeader = ({
   sidebarOpen,
   setSidebarOpen,
 }) => {
+  const location = useLocation();
   const navigate = useNavigate();
   const profileDropdownRef = useRef(null);
 
@@ -292,10 +294,28 @@ const DashboardHeader = ({
       subtitleClass: "text-[17px]",
     },
 
-    "/create-project": {
+    "/projects/create": {
       title: "Create New Project",
       subtitle: "Fill In The Details To Create A New Bank Project",
       icon: <ClipboardList size={22} />,
+
+      titleClass: "text-[32px]",
+      subtitleClass: "text-[17px]",
+    },
+
+    "/projects/edit": {
+      title: "Edit Project",
+      subtitle: "Update Project Information And Configuration",
+      icon: <Pencil size={22} />,
+
+      titleClass: "text-[32px]",
+      subtitleClass: "text-[17px]",
+    },
+
+    "/projects/view": {
+      title: "Project Details",
+      subtitle: "View Complete Project Information",
+      icon: <Eye size={22} />,
 
       titleClass: "text-[32px]",
       subtitleClass: "text-[17px]",
@@ -355,13 +375,19 @@ const DashboardHeader = ({
     },
   };
 
-  const location = useLocation();
+  let currentPage;
 
-  const currentPage = pageConfig[location.pathname] || {
-    title: "Progress Tracker",
-    subtitle: "",
-    icon: null,
-  };
+  if (location.pathname.startsWith("/projects/edit")) {
+    currentPage = pageConfig["/projects/edit"];
+  } else if (location.pathname.startsWith("/projects/view")) {
+    currentPage = pageConfig["/projects/view"];
+  } else {
+    currentPage = pageConfig[location.pathname] || {
+      title: "Progress Tracker",
+      subtitle: "",
+      icon: null,
+    };
+  }
   return (
     <header
       className="bg-white border-b border-[#EAEFF5] px-3 sm:px-4 md:px-5 lg:px-6 xl:px-8 py-3 lg:py-4"
@@ -473,6 +499,7 @@ const DashboardHeader = ({
                   onChange={setSelectedBanks}
                   icon={Building2}
                   width="w-full sm:w-[220px] md:w-[220px] lg:w-[240px] xl:w-[260px]"
+                  dropdownWidth="w-[350px]"
                 />
 
                 {/* Search */}

@@ -6,6 +6,7 @@ export default function CustomDropdown({
   placeholder,
   value,
   onChange,
+  disabled = false,
   options = [],
   icon: Icon,
 }) {
@@ -46,6 +47,7 @@ export default function CustomDropdown({
       <div ref={dropdownRef} className="relative w-full min-w-0">
         {/* Select Button */}
         <button
+          disabled={disabled}
           type="button"
           onClick={() => setOpen((prev) => !prev)}
           className="
@@ -70,6 +72,12 @@ export default function CustomDropdown({
           min-w-0
 
           cursor-pointer
+
+          disabled:bg-slate-100
+          disabled:text-slate-500
+          disabled:border-slate-300
+          disabled:cursor-not-allowed
+          disabled:opacity-100
         "
         >
           <div className="flex flex-1 min-w-0 items-center gap-3 overflow-hidden">
@@ -112,6 +120,7 @@ export default function CustomDropdown({
         {/* Dropdown */}
         {open && (
           <div
+            disabled={disabled}
             className="
             absolute
             left-0

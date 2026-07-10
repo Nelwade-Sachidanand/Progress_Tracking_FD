@@ -6,6 +6,7 @@ export default function InfrastructureTab({
   hardwareDetails = [],
   updateSection = () => { },
   updateArraySection = () => { },
+  disabled = false,
 }) {
   const serverOptions = [
     "DB Server",
@@ -17,6 +18,25 @@ export default function InfrastructureTab({
     "SMS / E-mail Server",
     "Any Other",
   ];
+
+  const inputNumClass = `
+    h-9
+    w-full
+    rounded-lg
+    border
+    border-[#B8C4D1]
+    px-3
+    text-sm
+    outline-none
+    transition-all
+    duration-200
+    focus:border-blue-500
+    disabled:bg-slate-100
+    disabled:text-slate-500
+    disabled:border-slate-300
+    disabled:cursor-not-allowed
+    disabled:opacity-100
+  `;
 
   const handleChange = (e) => {
     updateSection("infrastructure", {
@@ -85,6 +105,12 @@ export default function InfrastructureTab({
   duration-200
 
   focus:border-blue-500
+
+  disabled:bg-slate-100
+    disabled:text-slate-500
+    disabled:border-slate-300
+    disabled:cursor-not-allowed
+    disabled:opacity-100
 `;
 
   const iconInputClass = `
@@ -108,6 +134,12 @@ export default function InfrastructureTab({
   duration-200
 
   focus:border-blue-500
+
+  disabled:bg-slate-100
+    disabled:text-slate-500
+    disabled:border-slate-300
+    disabled:cursor-not-allowed
+    disabled:opacity-100
 `;
 
   return (
@@ -149,6 +181,7 @@ export default function InfrastructureTab({
               onChange={handleChange}
               placeholder="Enter License Type"
               className={inputClass}
+              disabled={disabled}
             />
           </div>
 
@@ -167,6 +200,7 @@ export default function InfrastructureTab({
               onChange={handleChange}
               placeholder="Enter Vendor Name"
               className={inputClass}
+              disabled={disabled}
             />
           </div>
 
@@ -192,6 +226,7 @@ export default function InfrastructureTab({
                 onChange={handleChange}
                 placeholder="Oracle / SQL Server"
                 className={iconInputClass}
+                disabled={disabled}
               />
             </div>
           </div>
@@ -211,6 +246,7 @@ export default function InfrastructureTab({
               onChange={handleChange}
               placeholder="Enter Version"
               className={inputClass}
+              disabled={disabled}
             />
           </div>
         </div>
@@ -231,7 +267,7 @@ export default function InfrastructureTab({
             onClick={addServerRow}
             disabled={
               hardwareDetails.filter((s) => s.serverType).length >=
-              serverOptions.length
+              serverOptions.length || disabled
             }
             className="
               flex
@@ -298,6 +334,7 @@ export default function InfrastructureTab({
                       onChange={(value) =>
                         handleServerChange(index, "serverType", value)
                       }
+                      disabled={disabled}
                       options={serverOptions.map((option) => ({
                         label: option,
                         value: option,
@@ -316,20 +353,9 @@ export default function InfrastructureTab({
                       onChange={(e) =>
                         handleServerChange(index, "units", e.target.value)
                       }
+                      disabled={disabled}
                       onWheel={(e) => e.target.blur()}
-                      className="
-                        h-9
-                        w-full
-                        rounded-lg
-                        border
-                        border-slate-300
-                        px-3
-                        text-sm
-                        outline-none
-                        transition-all
-                        duration-200
-                        focus:border-blue-500
-                      "
+                      className={inputNumClass}
                     />
                   </td>
 
@@ -344,20 +370,9 @@ export default function InfrastructureTab({
                       onChange={(e) =>
                         handleServerChange(index, "diskSpaceGb", e.target.value)
                       }
+                      disabled={disabled}
                       onWheel={(e) => e.target.blur()}
-                      className="
-                        h-9
-                        w-full
-                        rounded-lg
-                        border
-                        border-slate-300
-                        px-3
-                        text-sm
-                        outline-none
-                        transition-all
-                        duration-200
-                        focus:border-blue-500
-                      "
+                      className={inputNumClass}
                     />
                   </td>
 
@@ -372,20 +387,9 @@ export default function InfrastructureTab({
                       onChange={(e) =>
                         handleServerChange(index, "ramGb", e.target.value)
                       }
+                      disabled={disabled}
                       onWheel={(e) => e.target.blur()}
-                      className="
-                        h-9
-                        w-full
-                        rounded-lg
-                        border
-                        border-slate-300
-                        px-3
-                        text-sm
-                        outline-none
-                        transition-all
-                        duration-200
-                        focus:border-blue-500
-                      "
+                      className={inputNumClass}
                     />
                   </td>
 
@@ -400,20 +404,9 @@ export default function InfrastructureTab({
                       onChange={(e) =>
                         handleServerChange(index, "cores", e.target.value)
                       }
+                      disabled={disabled}
                       onWheel={(e) => e.target.blur()}
-                      className="
-                        h-9
-                        w-full
-                        rounded-lg
-                        border
-                        border-slate-300
-                        px-3
-                        text-sm
-                        outline-none
-                        transition-all
-                        duration-200
-                        focus:border-blue-500
-                      "
+                      className={inputNumClass}
                     />
                   </td>
 
@@ -423,6 +416,7 @@ export default function InfrastructureTab({
                     <button
                       type="button"
                       onClick={() => removeServerRow(index)}
+                      disabled={disabled}
                       className="
                         inline-flex
                         h-9
