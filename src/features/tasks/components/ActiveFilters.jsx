@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 
 function ActiveFilters({
+  milestones = [],
   selectedPhase,
   selectedMilestone,
   selectedTask,
@@ -25,11 +26,13 @@ function ActiveFilters({
     });
   }
 
-  (selectedMilestone || []).forEach((milestone) => {
+  (selectedMilestone || []).forEach((milestoneId) => {
+    const milestone = milestones.find((m) => m.value === milestoneId);
+
     filters.push({
       type: "milestone",
-      value: milestone,
-      label: `Milestone: ${milestone}`,
+      value: milestoneId,
+      label: `Milestone: ${milestone?.label ?? milestoneId}`,
     });
   });
 
@@ -149,10 +152,6 @@ function ActiveFilters({
           bg-red-50
           px-4
           text-sm
-<<<<<<< HEAD
-          font-semibold
-=======
->>>>>>> 2d88949adea6db5594771bf9c2efb472e782275b
           text-red-600
           transition
           hover:bg-red-100
@@ -167,4 +166,3 @@ function ActiveFilters({
 }
 
 export default ActiveFilters;
- 

@@ -102,7 +102,10 @@ export default function ExecutiveSummary({ project }) {
   const milestones =
     project?.phases
       ?.flatMap((phase) => phase.milestones || [])
-      ?.map((milestone) => milestone.milestoneName) || [];
+      ?.map((milestone) => ({
+        label: milestone.milestoneName,
+        value: milestone.milestoneId,
+      })) || [];
 
   const activities =
     project?.phases
@@ -110,7 +113,7 @@ export default function ExecutiveSummary({ project }) {
       ?.filter(
         (milestone) =>
           selectedMilestones.length === 0 ||
-          selectedMilestones.includes(milestone.milestoneName),
+          selectedMilestones.includes(milestone.milestoneId),
       )
       ?.flatMap((milestone) => milestone.tasks || [])
       ?.flatMap((task) => task.subTasks || [])

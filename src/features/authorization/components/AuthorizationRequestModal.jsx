@@ -12,6 +12,8 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import { getProjectNames } from "../services/authService";
+import RejectRequestModal from "./RejectRequestModal";
+import RollbackRequestModal from "./RollbackRequestModal";
 
 const formatDate = (date) => {
   if (!date) return "-";
@@ -40,6 +42,10 @@ export default function AuthorizationRequestModal({
   const [rollbackReason, setRollbackReason] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
   const [showRollbackModal, setShowRollbackModal] = useState(false);
+  const [showRollbackReason, setShowRollbackReason] = useState(false);
+  const [showChangeReason, setShowChangeReason] = useState(false);
+  const [showRejectionReason, setShowRejectionReason] = useState(false);
+  const [showAllChanges, setShowAllChanges] = useState(false);
 
   useEffect(() => {
     const fetchProjectName = async () => {
@@ -52,7 +58,7 @@ export default function AuthorizationRequestModal({
 
         if (response?.statusType === "S") {
           const projectMap = response.details;
-          console.log(projectMap);
+          // console.log(projectMap);
           setProjectName(projectMap[request.projectId]);
         }
       } catch (error) {
@@ -71,6 +77,10 @@ export default function AuthorizationRequestModal({
     (key) =>
       JSON.stringify(oldActivity[key]) !== JSON.stringify(newActivity[key]),
   );
+
+  const visibleChanges = showAllChanges
+    ? changes
+    : changes.slice(0, 4);
 
   const formatValue = (value) => {
     if (value === null || value === undefined) return "null";
@@ -99,8 +109,8 @@ export default function AuthorizationRequestModal({
       <div
         className="
         bg-white
-        rounded-[24px]
-        xl:rounded-[32px]
+        rounded-2xl
+        xl:rounded-3xl
         shadow-2xl
         w-full
         max-w-[95vw]
@@ -119,92 +129,111 @@ export default function AuthorizationRequestModal({
           className="
           relative
 
-          px-5
-          md:px-8
-          xl:px-12
-
-          pt-8
-          xl:pt-6
-
-          text-center
+          rounded-t-2xl
 
           border-b
-          border-slate-100
-          "
+          border-[#CDD7E3]
+
+          bg-gradient-to-r
+          from-[#F8FBFF]
+          to-[#FFFFFF]
+
+          px-6
+          py-3
+          sm:px-8
+          xl:px-10
+        "
         >
+          {/* Close Button */}
           <button
             onClick={onClose}
             className="
             absolute
-            top-5
             right-5
+            top-5
 
+            flex
             h-10
             w-10
+            items-center
+            justify-center
 
             rounded-xl
 
+            border
+            border-[#CDD7E3]
+
+            bg-white
+
+            text-slate-600
+
+            transition-all
+            duration-200
+
             hover:bg-slate-100
+            hover:text-[#2563EB]
 
-            flex
-            items-center
-            justify-center
-
-            transition
             cursor-pointer
-            "
+          "
           >
-            <X size={24} />
+            <X size={20} />
           </button>
 
+          {/* Icon */}
           <div
             className="
-            2xl:h-20
-            2xl:w-20
-
-            xl:h-14
-            xl:w-14
-
             mx-auto
 
-            rounded-full
-
-            bg-blue-50
-
             flex
+            h-10
+            w-10
             items-center
             justify-center
-            "
+
+            rounded-xl
+
+            border
+            border-[#DBEAFE]
+
+            bg-blue-50
+          "
           >
-            <ShieldCheck size={36} className="text-blue-600" />
+            <ShieldCheck
+              size={25}
+              className="text-[#2563EB]"
+            />
           </div>
 
+          {/* Title */}
           <h2
             className="
-            mt-1
+
+            text-center
 
             text-xl
             sm:text-2xl
-            xl:text-[30px]
+            xl:text-[28px]
 
             font-bold
 
-            text-[#142850]
-            "
+            text-[#0B1F59]
+          "
           >
             Activity Approval Request
           </h2>
 
+          {/* Subtitle */}
           <p
             className="
             mt-1
-            mb-3
+
+            text-center
 
             text-sm
             xl:text-base
 
             text-slate-500
-            "
+          "
           >
             Review the requested modifications before taking action
           </p>
@@ -216,6 +245,7 @@ export default function AuthorizationRequestModal({
           className="
           flex-1
           overflow-y-auto
+          custom-scrollbar
           "
         >
           {/* Request Details */}
@@ -232,58 +262,69 @@ export default function AuthorizationRequestModal({
           >
             <div
               className="
-              bg-slate-50
-
-              border
-              border-slate-200
-
               rounded-2xl
-
+              border
+              border-[#CDD7E3]
+              bg-white
               p-5
-              xl:p-4
-              "
+              shadow-sm
+            "
             >
               <div
                 className={`
                 grid
                 grid-cols-1
                 sm:grid-cols-2
-                ${
-                  request.status === "PENDING"
-                    ? "xl:grid-cols-4"
-                    : request.status === "ROLLED_BACK"
-                      ? "xl:grid-cols-3"
-                      : "xl:grid-cols-3"
-                }
-                gap-5
+                ${request.status === "PENDING"
+                    ? "xl:grid-cols-[180px_360px_180px_200px]"
+                    : "xl:grid-cols-[220px_360px_220px]"
+                  }
+                gap-2
+                mt-[-10px]
+                mb-[-10px]
               `}
               >
-                <div>
-                  <p className="text-slate-500 text-sm">Project</p>
+                {/* Project */}
+                <div className="min-w-0">
+                  <p className="text-sm text-slate-600">Project</p>
 
-                  <p className="font-semibold break-all text-sm xl:text-base">
+                  <p
+                    className="truncate text-sm xl:text-base font-semibold"
+                    title={projectName}
+                  >
                     {projectName}
                   </p>
                 </div>
 
-                <div>
-                  <p className="text-slate-500 text-sm">Activity</p>
+                {/* Activity */}
+                <div className="min-w-0">
+                  <p className="text-sm text-slate-600">Activity</p>
 
-                  <p className="font-semibold break-words">
-                    {request.activityName}
+                  <p
+                    className="truncate text-sm xl:text-base font-semibold"
+                    title={request.newActivityName}
+                  >
+                    {request.newActivityName}
                   </p>
                 </div>
 
-                <div>
-                  <p className="text-slate-500 text-sm">Requested By</p>
+                {/* Requested By */}
+                <div className="min-w-0">
+                  <p className="text-sm text-slate-600">Requested By</p>
 
-                  <p className="font-semibold">{request.requestedBy}</p>
+                  <p
+                    className="truncate text-sm xl:text-base font-semibold"
+                    title={request.requestedBy}
+                  >
+                    {request.requestedBy}
+                  </p>
                 </div>
 
-                <div>
-                  <p className="text-slate-500 text-sm">Requested At</p>
+                {/* Requested At */}
+                <div className="min-w-0">
+                  <p className="text-sm text-slate-600">Requested At</p>
 
-                  <p className="font-semibold">
+                  <p className="text-sm xl:text-base font-semibold">
                     {formatDate(request.requestedAt)}
                   </p>
                 </div>
@@ -292,7 +333,7 @@ export default function AuthorizationRequestModal({
                   request.status !== "ROLLED_BACK" && (
                     <>
                       <div>
-                        <p className="text-sm text-slate-500">
+                        <p className="text-sm text-slate-600">
                           {request.status === "APPROVED"
                             ? "Approved By"
                             : "Rejected By"}
@@ -309,7 +350,7 @@ export default function AuthorizationRequestModal({
                       </div>
 
                       <div>
-                        <p className="text-sm text-slate-500">
+                        <p className="text-sm text-slate-600">
                           {request.status === "APPROVED"
                             ? "Approved At"
                             : "Rejected At"}
@@ -330,7 +371,7 @@ export default function AuthorizationRequestModal({
                 {request.status === "ROLLED_BACK" && (
                   <>
                     <div>
-                      <p className="text-sm text-slate-500">Rolled Back By</p>
+                      <p className="text-sm text-slate-600">Rolled Back By</p>
 
                       <p className="font-semibold text-amber-700">
                         {request.rolledBackBy}
@@ -338,7 +379,7 @@ export default function AuthorizationRequestModal({
                     </div>
 
                     <div>
-                      <p className="text-sm text-slate-500">Rolled Back At</p>
+                      <p className="text-sm text-slate-600">Rolled Back At</p>
 
                       <p className="font-semibold text-amber-700">
                         {formatDate(request.rolledBackAt)}
@@ -355,40 +396,63 @@ export default function AuthorizationRequestModal({
               px-5
               md:px-8
               xl:px-12
-              mt-4
+              mt-3
             "
             >
               <div
                 className="
-                border
-                border-slate-200
                 rounded-2xl
+                border
+                border-[#CDD7E3]
+                bg-white
                 p-4
                 xl:p-5
-                bg-white
               "
               >
-                <h4
-                  className="
-                  text-sm
-                  xl:text-base
-                  font-semibold
-                  text-[#142850]
-                  mb-3
-                "
-                >
-                  Rollback Reason
-                </h4>
+                <div className="flex items-center justify-between">
+                  <h4
+                    className="
+                    text-sm
+                    xl:text-base
+                    font-semibold
+                    text-[#142850]
+                  "
+                  >
+                    Rollback Reason
+                  </h4>
+
+                  {request.rollbackReason.length > 120 && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowRollbackReason(!showRollbackReason)
+                      }
+                      className="
+                      text-xs
+                      font-medium
+                      text-[#2563EB]
+                      hover:underline
+                      cursor-pointer
+                    "
+                    >
+                      {showRollbackReason ? "Show Less" : "Show More"}
+                    </button>
+                  )}
+                </div>
 
                 <p
-                  className="
+                  className={`
+                  mt-2
                   text-sm
                   xl:text-base
-                  whitespace-pre-wrap
-                  break-words
                   leading-relaxed
                   text-amber-700
-                "
+                  ${showRollbackReason
+                      ? "whitespace-pre-wrap break-all"
+                      : "truncate"
+                    }
+                `}
+                  title={!showRollbackReason ? request.rollbackReason : ""}
                 >
                   {request.rollbackReason}
                 </p>
@@ -419,19 +483,24 @@ export default function AuthorizationRequestModal({
               <div className="flex items-center gap-4">
                 <div
                   className="
-                  h-12
-                  w-12
-
-                  rounded-full
-
-                  bg-blue-50
-
                   flex
+                  h-10
+                  w-10
                   items-center
                   justify-center
-                  "
+
+                  rounded-xl
+
+                  border
+                  border-[#DBEAFE]
+
+                  bg-blue-50
+                "
                 >
-                  <FileText size={18} className="text-blue-600" />
+                  <FileText
+                    size={20}
+                    className="text-[#2563EB]"
+                  />
                 </div>
 
                 <h3
@@ -441,7 +510,7 @@ export default function AuthorizationRequestModal({
 
                   font-bold
 
-                  text-[#142850]
+                  text-[#0B1F59]
                   "
                 >
                   Changes Summary
@@ -450,17 +519,16 @@ export default function AuthorizationRequestModal({
 
               <span
                 className="
+                rounded-xl
+                border
+                border-[#DBEAFE]
+                bg-blue-50
                 px-4
                 py-2
-
-                rounded-xl
-
-                bg-blue-50
-                text-blue-600
-
                 text-sm
                 font-semibold
-                "
+                text-[#2563EB]
+              "
               >
                 {changes.length} Change(s)
               </span>
@@ -495,19 +563,17 @@ export default function AuthorizationRequestModal({
               >
                 <div
                   className="
+                  rounded-xl
+                  border
+                  border-[#DBEAFE]
+                  bg-blue-50
+                  flex
                   h-16
                   w-16
-
-                  mx-auto
-
-                  rounded-2xl
-
-                  bg-blue-50
-
-                  flex
                   items-center
                   justify-center
-                  "
+                  mx-auto
+                "
                 >
                   <FileText size={28} className="text-blue-600" />
                 </div>
@@ -539,7 +605,7 @@ export default function AuthorizationRequestModal({
               <div
                 className="
                 border
-                border-slate-200
+                border-[#CDD7E3]
 
                 rounded-2xl
 
@@ -550,9 +616,7 @@ export default function AuthorizationRequestModal({
                   <table className="w-full min-w-[700px]">
                     <thead>
                       <tr
-                        className="
-                        bg-slate-50
-                        "
+                        className="bg-blue-50 border-b border-[#CDD7E3]"
                       >
                         <th
                           className="
@@ -561,6 +625,7 @@ export default function AuthorizationRequestModal({
                           2xl:py-5
                           text-left
                           font-semibold
+                          text-[#0B1F59]
                           "
                         >
                           Field
@@ -573,6 +638,7 @@ export default function AuthorizationRequestModal({
                           2xl:py-5
                           text-left
                           font-semibold
+                          text-[#0B1F59]
                           "
                         >
                           Old Value
@@ -585,6 +651,7 @@ export default function AuthorizationRequestModal({
                           2xl:py-5
                           text-left
                           font-semibold
+                          text-[#0B1F59]
                           "
                         >
                           New Value
@@ -593,12 +660,12 @@ export default function AuthorizationRequestModal({
                     </thead>
 
                     <tbody>
-                      {changes.map((field) => (
+                      {visibleChanges.map((field) => (
                         <tr
                           key={field}
                           className="
                             border-t
-                            border-slate-200
+                            border-[#CDD7E3]
                             "
                         >
                           <td
@@ -615,26 +682,26 @@ export default function AuthorizationRequestModal({
 
                           <td
                             className="
-                                                            px-5
-                                                            py-2
-                                                            2xl:py-5
-                                                            text-red-600
-
-                                                            break-words
-                                                            "
+                            px-5
+                            py-2
+                            2xl:py-5
+                            text-red-700
+                            break-words
+                            font-semibold
+                            "
                           >
                             {formatValue(oldActivity[field])}
                           </td>
 
                           <td
                             className="
-                                                            px-5
-                                                            py-2
-                                                            2xl:py-5
-                                                            text-green-600
-
-                                                            break-words
-                                                            "
+                            px-5
+                            py-2
+                            2xl:py-5
+                            text-green-700
+                            break-words
+                            font-medium
+                            "
                           >
                             {formatValue(newActivity[field])}
                           </td>
@@ -642,6 +709,34 @@ export default function AuthorizationRequestModal({
                       ))}
                     </tbody>
                   </table>
+                  {changes.length > 5 && (
+                    <div
+                      className="
+                      flex
+                      justify-center
+                      border-t
+                      border-[#CDD7E3]
+                      bg-slate-50
+                      py-3
+                    "
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setShowAllChanges((prev) => !prev)}
+                        className="
+                        text-sm
+                        font-medium
+                        text-[#2563EB]
+                        hover:underline
+                        cursor-pointer
+                      "
+                      >
+                        {showAllChanges
+                          ? "Show Less"
+                          : `Show ${changes.length - 4} More Change${changes.length - 5 > 1 ? "s" : ""}`}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -657,35 +752,58 @@ export default function AuthorizationRequestModal({
             >
               <div
                 className="
-                border
-                border-slate-200
                 rounded-2xl
+                border
+                border-[#CDD7E3]
+                bg-white
                 p-4
                 xl:p-5
-                bg-white
               "
               >
-                <h4
-                  className="
-                  text-sm
-                  xl:text-base
-                  font-semibold
-                  text-[#142850]
-                  mb-3
-                "
-                >
-                  Activity Change Reason
-                </h4>
+                <div className="flex items-center justify-between">
+                  <h4
+                    className="
+                    text-sm
+                    xl:text-base
+                    font-semibold
+                    text-[#142850]
+                  "
+                  >
+                    Activity Change Reason
+                  </h4>
+
+                  {request.changeReason.length > 120 && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowChangeReason(!showChangeReason)
+                      }
+                      className="
+                      text-xs
+                      font-medium
+                      text-[#2563EB]
+                      hover:underline
+                      cursor-pointer
+                    "
+                    >
+                      {showChangeReason ? "Show Less" : "Show More"}
+                    </button>
+                  )}
+                </div>
 
                 <p
-                  className="
+                  className={`
+                  mt-2
                   text-sm
                   xl:text-base
-                  text-slate-600
-                  whitespace-pre-wrap
-                  break-words
                   leading-relaxed
-                "
+                  text-slate-600
+                  ${showChangeReason
+                      ? "whitespace-pre-wrap break-all"
+                      : "truncate"
+                    }
+                `}
+                  title={!showChangeReason ? request.changeReason : ""}
                 >
                   {request.changeReason}
                 </p>
@@ -699,40 +817,62 @@ export default function AuthorizationRequestModal({
               px-5
               md:px-8
               xl:px-12
-              mt-4
             "
             >
               <div
                 className="
-                border
-                border-slate-200
                 rounded-2xl
+                border
+                border-[#CDD7E3]
+                bg-white
                 p-4
                 xl:p-5
-                bg-white
               "
               >
-                <h4
-                  className="
-                  text-sm
-                  xl:text-base
-                  font-semibold
-                  text-red-600
-                  mb-3
-                "
-                >
-                  Rejection Reason
-                </h4>
+                <div className="flex items-center justify-between">
+                  <h4
+                    className="
+                    text-sm
+                    xl:text-base
+                    font-semibold
+                    text-red-600
+                  "
+                  >
+                    Rejection Reason
+                  </h4>
+
+                  {request.rejectionReason.length > 120 && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowRejectionReason(!showRejectionReason)
+                      }
+                      className="
+                      text-xs
+                      font-medium
+                      text-[#2563EB]
+                      hover:underline
+                      cursor-pointer
+                    "
+                    >
+                      {showRejectionReason ? "Show Less" : "Show More"}
+                    </button>
+                  )}
+                </div>
 
                 <p
-                  className="
+                  className={`
+                  mt-2
                   text-sm
                   xl:text-base
-                  text-slate-600
-                  whitespace-pre-wrap
-                  break-words
                   leading-relaxed
-                "
+                  text-slate-600
+                  ${showRejectionReason
+                      ? "whitespace-pre-wrap break-all"
+                      : "truncate"
+                    }
+                `}
+                  title={!showRejectionReason ? request.rejectionReason : ""}
                 >
                   {request.rejectionReason}
                 </p>
@@ -818,9 +958,9 @@ export default function AuthorizationRequestModal({
 
             {(request.status === "APPROVED" ||
               request.status === "REJECTED") && (
-              <button
-                onClick={() => setShowRollbackModal(true)}
-                className="
+                <button
+                  onClick={() => setShowRollbackModal(true)}
+                  className="
                 w-full md:w-auto
                 h-12 xl:h-11
                 px-8
@@ -833,11 +973,11 @@ export default function AuthorizationRequestModal({
                 transition
                 cursor-pointer
               "
-              >
-                <ShieldCheck size={18} />
-                Revert Changes
-              </button>
-            )}
+                >
+                  <ShieldCheck size={18} />
+                  Revert Changes
+                </button>
+              )}
 
             <button
               onClick={onClose}
@@ -878,201 +1018,47 @@ export default function AuthorizationRequestModal({
         </div>
       </div>
 
-      {showRejectModal && (
-        <div
-          className="
-                    fixed
-                    inset-0
-                    bg-black/40
-                    flex
-                    items-center
-                    justify-center
-                    z-[10000]
-                    "
-        >
-          <div
-            className="
-                        bg-white
-                        rounded-2xl
-                        p-6
-                        w-full
-                        max-w-md
-                        shadow-xl
-                        "
-          >
-            <h3
-              className="
-                            text-lg
-                            font-semibold
-                            mb-4
-                            "
-            >
-              Reject Request
-            </h3>
+      <RejectRequestModal
+        open={showRejectModal}
+        reason={rejectReason}
+        setReason={setRejectReason}
+        onClose={() => {
+          setShowRejectModal(false);
+          setRejectReason("");
+        }}
+        onSubmit={() => {
+          onReject?.(request.id, rejectReason);
 
-            <textarea
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
-              placeholder="Enter rejection reason..."
-              rows={4}
-              className="
-                            w-full
-                            border
-                            border-slate-100
-                            rounded-xl
-                            p-3
-                            resize-none
-                            outline-none
-                            focus:ring-2
-                            focus:ring-red-300
-                            "
-            />
+          setShowRejectModal(false);
+          setRejectReason("");
+        }}
+      />
 
-            <div
-              className="
-                            flex
-                            justify-end
-                            gap-3
-                            mt-4
-                            "
-            >
-              <button
-                onClick={() => {
-                  setShowRejectModal(false);
-                  setRejectReason("");
-                }}
-                className="
-                                    px-4
-                                    py-2
-                                    border
-                                    rounded-lg
-                                    cursor-pointer
-                                "
-              >
-                Cancel
-              </button>
+      <RollbackRequestModal
+        open={showRollbackModal}
+        reason={rollbackReason}
+        setReason={setRollbackReason}
+        password={adminPassword}
+        setPassword={setAdminPassword}
+        onClose={() => {
+          setShowRollbackModal(false);
+          setRollbackReason("");
+          setAdminPassword("");
+        }}
+        onSubmit={async () => {
+          const success = await onRollback?.(
+            request.id,
+            adminPassword,
+            rollbackReason
+          );
 
-              <button
-                onClick={() => {
-                  if (!rejectReason.trim()) {
-                    toast.error("Please enter rejection reason");
-                    return;
-                  }
-
-                  onReject?.(request.id, rejectReason);
-
-                  setShowRejectModal(false);
-                  setRejectReason("");
-                }}
-                className="
-                                    px-4
-                                    py-2
-                                    bg-red-600
-                                    text-white
-                                    rounded-lg
-                                    cursor-pointer
-                                "
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showRollbackModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[10000]">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
-            <h3 className="text-lg font-semibold mb-4">
-              Revert Activity Changes
-            </h3>
-
-            <textarea
-              value={rollbackReason}
-              onChange={(e) => setRollbackReason(e.target.value)}
-              placeholder="Reason for rollback..."
-              rows={4}
-              className="
-          w-full
-          border
-          rounded-xl
-          p-3
-          resize-none
-          mb-4
-        "
-            />
-
-            <input
-              type="password"
-              value={adminPassword}
-              onChange={(e) => setAdminPassword(e.target.value)}
-              placeholder="Enter admin password"
-              className="
-          w-full
-          border
-          rounded-xl
-          p-3
-        "
-            />
-
-            <div className="flex justify-end gap-3 mt-5">
-              <button
-                onClick={() => {
-                  setShowRollbackModal(false);
-                  setRollbackReason("");
-                  setAdminPassword("");
-                }}
-                className="
-                px-4 py-2
-                border
-                border-slate-700
-                rounded-lg
-                cursor-pointer
-          "
-              >
-                Cancel
-              </button>
-
-              <button
-                onClick={async () => {
-                  if (!rollbackReason.trim()) {
-                    toast.error("Please enter rollback reason");
-                    return;
-                  }
-
-                  if (!adminPassword.trim()) {
-                    toast.error("Please enter admin password");
-                    return;
-                  }
-
-                  const success = await onRollback?.(
-                    request.id,
-                    adminPassword,
-                    rollbackReason,
-                  );
-
-                  console.log(success);
-
-                  if (success) {
-                    setShowRollbackModal(false);
-                    setRollbackReason("");
-                    setAdminPassword("");
-                  }
-                }}
-                className="
-                px-4 py-2
-                bg-orange-600
-                text-white
-                rounded-lg
-                cursor-pointer
-              "
-              >
-                Confirm Rollback
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+          if (success) {
+            setShowRollbackModal(false);
+            setRollbackReason("");
+            setAdminPassword("");
+          }
+        }}
+      />
     </div>
   );
 }

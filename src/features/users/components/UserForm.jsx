@@ -36,6 +36,8 @@ const UserForm = ({ mode = "add", userData = null }) => {
 
   const [selectedProjects, setSelectedProjects] = useState([]);
 
+  const [showAllProjects, setShowAllProjects] = useState(false);
+
   useEffect(() => {
     if (mode === "edit" && userData) {
       setId(userData.id || "");
@@ -78,6 +80,10 @@ const UserForm = ({ mode = "add", userData = null }) => {
   const removeProject = (id) => {
     setSelectedProjects((prev) => prev.filter((project) => project.id !== id));
   };
+
+  const visibleProjects = showAllProjects
+    ? selectedProjects
+    : selectedProjects.slice(0, 6);
 
   const validateForm = () => {
     if (!fullName.trim()) {
@@ -210,7 +216,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
         border-[#CDD7E3]
         overflow-visible
       "
-      > 
+      >
         {/* Header */}
 
         <div className="flex items-center justify-between border-b border-[#CDD7E3] px-6 py-4">
@@ -399,11 +405,14 @@ const UserForm = ({ mode = "add", userData = null }) => {
               <MultiSelectDropdown
                 label="Assign Project"
                 placeholder="Select Projects"
-                options={projectOptions.map((p) => p.label)}
-                selected={selectedProjects.map((p) => p.projectName)}
-                onChange={(names) => {
+                options={projects.map((project) => ({
+                  label: project.projectName,
+                  value: project.id,
+                }))}
+                selected={selectedProjects.map((project) => project.id)}
+                onChange={(selectedIds) => {
                   const selected = projects.filter((project) =>
-                    names.includes(project.projectName),
+                    selectedIds.includes(project.id)
                   );
                   setSelectedProjects(selected);
                 }}
@@ -412,14 +421,12 @@ const UserForm = ({ mode = "add", userData = null }) => {
 
             {/* Right Column */}
             <div>
-              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-700">
+              <label className="mb-1 ml-1 block text-sm font-semibold text-slate-700">
                 Selected Projects ({selectedProjects.length})
               </label>
 
               <div
                 className="
-                min-h-[150px]
-                overflow-y-auto
                 rounded-lg
                 border
                 border-[#B8C4D1]
@@ -428,41 +435,79 @@ const UserForm = ({ mode = "add", userData = null }) => {
               "
               >
                 {selectedProjects.length === 0 ? (
-                  <div className="flex h-full items-center justify-center text-sm text-slate-600">
+                  <div className="flex h-[60px] items-center justify-center text-sm text-slate-600">
                     No project selected
                   </div>
                 ) : (
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProjects.map((project) => (
-                      <div
-                        key={project.id}
-                        className="
-                flex
-                items-center
-                gap-2
-                rounded-full
-                bg-blue-100
-                px-3
-                py-1.5
-                text-sm
-                font-medium
-                text-blue-700
-              "
-                      >
-                        <span className="truncate max-w-[180px]">
-                          {project.projectName}
-                        </span>
+                  <>
+                    <div
+                      className={`
+                      flex
+                      flex-wrap
+                      gap-2
+                      transition-all
+                      duration-300
 
+                      ${showAllProjects
+                          ? "max-h-[180px] overflow-y-auto"
+                          : "max-h-[60px] overflow-hidden"
+                        }
+                    `}
+                    >
+                      {selectedProjects.map((project) => (
+                        <div
+                          key={project.id}
+                          className="
+                          flex
+                          items-center
+                          gap-2
+                          rounded-full
+                          bg-blue-100
+                          px-3
+                          py-1.5
+                          text-sm
+                          font-medium
+                          text-blue-700
+                        "
+                        >
+                          <span
+                            className="max-w-[180px] truncate"
+                            title={project.projectName}
+                          >
+                            {project.projectName}
+                          </span>
+
+                          <button
+                            type="button"
+                            onClick={() => removeProject(project.id)}
+                            className="rounded-full p-0.5 hover:bg-blue-200 cursor-pointer"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    {selectedProjects.length > 6 && (
+                      <div className="mt-3 flex justify-center">
                         <button
                           type="button"
-                          onClick={() => removeProject(project.id)}
-                          className="rounded-full p-0.5 hover:bg-blue-200 cursor-pointer"
+                          onClick={() => setShowAllProjects((prev) => !prev)}
+                          className="
+                          text-sm
+                          font-medium
+                          text-[#2563EB]
+                          hover:underline
+                          cursor-pointer
+                        "
                         >
-                          <X size={14} />
+                          {showAllProjects
+                            ? "Show Less"
+                            : `Show ${selectedProjects.length - 6} More`}
                         </button>
                       </div>
-                    ))}
-                  </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>

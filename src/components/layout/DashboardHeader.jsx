@@ -53,8 +53,18 @@ const DashboardHeader = ({
   const [unreadCount, setUnreadCount] = useState(0);
 
   const [selectedBanks, setSelectedBanks] = useState(() => {
-    const saved = sessionStorage.getItem("selectedBanks");
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = sessionStorage.getItem("selectedBanks");
+
+      if (!saved || saved === "undefined") {
+        return [];
+      }
+
+      return JSON.parse(saved);
+    } catch (error) {
+      console.error("Invalid selectedBanks in sessionStorage:", error);
+      return [];
+    }
   });
 
   const [searchText, setSearchText] = useState("");
@@ -62,8 +72,18 @@ const DashboardHeader = ({
   const { projects, setProjects } = useProjects();
 
   const banks = [
-    ...new Set(projects.map((p) => p.bankName).filter(Boolean)),
-  ].sort((a, b) => a.localeCompare(b));
+    ...new Map(
+      projects
+        .filter((p) => p.bankName)
+        .map((p) => [
+          p.bankName,
+          {
+            label: p.bankName,
+            value: p.bankName,
+          },
+        ])
+    ).values(),
+  ].sort((a, b) => a.label.localeCompare(b.label));
 
   useEffect(() => {
     sessionStorage.setItem("selectedBanks", JSON.stringify(selectedBanks));

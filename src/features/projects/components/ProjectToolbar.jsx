@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Plus,CheckCircle,Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import CustomDropdown from "../../../components/common/CustomDropdown";
@@ -53,6 +53,7 @@ export default function ProjectToolbar({
           placeholder="All Banks"
           value={selectedBank}
           onChange={setSelectedBank}
+          icon={Building2}
           options={[
             {
               label: "All Banks",
@@ -67,11 +68,12 @@ export default function ProjectToolbar({
 
         {/* Status */}
 
-        <CustomDropdown
+        <CustomDropdown 
           label="Status"
           placeholder="All Status"
           value={selectedStatus}
           onChange={setSelectedStatus}
+          icon={CheckCircle}
           options={[
             {
               label: "All Status",

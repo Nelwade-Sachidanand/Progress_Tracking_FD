@@ -60,11 +60,17 @@ export default function AllTasksPage() {
   } = useTaskFilters(tasks);
 
   const filteredMilestones = [
-    ...new Set(
+    ...new Map(
       tasks
-        .filter((t) => !selectedPhase || t.phase === selectedPhase)
-        .map((t) => t.milestone),
-    ),
+        .filter((t) => !selectedPhase || t.phaseId === selectedPhase)
+        .map((t) => [
+          t.milestoneId,
+          {
+            label: t.milestoneName,
+            value: t.milestoneId,
+          },
+        ]),
+    ).values(),
   ];
   const filteredTaskNames = [
     ...new Set(
@@ -72,7 +78,7 @@ export default function AllTasksPage() {
         .filter(
           (t) =>
             selectedMilestone.length === 0 ||
-            selectedMilestone.includes(t.milestone),
+            selectedMilestone.includes(t.milestoneId),
         )
         .map((t) => t.task),
     ),
@@ -294,6 +300,7 @@ export default function AllTasksPage() {
       </div>
 
       <ActiveFilters
+        milestones={filteredMilestones}
         selectedPhase={selectedPhase}
         selectedMilestone={selectedMilestone}
         selectedTask={selectedTask}
@@ -347,4 +354,3 @@ export default function AllTasksPage() {
     </div>
   );
 }
- 

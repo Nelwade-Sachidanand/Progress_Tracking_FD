@@ -4,7 +4,6 @@ export default function useProjectForm() {
   const [currentStep, setCurrentStep] = useState(0);
 
   const initialFormData = {
-    id:"",
     projectName: "",
     bankName: "",
     projectManager: "",

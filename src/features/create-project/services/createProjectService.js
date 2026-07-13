@@ -21,9 +21,9 @@ export const getProjectInformation = async (bankName, projectName) => {
   return response.data;
 };
 
-export const updateProjectInformation = async (payload) => {
+export const updateProjectInformation = async (id,payload) => {
   const response = await apiClient.put(
-    `/project-information/update`,
+    `/project-information/update/${id}`,
     payload,
   );
 
