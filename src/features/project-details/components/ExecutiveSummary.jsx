@@ -3,7 +3,12 @@ import {
   CheckCircle2,
   CircleDashed,
   ClipboardList,
+  BadgeCheck,
+  ChartNoAxesCombined,
+  Clock3,
   ListTodo,
+  Gauge,
+  TrendingUp,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import CustomDropdown from "../../../components/common/CustomDropdown";
@@ -397,7 +402,7 @@ export default function ExecutiveSummary({ project }) {
                 backgroundColor: "#2563EB15",
               }}
             >
-              <CircleDashed
+              <ChartNoAxesCombined 
                 size={24}
                 color="#2563EB"
               />
@@ -456,7 +461,7 @@ export default function ExecutiveSummary({ project }) {
                 subText={`${Math.round(
                   (completedActivities / (totalActivities || 1)) * 100,
                 )}% of total`}
-                icon={CheckCircle2}
+                icon={BadgeCheck}
                 color="#16A34A"
                 bg="#F8FFFB"
                 border="#DDF7E7"
@@ -484,7 +489,7 @@ export default function ExecutiveSummary({ project }) {
                 subText={`${Math.round(
                   (inProgressActivities / (totalActivities || 1)) * 100,
                 )}% of total`}
-                icon={CircleDashed}
+                icon={TrendingUp }
                 color="#2563EB"
                 bg="#F8FBFF"
                 border="#E5EDF8"
@@ -496,7 +501,7 @@ export default function ExecutiveSummary({ project }) {
                 subText={`${Math.round(
                   (notStartedActivities / (totalActivities || 1)) * 100,
                 )}% of total`}
-                icon={ClipboardList}
+                icon={Clock3}
                 color="#6D4AFF"
                 bg="#FCFAFF"
                 border="#ECE5FF"

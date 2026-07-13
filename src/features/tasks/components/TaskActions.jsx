@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useProjects } from "../../../context/ProjectContext";
-import { exportExcelReport } from "../../add-task/api/exportExcelApi";
+import { exportExcelReport } from "../api/exportExcelApi";
 import GenerateReportModal from "../components/GenerateReportModal";
 
 
@@ -23,14 +23,23 @@ import {
 import PrintReport from "../components//PrintReport";
 
 export default function TaskActions({
-   activities = [],
   selectedPhase,
+selectedPhaseId,
+
   selectedMilestone,
+selectedMilestoneIds,
+
   selectedTask,
+ selectedTaskId,
+
   selectedSubTask,
+ selectedSubTaskId,
+
   selectedActivity,
+ selectedActivityId,
+
   selectedStatus,
-}) {
+})  {
   const navigate = useNavigate();
   const [showReportModal, setShowReportModal] = useState(false);
 
@@ -55,10 +64,20 @@ const allActivities =
         task.subTasks?.flatMap((subTask) =>
           subTask.activities?.map((activity) => ({
             ...activity,
+
+            // IDs
+            phaseId: phase.phaseId,
+            milestoneId: milestone.milestoneId,
+            taskId: task.taskId,
+            subTaskId: subTask.subTaskId,
+            activityId: activity.activityId,
+
+            // Names
             phase: phase.phaseName,
             milestone: milestone.milestoneName,
             task: task.taskName,
             subTask: subTask.subTaskName,
+            activityName: activity.activityName,
           })) || []
         ) || []
       ) || []
@@ -113,39 +132,17 @@ const filteredActivities = allActivities.filter((activity) => {
   );
 });
 
-  // const handleGenerate = () => {
-  //   switch (reportType) {
-  //     case "pdf":
-  //       handleGeneratePdf();
-  //       break;
 
-  //     case "excel":
-  //       handleExportExcel();
-  //       break;
 
-  //     case "csv":
-  //       handleGenerateCsv();
-  //       break;
 
-  //     case "word":
-  //       handleGenerateWord();
-  //       break;
-
-  //     default:
-  //       toast.error("Please select report format");
-  //       return;
-  //   }
-
-  //   setShowReportModal(false);
-  // };
 const handleGenerate = () => {
-  // ✅ 1. CHECK PROJECT FIRST
+
   if (!project || !selectedProjectId) {
     toast.error("No project selected. No permission to generate report.");
     return;
   }
 
-  // (optional extra safety)
+  
   if (!project.projectName) {
     toast.error("Invalid project selection.");
     return;
@@ -182,30 +179,46 @@ const handleGenerate = () => {
       const selectedProjectName = sessionStorage.getItem("selectedProjectName");
 
       const payload = {
-        projectId: selectedProjectId,
+  projectId: selectedProjectId,
+  projectName: selectedProjectName,
 
-        projectName: selectedProjectName,
+  // Phase
+  phaseId:
+    selectedPhase === "All Phases" ? null : selectedPhaseId,
+  phaseName:
+    selectedPhase === "All Phases" ? null : selectedPhase,
 
-        phaseName: selectedPhase === "All Phases" ? null : selectedPhase,
+  // Milestone
+  milestoneIds:
+    selectedMilestone?.length > 0 ? selectedMilestoneIds : null,
+  milestoneNames:
+    selectedMilestone?.length > 0 ? selectedMilestone : null,
 
-        milestoneNames:
-          selectedMilestone?.length > 0 ? selectedMilestone : null,
+  // Task
+  taskId:
+    selectedTask === "All Tasks" ? null : selectedTaskId,
+  taskName:
+    selectedTask === "All Tasks" ? null : selectedTask,
 
-        taskName: selectedTask === "All Tasks" ? null : selectedTask,
+  // Sub Task
+  subTaskId:
+    selectedSubTask === "All Sub Tasks" ? null : selectedSubTaskId,
+  subTaskName:
+    selectedSubTask === "All Sub Tasks" ? null : selectedSubTask,
 
-        subtaskName:
-          selectedSubTask === "All Sub Tasks" ? null : selectedSubTask,
+  // Activity
+  activityId:
+    selectedActivity === "All Activities" ? null : selectedActivityId,
+  activityName:
+    selectedActivity === "All Activities" ? null : selectedActivity,
 
-        activityName:
-          selectedActivity === "All Activities" ? null : selectedActivity,
+  executionStatus:
+    selectedStatus === "All Status" ? null : selectedStatus,
 
-        executionStatus:
-          selectedStatus === "All Status" ? null : selectedStatus,
-
-        plannedStartDate: fromDate || null,
-        plannedEndDate: toDate || null,
-      };
-
+  plannedStartDate: fromDate || null,
+  plannedEndDate: toDate || null,
+};
+console.log("Payload:", payload);
       const blob = await exportExcelReport(payload);
 
       const url = window.URL.createObjectURL(blob);
@@ -378,53 +391,7 @@ const handleGenerate = () => {
       printWindow.close();
     }, 500);
   };
-  // const handleGenerateCsv = () => {
-  //   const rows = [
-  //     [
-  //       "Phase",
-  //       "Milestone",
-  //       "Task",
-  //       "Sub Task",
-  //       "Activity",
-  //       "Owner",
-  //       "Progress",
-  //       "Status",
-  //       "Schedule Health",
-  //     ],
-  //   ];
 
-  //   filteredActivities.forEach((activity) => {
-  //     rows.push([
-  //       activity.phase,
-  //       activity.milestone,
-  //       activity.task,
-  //       activity.subTask,
-  //       activity.activityName,
-  //       activity.owner,
-  //       activity.progress,
-  //       activity.executionStatus,
-  //       activity.scheduleHealth,
-  //     ]);
-  //   });
-
-  //   const csv = rows.map((row) => row.join(",")).join("\n");
-
-  //   const blob = new Blob([csv], {
-  //     type: "text/csv;charset=utf-8;",
-  //   });
-
-  //   const link = document.createElement("a");
-
-  //   link.href = URL.createObjectURL(blob);
-
-  //   link.download = `${project.projectName}.csv`;
-
-  //   link.click();
-
-  //   URL.revokeObjectURL(link.href);
-
-  //   toast.success("CSV downloaded successfully");
-  // };
 const handleGenerateCsv = () => {
   try {
     if (!project) {
@@ -507,10 +474,7 @@ const handleGenerateCsv = () => {
   }
 };
 
-// const handleGenerateWord = () => {
-  //   // call Word generator
 
-  // };
 const handleGenerateWord = async () => {
   try {
     if (!project) {
@@ -653,38 +617,7 @@ const handleGenerateWord = async () => {
           Generate Report
         </button>
 
-        {/* <button
-        onClick={handleExportExcel}
-        className="
-        bg-[#10B981]
-        text-white
-        px-4
-        py-2.5
-        rounded-xl
-        text-sm
-        font-medium
-        hover:bg-[#059669]
-        flex-1
-        sm:flex-none
-        cursor-pointer
-        "
-
-      >
-        Export Excel
-      </button> */}
-
-        {/* <button
-onClick={handlePrintReport}
-  className="
-  bg-[#2563EB]
-  text-white
-  px-4
-  py-2.5
-  rounded-xl
-  "
->
-  Print Report
-</button> */}
+  
       </div>
 
       {(user?.role === "ADMIN" || user?.role === "IMPLEMENTATION USER") && (

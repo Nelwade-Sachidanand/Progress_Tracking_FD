@@ -251,7 +251,7 @@ export default function Documents() {
   return (
     <div className="w-full p-4 lg:p-6 bg-[#F8FAFC] min-h-screen">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+      {/* <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl xl:text-2xl font-bold text-[#0B1F59]">
             Sign Off Documents
@@ -261,39 +261,34 @@ export default function Documents() {
             Upload and manage project sign-off documents.
           </p>
         </div>
-      </div>
-      <div
-        className="
-        w-full
-        
-        border
-        border-slate-200
-        rounded-2xl
-        px-6
-        py-4
-        shadow-sm
-        
-          
-        mb-4
-        bg-[#F8FAFF]
-        border
-        border-[#E2E8F0]
-        rounded-2xl
-        
-        "
-      >
-        <div className="flex flex-wrap items-center gap-3 text-[15px]">
-          <span className="font-semibold text-[#0B1F59]">
-            Selected Project :
-          </span>
+      </div> */}
+ 
+ <div className="flex items-center justify-between w-full">
 
-          <span className="text-[#2563EB] font-semibold">
-            {selectedProject
-              ? selectedProject.projectName
-              : "No Project Selected"}
-          </span>
-        </div>
-      </div>
+ <div className="w-full flex justify-end">
+
+  <div className="
+    flex items-center gap-2
+    bg-[#EEF2FF]
+    px-3 py-1.5
+    rounded-xl
+    border border-[#E2E8F0]
+    text-xs
+  ">
+    <span className="text-slate-500">
+      Active Project:
+    </span>
+
+    <span className="font-semibold text-[#2563EB] truncate max-w-[200px]">
+      {selectedProject?.projectName || "No Project Selected"}
+    </span>
+  </div>
+
+</div>
+
+</div>
+
+      
       
       {/* Filters */}
       <DocumentFilters

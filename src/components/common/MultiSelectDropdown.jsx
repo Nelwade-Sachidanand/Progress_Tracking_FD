@@ -29,11 +29,21 @@ export default function MultiSelectDropdown({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // const filteredOptions = useMemo(() => {
+  //   return options.filter((option) =>
+  //     option.toLowerCase().includes(search.toLowerCase()),
+  //   );
+  // }, [options, search]);
   const filteredOptions = useMemo(() => {
-    return options.filter((option) =>
-      option.toLowerCase().includes(search.toLowerCase()),
-    );
-  }, [options, search]);
+  return options.filter((option) => {
+    const text =
+      typeof option === "string"
+        ? option
+        : option?.name || option?.label || "";
+
+    return text.toLowerCase().includes(search.toLowerCase());
+  });
+}, [options, search]);
 
   const toggleOption = (option) => {
     if (selected.includes(option)) {
