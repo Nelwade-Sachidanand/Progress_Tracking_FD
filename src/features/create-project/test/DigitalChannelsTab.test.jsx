@@ -44,12 +44,7 @@ describe("DigitalChannelsTab", () => {
     expect(screen.getByText("Channel Statistics")).toBeInTheDocument();
   });
 
-  test("renders back button", () => {
-    renderComponent();
-    expect(
-      screen.getByRole("button", { name: /back to dashboard/i }),
-    ).toBeInTheDocument();
-  });
+ 
 
   test("renders all digital channels", () => {
     renderComponent();

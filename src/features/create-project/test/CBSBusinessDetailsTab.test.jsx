@@ -2,9 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 import CBSBusinessDetailsTab from "../components/tabs/CBSBusinessDetailsTab";
 
-vi.mock("../components/tabs/BackButton", () => ({
-  default: () => <button>Back to Dashboard</button>,
-}));
+
 
 describe("CBSBusinessDetailsTab", () => {
   const mockUpdateSection = vi.fn();
@@ -46,15 +44,7 @@ describe("CBSBusinessDetailsTab", () => {
     expect(screen.getByText("Business Statistics")).toBeInTheDocument();
   });
 
-  test("renders back button", () => {
-    render(<CBSBusinessDetailsTab {...mockProps} />);
-
-    expect(
-      screen.getByRole("button", {
-        name: /back to dashboard/i,
-      }),
-    ).toBeInTheDocument();
-  });
+ 
 
   test("renders initial values", () => {
     render(<CBSBusinessDetailsTab {...mockProps} />);

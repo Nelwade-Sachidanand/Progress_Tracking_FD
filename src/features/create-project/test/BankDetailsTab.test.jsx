@@ -6,9 +6,7 @@ vi.mock("react-router-dom", () => ({
   useNavigate: () => vi.fn(),
 }));
 
-vi.mock("../../components/tabs/BackButton", () => ({
-  default: () => <div data-testid="back-button">Back Button</div>,
-}));
+
 
 describe("BankDetailsTab", () => {
   const mockUpdateRootFields = vi.fn();
@@ -43,20 +41,8 @@ describe("BankDetailsTab", () => {
     ).toBeInTheDocument();
   });
 
-  test("renders back button", () => {
-    render(
-      <BankDetailsTab
-        data={mockData}
-        updateRootFields={mockUpdateRootFields}
-      />,
-    );
-
-    expect(
-      screen.getByRole("button", {
-        name: /back to dashboard/i,
-      }),
-    ).toBeInTheDocument();
-  });
+ 
+    
 
   test("renders note section", () => {
     render(

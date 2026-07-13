@@ -9,7 +9,6 @@ export default function MultiSelectDropdown({
   onChange,
   icon: Icon,
   width = "w-full",
-  dropdownWidth,
 }) {
   const dropdownRef = useRef(null);
 
@@ -29,23 +28,17 @@ export default function MultiSelectDropdown({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  
   const filteredOptions = useMemo(() => {
-    return options.filter((option) => {
-      const text =
-        typeof option === "string"
-          ? option
-          : option?.name || option?.label || "";
-
-      return text.toLowerCase().includes(search.toLowerCase());
-    });
+    return options.filter((option) =>
+      option.toLowerCase().includes(search.toLowerCase()),
+    );
   }, [options, search]);
 
-  const toggleOption = (value) => {
-    if (selected.includes(value)) {
-      onChange(selected.filter((item) => item !== value));
+  const toggleOption = (option) => {
+    if (selected.includes(option)) {
+      onChange(selected.filter((item) => item !== option));
     } else {
-      onChange([...selected, value]);
+      onChange([...selected, option]);
     }
   };
 
@@ -53,7 +46,7 @@ export default function MultiSelectDropdown({
     if (selected.length === options.length) {
       onChange([]);
     } else {
-      onChange(options.map((option) => option.value));
+      onChange([...options]);
     }
   };
 
@@ -62,23 +55,16 @@ export default function MultiSelectDropdown({
 
     if (selected.length === options.length) return placeholder;
 
-    const selectedLabels = options
-      .filter((option) => selected.includes(option.value))
-      .map((option) => option.label);
+    if (selected.length <= 2) return selected.join(", ");
 
-    if (selectedLabels.length <= 2) {
-      return selectedLabels.join(", ");
-    }
-
-    return `${selectedLabels.slice(0, 2).join(", ")} +${selectedLabels.length - 2}`;
-
+    return `${selected.slice(0, 2).join(", ")} +${selected.length - 2}`;
   }, [selected, options, placeholder]);
 
   return (
     <div className={`${width} min-w-0`}>
       {/* Label */}
       {label && (
-        <label className="block mb-1 ml-1 text-sm font-medium text-slate-700 2xl:text-base">
+        <label className="block mb-1 ml-1 text-sm font-semibold text-slate-600 2xl:text-base">
           {label}
         </label>
       )}
@@ -91,11 +77,11 @@ export default function MultiSelectDropdown({
           className="
           w-full
           h-9
-          2xl:h-10
           px-4
           border
-          border-[#B8C4D1]
-          rounded-lg
+          border-slate-300
+          2xl:border-slate-400
+          rounded-xl
           bg-white
           focus:border-blue-500
 
@@ -103,23 +89,17 @@ export default function MultiSelectDropdown({
           items-center
           justify-between
 
-          overflow-x-hidden
-          overflow-y-auto
+          overflow-hidden
           min-w-0
 
           cursor-pointer
-          disabled:bg-slate-100
-          disabled:text-slate-500
-          disabled:border-slate-300
-          disabled:cursor-not-allowed
-          disabled:opacity-100
         "
         >
           <div className="flex items-center gap-3 flex-1 min-w-0 overflow-hidden">
             {Icon && (
               <Icon
                 size={18}
-                className="shrink-0 text-slate-500 2xl:text-slate-500 2xl:h-5 2xl:w-5"
+                className="shrink-0 text-slate-400 2xl:text-slate-500"
               />
             )}
 
@@ -133,7 +113,7 @@ export default function MultiSelectDropdown({
               text-left
               text-sm
               text-slate-700
-              2xl:text-lg
+              2xl:text-base
               2xl:text-slate-800
             "
               title={displayText}
@@ -146,8 +126,8 @@ export default function MultiSelectDropdown({
             size={18}
             className={`
             shrink-0
-            text-slate-600
-            2xl:text-slate-600
+            text-slate-400
+            2xl:text-slate-500
             transition-transform
             duration-200
             ${open ? "rotate-180" : ""}
@@ -158,33 +138,36 @@ export default function MultiSelectDropdown({
         {/* Dropdown */}
         {open && (
           <div
-            className={`
+            className="
             absolute
-            right-0
+            left-0
             top-11
 
-            ${dropdownWidth || width || "w-full"}
+            w-full
 
             bg-white
             rounded-xl
             border
-            border-[#CDD7E3]
+            border-slate-200
+            2xl:border-slate-300
+
             shadow-xl
-            z-60
-            overflow-x-hidden
-            overflow-y-auto
+
+            z-50
+
+            overflow-hidden
 
             animate-in
             fade-in
             zoom-in-95
-          `}
+          "
           >
             {/* Search */}
-            <div className="border-b border-[#E1E7EF] p-3">
+            <div className="border-b border-slate-100 2xl:border-slate-200 p-3">
               <div className="relative">
                 <Search
                   size={16}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                 />
 
                 <input
@@ -195,21 +178,20 @@ export default function MultiSelectDropdown({
                   className="
                   w-full
                   h-9
-                  2xl:h-10
                   pl-9
                   pr-3
 
                   rounded-lg
                   border
-                  border-[#B8C4D1]
+                  border-slate-300
 
                   text-sm
-                  2xl:text-base
 
                   outline-none
 
                   focus:border-blue-500
-                  
+                  focus:ring-2
+                  focus:ring-blue-100
                 "
                 />
               </div>
@@ -230,10 +212,10 @@ export default function MultiSelectDropdown({
 
               text-left
               text-sm
-              2xl:text-base
 
               border-b
-              border-[#E1E7EF]
+              border-slate-100
+              2xl:border-slate-200
 
               hover:bg-slate-50
 
@@ -243,27 +225,27 @@ export default function MultiSelectDropdown({
             "
             >
               {selected.length === options.length ? (
-                <CheckSquare className="h-4 w-4 2xl:h-5 2xl:w-5 shrink-0 text-blue-600" />
+                <CheckSquare className="h-4 w-4 shrink-0 text-blue-600" />
               ) : (
-                <Square className="h-4 w-4 2xl:h-5 2xl:w-5 shrink-0 text-slate-600" />
+                <Square className="h-4 w-4 shrink-0 text-slate-500" />
               )}
 
               <span className="font-medium text-slate-700">Select All</span>
             </button>
 
             {/* Options */}
-            <div className="max-h-50 overflow-y-auto">
+            <div className="max-h-60 overflow-y-auto">
               {filteredOptions.length === 0 ? (
-                <div className="py-6 text-center text-sm 2xl:text-base text-slate-600">
+                <div className="py-6 text-center text-sm text-slate-500">
                   No Results Found
                 </div>
               ) : (
                 filteredOptions.map((option) => (
                   <button
-                    key={option.value}
+                    key={option}
                     type="button"
-                    onClick={() => toggleOption(option.value)}
-                    title={option.label}
+                    onClick={() => toggleOption(option)}
+                    title={option}
                     className={`
                     w-full
                     px-4
@@ -275,36 +257,37 @@ export default function MultiSelectDropdown({
 
                     text-left
                     text-sm
-                    2xl:text-base
 
                     border-b
-                    border-[#E1E7EF]
+                    border-slate-100
+                    2xl:border-slate-200
                     last:border-b-0
 
                     transition-colors
 
                     cursor-pointer
 
-                    ${selected.includes(option.value)
+                    ${
+                      selected.includes(option)
                         ? "bg-blue-50"
                         : "hover:bg-slate-50"
-                      }
+                    }
                   `}
                   >
-                    {selected.includes(option.value) ? (
-                      <CheckSquare className="h-4 w-4 2xl:h-5 2xl:w-5 shrink-0 text-blue-600" />
+                    {selected.includes(option) ? (
+                      <CheckSquare className="h-4 w-4 shrink-0 text-blue-600" />
                     ) : (
-                      <Square className="h-4 w-4 2xl:h-5 2xl:w-5 shrink-0 text-slate-500" />
+                      <Square className="h-4 w-4 shrink-0 text-slate-500" />
                     )}
 
-                    <span className="truncate text-slate-700">{option.label}</span>
+                    <span className="truncate text-slate-700">{option}</span>
                   </button>
                 ))
               )}
             </div>
 
             {/* Footer */}
-            <div className="border-t border-[#E1E7EF] p-2">
+            <div className="border-t border-slate-100 2xl:border-slate-200 p-2">
               <button
                 type="button"
                 onClick={() => onChange([])}
@@ -314,7 +297,6 @@ export default function MultiSelectDropdown({
                 py-2
 
                 text-sm
-                2xl:text-base
                 font-medium
                 text-red-600
 
@@ -334,3 +316,4 @@ export default function MultiSelectDropdown({
     </div>
   );
 }
+ 

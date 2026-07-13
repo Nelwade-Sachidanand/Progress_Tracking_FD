@@ -21,8 +21,10 @@ export default function ProjectNavigation({
   const handleSubmitProject = async () => {
     const payload = mapProjectPayload(formData);
 
+    console.log(payload);
+
     const response = isEdit
-      ? await updateProject(selectedInfoId, payload)
+      ? await updateProject(selectedInfoId,payload)
       : await saveProject(payload);
 
     if (response.statusType === "S") {

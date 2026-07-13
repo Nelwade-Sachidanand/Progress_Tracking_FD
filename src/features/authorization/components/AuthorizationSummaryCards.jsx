@@ -156,3 +156,4 @@ export default function AuthorizationSummaryCards({ auths = [] }) {
     </div>
   );
 }
+ 

@@ -1,4 +1,4 @@
-import { FileSpreadsheet, FileText, FileType, Filter, X } from "lucide-react";
+import { X, FileText, FileSpreadsheet, FileType, Filter } from "lucide-react";
 
 export default function GenerateReportModal({
   isOpen,
@@ -81,12 +81,8 @@ export default function GenerateReportModal({
               <FileText size={18} className="text-[#6D4AFF]" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-[#0F172A]">
-                Generate Report
-              </h2>
-              <p className="text-xs text-slate-500">
-                Export filtered tasks data
-              </p>
+              <h2 className="text-lg font-bold text-[#0F172A]">Generate Report</h2>
+              <p className="text-xs text-slate-500">Export filtered tasks data</p>
             </div>
           </div>
           <button
@@ -146,14 +142,14 @@ export default function GenerateReportModal({
           px-3
           py-3
           transition-all
-          ${
-            reportType === type
-              ? "border-[#6D4AFF] bg-[#F6F3FF] shadow-md"
-              : "border-slate-200 bg-white hover:border-[#6D4AFF]/50 hover:bg-slate-50"
-          }
+          ${reportType === type
+                      ? "border-[#6D4AFF] bg-[#F6F3FF] shadow-md"
+                      : "border-slate-200 bg-white hover:border-[#6D4AFF]/50 hover:bg-slate-50"
+                    }
         `}
                 >
                   <div className="flex items-start justify-between">
+
                     {/* Left */}
                     <div className="flex gap-2">
                       <input
@@ -170,7 +166,9 @@ export default function GenerateReportModal({
                           {label}
                         </p>
 
-                        <p className="text-[11px] text-slate-500">{ext}</p>
+                        <p className="text-[11px] text-slate-500">
+                          {ext}
+                        </p>
                       </div>
                     </div>
 
@@ -183,16 +181,22 @@ export default function GenerateReportModal({
               flex
               items-center
               justify-center
-              ${reportType === type ? "bg-[#6D4AFF]/10" : "bg-slate-100"}
+              ${reportType === type
+                          ? "bg-[#6D4AFF]/10"
+                          : "bg-slate-100"
+                        }
             `}
                     >
                       <Icon
                         size={18}
                         className={
-                          reportType === type ? "text-[#6D4AFF]" : color
+                          reportType === type
+                            ? "text-[#6D4AFF]"
+                            : color
                         }
                       />
                     </div>
+
                   </div>
                 </label>
               ))}
@@ -238,8 +242,7 @@ export default function GenerateReportModal({
               </label>
               {activeFilterCount > 0 && (
                 <span className="text-xs font-medium text-[#6D4AFF] bg-[#F5F3FF] px-2.5 py-1 rounded-full">
-                  {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""}{" "}
-                  applied
+                  {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""} applied
                 </span>
               )}
             </div>
@@ -249,24 +252,16 @@ export default function GenerateReportModal({
                 <div className="flex flex-wrap gap-2">
                   {/* Project */}
                   {selectedProject && (
-                    <div
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("project")}`}
-                    >
-                      <span className="opacity-60 text-[10px] uppercase tracking-wider">
-                        Project:
-                      </span>
+                    <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("project")}`}>
+                      <span className="opacity-60 text-[10px] uppercase tracking-wider">Project:</span>
                       <span className="font-semibold">{selectedProject}</span>
                     </div>
                   )}
 
                   {/* Phase */}
                   {selectedPhase && selectedPhase !== "All Phases" && (
-                    <div
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("phase")}`}
-                    >
-                      <span className="opacity-60 text-[10px] uppercase tracking-wider">
-                        Phase:
-                      </span>
+                    <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("phase")}`}>
+                      <span className="opacity-60 text-[10px] uppercase tracking-wider">Phase:</span>
                       <span className="font-semibold">{selectedPhase}</span>
                     </div>
                   )}
@@ -274,12 +269,8 @@ export default function GenerateReportModal({
                   {/* Milestone - With Tooltip */}
                   {selectedMilestone && selectedMilestone.length > 0 && (
                     <div className="relative group">
-                      <div
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("milestone")}`}
-                      >
-                        <span className="opacity-60 text-[10px] uppercase tracking-wider">
-                          Milestone:
-                        </span>
+                      <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("milestone")}`}>
+                        <span className="opacity-60 text-[10px] uppercase tracking-wider">Milestone:</span>
                         <span className="font-semibold">
                           {selectedMilestone.length === 1
                             ? selectedMilestone[0]
@@ -350,51 +341,32 @@ export default function GenerateReportModal({
 
                   {/* Task */}
                   {selectedTask && selectedTask !== "All_Tasks" && (
-                    <div
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("task")}`}
-                    >
-                      <span className="opacity-60 text-[10px] uppercase tracking-wider">
-                        Task:
-                      </span>
+                    <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("task")}`}>
+                      <span className="opacity-60 text-[10px] uppercase tracking-wider">Task:</span>
                       <span className="font-semibold">{selectedTask}</span>
                     </div>
                   )}
 
                   {/* Sub Task */}
                   {selectedSubTask && selectedSubTask !== "All Subtasks" && (
-                    <div
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("subtask")}`}
-                    >
-                      <span className="opacity-60 text-[10px] uppercase tracking-wider">
-                        Sub Task:
-                      </span>
+                    <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("subtask")}`}>
+                      <span className="opacity-60 text-[10px] uppercase tracking-wider">Sub Task:</span>
                       <span className="font-semibold">{selectedSubTask}</span>
                     </div>
                   )}
 
                   {/* Activity */}
-                  {selectedActivity &&
-                    selectedActivity !== "All Activities" && (
-                      <div
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("activity")}`}
-                      >
-                        <span className="opacity-60 text-[10px] uppercase tracking-wider">
-                          Activity:
-                        </span>
-                        <span className="font-semibold">
-                          {selectedActivity}
-                        </span>
-                      </div>
-                    )}
+                  {selectedActivity && selectedActivity !== "All Activities" && (
+                    <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("activity")}`}>
+                      <span className="opacity-60 text-[10px] uppercase tracking-wider">Activity:</span>
+                      <span className="font-semibold">{selectedActivity}</span>
+                    </div>
+                  )}
 
                   {/* Status */}
                   {selectedStatus && (
-                    <div
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getStatusColorClasses(selectedStatus)}`}
-                    >
-                      <span className="opacity-60 text-[10px] uppercase tracking-wider">
-                        Status:
-                      </span>
+                    <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getStatusColorClasses(selectedStatus)}`}>
+                      <span className="opacity-60 text-[10px] uppercase tracking-wider">Status:</span>
                       <span className="font-semibold">{selectedStatus}</span>
                     </div>
                   )}
@@ -402,9 +374,7 @@ export default function GenerateReportModal({
               ) : (
                 <div className="flex items-center justify-center py-2">
                   <Filter size={16} className="text-slate-300 mr-2" />
-                  <span className="text-sm text-slate-400">
-                    No filters applied - all tasks will be included
-                  </span>
+                  <span className="text-sm text-slate-400">No filters applied - all tasks will be included</span>
                 </div>
               )}
             </div>

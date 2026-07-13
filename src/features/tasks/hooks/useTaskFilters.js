@@ -88,7 +88,7 @@ export default function useTaskFilters(tasks = []) {
 
       if (
         selectedMilestone.length > 0 &&
-        !selectedMilestone.includes(task.milestone)
+        !selectedMilestone.includes(task.milestoneId)
       ) {
         return false;
       }
@@ -179,3 +179,4 @@ export default function useTaskFilters(tasks = []) {
     handleMilestoneChange,
   };
 }
+ 

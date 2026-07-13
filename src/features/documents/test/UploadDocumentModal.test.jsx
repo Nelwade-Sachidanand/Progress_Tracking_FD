@@ -1,98 +1,276 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
-import UploadDocumentModal from "../UploadDocumentModal";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import UploadDocumentModal from "../Components/UploadDocumentModal";
+import { uploadDocument } from "../services/documentService";
+import { toast } from "react-toastify";
 
-const mockDoc = { activity: "Test Activity" };
+vi.mock("../services/documentService", () => ({
+  uploadDocument: vi.fn(),
+}));
+
+vi.mock("react-toastify", () => ({
+  toast: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
+}));
 
 describe("UploadDocumentModal", () => {
-  it("renders modal when open", () => {
+  const onClose = vi.fn();
+  const onSuccess = vi.fn();
+
+  const documentData = {
+    projectId: "1",
+    projectName: "Project A",
+    bankName: "ABC Bank",
+    phase: "Phase 1",
+    milestone: "Milestone 1",
+    task: "Task 1",
+    subTask: "Sub Task 1",
+    activity: "KYC Upload",
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    sessionStorage.setItem("selectedProjectId", "1");
+  });
+
+  it("does not render when closed", () => {
+    const { container } = render(
+      <UploadDocumentModal
+        isOpen={false}
+        document={documentData}
+        onClose={onClose}
+        onSuccess={onSuccess}
+      />
+    );
+
+    expect(container.firstChild).toBeNull();
+  });
+
+  it("renders modal", () => {
     render(
       <UploadDocumentModal
-        isOpen={true}
-        document={mockDoc}
-        onClose={() => {}}
-        onUpload={() => {}}
+        isOpen
+        document={documentData}
+        onClose={onClose}
+        onSuccess={onSuccess}
       />
     );
 
     expect(screen.getByText("Upload Document")).toBeInTheDocument();
-    expect(screen.getByText("Test Activity")).toBeInTheDocument();
+    expect(screen.getByText("KYC Upload")).toBeInTheDocument();
   });
 
-  it("accepts valid file types and triggers upload", () => {
-    const onUpload = vi.fn();
-
+  it("upload button is disabled initially", () => {
     render(
       <UploadDocumentModal
-        isOpen={true}
-        document={mockDoc}
-        onClose={() => {}}
-        onUpload={onUpload}
+        isOpen
+        document={documentData}
+        onClose={onClose}
+        onSuccess={onSuccess}
       />
     );
 
-    const input = screen.getByTestId("file-input");
-
-    const validFiles = [
-      new File(["pdf"], "test.pdf", {
-        type: "application/pdf",
-      }),
-      new File(["word"], "test.docx", {
-        type:
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      }),
-      new File(["excel"], "test.xlsx", {
-        type:
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      }),
-      new File(["image"], "test.png", {
-        type: "image/png",
-      }),
-    ];
-
-    validFiles.forEach((file) => {
-      fireEvent.change(input, {
-        target: { files: [file] },
-      });
-
-      fireEvent.click(screen.getByText("Upload Document"));
-
-      expect(onUpload).toHaveBeenCalled();
-    });
-
-    expect(onUpload).toHaveBeenCalledTimes(validFiles.length);
+    expect(screen.getByRole("button", { name: "Upload" })).toBeDisabled();
   });
 
-  it("rejects invalid file types", () => {
-    const onUpload = vi.fn();
-    const alertMock = vi.spyOn(window, "alert").mockImplementation(() => {});
-
+  it("shows selected file", () => {
     render(
       <UploadDocumentModal
-        isOpen={true}
-        document={mockDoc}
-        onClose={() => {}}
-        onUpload={onUpload}
+        isOpen
+        document={documentData}
+        onClose={onClose}
+        onSuccess={onSuccess}
       />
     );
 
-    const input = screen.getByTestId("file-input");
+    const input = document.querySelector('input[type="file"]');
 
-    const invalidFile = new File(["virus"], "test.exe", {
-      type: "application/x-msdownload",
+    const file = new File(["hello"], "test.pdf", {
+      type: "application/pdf",
     });
 
     fireEvent.change(input, {
-      target: { files: [invalidFile] },
+      target: {
+        files: [file],
+      },
     });
 
-    fireEvent.click(screen.getByText("Upload Document"));
+    expect(screen.getByText("test.pdf")).toBeInTheDocument();
+  });
 
-    expect(onUpload).not.toHaveBeenCalled();
-    expect(alertMock).toHaveBeenCalledWith(
-      "Only PDF, Word, Excel and Images are allowed."
+  it("shows error for invalid file type", () => {
+    render(
+      <UploadDocumentModal
+        isOpen
+        document={documentData}
+        onClose={onClose}
+        onSuccess={onSuccess}
+      />
     );
 
-    alertMock.mockRestore();
+    const input = document.querySelector('input[type="file"]');
+
+    const file = new File(["abc"], "test.txt", {
+      type: "text/plain",
+    });
+
+    fireEvent.change(input, {
+      target: {
+        files: [file],
+      },
+    });
+
+    expect(toast.error).toHaveBeenCalledWith("Invalid file type!");
+  });
+
+  it("shows error when file exceeds 10MB", () => {
+    render(
+      <UploadDocumentModal
+        isOpen
+        document={documentData}
+        onClose={onClose}
+        onSuccess={onSuccess}
+      />
+    );
+
+    const input = document.querySelector('input[type="file"]');
+
+    const largeFile = new File(
+      [new Uint8Array(11 * 1024 * 1024)],
+      "large.pdf",
+      {
+        type: "application/pdf",
+      }
+    );
+
+    fireEvent.change(input, {
+      target: {
+        files: [largeFile],
+      },
+    });
+
+    expect(toast.error).toHaveBeenCalledWith("File must be <= 10MB");
+  });
+
+  it("calls onClose when Cancel clicked", () => {
+    render(
+      <UploadDocumentModal
+        isOpen
+        document={documentData}
+        onClose={onClose}
+        onSuccess={onSuccess}
+      />
+    );
+
+    fireEvent.click(screen.getByText("Cancel"));
+
+    expect(onClose).toHaveBeenCalled();
+  });
+
+  it("uploads successfully", async () => {
+    uploadDocument.mockResolvedValue({
+      statusType: "S",
+    });
+
+    render(
+      <UploadDocumentModal
+        isOpen
+        document={documentData}
+        onClose={onClose}
+        onSuccess={onSuccess}
+      />
+    );
+
+    const input = document.querySelector('input[type="file"]');
+
+    const file = new File(["hello"], "test.pdf", {
+      type: "application/pdf",
+    });
+
+    fireEvent.change(input, {
+      target: {
+        files: [file],
+      },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Upload" }));
+
+    await waitFor(() => {
+      expect(uploadDocument).toHaveBeenCalledTimes(1);
+      expect(toast.success).toHaveBeenCalledWith(
+        "Document uploaded successfully 🎉"
+      );
+      expect(onClose).toHaveBeenCalled();
+      expect(onSuccess).toHaveBeenCalled();
+    });
+  });
+
+  it("shows upload failed message", async () => {
+    uploadDocument.mockResolvedValue({
+      statusType: "E",
+      statusDesc: "Upload failed",
+    });
+
+    render(
+      <UploadDocumentModal
+        isOpen
+        document={documentData}
+        onClose={onClose}
+        onSuccess={onSuccess}
+      />
+    );
+
+    const input = document.querySelector('input[type="file"]');
+
+    const file = new File(["hello"], "test.pdf", {
+      type: "application/pdf",
+    });
+
+    fireEvent.change(input, {
+      target: {
+        files: [file],
+      },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Upload" }));
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith("Upload failed");
+    });
+  });
+
+  it("handles upload exception", async () => {
+    uploadDocument.mockRejectedValue(new Error("Server Error"));
+
+    render(
+      <UploadDocumentModal
+        isOpen
+        document={documentData}
+        onClose={onClose}
+        onSuccess={onSuccess}
+      />
+    );
+
+    const input = document.querySelector('input[type="file"]');
+
+    const file = new File(["hello"], "test.pdf", {
+      type: "application/pdf",
+    });
+
+    fireEvent.change(input, {
+      target: {
+        files: [file],
+      },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Upload" }));
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        "Failed to upload document"
+      );
+    });
   });
 });

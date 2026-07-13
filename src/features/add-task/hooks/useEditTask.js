@@ -37,7 +37,7 @@ subTaskName: task?.subTaskName || task?.subTask || "",
 
 activityId: task?.activityId || "",
   activityName: task?.activityName || task?.activity || "",
-
+    
 
     owner: task?.owner || "",
 
@@ -84,7 +84,7 @@ const phases = useMemo(() => {
   );
 }, [selectedProject, formData.phaseId]);
 
-const taskOptions = useMemo(() => {
+ const taskOptions = useMemo(() => {
   const phase = selectedProject?.phases?.find(
     (p) => p.phaseId === formData.phaseId,
   );
@@ -101,7 +101,7 @@ const taskOptions = useMemo(() => {
   );
 }, [selectedProject, formData.phaseId, formData.milestoneId]);
 
-const subTasks = useMemo(() => {
+ const subTasks = useMemo(() => {
   const phase = selectedProject?.phases?.find(
     (p) => p.phaseId === formData.phaseId,
   );
@@ -185,10 +185,6 @@ if (field === "plannedStartDate" || field === "plannedEndDate") {
 // Actual Period Week
 // ================================
 
-// ================================
-// Actual Period Week (NETWORKDAYS / 5)
-// ================================
-
 if (field === "actualStartDate" || field === "actualEndDate") {
   const start =
     field === "actualStartDate"
@@ -221,7 +217,7 @@ if (field === "actualStartDate" || field === "actualEndDate") {
       }
 
       updated.actualPeriodWeek = Number(
-        (workingDays / 5).toFixed(2)
+        (workingDays / 5).toFixed(1)
       );
     } else {
       updated.actualPeriodWeek = "";
@@ -262,6 +258,7 @@ const handleUpdate = async () => {
   }
 
   // Progress Changed
+<<<<<<< HEAD
   const isProgressChanged =
     Number(formData.progress) !== Number(task?.progress);
 
@@ -270,6 +267,31 @@ const handleUpdate = async () => {
     toast.error("Please select Actual Start Date.");
     return;
   }
+=======
+const oldProgress = Number(task?.progress);
+const newProgress = Number(formData.progress);
+
+// Actual Start Date is required only when progress is greater than 0
+if (
+  newProgress > 0 &&
+  oldProgress !== newProgress &&
+  !formData.actualStartDate
+) {
+  toast.error("Please select Actual Start Date.");
+  return;
+}
+
+// Actual End Date is required only when progress is exactly 100%
+if (
+  newProgress === 100 &&
+  !formData.actualEndDate
+) {
+  toast.error(
+    "Please select Actual End Date when progress is 100%."
+  );
+  return;
+}
+>>>>>>> 1579f340c14c4992a4532204c05856fe4c40ce5b
 
   // If progress reaches 100%, Actual End Date is mandatory
   if (

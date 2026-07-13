@@ -2,7 +2,8 @@ import {
   AlertTriangle,
   CheckCircle2,
   ClipboardList,
-  MinusCircle,
+  RotateCw,
+  Clock,
 } from "lucide-react";
 
 export default function TaskSummaryCards({
@@ -12,41 +13,76 @@ export default function TaskSummaryCards({
   notStarted,
   inProgress,
 }) {
-  const cards = [
-    {
-      title: "Total Tasks",
-      value: total,
-      icon: ClipboardList,
-      bg: "#EFF6FF",
-      iconBg: "#DCEAFE",
-      color: "#2563EB",
-    },
-    {
-      title: "Completed",
-      value: completed,
-      icon: CheckCircle2,
-      bg: "#F0FDF4",
-      iconBg: "#DDF7E7",
-      color: "#16A34A",
-    },
-    {
-      title: "In Progress",
-      value: inProgress,
-      icon: MinusCircle,
-      bg: "#EFF6FF",
-      iconBg: "#DBEAFE",
-      color: "#2563EB",
-    },
-    {
-      title: "Not Started",
-      value: notStarted,
-      icon: MinusCircle,
-      bg: "#F8FAFC",
-      iconBg: "#ECECF1",
-      color: "#64748B",
-    },
-  ];
+  // const cards = [
+  //   {
+  //     title: "Total Tasks",
+  //     value: total,
+  //     icon: ClipboardList,
+  //     bg: "#EFF6FF",
+  //     iconBg: "#DCEAFE",
+  //     color: "#2563EB",
+  //   },
+  //   {
+  //     title: "Completed",
+  //     value: completed,
+  //     icon: CheckCircle2,
+  //     bg: "#F0FDF4",
+  //     iconBg: "#DDF7E7",
+  //     color: "#16A34A",
+  //   },
+  //   {
+  //     title: "In Progress",
+  //     value: inProgress,
+  //     icon: MinusCircle,
+  //     bg: "#EFF6FF",
+  //     iconBg: "#DBEAFE",
+  //     color: "#2563EB",
+  //   },
+  //   {
+  //     title: "Not Started",
+  //     value: notStarted,
+  //     icon: MinusCircle,
+  //     bg: "#F8FAFC",
+  //     iconBg: "#ECECF1",
+  //     color: "#64748B",
+  //   },
+  // ];
 
+
+const cards = [
+  {
+    title: "Total Tasks",
+    value: total,
+    icon: ClipboardList,
+    bg: "#EFF6FF",
+    iconBg: "#DCEAFE",
+    color: "#2563EB",
+  },
+  {
+    title: "Completed",
+    value: completed,
+    icon: CheckCircle2,
+    bg: "#F0FDF4",
+    iconBg: "#DDF7E7",
+    color: "#16A34A",
+  },
+  {
+    title: "In Progress",
+    value: inProgress,
+    icon: RotateCw,
+    bg: "#EFF6FF",
+    iconBg: "#DBEAFE",
+    color: "#2563EB",
+  },
+  {
+    title: "Not Started",
+    value: notStarted,
+    icon: Clock,
+    bg: "#F8FAFC",
+    iconBg: "#ECECF1",
+    color: "#64748B",
+  },
+];
   return (
     <div
       className="

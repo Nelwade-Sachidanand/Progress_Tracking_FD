@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 
 function ActiveFilters({
+  milestones = [],
   selectedPhase,
   selectedMilestone,
   selectedTask,
@@ -25,11 +26,13 @@ function ActiveFilters({
     });
   }
 
-  (selectedMilestone || []).forEach((milestone) => {
+  (selectedMilestone || []).forEach((milestoneId) => {
+    const milestone = milestones.find((m) => m.value === milestoneId);
+
     filters.push({
       type: "milestone",
-      value: milestone,
-      label: `Milestone: ${milestone}`,
+      value: milestoneId,
+      label: `Milestone: ${milestone?.label ?? milestoneId}`,
     });
   });
 

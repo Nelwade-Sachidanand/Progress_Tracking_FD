@@ -64,7 +64,6 @@ export default function TaskFilters({
         />
 
         {/* Milestone */}
-
         <MultiSelectDropdown
           label="Milestone"
           placeholder="All Milestones"
@@ -89,7 +88,6 @@ export default function TaskFilters({
         />
 
         {/* Sub Task */}
-
         <CustomDropdown
           label="Sub Task"
           placeholder="All Sub Tasks"
@@ -116,6 +114,20 @@ export default function TaskFilters({
         xl:grid-cols-12
       "
       >
+           {/* Activity */}
+
+        <div className="xl:col-span-4">
+          <CustomDropdown
+            label="Activity"
+            placeholder="All Activities"
+            value={selectedActivity}
+            onChange={setSelectedActivity}
+            options={activities.map((activity) => ({
+              label: activity,
+              value: activity,
+            }))}
+          />
+        </div>
         {/* Status */}
 
         <div className="xl:col-span-2">
@@ -141,20 +153,7 @@ export default function TaskFilters({
           />
         </div>
 
-        {/* Activity */}
-
-        <div className="xl:col-span-4">
-          <CustomDropdown
-            label="Activity"
-            placeholder="All Activities"
-            value={selectedActivity}
-            onChange={setSelectedActivity}
-            options={activities.map((activity) => ({
-              label: activity,
-              value: activity,
-            }))}
-          />
-        </div>
+     
 
         {/* Search */}
 

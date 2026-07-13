@@ -1,31 +1,27 @@
 import { useMemo, useState } from "react";
 
 export default function useDocumentFilters(documents = []) {
-  const [selectedPhase, setSelectedPhase] = useState("All Phases");
   const [selectedMilestone, setSelectedMilestone] = useState([]);
-  const [selectedTask, setSelectedTask] = useState("All Tasks");
-  const [selectedSubTask, setSelectedSubTask] = useState("All Sub Tasks");
-  const [selectedActivity, setSelectedActivity] = useState("All Activities");
-  const [selectedStatus, setSelectedStatus] = useState("All Status");
+  const [selectedPhase, setSelectedPhase] = useState("");
+  const [selectedTask, setSelectedTask] = useState("");
+  const [selectedSubTask, setSelectedSubTask] = useState("");
+  const [selectedActivity, setSelectedActivity] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
   /* Dropdown Values */
 
   const phases = useMemo(
     () => [...new Set(documents.map((d) => d.phase))],
-    [documents]
+    [documents],
   );
 
   const milestones = useMemo(() => {
     return [
       ...new Set(
         documents
-          .filter(
-            (d) =>
-              selectedPhase === "All Phases" ||
-              d.phase === selectedPhase
-          )
-          .map((d) => d.milestone)
+          .filter((d) => !selectedPhase || d.phase === selectedPhase)
+          .map((d) => d.milestone),
       ),
     ];
   }, [documents, selectedPhase]);
@@ -37,9 +33,9 @@ export default function useDocumentFilters(documents = []) {
           .filter(
             (d) =>
               selectedMilestone.length === 0 ||
-              selectedMilestone.includes(d.milestone)
+              selectedMilestone.includes(d.milestone),
           )
-          .map((d) => d.task)
+          .map((d) => d.task),
       ),
     ];
   }, [documents, selectedMilestone]);
@@ -48,12 +44,8 @@ export default function useDocumentFilters(documents = []) {
     return [
       ...new Set(
         documents
-          .filter(
-            (d) =>
-              selectedTask === "All Tasks" ||
-              d.task === selectedTask
-          )
-          .map((d) => d.subTask)
+          .filter((d) => !selectedTask || d.task === selectedTask)
+          .map((d) => d.subTask),
       ),
     ];
   }, [documents, selectedTask]);
@@ -62,12 +54,8 @@ export default function useDocumentFilters(documents = []) {
     return [
       ...new Set(
         documents
-          .filter(
-            (d) =>
-              selectedSubTask === "All Sub Tasks" ||
-              d.subTask === selectedSubTask
-          )
-          .map((d) => d.activity)
+          .filter((d) => !selectedSubTask || d.subTask === selectedSubTask)
+          .map((d) => d.activity),
       ),
     ];
   }, [documents, selectedSubTask]);
@@ -76,43 +64,43 @@ export default function useDocumentFilters(documents = []) {
 
   const handlePhaseChange = (value) => {
     setSelectedPhase(value);
+
     setSelectedMilestone([]);
-    setSelectedTask("All Tasks");
-    setSelectedSubTask("All Sub Tasks");
-    setSelectedActivity("All Activities");
+    setSelectedTask("");
+    setSelectedSubTask("");
+    setSelectedActivity("");
   };
 
   const handleMilestoneChange = (milestone) => {
     setSelectedMilestone((prev) =>
       prev.includes(milestone)
         ? prev.filter((m) => m !== milestone)
-        : [...prev, milestone]
+        : [...prev, milestone],
     );
 
-    setSelectedTask("All Tasks");
-    setSelectedSubTask("All Sub Tasks");
-    setSelectedActivity("All Activities");
+    setSelectedTask("");
+    setSelectedSubTask("");
+    setSelectedActivity("");
   };
 
   const handleTaskChange = (value) => {
     setSelectedTask(value);
-    setSelectedSubTask("All Sub Tasks");
-    setSelectedActivity("All Activities");
+
+    setSelectedSubTask("");
+    setSelectedActivity("");
   };
 
   const handleSubTaskChange = (value) => {
     setSelectedSubTask(value);
-    setSelectedActivity("All Activities");
+
+    setSelectedActivity("");
   };
 
   /* Filtered Documents */
 
   const filteredDocuments = useMemo(() => {
     return documents.filter((doc) => {
-      if (
-        selectedPhase !== "All Phases" &&
-        doc.phase !== selectedPhase
-      ) {
+      if (selectedPhase && doc.phase !== selectedPhase) {
         return false;
       }
 
@@ -123,45 +111,43 @@ export default function useDocumentFilters(documents = []) {
         return false;
       }
 
-      if (
-        selectedTask !== "All Tasks" &&
-        doc.task !== selectedTask
-      ) {
+      if (selectedTask && doc.task !== selectedTask) {
         return false;
       }
 
-      if (
-        selectedSubTask !== "All Sub Tasks" &&
-        doc.subTask !== selectedSubTask
-      ) {
+      if (selectedSubTask && doc.subTask !== selectedSubTask) {
         return false;
       }
 
-      if (
-        selectedActivity !== "All Activities" &&
-        doc.activity !== selectedActivity
-      ) {
+      if (selectedActivity && doc.activity !== selectedActivity) {
         return false;
       }
 
-      if (
-        selectedStatus !== "All Status" &&
-        doc.uploadStatus !== selectedStatus
-      ) {
+      const latestDocument =
+        doc.documents?.length > 0
+          ? doc.documents[doc.documents.length - 1]
+          : null;
+
+      const uploadStatus = latestDocument ? "Uploaded" : "Pending";
+
+      if (selectedStatus && uploadStatus !== selectedStatus) {
         return false;
       }
 
-      if (searchTerm) {
-        const search = searchTerm.toLowerCase();
+      const search = searchTerm.toLowerCase();
 
-        return (
+      if (
+        searchTerm &&
+        !(
           doc.activity?.toLowerCase().includes(search) ||
           doc.task?.toLowerCase().includes(search) ||
           doc.phase?.toLowerCase().includes(search) ||
           doc.milestone?.toLowerCase().includes(search) ||
-          doc.fileName?.toLowerCase().includes(search) ||
-          doc.uploadedBy?.toLowerCase().includes(search)
-        );
+          latestDocument?.fileName?.toLowerCase().includes(search) ||
+          latestDocument?.uploadedBy?.toLowerCase().includes(search)
+        )
+      ) {
+        return false;
       }
 
       return true;
@@ -176,6 +162,16 @@ export default function useDocumentFilters(documents = []) {
     selectedStatus,
     searchTerm,
   ]);
+
+  const clearFilters = () => {
+    setSelectedPhase("");
+    setSelectedMilestone([]);
+    setSelectedTask("");
+    setSelectedSubTask("");
+    setSelectedActivity("");
+    setSelectedStatus("");
+    setSearchTerm("");
+  };
 
   return {
     phases,
@@ -211,5 +207,6 @@ export default function useDocumentFilters(documents = []) {
     handleMilestoneChange,
     handleTaskChange,
     handleSubTaskChange,
+    clearFilters,
   };
 }
