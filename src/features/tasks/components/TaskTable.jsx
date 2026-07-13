@@ -30,39 +30,39 @@ export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
         <table className="w-full min-w-[1100px] xl:min-w-full table-fixed">
           <thead>
             <tr className="border-b border-[#CDD7E3] bg-blue-100">
-              <th className="w-[60px] px-3 py-3 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
+              <th className="w-[60px] px-3 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
                 Sr. No.
               </th>
 
-              <th className="w-[22%] px-4 py-3 text-left text-base font-semibold text-slate-600">
+              <th className="w-[22%] px-4 py-4 text-left text-base font-semibold text-slate-600">
                 Activity / Task
               </th>
 
-              <th className="w-[22%] px-4 py-3 text-left text-base font-semibold text-slate-600">
+              <th className="w-[22%] px-4 py-4 text-left text-base font-semibold text-slate-600">
                 Phase / Milestone
               </th>
 
-              <th className="w-[15%] px-4 py-3 text-left text-base font-semibold text-slate-600">
-                Duration
+              <th className="w-[15%] px-4 py-4 text-left text-base font-semibold text-slate-600">
+                Date
               </th>
 
-              <th className="w-[13%] px-4 py-3 text-left text-base font-semibold text-slate-600">
+              <th className="w-[13%] px-4 py-4 text-left text-base font-semibold text-slate-600">
                 Progress
               </th>
 
-              <th className="w-[10%] px-4 py-3 text-left text-base font-semibold text-slate-600">
+              <th className="w-[10%] px-4 py-4 text-left text-base font-semibold text-slate-600">
                 Status
               </th>
 
               {["ADMIN", "MANAGEMENT USER", "IMPLEMENTATION USER"].includes(
                 user?.role,
               ) && (
-                  <th className="w-[60px] px-4 py-3 text-center text-base font-semibold text-slate-600">
+                  <th className="w-[60px] px-4 py-4 text-center text-base font-semibold text-slate-600">
                     Edit
                   </th>
                 )}
 
-              <th className="w-[80px] px-4 py-3 text-center text-base font-semibold text-slate-600">
+              <th className="w-[80px] px-4 py-4 text-center text-base font-semibold text-slate-600">
                 Remark
               </th>
             </tr>
@@ -79,7 +79,7 @@ export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
         "
                 >
                   {/* Sr */}
-                  <td className="px-5 py-3">
+                  <td className="px-5 py-2">
                     <span className="text-sm font-medium text-slate-700">
                       {index + 1}
                     </span>

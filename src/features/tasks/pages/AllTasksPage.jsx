@@ -62,7 +62,7 @@ export default function AllTasksPage() {
   const filteredMilestones = [
     ...new Map(
       tasks
-        .filter((t) => !selectedPhase || t.phaseId === selectedPhase)
+        .filter((t) => !selectedPhase || t.phase === selectedPhase)
         .map((t) => [
           t.milestoneId,
           {

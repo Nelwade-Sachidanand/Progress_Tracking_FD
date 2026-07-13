@@ -39,9 +39,9 @@ export default function Documents() {
 
   const loadDocuments = async () => {
     try {
-      const response = await getAllDocuments();
+      const response = await getAllDocuments(selectedProjectId);
 
-      // console.log("Documents Response:", response.details);
+      console.log("Documents Response:", response.details);
 
       if (response.statusType === "S") {
         setDocumentsDetails(response.details);
@@ -79,22 +79,21 @@ export default function Documents() {
               }
 
               docs.push({
-                id: activity.id,
-
                 projectId: selectedProject.id,
 
-                projectName: selectedProject.projectName,
-
-                bankName: selectedProject.bankName,
-
+                phaseId: phase.phaseId,
                 phase: phase.phaseName,
 
+                milestoneId: milestone.milestoneId,
                 milestone: milestone.milestoneName,
 
+                taskId: task.taskId,
                 task: task.taskName,
 
+                subTaskId: subTask.subTaskId,
                 subTask: subTask.subTaskName,
 
+                activityId: activity.activityId,
                 activity: activity.activityName,
 
                 owner: activity.owner,
@@ -120,6 +119,7 @@ export default function Documents() {
     });
 
     setDocuments(docs);
+    console.log("docs : ", docs);
   }, [selectedProject]);
 
   const mergedDocuments = useMemo(() => {
@@ -127,17 +127,13 @@ export default function Documents() {
       const matched = documentsDetails.find(
         (d) =>
           d.projectId === doc.projectId &&
-          d.phaseName === doc.phase &&
-          d.milestoneName === doc.milestone &&
-          d.taskName === doc.task &&
-          d.subTaskName === doc.subTask &&
-          d.activityName === doc.activity,
+          d.phaseId === doc.phaseId &&
+          d.milestoneId === doc.milestoneId &&
+          d.taskId === doc.taskId &&
+          d.subTaskId === doc.subTaskId &&
+          d.activityId === doc.activityId
       );
 
-      // return {
-      //   ...doc,
-      //   documents: matched?.documents || [],
-      // };
       return {
         ...doc,
         documents: matched?.documents || [],
@@ -250,24 +246,12 @@ export default function Documents() {
 
   return (
     <div className="w-full p-4 lg:p-6 bg-[#F8FAFC] min-h-screen">
-      {/* Header */}
-      {/* <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl xl:text-2xl font-bold text-[#0B1F59]">
-            Sign Off Documents
-          </h1>
 
-          <p className="text-slate-500 mt-1">
-            Upload and manage project sign-off documents.
-          </p>
-        </div>
-      </div> */}
- 
- <div className="flex items-center justify-between w-full">
+      <div className="flex items-center justify-between w-full">
 
- <div className="w-full flex justify-end">
+        <div className="w-full flex justify-end">
 
-  <div className="
+          <div className="
     flex items-center gap-2
     bg-[#EEF2FF]
     px-3 py-1.5
@@ -275,21 +259,21 @@ export default function Documents() {
     border border-[#E2E8F0]
     text-xs
   ">
-    <span className="text-slate-500">
-      Active Project:
-    </span>
+            <span className="text-slate-500">
+              Active Project:
+            </span>
 
-    <span className="font-semibold text-[#2563EB] truncate max-w-[200px]">
-      {selectedProject?.projectName || "No Project Selected"}
-    </span>
-  </div>
+            <span className="font-semibold text-[#2563EB] truncate max-w-[200px]">
+              {selectedProject?.projectName || "No Project Selected"}
+            </span>
+          </div>
 
-</div>
+        </div>
 
-</div>
+      </div>
 
-      
-      
+
+
       {/* Filters */}
       <DocumentFilters
         phases={phases}
