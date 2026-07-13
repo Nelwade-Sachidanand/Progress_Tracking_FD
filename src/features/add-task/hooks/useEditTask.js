@@ -258,16 +258,6 @@ const handleUpdate = async () => {
   }
 
   // Progress Changed
-<<<<<<< HEAD
-  const isProgressChanged =
-    Number(formData.progress) !== Number(task?.progress);
-
-  // If progress is changed, Actual Start Date is mandatory
-  if (isProgressChanged && !formData.actualStartDate) {
-    toast.error("Please select Actual Start Date.");
-    return;
-  }
-=======
 const oldProgress = Number(task?.progress);
 const newProgress = Number(formData.progress);
 
@@ -291,7 +281,6 @@ if (
   );
   return;
 }
->>>>>>> 1579f340c14c4992a4532204c05856fe4c40ce5b
 
   // If progress reaches 100%, Actual End Date is mandatory
   if (

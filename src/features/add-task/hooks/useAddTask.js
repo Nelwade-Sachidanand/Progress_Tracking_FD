@@ -15,12 +15,8 @@ export default function useAddTask() {
     ) || null;
 
   //const selectedProject = projects[0];
-
-<<<<<<< HEAD
+const [isSubmitting, setIsSubmitting] = useState(false);
 const [formData, setFormData] = useState({
-=======
- const [formData, setFormData] = useState({
->>>>>>> 1579f340c14c4992a4532204c05856fe4c40ce5b
   phaseId: "",
   phaseName: "",
   newPhase: false,
@@ -54,6 +50,10 @@ actualPeriodWeek: "",
   scheduleHealth: "",
 });
   const handleSubmit = async () => {
+      if (isSubmitting) return;
+
+  setIsSubmitting(true);
+
     try {
       console.log(formData);
 
@@ -136,13 +136,12 @@ actualPeriodWeek: "",
       toast.error(
         error?.response?.data?.statusDesc || "Failed to create activity",
       );
-    }
+    } finally {
+    setIsSubmitting(false);
+  }
+
   };
-<<<<<<< HEAD
 const resetForm = () => {
-=======
- const resetForm = () => {
->>>>>>> 1579f340c14c4992a4532204c05856fe4c40ce5b
   setFormData({
     phaseId: "",
     phaseName: "",
@@ -178,8 +177,6 @@ actualPeriodWeek: "",
   });
 };
 
-<<<<<<< HEAD
-=======
 // const phases = useMemo(() => {
 //   return (
 //     selectedProject?.phases?.map((phase) => ({
@@ -188,101 +185,31 @@ actualPeriodWeek: "",
 //     })) || []
 //   );
 // }, [selectedProject]);
->>>>>>> 1579f340c14c4992a4532204c05856fe4c40ce5b
 const phases = useMemo(() => {
   return (
     selectedProject?.phases?.map((phase) => ({
       id: phase.phaseId,
       name: phase.phaseName,
-<<<<<<< HEAD
-=======
       isNew: phase.isNew || false,
->>>>>>> 1579f340c14c4992a4532204c05856fe4c40ce5b
     })) || []
   );
 }, [selectedProject]);
 
 const milestones = useMemo(() => {
   const phase = selectedProject?.phases?.find(
-<<<<<<< HEAD
-    (p) => p.phaseId === formData.phaseId,
-=======
     (p) => p.phaseId === formData.phaseId
->>>>>>> 1579f340c14c4992a4532204c05856fe4c40ce5b
   );
 
   return (
     phase?.milestones?.map((milestone) => ({
       id: milestone.milestoneId,
       name: milestone.milestoneName,
-<<<<<<< HEAD
-    })) || []
-  );
-}, [selectedProject, formData.phaseId]);
-
-  const taskOptions = useMemo(() => {
-   const phase = selectedProject?.phases?.find(
-  (p) => p.phaseId === formData.phaseId,
-);
-
-   const milestone = phase?.milestones?.find(
-  (m) => m.milestoneId === formData.milestoneId,
-);
-
-   return (
-  milestone?.tasks?.map((task) => ({
-    id: task.taskId,
-    name: task.taskName,
-  })) || []
-);
-   }, [selectedProject, formData.phaseId, formData.milestoneId]);
-
-const subTasks = useMemo(() => {
-  const phase = selectedProject?.phases?.find(
-    (p) => p.phaseId === formData.phaseId,
-  );
-
-  const milestone = phase?.milestones?.find(
-    (m) => m.milestoneId === formData.milestoneId,
-  );
-
-  const task = milestone?.tasks?.find(
-    (t) => t.taskId === formData.taskId,
-  );
-
-  return (
-    task?.subTasks?.map((subTask) => ({
-      id: subTask.subTaskId,
-      name: subTask.subTaskName,
-    })) || []
-  );
-}, [
-  selectedProject,
-  formData.phaseId,
-  formData.milestoneId,
-  formData.taskId,
-]);
-
-const handleChange = (field, value) => {
-  setFormData((prev) => {
-   const updated = {
-  ...prev,
-  [field]: value,
-};
-
-// ======================================
-// Calculate Estimated Period Week
-// ======================================
-
-
-
-=======
       isNew: milestone.isNew || false,
     })) || []
   );
 }, [selectedProject, formData.phaseId]);
 
- const taskOptions = useMemo(() => {
+const taskOptions = useMemo(() => {
   const phase = selectedProject?.phases?.find(
     (p) => p.phaseId === formData.phaseId
   );
@@ -327,7 +254,7 @@ const subTasks = useMemo(() => {
   formData.taskId,
 ]);
 
- const handleChange = (field, value) => {
+const handleChange = (field, value) => {
   setFormData((prev) => {
    const updated = {
   ...prev,
@@ -340,7 +267,6 @@ const subTasks = useMemo(() => {
 
 
 
->>>>>>> 1579f340c14c4992a4532204c05856fe4c40ce5b
 if (
   field === "plannedStartDate" ||
   field === "plannedEndDate"
@@ -483,6 +409,7 @@ if (
     subTasks,
     resetForm,
     handleSubmit,
+    isSubmitting,
   };
 }
  

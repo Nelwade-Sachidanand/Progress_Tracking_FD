@@ -25,25 +25,21 @@ export default function AddTaskForm() {
     subTasks,
     resetForm,
     handleSubmit,
+     isSubmitting,
   } = useAddTask();
 
-
-
-  const phaseRef = useRef(null);
+const phaseRef = useRef(null);
   const milestoneRef = useRef(null);
   const taskRef = useRef(null);
   const subTaskRef = useRef(null);
-
-  const [newPhase, setNewPhase] = useState("");
+   const [newPhase, setNewPhase] = useState("");
   const [newMilestone, setNewMilestone] = useState("");
   const [newTask, setNewTask] = useState("");
   const [newSubTask, setNewSubTask] = useState("");
   const { projects, setProjects } = useProjects();
 
- 
 
-
- const handleAddPhase = (phaseName) => {
+const handleAddPhase = (phaseName) => {
   if (!phaseName.trim()) return;
 
   const alreadyExists = phases.some(
@@ -109,7 +105,7 @@ const handleSavePhaseName = (id, name) => {
   handleChange("phaseName", name);
 };
 
- const phaseDropdown = useEditableDropdown({
+const phaseDropdown = useEditableDropdown({
   items: phases,
 
   onSelect: (phase) => {
@@ -533,7 +529,7 @@ const subTaskDropdown = useEditableDropdown({
 
               <div ref={phaseRef} className="relative w-full">
 
-               
+
                 <EditableDropdown
     label="Phase"
 
@@ -568,7 +564,7 @@ const subTaskDropdown = useEditableDropdown({
 
             {/* Milestone */}
             <div>
-             
+
               <div ref={milestoneRef} className="relative w-full">
               <EditableDropdown
   label="Milestone"
@@ -601,9 +597,9 @@ const subTaskDropdown = useEditableDropdown({
 
             {/* Task */}
             <div>
-             
+
               <div ref={taskRef} className="relative w-full">
-             
+
 
                <EditableDropdown
   label="Task"
@@ -636,7 +632,7 @@ const subTaskDropdown = useEditableDropdown({
 
             {/* Sub Task */}
             <div>
-             
+
               <div ref={subTaskRef} className="relative w-full">
                 <EditableDropdown
   label="Sub Task"
@@ -665,7 +661,7 @@ const subTaskDropdown = useEditableDropdown({
   cancelEdit={subTaskDropdown.cancelEdit}
 />
 
-               
+
               </div>
             </div>
           </div>
@@ -778,7 +774,7 @@ const subTaskDropdown = useEditableDropdown({
               <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                 Actual Weeks
               </label>
-          
+
               <input
   type="number"
   readOnly
@@ -890,7 +886,7 @@ const subTaskDropdown = useEditableDropdown({
         >
           Cancel
         </button>
-        <button
+        {/* <button
           data-testid="submit-button"
           type="button"
           onClick={handleSubmit}
@@ -898,8 +894,40 @@ const subTaskDropdown = useEditableDropdown({
         >
           <Check size={15} />
           Add Activity
-        </button>
+        </button> */}
+        <button
+  data-testid="submit-button"
+  type="button"
+  onClick={handleSubmit}
+  disabled={isSubmitting}
+  className={`
+    h-11
+    min-w-[140px]
+    px-6
+    rounded-xl
+    text-white
+    text-sm
+    font-medium
+    flex
+    items-center
+    justify-center
+    gap-2
+    shadow-md
+    transition-all
+
+    ${
+      isSubmitting
+        ? "bg-slate-400 cursor-not-allowed opacity-70"
+        : "bg-gradient-to-r from-[#7C5CFA] to-[#6D4AFF] hover:opacity-95 cursor-pointer"
+    }
+  `}
+>
+  <Check size={15} />
+
+  {isSubmitting ? "Adding..." : "Add Activity"}
+</button>
       </div>
     </div>
   );
 }
+ 
