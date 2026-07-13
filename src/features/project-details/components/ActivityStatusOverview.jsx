@@ -1,7 +1,7 @@
 import {
   Building2,
-  Flag,
-  CircleDashed,
+  RotateCw,
+  TriangleAlert,
 } from "lucide-react";
 
 export default function ActivityStatusOverview({ project }) {
@@ -221,7 +221,7 @@ flex-col
 
     <div className="flex items-center gap-3">
 
-      <CircleDashed
+      <RotateCw 
         size={15}
         className="text-[#D97706]"
       />
@@ -344,7 +344,7 @@ flex-col
             "
           >
             <div className="flex items-center gap-3">
-              <Flag size={15} className="text-[#EF4444]" />
+              <TriangleAlert size={15} className="text-[#EF4444]" />
 
               <span className="text-[14px] font-semibold text-[#EF4444]">
                 Delayed Activities ({delayedActivities.length})

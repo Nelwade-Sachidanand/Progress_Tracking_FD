@@ -29,10 +29,16 @@ export default function MultiSelectDropdown({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  
   const filteredOptions = useMemo(() => {
-    return options.filter((option) =>
-      option.label.toLowerCase().includes(search.toLowerCase())
-    );
+    return options.filter((option) => {
+      const text =
+        typeof option === "string"
+          ? option
+          : option?.name || option?.label || "";
+
+      return text.toLowerCase().includes(search.toLowerCase());
+    });
   }, [options, search]);
 
   const toggleOption = (value) => {
@@ -65,7 +71,7 @@ export default function MultiSelectDropdown({
     }
 
     return `${selectedLabels.slice(0, 2).join(", ")} +${selectedLabels.length - 2}`;
-    
+
   }, [selected, options, placeholder]);
 
   return (

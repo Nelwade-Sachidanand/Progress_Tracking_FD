@@ -1,58 +1,101 @@
 import {
-  BriefcaseBusiness,
-  CircleCheckBig,
-  CircleX,
-  Landmark,
-  PieChart,
+  Building2,
+  FolderKanban,
+  ChartNoAxesCombined,
   Rocket,
+  BadgeCheck,
+  TriangleAlert,
 } from "lucide-react";
 
 export default function KpiCards({ data }) {
-  const cards = [
-    {
-      title: "Total Banks",
-      value: data.totalBanks,
-      subtitle: "Active",
-      icon: Landmark,
-      color: "blue",
-    },
-    {
-      title: "Active Projects",
-      value: data.totalProjects,
-      subtitle: "Across All Products",
-      icon: BriefcaseBusiness,
-      color: "purple",
-    },
-    {
-      title: "Overall Progress",
-      value: `${data.overallProgress}%`,
-      subtitle: "Portfolio Progress",
-      icon: PieChart,
-      color: "green",
-    },
-    {
-      title: "Go-Live This Year",
-      value: data.upcomingGoLive,
-      subtitle: "Upcoming",
-      icon: Rocket,
-      color: "orange",
-    },
-    {
-      title: "On Track Projects",
-      value: data.onTrackProjects,
-      subtitle: "Healthy",
-      icon: CircleCheckBig,
-      color: "emerald",
-    },
-    {
-      title: "At Risk / Delayed",
-      value: data.delayedProjects,
-      subtitle: "Attention",
-      icon: CircleX,
-      color: "red",
-    },
-  ];
-
+  // const cards = [
+  //   {
+  //     title: "Total Banks",
+  //     value: data.totalBanks,
+  //     subtitle: "Active",
+  //     icon: Landmark,
+  //     color: "blue",
+  //   },
+  //   {
+  //     title: "Active Projects",
+  //     value: data.totalProjects,
+  //     subtitle: "Across All Products",
+  //     icon: BriefcaseBusiness,
+  //     color: "purple",
+  //   },
+  //   {
+  //     title: "Overall Progress",
+  //     value: `${data.overallProgress}%`,
+  //     subtitle: "Portfolio Progress",
+  //     icon: PieChart,
+  //     color: "green",
+  //   },
+  //   {
+  //     title: "Go-Live This Year",
+  //     value: data.upcomingGoLive,
+  //     subtitle: "Upcoming",
+  //     icon: Rocket,
+  //     color: "orange",
+  //   },
+  //   {
+  //     title: "On Track Projects",
+  //     value: data.onTrackProjects,
+  //     subtitle: "Healthy",
+  //     icon: CircleCheckBig,
+  //     color: "emerald",
+  //   },
+  //   {
+  //     title: "At Risk / Delayed",
+  //     value: data.delayedProjects,
+  //     subtitle: "Attention",
+  //     icon: CircleX,
+  //     color: "red",
+  //   },
+  // ];
+const cards = [
+  {
+    title: "Total Banks",
+    value: data.totalBanks,
+    subtitle: "Active",
+    icon: Building2,
+    color: "blue",
+  },
+  {
+    title: "Active Projects",
+    value: data.totalProjects,
+    subtitle: "Across All Products",
+    icon: FolderKanban,
+    color: "purple",
+  },
+  {
+    title: "Overall Progress",
+    value: `${data.overallProgress}%`,
+    subtitle: "Portfolio Progress",
+    icon: ChartNoAxesCombined,
+    color: "green",
+  },
+  {
+    title: "Go-Live This Year",
+    value: data.upcomingGoLive,
+    subtitle: "Upcoming",
+    icon: Rocket,
+    color: "orange",
+  },
+  {
+    title: "On Track Projects",
+    value: data.onTrackProjects,
+    subtitle: "Healthy",
+    icon: BadgeCheck,
+    color: "emerald",
+  },
+  {
+    title: "At Risk / Delayed",
+    value: data.delayedProjects,
+    subtitle: "Attention",
+    icon: TriangleAlert,
+    color: "red",
+  },
+];
   const colors = {
     blue: "bg-blue-50 text-[#2563EB]",
     purple: "bg-purple-50 text-[#9333EA]",
