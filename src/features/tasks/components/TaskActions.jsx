@@ -190,7 +190,7 @@ const handleGenerate = () => {
 
   // Milestone
   milestoneIds:
-    selectedMilestone?.length > 0 ? selectedMilestoneIds : null,
+    selectedMilestone?.length > 0 ? selectedMilestone : null,
   milestoneNames:
     selectedMilestone?.length > 0 ? selectedMilestone : null,
 

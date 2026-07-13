@@ -75,13 +75,18 @@ const DashboardHeader = ({
     ...new Map(
       projects
         .filter((p) => p.bankName)
-        .map((p) => [
-          p.bankName,
-          {
-            label: p.bankName,
-            value: p.bankName,
-          },
-        ])
+        .map((p) => {
+          const shortName =
+            p.bankName.match(/\(([^)]+)\)/)?.[1] || p.bankName;
+
+          return [
+            p.bankName,
+            {
+              label: shortName,
+              value: p.bankName, // keep full name for filtering/API
+            },
+          ];
+        })
     ).values(),
   ].sort((a, b) => a.label.localeCompare(b.label));
 
@@ -519,7 +524,7 @@ const DashboardHeader = ({
                   onChange={setSelectedBanks}
                   icon={Building2}
                   width="w-full sm:w-[220px] md:w-[220px] lg:w-[240px] xl:w-[260px]"
-                  dropdownWidth="w-[350px]"
+                  dropdownWidth="w-full"
                 />
 
                 {/* Search */}

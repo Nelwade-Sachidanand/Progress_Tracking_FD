@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import useCreateProject from "../hooks/useCreateProject";
 import { mapProjectPayload } from "../utils/projectMapper";
+import { useNavigate } from "react-router-dom";
 
 export default function ProjectNavigation({
   currentStep,
@@ -15,6 +16,8 @@ export default function ProjectNavigation({
   setSelectedInfoId
 }) {
   const { saveProject, loading, updateProject } = useCreateProject();
+
+  const navigate = useNavigate();
 
   const totalSteps = 6;
 

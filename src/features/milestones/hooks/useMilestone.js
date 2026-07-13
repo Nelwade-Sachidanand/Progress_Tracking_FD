@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import {updateMilestoneWeightages,} from "../services/milestoneService";
+import { updateMilestoneWeightages, } from "../services/milestoneService";
+import { useProjects } from "../../../context/ProjectContext";
 
 export const useMilestone = () => {
     const [loading, setLoading] =
         useState(false);
+
+    const { fetchProjects } = useProjects();
 
     const updateWeightages = async (
         payload
@@ -19,7 +22,7 @@ export const useMilestone = () => {
 
             if (response.statusType === "S") {
                 toast.success(response.statusDesc);
-
+                await fetchProjects();
                 return response;
             }
 
@@ -27,7 +30,7 @@ export const useMilestone = () => {
 
             return null;
         } catch (error) {
-            toast.error(error.response?.data?.statusDesc ||"Failed to update milestone weightages");
+            toast.error(error.response?.data?.statusDesc || "Failed to update milestone weightages");
 
             throw error;
         } finally {
