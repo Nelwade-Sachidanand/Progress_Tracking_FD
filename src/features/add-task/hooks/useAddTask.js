@@ -16,7 +16,7 @@ export default function useAddTask() {
 
   //const selectedProject = projects[0];
 const [isSubmitting, setIsSubmitting] = useState(false);
-const [formData, setFormData] = useState({
+ const [formData, setFormData] = useState({
   phaseId: "",
   phaseName: "",
   newPhase: false,

@@ -18,6 +18,10 @@ function ActiveFilters({
 
   clearFilters,
 }) {
+
+  console.log("Milestones:", milestones);
+  console.log("Selected Milestones:", selectedMilestone);
+
   const filters = [];
   if (selectedPhase) {
     filters.push({

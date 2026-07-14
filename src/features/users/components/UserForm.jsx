@@ -327,7 +327,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
 
                   <button
                     type="button"
-                    onClick={() => setShowPassword((prev) => !prev)}
+                    onClick={() => setShowPassword(!showPassword)}
                     className="
                     absolute
                     right-3

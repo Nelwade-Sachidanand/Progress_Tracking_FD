@@ -157,7 +157,7 @@ export default function MilestoneJourney({ project }) {
 const GAP_Y = window.innerWidth < 640 ? 48 : 65;
 //const PAD = window.innerWidth < 640 ? 12 : 20;
 const PAD = window.innerWidth < 640 ? 20 : 50;
-
+ 
   /* ── Build milestones from project data (your existing logic) ── */
   const milestones = project?.phases?.flatMap(
     (phase) =>
@@ -247,7 +247,7 @@ const prevCy = PAD + (rIdx - 1) * rowH + NODE_R;
 
 
 
-//const r = (cy - prevCy) / 2;
+ //const r = (cy - prevCy) / 2;
 const r = Math.abs(cy - prevCy) / 2 + 8;
 
 
@@ -266,8 +266,6 @@ const r = Math.abs(cy - prevCy) / 2 + 8;
   });
   return d;
 }, [rows]);
-
-const colW = NODE_R * 2 + GAP_X;
 
 //const svgW = PAD * 2 + ITEMS_PER_ROW * colW;
 const svgW =

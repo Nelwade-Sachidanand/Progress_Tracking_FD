@@ -87,56 +87,56 @@ export default function GenerateReportModal({
           </div>
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors shrink-0"
-          >
-            <X size={18} className="text-slate-500" />
-          </button>
-        </div>
-
+            className="w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors shrink-0 cursor-pointer"
+>
+<X size={18} className="text-slate-500" />
+</button>
+</div>
+ 
         {/* Body - Scrollable */}
-        <div className="px-6 py-5 space-y-5 overflow-y-auto flex-1">
+<div className="px-6 py-5 space-y-5 overflow-y-auto flex-1">
           {/* Report Format */}
-          {/* Report Format */}
-          <div>
-            <label className="block text-sm font-semibold text-[#0F172A] mb-3">
-              Report Format
-            </label>
+{/* Report Format */}
+<div>
+  <label className="block text-sm font-semibold text-[#0F172A] mb-3">
+    Report Format
+  </label>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              {[
-                {
-                  type: "pdf",
-                  label: "PDF",
-                  ext: ".pdf",
-                  icon: FileText,
-                  color: "text-red-500",
-                },
-                {
-                  type: "excel",
-                  label: "Excel",
-                  ext: ".xlsx",
-                  icon: FileSpreadsheet,
-                  color: "text-green-600",
-                },
-                {
-                  type: "csv",
-                  label: "CSV",
-                  ext: ".csv",
-                  icon: FileSpreadsheet,
-                  color: "text-blue-600",
-                },
-                {
-                  type: "word",
-                  label: "Word",
-                  ext: ".docx",
-                  icon: FileType,
-                  color: "text-indigo-600",
-                },
-              ].map(({ type, label, ext, icon: Icon, color }) => (
-                <label
-                  key={type}
-                  className={`
-          cursor-pointer
+  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+    {[
+      {
+        type: "pdf",
+        label: "PDF",
+        ext: ".pdf",
+        icon: FileText,
+        color: "text-red-500",
+      },
+      {
+        type: "excel",
+        label: "Excel",
+        ext: ".xlsx",
+        icon: FileSpreadsheet,
+        color: "text-green-600",
+      },
+      {
+        type: "csv",
+        label: "CSV",
+        ext: ".csv",
+        icon: FileSpreadsheet,
+        color: "text-blue-600",
+      },
+      {
+        type: "word",
+        label: "Word",
+        ext: ".docx",
+        icon: FileType,
+        color: "text-indigo-600",
+      },
+    ].map(({ type, label, ext, icon: Icon, color }) => (
+      <label
+        key={type}
+        className={`
+          
           rounded-xl
           border
           px-3

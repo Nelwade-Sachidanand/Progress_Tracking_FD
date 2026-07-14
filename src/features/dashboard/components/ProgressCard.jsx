@@ -56,7 +56,7 @@ export default function ProgressCard({ projects = [] }) {
 
   return (
     <div className="mt-[-10px]">
-      <div className="flex items-center justify-between mb-6">
+      {/* <div className="flex items-center justify-between mb-6">
         <h2
           className="
           text-xl
@@ -77,8 +77,29 @@ export default function ProgressCard({ projects = [] }) {
           {projects.length} Project
           {projects.length > 1 ? "s" : ""}
         </span>
-      </div>
+      </div> */}
+<div className="flex items-center justify-between mb-6">
 
+  <h2 className="text-xl xl:text-2xl font-bold text-[#0B1F59]">
+    Projects
+  </h2>
+
+  {/* ACTIVE PROJECT CHIP (LIKE IMAGE) */}
+  <div className="
+    bg-[#F0F4FF]
+    border border-[#DDE6FF]
+    text-[#2563EB]
+    px-4 py-2
+    rounded-xl
+    text-sm
+    font-semibold
+    shadow-sm
+  ">
+   {projects.length} Project
+          {projects.length > 1 ? "s" : ""}
+  </div>
+
+</div>
       <div
         className="
         grid
