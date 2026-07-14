@@ -6,3 +6,17 @@ export const loginUser = async (username,password) => {
 
   return response.data;
 }; 
+
+export const forgotPassword = async (username) => {
+  const response = await apiClient.post(
+    `/user/forgotPassword`,
+    null,
+    {
+      params: {
+        username,
+      },
+    }
+  );
+
+  return response.data;
+};

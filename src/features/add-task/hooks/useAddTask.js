@@ -143,11 +143,11 @@ export default function useAddTask() {
     }
 
   };
-  const resetForm = () => {
-    setFormData({
-      phaseId: "",
-      phaseName: "",
-      newPhase: false,
+const resetForm = () => {
+  setFormData({
+    phaseId: "",
+    phaseName: "",
+    newPhase: false,
 
       milestoneId: "",
       milestoneName: "",
@@ -211,10 +211,10 @@ export default function useAddTask() {
     );
   }, [selectedProject, formData.phaseId]);
 
-  const taskOptions = useMemo(() => {
-    const phase = selectedProject?.phases?.find(
-      (p) => p.phaseId === formData.phaseId
-    );
+const taskOptions = useMemo(() => {
+  const phase = selectedProject?.phases?.find(
+    (p) => p.phaseId === formData.phaseId
+  );
 
     const milestone = phase?.milestones?.find(
       (m) => m.milestoneId === formData.milestoneId
@@ -256,12 +256,12 @@ export default function useAddTask() {
     formData.taskId,
   ]);
 
-  const handleChange = (field, value) => {
-    setFormData((prev) => {
-      const updated = {
-        ...prev,
-        [field]: value,
-      };
+const handleChange = (field, value) => {
+  setFormData((prev) => {
+   const updated = {
+  ...prev,
+  [field]: value,
+};
 
       // ======================================
       // Calculate Estimated Period Week
@@ -414,3 +414,4 @@ export default function useAddTask() {
     isSubmitting,
   };
 }
+ 

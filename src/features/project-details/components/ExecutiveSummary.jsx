@@ -150,7 +150,7 @@ export default function ExecutiveSummary({ project }) {
   ).length;
 
   const notStartedActivities = activities.filter(
-    (activity) => activity.executionStatus === "Not Yet Started",
+    (activity) => activity.executionStatus === "Not Started",
   ).length;
 
   const overallProgress =
@@ -499,7 +499,7 @@ export default function ExecutiveSummary({ project }) {
               />
 
               <SmallCard
-                title="Not Yet Started"
+                title="Not Started"
                 value={notStartedActivities}
                 subText={`${Math.round(
                   (notStartedActivities / (totalActivities || 1)) * 100,

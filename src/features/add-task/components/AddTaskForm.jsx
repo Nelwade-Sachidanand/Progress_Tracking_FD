@@ -105,7 +105,7 @@ const handleSavePhaseName = (id, name) => {
   handleChange("phaseName", name);
 };
 
- const phaseDropdown = useEditableDropdown({
+const phaseDropdown = useEditableDropdown({
   items: phases,
 
   onSelect: (phase) => {
@@ -538,7 +538,7 @@ const subTaskDropdown = useEditableDropdown({
 
               <div ref={phaseRef} className="relative w-full">
 
-               
+
                 <EditableDropdown
     label="Phase"
 
@@ -573,7 +573,7 @@ const subTaskDropdown = useEditableDropdown({
 
             {/* Milestone */}
             <div>
-             
+
               <div ref={milestoneRef} className="relative w-full">
               <EditableDropdown
   label="Milestone"
@@ -606,9 +606,9 @@ const subTaskDropdown = useEditableDropdown({
 
             {/* Task */}
             <div>
-             
+
               <div ref={taskRef} className="relative w-full">
-             
+
 
                <EditableDropdown
   label="Task"
@@ -641,7 +641,7 @@ const subTaskDropdown = useEditableDropdown({
 
             {/* Sub Task */}
             <div>
-             
+
               <div ref={subTaskRef} className="relative w-full">
                 <EditableDropdown
   label="Sub Task"
@@ -670,7 +670,7 @@ const subTaskDropdown = useEditableDropdown({
   cancelEdit={subTaskDropdown.cancelEdit}
 />
 
-               
+
               </div>
             </div>
           </div>
@@ -783,7 +783,7 @@ const subTaskDropdown = useEditableDropdown({
               <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                 Actual Weeks
               </label>
-          
+
               <input
   type="number"
   readOnly
@@ -939,3 +939,4 @@ const subTaskDropdown = useEditableDropdown({
     </div>
   );
 }
+ 

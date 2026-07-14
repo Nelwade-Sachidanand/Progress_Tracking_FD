@@ -33,14 +33,32 @@ export default function ActivityStatusOverview({ project }) {
 
     return new Date(activity.plannedStartDate) > today;
   });
-  const delayedActivities =
-    activities.filter(
-      (activity) =>
-        activity.scheduleHealth ===
-          "Delayed" ||
-        activity.executionStatus ===
-          "Delayed"
+//const today = new Date();
+
+const delayedActivities = activities.filter((activity) => {
+  const progress = Number(activity.progress || 0);
+
+  const plannedStart = activity.plannedStartDate
+    ? new Date(activity.plannedStartDate)
+    : null;
+
+  const plannedEnd = activity.plannedEndDate
+    ? new Date(activity.plannedEndDate)
+    : null;
+
+  if (progress >= 100) {
+    return (
+      Number(activity.actualPeriodWeek) >
+      Number(activity.estimatedPeriodWeek)
     );
+  }
+
+  if (plannedEnd && today > plannedEnd) {
+    return true;
+  }
+
+  return false;
+});
 const inProgressActivities = activities.filter(
   (activity) =>
     activity.executionStatus === "In Progress"
@@ -51,15 +69,7 @@ const inProgressActivities = activities.filter(
       <div className="flex items-center gap-3 mb-5">
         <div
           className="
-          w-8 h-8
-          rounded-full
-          bg-[#2563EB]
-          text-white
-          flex
-          items-center
-          justify-center
-          text-sm
-          font-bold
+          w-7 h-7 rounded-full bg-[#2563EB] text-white flex items-center justify-center text-sm font-bold
           "
         >
           4
@@ -67,11 +77,7 @@ const inProgressActivities = activities.filter(
 
         <h2
           className="
-  text-[16px]
-  sm:text-[18px]
-  lg:text-[20px]
-  font-bold
-  text-[#0B1F59]
+  text-base sm:text-lg lg:text-xl font-bold text-[#0B1F59]
   "
         >
           Activity Status Overview
@@ -156,7 +162,7 @@ flex-col
                   </p>
 
                   <p
-                    className="
+                    className="truncate text-xs font-medium text-slate-600
   text-[10px]
   lg:text-[11px]
   text-[#94A3B8]
@@ -276,6 +282,7 @@ flex-col
 
             <p
               className="
+              truncate text-xs font-medium text-slate-600
               text-[10px]
               lg:text-[11px]
               text-[#94A3B8]
@@ -376,7 +383,7 @@ flex-col
                     {activity.activityName}
                   </p>
 
-                  <p className="text-[11px] text-[#94A3B8]">
+                  <p className="truncate text-xs font-medium text-slate-600 text-[11px] text-[#94A3B8]">
                     {activity.milestoneName}
                   </p>
                 </div>

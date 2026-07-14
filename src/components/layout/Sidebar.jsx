@@ -72,11 +72,11 @@ export default function Sidebar() {
               icon: Package,
               path: "/products",
             },
-            {
-              name: "Projects",
-              icon: FolderKanban,
-              path: "/projects",
-            },
+            // {
+            //   name: "Projects",
+            //   icon: FolderKanban,
+            //   path: "/projects",
+            // },
             ...(canUploadExcel
               ? [
                   {
@@ -114,11 +114,11 @@ export default function Sidebar() {
                 icon: ShieldAlert,
                 path: "/risks",
               },
-              {
-                name: "Reports",
-                icon: FileBarChart,
-                path: "/reports",
-              },
+              // {
+              //   name: "Reports",
+              //   icon: FileBarChart,
+              //   path: "/reports",
+              // },
               {
                 name: "Documents",
                 icon: FileText,
@@ -139,11 +139,11 @@ export default function Sidebar() {
                 icon: Users,
                 path: "/users",
               },
-              {
-                name: "Settings",
-                icon: Settings,
-                path: "/settings",
-              },
+              // {
+              //   name: "Settings",
+              //   icon: Settings,
+              //   path: "/settings",
+              // },
               {
                 name: "Audit Logs",
                 icon: ClipboardList,

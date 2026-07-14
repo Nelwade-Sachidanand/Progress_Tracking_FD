@@ -84,7 +84,7 @@ const svgs = {
 </svg>
   ),
 };
- 
+
 const icons = [
   Flag,
   FileText,
@@ -97,14 +97,14 @@ const icons = [
   ClipboardCheck,
   Rocket,
 ];
- 
+
 const statusColors = {
   "Delayed":     { border:"#DC2626", text:"#DC2626", label:"#DC2626", pct:"#DC2626" },
   "In Progress": { border:"#0c40ea", text:"#0c40ea", label:"#0c40ea", pct:"#0c40ea" },
   "Completed":   { border:"#16A34A", text:"#16A34A", label:"#16A34A", pct:"#16A34A" },
   "Not Started": { border:"#94A3B8", text:"#64748B", label:"#64748B", pct:"#0B1F59" },
 };
- 
+
 /* ── Tooltip ── */
 function Tooltip({ milestone, index, x, y, visible, onClose }) {
   if (!visible || !milestone) return null;
@@ -145,18 +145,18 @@ function Tooltip({ milestone, index, x, y, visible, onClose }) {
 </div>
   );
 }
- 
+
 /* ── Main component ── */
 export default function MilestoneJourney({ project }) {
   const [tooltip, setTooltip] = useState(null);
  
-  const ITEMS_PER_ROW = 8;
+  const ITEMS_PER_ROW = 9;
   const NODE_R = window.innerWidth < 640 ? 20 : 26;
- 
+
   const GAP_X = window.innerWidth < 640 ? 42 : 73;
-const GAP_Y = window.innerWidth < 640 ? 48 : 65;
-//const PAD = window.innerWidth < 640 ? 12 : 20;
-const PAD = window.innerWidth < 640 ? 20 : 50;
+const GAP_Y = window.innerWidth < 640 ? 35 : 45;
+
+const PAD = window.innerWidth < 640 ? 12 : 20;
  
   /* ── Build milestones from project data (your existing logic) ── */
   const milestones = project?.phases?.flatMap(
@@ -186,7 +186,7 @@ if (avg >= 100) {
 } else if (avg > 0) {
   status = "In Progress";
 }
- 
+
         return {
           name: milestone.milestoneName,
           percentage: `${avg}%`,
@@ -205,9 +205,9 @@ if (avg >= 100) {
     }
     return out;
   }, [milestones]);
- 
+
   /* ── SVG dashed connector path with vertical curve wrapping ── */
- const pathD = useMemo(() => {
+const pathD = useMemo(() => {
   if (!rows.length) return "";
   const colW = NODE_R * 2 + GAP_X;
   const rowH = NODE_R * 2 + GAP_Y + 50;
@@ -225,8 +225,8 @@ const cy = PAD + rIdx * rowH + NODE_R;
 
 
 
- // Visual columns where this row starts (entry) and ends (exit)
- const entryCol = isRev ? ITEMS_PER_ROW - 1 : 0;
+// Visual columns where this row starts (entry) and ends (exit)
+const entryCol = isRev ? ITEMS_PER_ROW - 1 : 0;
   const exitCol = isRev ? ITEMS_PER_ROW - row.length : row.length - 1;
   const entryX = colX(entryCol);
 // const exitX = colX(exitCol);
@@ -235,15 +235,15 @@ const exitX = colX(exitCol) + NODE_R;
 
 
   if (rIdx === 0) {
- d += `M ${entryX} ${cy} L ${exitX} ${cy}`;
+d += `M ${entryX} ${cy} L ${exitX} ${cy}`;
   } else {
 const prevRow = rows[rIdx - 1];
   const prevIsRev = (rIdx - 1) % 2 === 1;
    const prevExitCol = prevIsRev
   ? ITEMS_PER_ROW - prevRow.length
- : prevRow.length - 1;
- const prevExitX = colX(prevExitCol);
- const prevCy = PAD + (rIdx - 1) * rowH + NODE_R;
+: prevRow.length - 1;
+const prevExitX = colX(prevExitCol);
+const prevCy = PAD + (rIdx - 1) * rowH + NODE_R;
 
 
 
@@ -260,21 +260,30 @@ const r = Math.abs(cy - prevCy) / 2 + 8;
 
 
 
- // continue the dashed line across the rest of this row
+// continue the dashed line across the rest of this row
   d += ` L ${exitX} ${cy}`;
- }
+}
   });
   return d;
 }, [rows]);
- 
- const colW = NODE_R * 2 + GAP_X;
 
 //const svgW = PAD * 2 + ITEMS_PER_ROW * colW;
+// const svgW =
+//   PAD * 2 +
+//   ITEMS_PER_ROW * colW +
+//   60;
+const colW = NODE_R * 2 + GAP_X;
+
+const maxCols = Math.max(...rows.map((r) => r.length));
+
 const svgW =
   PAD * 2 +
-  ITEMS_PER_ROW * colW +
-  60;
-  const svgH = PAD * 2 + rows.length * (NODE_R * 2 + GAP_Y + 50);
+  maxCols * colW;
+  
+  const svgH =
+  PAD * 2 +
+  rows.length * (NODE_R * 2 + GAP_Y + 25);
+  //const svgH = PAD * 2 + rows.length * (NODE_R * 2 + GAP_Y + 50);
  
   const handleNodeEnter = (e, milestone, idx) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -285,7 +294,7 @@ const svgW =
       y: rect.top,
     });
   };
- 
+
   return (
     <div
       className="w-full bg-white rounded-2xl border border-[#CDD7E3] p-3 sm:p-4 lg:p-5"
@@ -301,10 +310,10 @@ const svgW =
       </div><h2 className="text-base sm:text-lg lg:text-xl font-bold text-[#0B1F59]">Milestone Journey</h2></div>
 
       {/* SVG diagram */}
-      <div className="w-full overflow-x-auto scrollbar-thin"><svg
+    <div className="w-full overflow-x-hidden"><svg
         width={svgW}
         height={svgH}
-        className="mx-auto block"
+        className="block"
         style={{
           minWidth: svgW,
           display: "block",
@@ -326,7 +335,7 @@ const svgW =
             const origIdx = rIdx * ITEMS_PER_ROW + (isRev ? row.length - 1 - cIdx : cIdx);
             const colors = statusColors[m.status] || statusColors["Not Started"];
 
-            const colW = NODE_R * 2 + GAP_X;
+           // const colW = NODE_R * 2 + GAP_X;
 
             let visualColumn;
 
@@ -400,3 +409,4 @@ const svgW =
     </div>
   );
 }
+ 

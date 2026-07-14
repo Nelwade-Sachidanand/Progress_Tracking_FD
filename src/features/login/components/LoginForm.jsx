@@ -8,9 +8,11 @@ import {
   CheckSquare,
   Square
 } from "lucide-react";
+import ForgotPasswordModal from "./ForgotPasswordModal";
+import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import { forgotPassword } from "../services/authService";
 import { useProjects } from "../../../context/ProjectContext";
 import { useAuth } from "../../login/hooks/useAuth";
 
@@ -634,102 +636,53 @@ const LoginForm = () => {
 
       {/* Forgot Password Modal */}
 
-      {showForgotModal && (
-        <div
-          className="
-            fixed
-            inset-0
+     <ForgotPasswordModal
+  isOpen={showForgotModal}
+  onClose={() => setShowForgotModal(false)}
+  // onSubmit={async (request) => {
+  //   try {
+  //     const response = await forgotPassword(request.username);
 
-            z-[9999]
+  //     if (response?.statusType === "S") {
+  //       toast.success(
+  //         response.message || "Password reset request submitted successfully."
+  //       );
 
-            flex
-            items-center
-            justify-center
+  //       setShowForgotModal(false);
+  //     } else {
+  //       toast.error(
+  //         response?.message || "Failed to submit password reset request."
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
 
-            bg-black/50
-            backdrop-blur-sm
+  //     toast.error(
+  //       error?.response?.data?.message ||
+  //         "Something went wrong. Please try again."
+  //     );
+  //   }
+  // }}
+ onSubmit={async (request) => {
+  try {
+    const response = await forgotPassword(request.username);
 
-            px-4
-          "
-        >
-          <div
-            className="
-              bg-white
+    if (response?.statusType === "S") {
+      toast.success(response?.message);
+      return true;
+    }
 
-              rounded-2xl
-
-              shadow-2xl
-
-              w-full
-              max-w-[340px]
-              sm:max-w-[420px]
-              xl:max-w-[460px]
-
-              p-6
-              xl:p-8
-            "
-          >
-            <h2
-              className="
-                text-xl
-                xl:text-2xl
-
-                font-bold
-
-                text-[#081D5C]
-              "
-            >
-              Forgot Password
-            </h2>
-
-            <p
-              className="
-                mt-4
-
-                text-slate-600
-
-                text-sm
-                xl:text-base
-
-                leading-7
-              "
-            >
-              Please Contact Your Administrator To Reset Your Password.
-            </p>
-
-            <div
-              className="
-                mt-8
-
-                flex
-                justify-end
-              "
-            >
-              <button
-                onClick={() => setShowForgotModal(false)}
-                className="
-                  px-6
-                  py-2.5
-
-                  rounded-lg
-
-                  bg-[#2563EB]
-                  hover:bg-[#1D4ED8]
-
-                  text-white
-                  font-semibold
-
-                  transition-all
-
-                  cursor-pointer
-                "
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+    toast.error(response?.message);
+    return false;
+  } catch (error) {
+    toast.error(
+      error?.response?.data?.message ||
+      "Something went wrong"
+    );
+    return false;
+  }
+}}
+/>
     </div>
   );
 };
