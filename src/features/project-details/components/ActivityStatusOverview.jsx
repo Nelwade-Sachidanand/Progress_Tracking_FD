@@ -162,7 +162,7 @@ flex-col
                   </p>
 
                   <p
-                    className="
+                    className="truncate text-xs font-medium text-slate-600
   text-[10px]
   lg:text-[11px]
   text-[#94A3B8]
@@ -282,6 +282,7 @@ flex-col
 
             <p
               className="
+              truncate text-xs font-medium text-slate-600
               text-[10px]
               lg:text-[11px]
               text-[#94A3B8]
@@ -382,7 +383,7 @@ flex-col
                     {activity.activityName}
                   </p>
 
-                  <p className="text-[11px] text-[#94A3B8]">
+                  <p className="truncate text-xs font-medium text-slate-600 text-[11px] text-[#94A3B8]">
                     {activity.milestoneName}
                   </p>
                 </div>
