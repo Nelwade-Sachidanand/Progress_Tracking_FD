@@ -126,7 +126,7 @@ const selectedPhaseId = selectedPhaseObj?.phaseId || null;
 const selectedMilestoneIds = [
   ...new Set(
     tasks
-      .filter((t) => selectedMilestone.includes(t.milestone))
+      .filter((t) => selectedMilestone.includes(t.milestoneId))
       .map((t) => t.milestoneId),
   ),
 ];
@@ -146,10 +146,10 @@ const selectedSubTaskId = selectedSubTaskObj?.subTaskId || null;
 const selectedActivityObj = tasks.find(
   (t) => t.activity === selectedActivity,
 );
-console.log("Selected Phase:", selectedPhase);
-console.log("Selected Phase Obj:", selectedPhaseObj);
-console.log("Selected Phase ID:", selectedPhaseId);
-console.log("Tasks:", tasks);
+// console.log("Selected Phase:", selectedPhase);
+// console.log("Selected Phase Obj:", selectedPhaseObj);
+// console.log("Selected Phase ID:", selectedPhaseId);
+// console.log("Tasks:", tasks);
 const selectedActivityId = selectedActivityObj?.activityId || null;
 
   const [currentPage, setCurrentPage] = useState(1);

@@ -56,7 +56,13 @@ export default function TaskFilters({
           label="Phase"
           placeholder="All Phases"
           value={selectedPhase}
-          onChange={setSelectedPhase}
+          onChange={(phase) => {
+            setSelectedPhase(phase);
+            setSelectedMilestone([]);
+            setSelectedTask("");
+            setSelectedSubTask("");
+            setSelectedActivity("");
+          }}
           options={phases.map((phase) => ({
             label: phase,
             value: phase,
@@ -114,7 +120,7 @@ export default function TaskFilters({
         xl:grid-cols-12
       "
       >
-           {/* Activity */}
+        {/* Activity */}
 
         <div className="xl:col-span-4">
           <CustomDropdown
@@ -153,7 +159,7 @@ export default function TaskFilters({
           />
         </div>
 
-     
+
 
         {/* Search */}
 
