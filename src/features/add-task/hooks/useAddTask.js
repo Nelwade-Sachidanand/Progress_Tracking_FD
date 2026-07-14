@@ -141,7 +141,7 @@ actualPeriodWeek: "",
   }
 
   };
- const resetForm = () => {
+const resetForm = () => {
   setFormData({
     phaseId: "",
     phaseName: "",
@@ -209,7 +209,7 @@ const milestones = useMemo(() => {
   );
 }, [selectedProject, formData.phaseId]);
 
- const taskOptions = useMemo(() => {
+const taskOptions = useMemo(() => {
   const phase = selectedProject?.phases?.find(
     (p) => p.phaseId === formData.phaseId
   );
@@ -254,7 +254,7 @@ const subTasks = useMemo(() => {
   formData.taskId,
 ]);
 
- const handleChange = (field, value) => {
+const handleChange = (field, value) => {
   setFormData((prev) => {
    const updated = {
   ...prev,
@@ -412,3 +412,4 @@ if (
     isSubmitting,
   };
 }
+ 
