@@ -3,8 +3,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../../components/layout/Pagination";
 
-const USERS_PER_PAGE = 5;
-
 const getInitials = (name = "") => {
   if (!name) return "--";
 
@@ -44,21 +42,12 @@ const getRoleStyle = (role) => {
   }
 };
 
-const UserTable = ({ users = [], loading, onDelete, onResetPassword }) => {
-  const [currentPage, setCurrentPage] = useState(1);
+const UserTable = ({ users = [], loading, onDelete, onResetPassword, currentPage, totalPages, totalRecords, onPageChange }) => {
   const navigate = useNavigate();
 
   if (loading) {
     return <div className="bg-white rounded-3xl p-8">Loading users...</div>;
   }
-
-  const totalPages = Math.ceil(users.length / USERS_PER_PAGE);
-
-  const startIndex = (currentPage - 1) * USERS_PER_PAGE;
-
-  const endIndex = startIndex + USERS_PER_PAGE;
-
-  const paginatedUsers = users.slice(startIndex, endIndex);
 
   return (
     <div
@@ -104,7 +93,7 @@ const UserTable = ({ users = [], loading, onDelete, onResetPassword }) => {
           </thead>
 
           <tbody>
-            {paginatedUsers.map((user) => (
+            {users.map((user) => (
               <tr
                 key={user.id}
                 className="
@@ -334,10 +323,10 @@ const UserTable = ({ users = [], loading, onDelete, onResetPassword }) => {
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        totalRecords={paginatedUsers.length}
+        totalRecords={totalRecords}
         recordsPerPage={10}
         label="Users"
-        onPageChange={setCurrentPage}
+        onPageChange={onPageChange}
       />
     </div>
   );
