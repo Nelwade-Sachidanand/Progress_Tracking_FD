@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { useState,useEffect } from "react";
+=======
+import { useState, useEffect } from "react";
+>>>>>>> 5b1d8316605973c32947cf4f61f22465b2c92f49
 import AuthorizationFilters from "../components/AuthorizationFilters";
 import AuthorizationRequestModal from "../components/AuthorizationRequestModal";
 import AuthorizationSummaryCards from "../components/AuthorizationSummaryCards";

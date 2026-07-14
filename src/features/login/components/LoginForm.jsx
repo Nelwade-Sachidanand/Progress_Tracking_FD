@@ -636,53 +636,53 @@ const LoginForm = () => {
 
       {/* Forgot Password Modal */}
 
-     <ForgotPasswordModal
-  isOpen={showForgotModal}
-  onClose={() => setShowForgotModal(false)}
-  // onSubmit={async (request) => {
-  //   try {
-  //     const response = await forgotPassword(request.username);
+      <ForgotPasswordModal
+        isOpen={showForgotModal}
+        onClose={() => setShowForgotModal(false)}
+        // onSubmit={async (request) => {
+        //   try {
+        //     const response = await forgotPassword(request.username);
 
-  //     if (response?.statusType === "S") {
-  //       toast.success(
-  //         response.message || "Password reset request submitted successfully."
-  //       );
+        //     if (response?.statusType === "S") {
+        //       toast.success(
+        //         response.message || "Password reset request submitted successfully."
+        //       );
 
-  //       setShowForgotModal(false);
-  //     } else {
-  //       toast.error(
-  //         response?.message || "Failed to submit password reset request."
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
+        //       setShowForgotModal(false);
+        //     } else {
+        //       toast.error(
+        //         response?.message || "Failed to submit password reset request."
+        //       );
+        //     }
+        //   } catch (error) {
+        //     console.error(error);
 
-  //     toast.error(
-  //       error?.response?.data?.message ||
-  //         "Something went wrong. Please try again."
-  //     );
-  //   }
-  // }}
- onSubmit={async (request) => {
-  try {
-    const response = await forgotPassword(request.username);
+        //     toast.error(
+        //       error?.response?.data?.message ||
+        //         "Something went wrong. Please try again."
+        //     );
+        //   }
+        // }}
+        onSubmit={async (request) => {
+          try {
+            const response = await forgotPassword(request.username);
 
-    if (response?.statusType === "S") {
-      toast.success(response?.message);
-      return true;
-    }
+            if (response?.statusType === "S") {
+              toast.success(response?.statusDesc);
+              return true;
+            }
 
-    toast.error(response?.message);
-    return false;
-  } catch (error) {
-    toast.error(
-      error?.response?.data?.message ||
-      "Something went wrong"
-    );
-    return false;
-  }
-}}
-/>
+            toast.error(response?.statusDesc);
+            return false;
+          } catch (error) {
+            toast.error(
+              error?.response?.data?.message ||
+              "Something went wrong"
+            );
+            return false;
+          }
+        }}
+      />
     </div>
   );
 };

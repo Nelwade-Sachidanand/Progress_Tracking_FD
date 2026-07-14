@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Swal from "sweetalert2";
 import { useProjects } from "../../../context/ProjectContext";
@@ -18,6 +18,11 @@ const UserManagementPage = () => {
 
   const [statusFilter, setStatusFilter] = useState("");
   const [bankFilter, setBankFilter] = useState("");
+
+  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
+
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const banks = [
     ...new Set(projects.map((project) => project.bankName).filter(Boolean)),
@@ -74,9 +79,20 @@ const UserManagementPage = () => {
     }
   };
 
-  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
+  const USERS_PER_PAGE = 5;
 
-  const [selectedUser, setSelectedUser] = useState(null);
+  const totalPages = Math.ceil(users.length / USERS_PER_PAGE);
+
+  const startIndex = (currentPage - 1) * USERS_PER_PAGE;
+
+  const endIndex = startIndex + USERS_PER_PAGE;
+
+  const paginatedUsers = users.slice(startIndex, endIndex);
+
+  useEffect(() =>{
+    setCurrentPage(1);
+  },[searchTerm,roleFilter,bankFilter,statusFilter])
+
   return (
     <div
       className="
@@ -113,13 +129,17 @@ const UserManagementPage = () => {
 
         <div className="overflow-x-auto mt-[-7px]">
           <UserTable
-            users={filteredUsers}
+            users={paginatedUsers}
             loading={loading}
             onDelete={handleDeleteUser}
             onResetPassword={(user) => {
               setSelectedUser(user);
               setShowResetPasswordModal(true);
             }}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalRecords={totalPages}
+            onPageChange={setCurrentPage}
           />
         </div>
 
