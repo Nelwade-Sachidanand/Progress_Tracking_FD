@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 
 import ProjectTable from "../components/ProjectTable";
 import ProjectToolbar from "../components/ProjectToolbar";
+import { getProjectMetrics } from "../../dashboard/utils/projectMetrics";
 
 import { useProjects } from "../../../context/ProjectContext";
 
@@ -14,24 +15,65 @@ export default function ProjectsPage() {
 
   const [selectedStatus, setSelectedStatus] = useState("");
 
+  const getBankDisplayName = (bankName) => {
+    const match = bankName.match(/\(([^)]+)\)/);
+
+    if (match) {
+      return match[1]; // e.g. Gajanan Bank
+    }
+
+    return bankName; // If no short name exists
+  };
+
   const banks = [
     ...new Set(projects.map((project) => project.bankName).filter(Boolean)),
-  ];
+  ]
+    .sort((a, b) =>
+      getBankDisplayName(a).localeCompare(getBankDisplayName(b))
+    )
+    .map((bank) => ({
+      label: getBankDisplayName(bank),
+      value: bank,
+    }));
 
   const filteredProjects = useMemo(() => {
-    return projects.filter((project) => {
-      const matchesSearch =
-        project.projectName?.toLowerCase().includes(search.toLowerCase()) ||
-        project.bankName?.toLowerCase().includes(search.toLowerCase()) ||
-        project.projectManager?.toLowerCase().includes(search.toLowerCase());
+    const searchText = search.trim().toLowerCase();
 
-      const matchesBank = !selectedBank || project.bankName === selectedBank;
+    return projects
+      .filter((project) => {
+        console.log("project : ", project);
+        const projectStatus = getProjectMetrics(project).status;
+        const matchesSearch =
+          !searchText ||
+          project.projectName?.toLowerCase().includes(searchText) ||
+          project.bankName?.toLowerCase().includes(searchText) ||
+          project.projectManager?.toLowerCase().includes(searchText);
 
-      const matchesStatus =
-        !selectedStatus || project.status === selectedStatus;
+        const matchesBank =
+          !selectedBank || project.bankName === selectedBank;
 
-      return matchesSearch && matchesBank && matchesStatus;
-    });
+        const matchesStatus =!selectedStatus || projectStatus === selectedStatus;
+
+        return matchesSearch && matchesBank && matchesStatus;
+      })
+      .sort((a, b) => {
+        if (!searchText) return 0;
+
+        const aStarts =
+          a.projectName?.toLowerCase().startsWith(searchText) ||
+          a.bankName?.toLowerCase().startsWith(searchText) ||
+          a.projectManager?.toLowerCase().startsWith(searchText);
+
+        const bStarts =
+          b.projectName?.toLowerCase().startsWith(searchText) ||
+          b.bankName?.toLowerCase().startsWith(searchText) ||
+          b.projectManager?.toLowerCase().startsWith(searchText);
+
+        if (aStarts && !bStarts) return -1;
+        if (!aStarts && bStarts) return 1;
+
+        return 0;
+      });
   }, [projects, search, selectedBank, selectedStatus]);
 
   return (

@@ -75,7 +75,12 @@ export default function TaskFilters({
           placeholder="All Milestones"
           options={milestones}
           selected={selectedMilestone}
-          onChange={setSelectedMilestone}
+          onChange={(milestones) => {
+            setSelectedMilestone(milestones);
+            setSelectedTask("");
+            setSelectedSubTask("");
+            setSelectedActivity("");
+          }}
           width="w-full"
           dropdownWidth="w-[350px]"
         />
@@ -86,7 +91,11 @@ export default function TaskFilters({
           label="Task"
           placeholder="All Tasks"
           value={selectedTask}
-          onChange={setSelectedTask}
+          onChange={(task) => {
+            setSelectedTask(task);
+            setSelectedSubTask("");
+            setSelectedActivity("");
+          }}
           options={tasks.map((task) => ({
             label: task,
             value: task,
@@ -98,7 +107,10 @@ export default function TaskFilters({
           label="Sub Task"
           placeholder="All Sub Tasks"
           value={selectedSubTask}
-          onChange={setSelectedSubTask}
+          onChange={(subTask) => {
+            setSelectedSubTask(subTask);
+            setSelectedActivity("");
+          }}
           options={subTasks.map((subTask) => ({
             label: subTask,
             value: subTask,
@@ -127,7 +139,9 @@ export default function TaskFilters({
             label="Activity"
             placeholder="All Activities"
             value={selectedActivity}
-            onChange={setSelectedActivity}
+            onChange={(activity) => {
+              setSelectedActivity(activity);
+            }}
             options={activities.map((activity) => ({
               label: activity,
               value: activity,

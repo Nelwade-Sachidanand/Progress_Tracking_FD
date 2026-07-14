@@ -60,6 +60,7 @@ export default function AllTasksPage() {
     setSearchTerm,
 
     filteredTasks,
+    sortedTasks,
     handleMilestoneChange,
   } = useTaskFilters(tasks);
 
@@ -121,40 +122,40 @@ export default function AllTasksPage() {
   const inProgress = filteredTasks.filter(
     (task) => task.status === "In Progress",
   ).length;
-const selectedPhaseObj = tasks.find(
-  (t) => t.phase === selectedPhase,
-);
+  const selectedPhaseObj = tasks.find(
+    (t) => t.phase === selectedPhase,
+  );
 
-const selectedPhaseId = selectedPhaseObj?.phaseId || null;
+  const selectedPhaseId = selectedPhaseObj?.phaseId || null;
 
-const selectedMilestoneIds = [
-  ...new Set(
-    tasks
-      .filter((t) => selectedMilestone.includes(t.milestoneId))
-      .map((t) => t.milestoneId),
-  ),
-];
+  const selectedMilestoneIds = [
+    ...new Set(
+      tasks
+        .filter((t) => selectedMilestone.includes(t.milestoneId))
+        .map((t) => t.milestoneId),
+    ),
+  ];
 
-const selectedTaskObj = tasks.find(
-  (t) => t.task === selectedTask,
-);
+  const selectedTaskObj = tasks.find(
+    (t) => t.task === selectedTask,
+  );
 
-const selectedTaskId = selectedTaskObj?.taskId || null;
+  const selectedTaskId = selectedTaskObj?.taskId || null;
 
-const selectedSubTaskObj = tasks.find(
-  (t) => t.subTask === selectedSubTask,
-);
+  const selectedSubTaskObj = tasks.find(
+    (t) => t.subTask === selectedSubTask,
+  );
 
-const selectedSubTaskId = selectedSubTaskObj?.subTaskId || null;
+  const selectedSubTaskId = selectedSubTaskObj?.subTaskId || null;
 
-const selectedActivityObj = tasks.find(
-  (t) => t.activity === selectedActivity,
-);
-// console.log("Selected Phase:", selectedPhase);
-// console.log("Selected Phase Obj:", selectedPhaseObj);
-// console.log("Selected Phase ID:", selectedPhaseId);
-// console.log("Tasks:", tasks);
-const selectedActivityId = selectedActivityObj?.activityId || null;
+  const selectedActivityObj = tasks.find(
+    (t) => t.activity === selectedActivity,
+  );
+  // console.log("Selected Phase:", selectedPhase);
+  // console.log("Selected Phase Obj:", selectedPhaseObj);
+  // console.log("Selected Phase ID:", selectedPhaseId);
+  // console.log("Tasks:", tasks);
+  const selectedActivityId = selectedActivityObj?.activityId || null;
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -168,7 +169,7 @@ const selectedActivityId = selectedActivityObj?.activityId || null;
   const safeCurrentPage =
     currentPage > totalPages ? totalPages : currentPage || 1;
 
-  const paginatedTasks = filteredTasks.slice(
+  const paginatedTasks = sortedTasks.slice(
     (safeCurrentPage - 1) * ITEMS_PER_PAGE,
     safeCurrentPage * ITEMS_PER_PAGE,
   );
@@ -277,31 +278,31 @@ const selectedActivityId = selectedActivityObj?.activityId || null;
     selectedStatus,
     searchTerm,
   ]);
-if (!selectedProjectId) {
-  return (
-    <div className="flex min-h-[70vh] items-center justify-center">
-      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+  if (!selectedProjectId) {
+    return (
+      <div className="flex min-h-[70vh] items-center justify-center">
+        <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
 
-        <FolderKanban className="mx-auto h-14 w-14 text-blue-600" />
+          <FolderKanban className="mx-auto h-14 w-14 text-blue-600" />
 
-        <h2 className="mt-5 text-2xl font-bold text-slate-800">
-          No Project Selected
-        </h2>
+          <h2 className="mt-5 text-2xl font-bold text-slate-800">
+            No Project Selected
+          </h2>
 
-        <p className="mt-3 text-slate-500">
-          Please select a project to view its tasks.
-        </p>
+          <p className="mt-3 text-slate-500">
+            Please select a project to view its tasks.
+          </p>
 
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="mt-6 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
-        >
-          Select Project
-        </button>
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="mt-6 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
+          >
+            Select Project
+          </button>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
   return (
     // <div className="p-6 bg-[#F5F7FB] min-h-screen ">
     <div className="p-6 w-full w-[1200px]">
@@ -328,24 +329,24 @@ if (!selectedProjectId) {
             </p>
           </div>
 
-         <TaskActions
-  selectedPhase={selectedPhase}
-  selectedPhaseId={selectedPhaseId}
+          <TaskActions
+            selectedPhase={selectedPhase}
+            selectedPhaseId={selectedPhaseId}
 
-  selectedMilestone={selectedMilestone}
-  selectedMilestoneIds={selectedMilestoneIds}
+            selectedMilestone={selectedMilestone}
+            selectedMilestoneIds={selectedMilestoneIds}
 
-  selectedTask={selectedTask}
-  selectedTaskId={selectedTaskId}
+            selectedTask={selectedTask}
+            selectedTaskId={selectedTaskId}
 
-  selectedSubTask={selectedSubTask}
-  selectedSubTaskId={selectedSubTaskId}
+            selectedSubTask={selectedSubTask}
+            selectedSubTaskId={selectedSubTaskId}
 
-  selectedActivity={selectedActivity}
-  selectedActivityId={selectedActivityId}
+            selectedActivity={selectedActivity}
+            selectedActivityId={selectedActivityId}
 
-  selectedStatus={selectedStatus}
-/>
+            selectedStatus={selectedStatus}
+          />
         </div>
 
         <TaskFilters

@@ -135,6 +135,27 @@ export default function useTaskFilters(tasks = []) {
     selectedStatus,
     searchTerm,
   ]);
+
+  const sortedTasks = filteredTasks.sort((a, b) => {
+    const search = searchTerm.toLowerCase();
+    const aStarts =
+      a.activity?.toLowerCase().startsWith(search) ||
+      a.task?.toLowerCase().startsWith(search) ||
+      a.phase?.toLowerCase().startsWith(search) ||
+      a.milestone?.toLowerCase().startsWith(search);
+
+    const bStarts =
+      b.activity?.toLowerCase().startsWith(search) ||
+      b.task?.toLowerCase().startsWith(search) ||
+      b.phase?.toLowerCase().startsWith(search) ||
+      b.milestone?.toLowerCase().startsWith(search);
+
+    if (aStarts && !bStarts) return -1;
+    if (!aStarts && bStarts) return 1;
+
+    return 0;
+  });
+
   const handleMilestoneChange = (milestone) => {
     setSelectedMilestone((prev) =>
       prev.includes(milestone)
@@ -175,8 +196,8 @@ export default function useTaskFilters(tasks = []) {
     setSearchTerm,
 
     filteredTasks,
+    sortedTasks,
 
     handleMilestoneChange,
   };
 }
- 

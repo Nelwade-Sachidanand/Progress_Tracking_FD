@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AuditDetailsModal from "../components/AuditDetailsModal";
 import AuditFilters from "../components/AuditFilters";
 import AuditSummaryCards from "../components/AuditSummaryCards";
@@ -15,6 +15,16 @@ const AuditLogsPage = () => {
   const [actionType, setActionType] = useState("");
 
   const [selectedDate, setSelectedDate] = useState("");
+
+  const [showAuditModal, setShowAuditModal] = useState(false);
+
+  const [selectedLog, setSelectedLog] = useState(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, entityType, actionType, selectedDate]);
 
   const filteredLogs = auditLogs.filter((log) => {
     const searchMatch =
@@ -33,9 +43,25 @@ const AuditLogsPage = () => {
     return searchMatch && entityMatch && actionMatch && dateMatch;
   });
 
-  const [showAuditModal, setShowAuditModal] = useState(false);
+  const RECORDS_PER_PAGE = 10;
 
-  const [selectedLog, setSelectedLog] = useState(null);
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredLogs.length / RECORDS_PER_PAGE)
+  );
+
+  const pageLogs = filteredLogs.slice(
+    (currentPage - 1) * RECORDS_PER_PAGE,
+    currentPage * RECORDS_PER_PAGE
+  );
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setEntityType("");
+    setActionType("");
+    setSelectedDate("");
+  };
+
   return (
     <div
       className="
@@ -67,12 +93,17 @@ const AuditLogsPage = () => {
           setActionType={setActionType}
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
+          clearFilters={clearFilters}
         />
 
         <div className="overflow-x-auto mt-[-25px]">
           <AuditTable
-            logs={filteredLogs}
+            logs={pageLogs}
             loading={loading}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalRecords={filteredLogs.length}
+            onPageChange={setCurrentPage}
             onView={(log) => {
               setSelectedLog(log);
               setShowAuditModal(true);

@@ -13,6 +13,7 @@ export default function AuditFilters({
   setActionType,
   selectedDate,
   setSelectedDate,
+  clearFilters,
 }) {
   const entityTypes = [
     ...new Set(logs.map((log) => log.entityType).filter(Boolean)),
@@ -52,6 +53,15 @@ export default function AuditFilters({
           mb-[-7px]
         "
       >
+
+        {/* Date */}
+
+        <DateInput
+          label="Date"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+        />
+
         {/* Entity Type */}
 
         <CustomDropdown
@@ -80,19 +90,37 @@ export default function AuditFilters({
           }))}
         />
 
-        {/* Date */}
+        <div className="flex items-end gap-3">
+          <div className="flex-1">
+            <SearchInput
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search Entity Name or User..."
+            />
+          </div>
 
-        <DateInput
-          label="Date"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
-        />
-
-        <SearchInput
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search Entity Name or User..."
-        />
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="
+            h-9
+            px-4
+            rounded-lg
+            border
+            border-red-200
+            bg-red-50
+            text-sm
+            text-red-600
+            font-semibold
+            transition
+            hover:bg-red-100
+            cursor-pointer
+            whitespace-nowrap
+          "
+          >
+            Clear Filters
+          </button>
+        </div>
       </div>
     </div>
   );

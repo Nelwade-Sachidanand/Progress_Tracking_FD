@@ -89,8 +89,7 @@ const formatAction = (value = "") => {
     .join(" ");
 };
 
-export default function AuditTable({ logs = [], loading, onView }) {
-  const [currentPage, setCurrentPage] = useState(1);
+export default function AuditTable({ logs = [], loading, onView, currentPage, totalPages, totalRecords, onPageChange }) {
 
   if (loading) {
     return (
@@ -109,12 +108,6 @@ export default function AuditTable({ logs = [], loading, onView }) {
       </div>
     );
   }
-
-  const totalPages = Math.max(1, Math.ceil(logs.length / RECORDS_PER_PAGE));
-
-  const startIndex = (currentPage - 1) * RECORDS_PER_PAGE;
-
-  const pageLogs = logs.slice(startIndex, startIndex + RECORDS_PER_PAGE);
 
   return (
     <div className="overflow-x-auto mt-5 rounded-2xl border border-[#CDD7E3] bg-white shadow-sm">
@@ -152,8 +145,8 @@ export default function AuditTable({ logs = [], loading, onView }) {
         </thead>
 
         <tbody>
-          {pageLogs.length > 0 ? (
-            pageLogs.map((log, index) => (
+          {logs.length > 0 ? (
+            logs.map((log, index) => (
               <tr
                 key={log.id}
                 className="
@@ -297,7 +290,7 @@ export default function AuditTable({ logs = [], loading, onView }) {
         totalRecords={logs.length}
         recordsPerPage={10}
         label="Logs"
-        onPageChange={setCurrentPage}
+        onPageChange={onPageChange}
       />
     </div>
   );

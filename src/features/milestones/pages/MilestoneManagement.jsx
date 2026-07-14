@@ -24,6 +24,8 @@ export default function MilestoneManagement() {
 
   const { updateWeightages, loading } = useMilestone();
 
+  const [submitting, setSubmitting] = useState(false);
+
   useEffect(() => {
     const bankList = getBanks(projects);
 

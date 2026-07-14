@@ -19,9 +19,12 @@ export default function CustomDropdown({
     options.find((option) => option.value === value)?.label || placeholder;
 
   const formatValue = (value = "") => {
-
     if (!formatLabel) {
       return value;
+    }
+
+    if (typeof value !== "string") {
+      return String(value ?? "");
     }
 
     return value

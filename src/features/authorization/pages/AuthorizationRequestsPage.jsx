@@ -77,6 +77,26 @@ const AuthorizationRequestsPage = () => {
     );
   });
 
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const RECORDS_PER_PAGE = 10;
+
+  const totalPages = Math.ceil(sortedLogs.length / RECORDS_PER_PAGE);
+
+  const paginatedLogs = sortedLogs.slice((currentPage - 1) * RECORDS_PER_PAGE,
+    currentPage * RECORDS_PER_PAGE);
+
+  const clearFilters = () => {
+    setSearch("");
+    setRequestType("");
+    setStatus("");
+    setRequestedBy("");
+  };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, requestType, requestedBy, status]);
+
   return (
     <div
       className="
@@ -108,15 +128,20 @@ const AuthorizationRequestsPage = () => {
           setStatus={setStatus}
           requestedBy={requestedBy}
           setRequestedBy={setRequestedBy}
+          clearFilters={clearFilters}
         />
 
         <div className="overflow-x-auto mt-[-25px]">
           <AuthorizationTable
-            logs={sortedLogs}
+            logs={paginatedLogs}
             loading={loading}
             onView={setSelectedRequest}
             approveSelectedRequests={approveSelectedRequests}
             rejectSelectedRequests={rejectSelectedRequests}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalRecords={filteredLogs.length}
+            onPageChange={setCurrentPage}
           />
         </div>
 
@@ -135,4 +160,3 @@ const AuthorizationRequestsPage = () => {
 };
 
 export default AuthorizationRequestsPage;
- 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { toast } from "react-toastify";
 import { updateMilestoneWeightages, } from "../services/milestoneService";
 import { useProjects } from "../../../context/ProjectContext";
@@ -9,20 +9,18 @@ export const useMilestone = () => {
 
     const { fetchProjects } = useProjects();
 
-    const updateWeightages = async (
-        payload
-    ) => {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+
+    const updateWeightages = async (payload) => {
         try {
             setLoading(true);
 
             const response =
-                await updateMilestoneWeightages(
-                    payload
-                );
+                await updateMilestoneWeightages(payload);
 
             if (response.statusType === "S") {
                 toast.success(response.statusDesc);
-                await fetchProjects();
+                await fetchProjects(user.id);
                 return response;
             }
 
@@ -34,7 +32,9 @@ export const useMilestone = () => {
 
             throw error;
         } finally {
-            setLoading(false);
+            setTimeout(() => {
+                setLoading(false);
+            }, 3000);
         }
     };
 

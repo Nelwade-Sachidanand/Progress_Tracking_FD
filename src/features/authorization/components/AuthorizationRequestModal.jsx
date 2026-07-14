@@ -903,8 +903,8 @@ export default function AuthorizationRequestModal({
           <div
             className="
             mt-3
-            xl:mt-4
-            2xl:mt-5
+            xl:mt-2
+            2xl:mt-4
             flex
             flex-col
             md:flex-row
@@ -918,7 +918,7 @@ export default function AuthorizationRequestModal({
                   onClick={() => onApprove?.(request.id)}
                   className="
                   w-full md:w-auto
-                  h-12 xl:h-11
+                  h-11 xl:h-10
                   px-8
                   rounded-xl
                   bg-green-600
@@ -938,7 +938,7 @@ export default function AuthorizationRequestModal({
                   onClick={() => setShowRejectModal(true)}
                   className="
                   w-full md:w-auto
-                  h-12 xl:h-11
+                  h-11 xl:h-10
                   px-8
                   rounded-xl
                   bg-red-500
@@ -962,7 +962,7 @@ export default function AuthorizationRequestModal({
                   onClick={() => setShowRollbackModal(true)}
                   className="
                 w-full md:w-auto
-                h-12 xl:h-11
+                h-11 xl:h-10
                 px-8
                 rounded-xl
                 bg-orange-500
@@ -983,7 +983,7 @@ export default function AuthorizationRequestModal({
               onClick={onClose}
               className="
               w-full md:w-auto
-              h-12 xl:h-11
+              h-11 xl:h-10
               px-8
               rounded-xl
               border border-slate-300
@@ -1009,7 +1009,7 @@ export default function AuthorizationRequestModal({
                         text-xs
                         xl:text-sm
 
-                        text-slate-500
+                        text-slate-600
                         "
           >
             All authorization actions are logged and audited for security

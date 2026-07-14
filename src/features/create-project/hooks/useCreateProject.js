@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-import { createProject,updateProjectInformation } from "../services/createProjectService";
+import { createProject, updateProjectInformation } from "../services/createProjectService";
 
 export default function useCreateProject() {
   const [loading, setLoading] = useState(false);
@@ -30,15 +30,17 @@ export default function useCreateProject() {
 
       throw error;
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
     }
   };
 
-  const updateProject = async (id,payload) => {
+  const updateProject = async (id, payload) => {
     try {
       setLoading(true);
 
-      const response = await updateProjectInformation(id,payload);
+      const response = await updateProjectInformation(id, payload);
 
       if (response.statusType === "S") {
         toast.success(response.statusDesc || "Project updated successfully");
@@ -52,7 +54,9 @@ export default function useCreateProject() {
 
       throw error;
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
     }
   };
 

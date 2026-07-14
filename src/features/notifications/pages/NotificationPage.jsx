@@ -47,7 +47,7 @@ export default function NotificationPage() {
   });
 
   return (
-    <div className="p-8">
+    <div className="p-8 mt-[-20px]">
       <NotificationFilters
         search={search}
         setSearch={setSearch}

@@ -4,6 +4,7 @@ import Pagination from "../../../components/layout/Pagination";
 
 const RECORDS_PER_PAGE = 10;
 
+
 const getRequestTypeStyle = (type) => {
   switch (type) {
     case "EXCEL_UPLOAD":
@@ -48,8 +49,8 @@ export default function AuthorizationTable({
   onView,
   approveSelectedRequests,
   rejectSelectedRequests,
+  currentPage, totalPages, totalRecords, onPageChange,
 }) {
-  const [currentPage, setCurrentPage] = useState(1);
 
   const [selectedRows, setSelectedRows] = useState([]);
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -73,14 +74,6 @@ export default function AuthorizationTable({
       </div>
     );
   }
-
-  const totalPages = Math.ceil(logs.length / RECORDS_PER_PAGE);
-
-  const startIndex = (currentPage - 1) * RECORDS_PER_PAGE;
-
-  const endIndex = startIndex + RECORDS_PER_PAGE;
-
-  const paginatedLogs = logs.slice(startIndex, endIndex);
 
   const handleRowSelect = (id) => {
     if (selectedRows.includes(id)) {
@@ -231,9 +224,9 @@ export default function AuthorizationTable({
                   type="checkbox"
                   className="h-3 w-3 cursor-pointer"
                   checked={
-                    paginatedLogs.filter((log) => log.status === "PENDING")
+                    logs.filter((log) => log.status === "PENDING")
                       .length > 0 &&
-                    paginatedLogs
+                    logs
                       .filter((log) => log.status === "PENDING")
                       .every((log) => selectedRows.includes(log.id))
                   }
@@ -286,7 +279,7 @@ export default function AuthorizationTable({
           </thead>
 
           <tbody>
-            {paginatedLogs.length === 0 ? (
+            {logs.length === 0 ? (
               <tr>
                 <td
                   colSpan={8}
@@ -302,8 +295,8 @@ export default function AuthorizationTable({
                 </td>
               </tr>
             ) : (
-              paginatedLogs.map((log, index) => {
-                const srNo = startIndex + index + 1;
+              logs.map((log, index) => {
+                const srNo = (currentPage - 1) * RECORDS_PER_PAGE + index + 1
 
                 return (
                   <tr
@@ -461,10 +454,10 @@ export default function AuthorizationTable({
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        totalRecords={logs.length}
+        totalRecords={totalRecords}
         recordsPerPage={10}
         label="Auths"
-        onPageChange={setCurrentPage}
+        onPageChange={onPageChange}
       />
 
       {showApproveModal && (
@@ -584,4 +577,3 @@ export default function AuthorizationTable({
     </div>
   );
 }
- 

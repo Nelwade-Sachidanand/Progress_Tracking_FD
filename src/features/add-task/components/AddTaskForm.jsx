@@ -10,7 +10,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import EditableDropdown from "./EditableDropdown";
 import useEditableDropdown from "../hooks/useEditableDropdown";
-import CustomDropdown from "../../../components/layout/CustomDropdown";
+import CustomDropdown from "../../../components/common/CustomDropdown";
 import { useProjects } from "../../../context/ProjectContext";
 import useAddTask from "../hooks/useAddTask";
 

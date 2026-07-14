@@ -3,8 +3,14 @@ import { useState } from "react";
 import Pagination from "../../../components/layout/Pagination";
 import { calculateOverallProgress } from "../../dashboard/utils/dashboardUtils";
 import { useNavigate } from "react-router-dom";
+import { getProjectMetrics } from "../../dashboard/utils/projectMetrics";
+import Swal from "sweetalert2";
+import useProjectActions from "../hooks/useProjectActions";
+
 
 export default function ProjectTable({ projects = [] }) {
+
+  const { deleteProject } = useProjectActions();
 
   const navigate = useNavigate();
 
@@ -47,6 +53,8 @@ export default function ProjectTable({ projects = [] }) {
     };
   };
 
+
+
   return (
     <div className="overflow-x-auto mt-5 rounded-2xl border border-[#CDD7E3] bg-white shadow-sm">
       <table className="w-full table-auto">
@@ -81,7 +89,8 @@ export default function ProjectTable({ projects = [] }) {
         <tbody>
           {projects.length > 0 ? (
             pageProjects.map((project, index) => {
-              const status = getStatus(project.progress || 0);
+              const metrics = getProjectMetrics(project);
+              const status = getStatus(metrics.status);
 
               const progress = calculateOverallProgress([project]);
 
@@ -173,7 +182,7 @@ export default function ProjectTable({ projects = [] }) {
                         <div
                           className="h-2 rounded-full bg-[#2563EB] transition-all duration-500"
                           style={{
-                            width: `${progress || 0}%`,
+                            width: `${metrics.overallProgress || 0}%`,
                           }}
                         />
                       </div>
@@ -188,7 +197,7 @@ export default function ProjectTable({ projects = [] }) {
                         text-slate-700
                       "
                       >
-                        {progress || 0}%
+                        {metrics.overallProgress || 0}%
                       </span>
                     </div>
                   </td>
@@ -258,7 +267,7 @@ export default function ProjectTable({ projects = [] }) {
                         <Pencil size={16} />
                       </button>
 
-                      <button
+                      {/* <button
                         title="Export Project"
                         className="
                         h-9
@@ -275,10 +284,26 @@ export default function ProjectTable({ projects = [] }) {
                       "
                       >
                         <Download size={16} />
-                      </button>
+                      </button> */}
 
                       <button
                         title="Delete Project"
+                        onClick={() => {
+                          Swal.fire({
+                            title: "Delete Project?",
+                            text: "This action cannot be undone.",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#dc2626",
+                            cancelButtonColor: "#64748b",
+                            confirmButtonText: "Delete",
+                            cancelButtonText: "Cancel",
+                          }).then(async (result) => {
+                            if (result.isConfirmed) {
+                              await deleteProject(project.id);
+                            }
+                          });
+                        }}
                         className="
                         h-9
                         w-9

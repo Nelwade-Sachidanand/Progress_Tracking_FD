@@ -27,7 +27,7 @@ export default function ProjectNavigation({
     console.log(payload);
 
     const response = isEdit
-      ? await updateProject(selectedInfoId,payload)
+      ? await updateProject(selectedInfoId, payload)
       : await saveProject(payload);
 
     if (response.statusType === "S") {
@@ -37,6 +37,10 @@ export default function ProjectNavigation({
       setSelectedProjectId("");
       setSelectedInfoId("");
       setCurrentStep(0);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
 
       navigate("/projects");
     }

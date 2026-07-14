@@ -18,3 +18,9 @@
 .sidebar-scroll::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
+
+/* Hide Microsoft Edge / IE password reveal button */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}

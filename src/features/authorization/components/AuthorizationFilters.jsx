@@ -12,6 +12,7 @@ export default function AuthorizationFilters({
   setStatus,
   requestedBy,
   setRequestedBy,
+  clearFilters,
 }) {
   const requestTypes = [
     ...new Set(logs.map((log) => log.requestSource).filter(Boolean)),
@@ -97,13 +98,38 @@ export default function AuthorizationFilters({
 
         {/* Search */}
 
-        <SearchInput
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search Requests..."
-        />
+        <div className="flex items-end gap-3">
+          <div className="flex-1">
+            <SearchInput
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search Requests..."
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="
+            h-9
+            px-4
+            rounded-lg
+            border
+            border-red-200 
+            bg-red-50
+            text-sm
+            font-medium
+            text-red-600
+            transition
+            hover:bg-red-100
+            cursor-pointer
+            whitespace-nowrap
+          "
+          >
+            Clear Filters
+          </button>
+        </div>
       </div>
     </div>
   );
 }
- 
