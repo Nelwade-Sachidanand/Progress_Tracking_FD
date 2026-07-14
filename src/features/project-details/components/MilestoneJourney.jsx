@@ -149,13 +149,8 @@ function Tooltip({ milestone, index, x, y, visible, onClose }) {
 /* ── Main component ── */
 export default function MilestoneJourney({ project }) {
   const [tooltip, setTooltip] = useState(null);
-<<<<<<< HEAD
  
   const ITEMS_PER_ROW = 9;
-=======
-
-  const ITEMS_PER_ROW = 8;
->>>>>>> 84215258a8ba3051a8a350ae0efc077528412fb4
   const NODE_R = window.innerWidth < 640 ? 20 : 26;
 
   const GAP_X = window.innerWidth < 640 ? 42 : 73;
@@ -277,23 +272,19 @@ const r = Math.abs(cy - prevCy) / 2 + 8;
 //   PAD * 2 +
 //   ITEMS_PER_ROW * colW +
 //   60;
+const colW = NODE_R * 2 + GAP_X;
+
 const maxCols = Math.max(...rows.map((r) => r.length));
 
 const svgW =
   PAD * 2 +
-<<<<<<< HEAD
   maxCols * colW;
-const svgH =
+  
+  const svgH =
   PAD * 2 +
   rows.length * (NODE_R * 2 + GAP_Y + 25);
   //const svgH = PAD * 2 + rows.length * (NODE_R * 2 + GAP_Y + 50);
  
-=======
-  ITEMS_PER_ROW * colW +
-  60;
-  const svgH = PAD * 2 + rows.length * (NODE_R * 2 + GAP_Y + 50);
-
->>>>>>> 84215258a8ba3051a8a350ae0efc077528412fb4
   const handleNodeEnter = (e, milestone, idx) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setTooltip({
@@ -344,7 +335,7 @@ const svgH =
             const origIdx = rIdx * ITEMS_PER_ROW + (isRev ? row.length - 1 - cIdx : cIdx);
             const colors = statusColors[m.status] || statusColors["Not Started"];
 
-            const colW = NODE_R * 2 + GAP_X;
+           // const colW = NODE_R * 2 + GAP_X;
 
             let visualColumn;
 
