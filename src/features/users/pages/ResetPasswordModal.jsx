@@ -80,7 +80,7 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
             <h2 className="text-lg font-bold text-[#0F172A]">Reset Password</h2>
           </div>
 
-          <button onClick={onClose} className="cursor-pointer">
+          <button onClick={onClose} className="cursor-pointer hover:text-red-500 transition">
             <X size={20} />
           </button>
         </div>

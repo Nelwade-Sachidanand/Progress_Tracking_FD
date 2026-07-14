@@ -96,7 +96,7 @@ export default function UploadDocumentModal({
 
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-slate-200 cursor-pointer"
+            className="p-2 rounded-lg hover:bg-slate-200 cursor-pointer hover:text-red-500 transition"
           >
             <X />
           </button>
