@@ -17,6 +17,7 @@ import {
   User,
   Users,
   Eye,
+  FolderOpen, 
 } from "lucide-react";
 
 import { useEffect, useRef, useState } from "react";
@@ -357,7 +358,7 @@ const DashboardHeader = ({
     "/documents": {
       title: "Documents",
       subtitle: "Manage Project Sign-off Documents ",
-      icon: <FileText size={24} />,
+      icon: <FolderOpen size={24} />,
 
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",
@@ -372,14 +373,7 @@ const DashboardHeader = ({
       subtitleClass: "text-[12px]",
     },
 
-    "/documents": {
-      title: "Documents",
-      subtitle: "Upload And Manage Signoff Documents",
-      icon: <Users size={22} />,
-
-      titleClass: "text-[32px]",
-      subtitleClass: "text-[17px]",
-    },
+    
 
     "/upload-excel": {
       title: "Upload Excel",

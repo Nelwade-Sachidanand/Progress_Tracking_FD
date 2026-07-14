@@ -155,7 +155,8 @@ export default function MilestoneJourney({ project }) {
  
   const GAP_X = window.innerWidth < 640 ? 42 : 73;
 const GAP_Y = window.innerWidth < 640 ? 48 : 65;
-const PAD = window.innerWidth < 640 ? 12 : 20;
+//const PAD = window.innerWidth < 640 ? 12 : 20;
+const PAD = window.innerWidth < 640 ? 20 : 50;
  
   /* ── Build milestones from project data (your existing logic) ── */
   const milestones = project?.phases?.flatMap(
@@ -228,7 +229,8 @@ const cy = PAD + rIdx * rowH + NODE_R;
  const entryCol = isRev ? ITEMS_PER_ROW - 1 : 0;
   const exitCol = isRev ? ITEMS_PER_ROW - row.length : row.length - 1;
   const entryX = colX(entryCol);
- const exitX = colX(exitCol);
+// const exitX = colX(exitCol);
+const exitX = colX(exitCol) + NODE_R;
 
 
 
@@ -245,8 +247,8 @@ const prevRow = rows[rIdx - 1];
 
 
 
- const r = (cy - prevCy) / 2;
-
+ //const r = (cy - prevCy) / 2;
+const r = Math.abs(cy - prevCy) / 2 + 8;
 
 
   const bulgeRight = !prevIsRev;
@@ -267,7 +269,11 @@ const prevRow = rows[rIdx - 1];
  
  const colW = NODE_R * 2 + GAP_X;
 
-const svgW = PAD * 2 + ITEMS_PER_ROW * colW;
+//const svgW = PAD * 2 + ITEMS_PER_ROW * colW;
+const svgW =
+  PAD * 2 +
+  ITEMS_PER_ROW * colW +
+  60;
   const svgH = PAD * 2 + rows.length * (NODE_R * 2 + GAP_Y + 50);
  
   const handleNodeEnter = (e, milestone, idx) => {

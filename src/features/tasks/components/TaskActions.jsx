@@ -641,8 +641,8 @@ const handleGenerateWord = async () => {
           cursor-pointer
         "
         >
-          <Plus size={15} />
-          Add Task
+          <Plus size={18} />
+          Add Activity
         </button>
       )}
       <div
