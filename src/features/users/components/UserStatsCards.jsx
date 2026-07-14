@@ -4,6 +4,7 @@ import {
   ShieldCheck,
   UserCheck,
   Users,
+  Cog,
 } from "lucide-react";
 const UserStatsCards = ({ users = [] }) => {
   const totalUsers = users.length;
@@ -22,7 +23,44 @@ const UserStatsCards = ({ users = [] }) => {
     (user) => user.role === "MANAGEMENT USER",
   ).length;
 
-  const stats = [
+  // const stats = [
+  //   {
+  //     icon: Users,
+  //     value: totalUsers,
+  //     title: "Total Users",
+  //     bg: "bg-purple-100",
+  //     color: "text-purple-600",
+  //   },
+  //   {
+  //     icon: UserCheck,
+  //     value: activeUsers,
+  //     title: "Active Users",
+  //     bg: "bg-green-100",
+  //     color: "text-green-600",
+  //   },
+  //   {
+  //     icon: ShieldCheck,
+  //     value: admins,
+  //     title: "Administrators",
+  //     bg: "bg-red-100",
+  //     color: "text-red-500",
+  //   },
+  //   {
+  //     icon: HardHat,
+  //     value: implementationUsers,
+  //     title: "Implementation Users",
+  //     bg: "bg-yellow-100",
+  //     color: "text-yellow-500",
+  //   },
+  //   {
+  //     icon: Briefcase,
+  //     value: managementUsers,
+  //     title: "Management Users",
+  //     bg: "bg-blue-100",
+  //     color: "text-blue-500",
+  //   },
+  // ];
+ const stats = [
     {
       icon: Users,
       value: totalUsers,
@@ -45,7 +83,7 @@ const UserStatsCards = ({ users = [] }) => {
       color: "text-red-500",
     },
     {
-      icon: HardHat,
+      icon: Cog,
       value: implementationUsers,
       title: "Implementation Users",
       bg: "bg-yellow-100",
@@ -59,7 +97,6 @@ const UserStatsCards = ({ users = [] }) => {
       color: "text-blue-500",
     },
   ];
-
   return (
     <div
       className="

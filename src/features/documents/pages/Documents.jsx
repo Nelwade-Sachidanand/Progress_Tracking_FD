@@ -275,11 +275,11 @@ export default function Documents() {
     border border-[#E2E8F0]
     text-xs
   ">
-    <span className="text-slate-500">
+    <span className="text-xs sm:text-sm font-semibold text-[#2563EB] truncate max-w-[100px] sm:max-w-[150px] md:max-w-[200px]">
       Active Project:
     </span>
 
-    <span className="font-semibold text-[#2563EB] truncate max-w-[200px]">
+    <span className="text-xs sm:text-sm font-semibold text-[#2563EB] truncate max-w-[100px] sm:max-w-[150px] md:max-w-[200px]">
       {selectedProject?.projectName || "No Project Selected"}
     </span>
   </div>

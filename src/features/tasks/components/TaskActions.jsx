@@ -639,7 +639,7 @@ const handleGenerateWord = async () => {
         "
         >
           <Plus size={18} />
-          Add Task
+          Add Activity
         </button>
       )}
       <div

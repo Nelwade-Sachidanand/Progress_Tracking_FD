@@ -87,7 +87,7 @@ export default function GenerateReportModal({
 </div>
 <button
             onClick={onClose}
-            className="w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors shrink-0"
+            className="w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors shrink-0 cursor-pointer"
 >
 <X size={18} className="text-slate-500" />
 </button>
@@ -136,7 +136,7 @@ export default function GenerateReportModal({
       <label
         key={type}
         className={`
-          cursor-pointer
+          
           rounded-xl
           border
           px-3

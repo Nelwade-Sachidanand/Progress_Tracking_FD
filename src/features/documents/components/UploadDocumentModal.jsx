@@ -63,7 +63,7 @@ export default function UploadDocumentModal({
       const response = await uploadDocument(selectedFile, payload);
 
       if (response.statusType === "S") {
-        toast.success("Document uploaded successfully 🎉");
+        toast.success("Document uploaded successfully");
         setSelectedFile(null);
         onClose();
         await onSuccess?.();

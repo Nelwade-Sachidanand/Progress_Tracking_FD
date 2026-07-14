@@ -1,4 +1,6 @@
+
 import { useEffect, useState } from "react";
+import { FolderKanban } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../../../components/layout/Pagination";
 import { useProjects } from "../../../context/ProjectContext";
@@ -27,6 +29,8 @@ export default function AllTasksPage() {
   const [tasks, setTasks] = useState([]);
 
   const navigate = useNavigate();
+  const selectedProjectId = sessionStorage.getItem("selectedProjectId");
+
   const {
     phases,
     milestones,
@@ -267,7 +271,31 @@ const selectedActivityId = selectedActivityObj?.activityId || null;
     selectedStatus,
     searchTerm,
   ]);
+if (!selectedProjectId) {
+  return (
+    <div className="flex min-h-[70vh] items-center justify-center">
+      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
 
+        <FolderKanban className="mx-auto h-14 w-14 text-blue-600" />
+
+        <h2 className="mt-5 text-2xl font-bold text-slate-800">
+          No Project Selected
+        </h2>
+
+        <p className="mt-3 text-slate-500">
+          Please select a project to view its tasks.
+        </p>
+
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="mt-6 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
+        >
+          Select Project
+        </button>
+      </div>
+    </div>
+  );
+}
   return (
     // <div className="p-6 bg-[#F5F7FB] min-h-screen ">
     <div className="p-6 w-full w-[1200px]">

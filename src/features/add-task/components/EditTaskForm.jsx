@@ -14,6 +14,7 @@ export default function EditTaskForm() {
     taskOptions,
     subTasks,
     handleUpdate,
+ isUpdating,
   } = useEditTask();
 
 
@@ -91,67 +92,67 @@ export default function EditTaskForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
               <div>
-                <label className="block mb-1 ml-1 text-xs font-medium text-slate-600">
+                <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                   Phase <span className="text-red-500">*</span>
                 </label>
                 <input
                   value={formData.phaseName}
                   readOnly
                   disabled
-                  className={`${inputClass} bg-slate-50 cursor-not-allowed text-slate-600`}
+                  className={`${inputClass} bg-slate-50 cursor-not-allowed text-slate-700`}
                 />
               </div>
               <div>
-                <label className="block mb-1 ml-1 text-xs font-medium text-slate-600">
+                <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                   Milestone <span className="text-red-500">*</span>
                 </label>
                 <input
                   value={formData.milestoneName}
                   readOnly
                   disabled
-                  className={`${inputClass} bg-slate-50 cursor-not-allowed text-slate-600`}
+                  className={`${inputClass} bg-slate-50 cursor-not-allowed text-slate-700`}
                 />
               </div>
               <div>
-                <label className="block mb-1 ml-1 text-xs font-medium text-slate-600">
+                <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                   Task <span className="text-red-500">*</span>
                 </label>
                 <input
                   value={formData.taskName}
                   readOnly
                   disabled
-                  className={`${inputClass} bg-slate-50 cursor-not-allowed text-slate-600`}
+                  className={`${inputClass} bg-slate-50 cursor-not-allowed text-slate-700`}
                 />
               </div>
               <div>
-                <label className="block mb-1 ml-1 text-xs font-medium text-slate-600">
+                <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                   Sub Task <span className="text-red-500">*</span>
                 </label>
                 <input
                   value={formData.subTaskName}
                   readOnly
                   disabled
-                  className={`${inputClass} bg-slate-50 cursor-not-allowed text-slate-600`}
+                  className={`${inputClass} bg-slate-50 cursor-not-allowed text-slate-700`}
                 />
               </div>
             </div>
 
 
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mt-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
               <div>
-                <label className="block mb-1 ml-1 text-xs font-medium text-slate-600">
+                <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                   Activity <span className="text-red-500">*</span>
                 </label>
                 <input
                   value={formData.activityName}
                   readOnly
                   disabled
-                  className={`${inputClass} bg-slate-50 cursor-not-allowed text-slate-600`}
+                  className={`${inputClass} bg-slate-50 cursor-not-allowed text-slate-700`}
                 />
               </div>
               <div>
-                <label className="block mb-1 ml-1 text-xs font-medium text-slate-600">
+                <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                   Owner
                 </label>
                 <input
@@ -186,7 +187,7 @@ export default function EditTaskForm() {
             {/* Dates - 4 columns */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
               <div>
-                <label className="block mb-1 ml-1 text-xs font-medium text-slate-600">
+                <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                   Planned Start
                 </label>
                 <input
@@ -197,7 +198,7 @@ export default function EditTaskForm() {
                 />
               </div>
               <div>
-                <label className="block mb-1 ml-1 text-xs font-medium text-slate-600">
+                <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                   Planned End
                 </label>
                 <input
@@ -208,7 +209,7 @@ export default function EditTaskForm() {
                 />
               </div>
               <div>
-                <label className="block mb-1 ml-1 text-xs font-medium text-slate-600">
+                <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                   Actual Start
                 </label>
                 <input
@@ -219,7 +220,7 @@ export default function EditTaskForm() {
                 />
               </div>
               <div>
-                <label className="block mb-1 ml-1 text-xs font-medium text-slate-600">
+                <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                   Actual End
                 </label>
                 <input
@@ -236,7 +237,7 @@ export default function EditTaskForm() {
             {/* Estimated Weeks, Progress, Status - 4 columns */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mt-3">
               <div>
-                <label className="block mb-1 ml-1 text-xs font-medium text-slate-600">
+                <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                   Estimated Weeks
                 </label>
                 <input
@@ -255,7 +256,7 @@ export default function EditTaskForm() {
                 />
               </div>
              <div>
-                <label className="block mb-1 ml-1 text-xs font-medium text-slate-600">
+                <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                   Actual Weeks
                 </label>
                 <input
@@ -270,7 +271,7 @@ export default function EditTaskForm() {
               </div>
              
  <div>
-  <label className="block mb-1 ml-1 text-xs font-medium text-slate-600">
+  <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
     Progress (%)
   </label>
 
@@ -350,7 +351,7 @@ export default function EditTaskForm() {
   </div>
 </div>
               <div>
-                <label className="block mb-1 ml-1 text-xs font-medium text-slate-600">
+                <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                   Status
                 </label>
                 <div className="w-full h-10 px-3.5 flex items-center text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-600">
@@ -365,7 +366,7 @@ export default function EditTaskForm() {
             {isDateChanged && (
               <div className="mt-3">
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                  <label className="block mb-1 ml-1 text-xs font-medium text-amber-700">
+                  <label className="block mb-1 ml-1 text-sm font-medium text-amber-700">
                     Reason For Change <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -392,14 +393,43 @@ export default function EditTaskForm() {
           >
             ← Back
           </button>
-          <button
+ {/*          <button
             type="button"
             onClick={handleUpdate}
             className="h-10 min-w-[130px] px-5 rounded-lg bg-gradient-to-r from-[#7C5CFA] to-[#6D4AFF] text-white text-sm font-medium flex items-center justify-center gap-2 shadow-md hover:opacity-95 transition-all cursor-pointer"
           >
             <Check size={15} />
-            Update Task
-          </button>
+            Update Activity
+          </button> */}
+ <button
+  type="button"
+  onClick={handleUpdate}
+  disabled={isUpdating}
+  className={`
+    h-10
+    min-w-[130px]
+    px-5
+    rounded-lg
+    text-white
+    text-sm
+    font-medium
+    flex
+    items-center
+    justify-center
+    gap-2
+    shadow-md
+    transition-all
+
+    ${
+      isUpdating
+        ? "bg-slate-400 cursor-not-allowed opacity-70"
+        : "bg-gradient-to-r from-[#7C5CFA] to-[#6D4AFF] hover:opacity-95 cursor-pointer"
+    }
+  `}
+>
+  <Check size={15} />
+  {isUpdating ? "Updating..." : "Update Activity"}
+</button>
         </div>
       </div>
     </div>

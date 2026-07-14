@@ -15,7 +15,7 @@ export default function useAddTask() {
     ) || null;
 
   //const selectedProject = projects[0];
-
+const [isSubmitting, setIsSubmitting] = useState(false);
  const [formData, setFormData] = useState({
   phaseId: "",
   phaseName: "",
@@ -50,6 +50,10 @@ actualPeriodWeek: "",
   scheduleHealth: "",
 });
   const handleSubmit = async () => {
+      if (isSubmitting) return;
+
+  setIsSubmitting(true);
+
     try {
       console.log(formData);
 
@@ -132,7 +136,10 @@ actualPeriodWeek: "",
       toast.error(
         error?.response?.data?.statusDesc || "Failed to create activity",
       );
-    }
+    } finally {
+    setIsSubmitting(false);
+  }
+
   };
  const resetForm = () => {
   setFormData({
@@ -402,5 +409,6 @@ if (
     subTasks,
     resetForm,
     handleSubmit,
+    isSubmitting,
   };
 }

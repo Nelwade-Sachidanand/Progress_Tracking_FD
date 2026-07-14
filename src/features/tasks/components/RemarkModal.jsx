@@ -21,24 +21,44 @@ export default function RemarkModal({ isOpen, onClose, task, onRemarkSaved }) {
   const handleSave = async () => {
     console.log("task : ", task);
     try {
-      const payload = {
-        projectId: task?.projectId,
+      // const payload = {
+      //   projectId: task?.projectId,
 
-        projectName: task?.projectName,
+      //   projectName: task?.projectName,
 
-        phaseName: task?.phase,
+      //   phaseName: task?.phase,
 
-        milestoneName: task?.milestone,
+      //   milestoneName: task?.milestone,
 
-        taskName: task?.task,
+      //   taskName: task?.task,
 
-        subTaskName: task?.subTask,
+      //   subTaskName: task?.subTask,
 
-        activityName: task?.activity,
+      //   activityName: task?.activity,
 
-        remark: latestRemark,
-      };
+      //   remark: latestRemark,
+      // };
+const payload = {
+  projectId: task?.projectId,
+  projectName: task?.projectName,
 
+  phaseId: task?.phaseId,
+  phaseName: task?.phaseName,
+
+  milestoneId: task?.milestoneId,
+  milestoneName: task?.milestoneName,
+
+  taskId: task?.taskId,
+  taskName: task?.taskName,
+
+  subTaskId: task?.subTaskId,
+  subTaskName: task?.subTaskName,
+
+  activityId: task?.activityId,
+  activityName: task?.activityName,
+
+  remark: latestRemark,
+};
       console.log("payload : ", payload);
       const response = await addRemark(payload);
 

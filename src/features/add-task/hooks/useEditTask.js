@@ -8,7 +8,7 @@ import { updateActivity } from "../api/editTaskApi";
 
 export default function useEditTask() {
   const { state } = useLocation();
-
+const [isUpdating, setIsUpdating] = useState(false);
   const task = state?.task;
   console.log("Task:", task);
 
@@ -292,6 +292,9 @@ if (
     );
     return;
   }
+if (isUpdating) return;
+
+setIsUpdating(true);
 
   try {
     const payload = {
@@ -350,6 +353,9 @@ if (
         "Failed to update activity",
     );
   }
+  finally {
+  setIsUpdating(false);
+}
 };
 
   return {

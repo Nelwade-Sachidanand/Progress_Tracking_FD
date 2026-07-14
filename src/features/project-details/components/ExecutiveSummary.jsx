@@ -376,7 +376,7 @@ export default function ExecutiveSummary({ project }) {
         justify-between
 
         rounded-xl
-        border
+        border-1
         border-[#CDD7E3]
         px-6
         py-5

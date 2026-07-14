@@ -25,25 +25,21 @@ export default function AddTaskForm() {
     subTasks,
     resetForm,
     handleSubmit,
+     isSubmitting,
   } = useAddTask();
 
-
-
-  const phaseRef = useRef(null);
+const phaseRef = useRef(null);
   const milestoneRef = useRef(null);
   const taskRef = useRef(null);
   const subTaskRef = useRef(null);
-
-  const [newPhase, setNewPhase] = useState("");
+   const [newPhase, setNewPhase] = useState("");
   const [newMilestone, setNewMilestone] = useState("");
   const [newTask, setNewTask] = useState("");
   const [newSubTask, setNewSubTask] = useState("");
   const { projects, setProjects } = useProjects();
 
  
-
-
- const handleAddPhase = (phaseName) => {
+const handleAddPhase = (phaseName) => {
   if (!phaseName.trim()) return;
 
   const alreadyExists = phases.some(
@@ -483,33 +479,42 @@ const subTaskDropdown = useEditableDropdown({
   const inputClassLarge =
     "w-full h-11 px-4 text-sm bg-white border border-[#DCE3EE] rounded-xl outline-none transition-all duration-200 focus:border-blue-500";
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (phaseRef.current && !phaseRef.current.contains(event.target)) {
-     //   setShowPhaseDropdown(false);
-        phaseDropdown.closeDropdown();
-      }
-      if (
-        milestoneRef.current &&
-        !milestoneRef.current.contains(event.target)
-      ) {
-        setShowMilestoneDropdown(false);
-        setShowAddMilestone(false);
-      }
-      if (taskRef.current && !taskRef.current.contains(event.target)) {
-        setShowTaskDropdown(false);
-        setShowAddTask(false);
-      }
-      if (subTaskRef.current && !subTaskRef.current.contains(event.target)) {
-        setShowSubTaskDropdown(false);
-        setShowAddSubTask(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+ useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (phaseRef.current && !phaseRef.current.contains(event.target)) {
+      phaseDropdown.closeDropdown();
+    }
+
+    if (
+      milestoneRef.current &&
+      !milestoneRef.current.contains(event.target)
+    ) {
+      milestoneDropdown.closeDropdown();
+    }
+
+    if (taskRef.current && !taskRef.current.contains(event.target)) {
+      taskDropdown.closeDropdown();
+    }
+
+    if (
+      subTaskRef.current &&
+      !subTaskRef.current.contains(event.target)
+    ) {
+      subTaskDropdown.closeDropdown();
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, [
+  phaseDropdown,
+  milestoneDropdown,
+  taskDropdown,
+  subTaskDropdown,
+]);
 
   return (
     <div className="space-y-6 mx-auto w-full mt-[-10px]">
@@ -671,7 +676,7 @@ const subTaskDropdown = useEditableDropdown({
           </div>
 
           {/* Activity Name & Owner - Smaller fields */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
             <div>
               <label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
                 Activity Name <span className="text-red-500">*</span>
@@ -890,7 +895,7 @@ const subTaskDropdown = useEditableDropdown({
         >
           Cancel
         </button>
-        <button
+        {/* <button
           data-testid="submit-button"
           type="button"
           onClick={handleSubmit}
@@ -898,7 +903,38 @@ const subTaskDropdown = useEditableDropdown({
         >
           <Check size={15} />
           Add Activity
-        </button>
+        </button> */}
+        <button
+  data-testid="submit-button"
+  type="button"
+  onClick={handleSubmit}
+  disabled={isSubmitting}
+  className={`
+    h-11
+    min-w-[140px]
+    px-6
+    rounded-xl
+    text-white
+    text-sm
+    font-medium
+    flex
+    items-center
+    justify-center
+    gap-2
+    shadow-md
+    transition-all
+
+    ${
+      isSubmitting
+        ? "bg-slate-400 cursor-not-allowed opacity-70"
+        : "bg-gradient-to-r from-[#7C5CFA] to-[#6D4AFF] hover:opacity-95 cursor-pointer"
+    }
+  `}
+>
+  <Check size={15} />
+
+  {isSubmitting ? "Adding..." : "Add Activity"}
+</button>
       </div>
     </div>
   );
