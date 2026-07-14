@@ -150,13 +150,13 @@ function Tooltip({ milestone, index, x, y, visible, onClose }) {
 export default function MilestoneJourney({ project }) {
   const [tooltip, setTooltip] = useState(null);
  
-  const ITEMS_PER_ROW = 8;
+  const ITEMS_PER_ROW = 9;
   const NODE_R = window.innerWidth < 640 ? 20 : 26;
  
   const GAP_X = window.innerWidth < 640 ? 42 : 73;
-const GAP_Y = window.innerWidth < 640 ? 48 : 65;
-//const PAD = window.innerWidth < 640 ? 12 : 20;
-const PAD = window.innerWidth < 640 ? 20 : 50;
+const GAP_Y = window.innerWidth < 640 ? 35 : 45;
+
+const PAD = window.innerWidth < 640 ? 12 : 20;
  
   /* ── Build milestones from project data (your existing logic) ── */
   const milestones = project?.phases?.flatMap(
@@ -270,11 +270,19 @@ const r = Math.abs(cy - prevCy) / 2 + 8;
  const colW = NODE_R * 2 + GAP_X;
 
 //const svgW = PAD * 2 + ITEMS_PER_ROW * colW;
+// const svgW =
+//   PAD * 2 +
+//   ITEMS_PER_ROW * colW +
+//   60;
+const maxCols = Math.max(...rows.map((r) => r.length));
+
 const svgW =
   PAD * 2 +
-  ITEMS_PER_ROW * colW +
-  60;
-  const svgH = PAD * 2 + rows.length * (NODE_R * 2 + GAP_Y + 50);
+  maxCols * colW;
+const svgH =
+  PAD * 2 +
+  rows.length * (NODE_R * 2 + GAP_Y + 25);
+  //const svgH = PAD * 2 + rows.length * (NODE_R * 2 + GAP_Y + 50);
  
   const handleNodeEnter = (e, milestone, idx) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -301,10 +309,10 @@ const svgW =
       </div><h2 className="text-base sm:text-lg lg:text-xl font-bold text-[#0B1F59]">Milestone Journey</h2></div>
 
       {/* SVG diagram */}
-      <div className="w-full overflow-x-auto scrollbar-thin"><svg
+    <div className="w-full overflow-x-hidden"><svg
         width={svgW}
         height={svgH}
-        className="mx-auto block"
+        className="block"
         style={{
           minWidth: svgW,
           display: "block",
