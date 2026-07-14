@@ -190,7 +190,7 @@ const handleGenerate = () => {
 
   // Milestone
   milestoneIds:
-    selectedMilestone?.length > 0 ? selectedMilestoneIds : null,
+    selectedMilestone?.length > 0 ? selectedMilestone : null,
   milestoneNames:
     selectedMilestone?.length > 0 ? selectedMilestone : null,
 
@@ -604,6 +604,7 @@ const handleGenerateWord = async () => {
           onClick={() => setShowReportModal(true)}
           className="
     bg-[#6D4AFF]
+    h-10
     hover:bg-[#5B3DF4]
     text-white
     px-4
@@ -624,15 +625,17 @@ const handleGenerateWord = async () => {
         <button
           onClick={() => navigate("add-task")}
           className="
+          h-10
           bg-[#6D4AFF]
           hover:bg-[#5B3DF4]
           text-white
+          text-sm
           px-5
           py-2.5
           rounded-xl
           flex
           items-center
-          gap-2
+          gap-1
           font-medium
           shadow-sm
           cursor-pointer

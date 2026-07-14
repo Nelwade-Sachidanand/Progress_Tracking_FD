@@ -10,11 +10,11 @@ export const uploadDocument = async (file, payload) => {
   formData.append("projectId", payload.projectId);
   formData.append("projectName", payload.projectName);
   formData.append("bankName", payload.bankName);
-  formData.append("phaseName", payload.phaseName);
-  formData.append("milestoneName", payload.milestoneName);
-  formData.append("taskName", payload.taskName);
-  formData.append("subTaskName", payload.subTaskName);
-  formData.append("activityName", payload.activityName);
+  formData.append("phaseId", payload.phaseId);
+  formData.append("milestoneId", payload.milestoneId);
+  formData.append("taskId", payload.taskId);
+  formData.append("subTaskId", payload.subTaskId);
+  formData.append("activityId", payload.activityId);
 
   const response = await apiClient.post(`${DOCUMENT_BASE}/upload`, formData, {
     headers: {
@@ -25,8 +25,9 @@ export const uploadDocument = async (file, payload) => {
   return response.data;
 };
 
-export const getAllDocuments = async () => {
-  const response = await apiClient.get(`${DOCUMENT_BASE}/getAll`);
+export const getAllDocuments = async (projectId) => {
+  console.log("id : ", projectId);
+  const response = await apiClient.get(`${DOCUMENT_BASE}/getAll/${projectId}`);
 
   return response.data;
 };

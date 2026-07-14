@@ -22,7 +22,7 @@ export default function useTaskFilters(tasks = []) {
       ...new Set(
         tasks
           .filter((t) => !selectedPhase || t.phase === selectedPhase)
-          .map((t) => t.milestone),
+          .map((t) => t.milestoneId),
       ),
     ];
   }, [tasks, selectedPhase]);
@@ -34,7 +34,7 @@ export default function useTaskFilters(tasks = []) {
           .filter(
             (t) =>
               selectedMilestone.length === 0 ||
-              selectedMilestone.includes(t.milestone),
+              selectedMilestone.includes(t.milestoneId),
           )
           .map((t) => t.task),
       ),
@@ -88,7 +88,7 @@ export default function useTaskFilters(tasks = []) {
 
       if (
         selectedMilestone.length > 0 &&
-        !selectedMilestone.includes(task.milestone)
+        !selectedMilestone.includes(task.milestoneId)
       ) {
         return false;
       }

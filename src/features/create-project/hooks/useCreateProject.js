@@ -34,11 +34,11 @@ export default function useCreateProject() {
     }
   };
 
-  const updateProject = async (payload) => {
+  const updateProject = async (id,payload) => {
     try {
       setLoading(true);
 
-      const response = await updateProjectInformation(payload);
+      const response = await updateProjectInformation(id,payload);
 
       if (response.statusType === "S") {
         toast.success(response.statusDesc || "Project updated successfully");

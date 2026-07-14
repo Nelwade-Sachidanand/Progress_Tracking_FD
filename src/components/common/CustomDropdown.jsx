@@ -9,6 +9,7 @@ export default function CustomDropdown({
   disabled = false,
   options = [],
   icon: Icon,
+  formatLabel = true,
 }) {
   const [open, setOpen] = useState(false);
 
@@ -18,6 +19,11 @@ export default function CustomDropdown({
     options.find((option) => option.value === value)?.label || placeholder;
 
   const formatValue = (value = "") => {
+
+    if (!formatLabel) {
+      return value;
+    }
+
     return value
       .toLowerCase()
       .split(" ")

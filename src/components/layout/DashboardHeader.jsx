@@ -54,8 +54,18 @@ const DashboardHeader = ({
   const [unreadCount, setUnreadCount] = useState(0);
 
   const [selectedBanks, setSelectedBanks] = useState(() => {
-    const saved = sessionStorage.getItem("selectedBanks");
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = sessionStorage.getItem("selectedBanks");
+
+      if (!saved || saved === "undefined") {
+        return [];
+      }
+
+      return JSON.parse(saved);
+    } catch (error) {
+      console.error("Invalid selectedBanks in sessionStorage:", error);
+      return [];
+    }
   });
 
   const [searchText, setSearchText] = useState("");
@@ -63,8 +73,23 @@ const DashboardHeader = ({
   const { projects, setProjects } = useProjects();
 
   const banks = [
-    ...new Set(projects.map((p) => p.bankName).filter(Boolean)),
-  ].sort((a, b) => a.localeCompare(b));
+    ...new Map(
+      projects
+        .filter((p) => p.bankName)
+        .map((p) => {
+          const shortName =
+            p.bankName.match(/\(([^)]+)\)/)?.[1] || p.bankName;
+
+          return [
+            p.bankName,
+            {
+              label: shortName,
+              value: p.bankName, // keep full name for filtering/API
+            },
+          ];
+        })
+    ).values(),
+  ].sort((a, b) => a.label.localeCompare(b.label));
 
   useEffect(() => {
     sessionStorage.setItem("selectedBanks", JSON.stringify(selectedBanks));
@@ -493,7 +518,7 @@ const DashboardHeader = ({
                   onChange={setSelectedBanks}
                   icon={Building2}
                   width="w-full sm:w-[220px] md:w-[220px] lg:w-[240px] xl:w-[260px]"
-                  dropdownWidth="w-[350px]"
+                  dropdownWidth="w-full"
                 />
 
                 {/* Search */}

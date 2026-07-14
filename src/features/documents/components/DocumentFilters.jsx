@@ -32,6 +32,8 @@ export default function DocumentFilters({
   onExportExcel,
   clearFilters,
 }) {
+
+  // console.log("milestones : ",milestones);
   const [showMilestoneDropdown, setShowMilestoneDropdown] = useState(false);
 
   const milestoneRef = useRef(null);
@@ -81,10 +83,7 @@ export default function DocumentFilters({
           placeholder="All Phases"
           value={selectedPhase}
           onChange={handlePhaseChange}
-          options={phases.map((phase) => ({
-            label: phase,
-            value: phase,
-          }))}
+          options={phases}
         />
 
         {/* Milestone */}
@@ -104,10 +103,8 @@ export default function DocumentFilters({
           placeholder="All Tasks"
           value={selectedTask}
           onChange={handleTaskChange}
-          options={tasks.map((task) => ({
-            label: task,
-            value: task,
-          }))}
+          options={tasks}
+          formatLabel={false}
         />
 
         {/* Sub Task */}
@@ -116,10 +113,7 @@ export default function DocumentFilters({
           placeholder="All Sub Tasks"
           value={selectedSubTask}
           onChange={handleSubTaskChange}
-          options={subTasks.map((subTask) => ({
-            label: subTask,
-            value: subTask,
-          }))}
+          options={subTasks}
         />
       </div>
 
@@ -136,6 +130,17 @@ export default function DocumentFilters({
         xl:grid-cols-12
       "
       >
+        {/* Activity */}
+        <div className="xl:col-span-4">
+          <CustomDropdown
+            label="Activity"
+            placeholder="All Activities"
+            value={selectedActivity}
+            onChange={setSelectedActivity}
+            options={activities}
+          />
+        </div>
+
         {/* Upload Status */}
         <div className="xl:col-span-2">
           <CustomDropdown
@@ -153,20 +158,6 @@ export default function DocumentFilters({
                 value: "Pending",
               },
             ]}
-          />
-        </div>
-
-        {/* Activity */}
-        <div className="xl:col-span-4">
-          <CustomDropdown
-            label="Activity"
-            placeholder="All Activities"
-            value={selectedActivity}
-            onChange={setSelectedActivity}
-            options={activities.map((activity) => ({
-              label: activity,
-              value: activity,
-            }))}
           />
         </div>
 

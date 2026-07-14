@@ -19,23 +19,27 @@ export const getMilestoneManagementData = (selectedBank, projects) => {
         });
 
         const progress =
-          totalActivities > 0 ? Math.round(totalProgress / totalActivities) : 0;
+          totalActivities > 0
+            ? Math.round(totalProgress / totalActivities)
+            : 0;
 
         milestones.push({
-          id: project.projectName + "-" + milestone.milestoneName,
+          id: `${project.projectName}-${milestone.milestoneName}`,
 
+          // Project
           projectId: project.id,
-
+          projectName: project.projectName,
           bankName: project.bankName,
 
-          projectName: project.projectName,
-
+          // Phase
+          phaseId: phase.phaseId,
           phaseName: phase.phaseName,
 
+          // Milestone
+          milestoneId: milestone.milestoneId,
           milestoneName: milestone.milestoneName,
 
           weightage: milestone.weightage ?? "",
-
           progress,
         });
       });

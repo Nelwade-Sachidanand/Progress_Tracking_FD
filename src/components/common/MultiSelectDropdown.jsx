@@ -29,27 +29,23 @@ export default function MultiSelectDropdown({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // const filteredOptions = useMemo(() => {
-  //   return options.filter((option) =>
-  //     option.toLowerCase().includes(search.toLowerCase()),
-  //   );
-  // }, [options, search]);
+  
   const filteredOptions = useMemo(() => {
-  return options.filter((option) => {
-    const text =
-      typeof option === "string"
-        ? option
-        : option?.name || option?.label || "";
+    return options.filter((option) => {
+      const text =
+        typeof option === "string"
+          ? option
+          : option?.name || option?.label || "";
 
-    return text.toLowerCase().includes(search.toLowerCase());
-  });
-}, [options, search]);
+      return text.toLowerCase().includes(search.toLowerCase());
+    });
+  }, [options, search]);
 
-  const toggleOption = (option) => {
-    if (selected.includes(option)) {
-      onChange(selected.filter((item) => item !== option));
+  const toggleOption = (value) => {
+    if (selected.includes(value)) {
+      onChange(selected.filter((item) => item !== value));
     } else {
-      onChange([...selected, option]);
+      onChange([...selected, value]);
     }
   };
 
@@ -57,7 +53,7 @@ export default function MultiSelectDropdown({
     if (selected.length === options.length) {
       onChange([]);
     } else {
-      onChange([...options]);
+      onChange(options.map((option) => option.value));
     }
   };
 
@@ -66,9 +62,16 @@ export default function MultiSelectDropdown({
 
     if (selected.length === options.length) return placeholder;
 
-    if (selected.length <= 2) return selected.join(", ");
+    const selectedLabels = options
+      .filter((option) => selected.includes(option.value))
+      .map((option) => option.label);
 
-    return `${selected.slice(0, 2).join(", ")} +${selected.length - 2}`;
+    if (selectedLabels.length <= 2) {
+      return selectedLabels.join(", ");
+    }
+
+    return `${selectedLabels.slice(0, 2).join(", ")} +${selectedLabels.length - 2}`;
+
   }, [selected, options, placeholder]);
 
   return (
@@ -155,7 +158,7 @@ export default function MultiSelectDropdown({
         {/* Dropdown */}
         {open && (
           <div
-          className={`
+            className={`
             absolute
             right-0
             top-11
@@ -175,7 +178,7 @@ export default function MultiSelectDropdown({
             fade-in
             zoom-in-95
           `}
-        >
+          >
             {/* Search */}
             <div className="border-b border-[#E1E7EF] p-3">
               <div className="relative">
@@ -257,10 +260,10 @@ export default function MultiSelectDropdown({
               ) : (
                 filteredOptions.map((option) => (
                   <button
-                    key={option}
+                    key={option.value}
                     type="button"
-                    onClick={() => toggleOption(option)}
-                    title={option}
+                    onClick={() => toggleOption(option.value)}
+                    title={option.label}
                     className={`
                     w-full
                     px-4
@@ -282,19 +285,19 @@ export default function MultiSelectDropdown({
 
                     cursor-pointer
 
-                    ${selected.includes(option)
+                    ${selected.includes(option.value)
                         ? "bg-blue-50"
                         : "hover:bg-slate-50"
                       }
                   `}
                   >
-                    {selected.includes(option) ? (
+                    {selected.includes(option.value) ? (
                       <CheckSquare className="h-4 w-4 2xl:h-5 2xl:w-5 shrink-0 text-blue-600" />
                     ) : (
                       <Square className="h-4 w-4 2xl:h-5 2xl:w-5 shrink-0 text-slate-500" />
                     )}
 
-                    <span className="truncate text-slate-700">{option}</span>
+                    <span className="truncate text-slate-700">{option.label}</span>
                   </button>
                 ))
               )}

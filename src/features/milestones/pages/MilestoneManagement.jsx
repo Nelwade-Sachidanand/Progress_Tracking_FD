@@ -64,8 +64,8 @@ export default function MilestoneManagement() {
         projectId: milestones[0]?.projectId,
 
         milestones: milestones.map((item) => ({
-          phaseName: item.phaseName,
-          milestoneName: item.milestoneName,
+          phaseId: item.phaseId,
+          milestoneId: item.milestoneId,
           weightage: Number(item.weightage),
         })),
       };

@@ -11,53 +11,83 @@ export default function useDocumentFilters(documents = []) {
 
   /* Dropdown Values */
 
-  const phases = useMemo(
-    () => [...new Set(documents.map((d) => d.phase))],
-    [documents],
-  );
+  const phases = useMemo(() => {
+    const map = new Map();
+
+    documents.forEach((d) => {
+      map.set(d.phaseId, {
+        label: d.phase,
+        value: d.phaseId,
+      });
+    });
+
+    return [...map.values()];
+  }, [documents]);
 
   const milestones = useMemo(() => {
-    return [
-      ...new Set(
-        documents
-          .filter((d) => !selectedPhase || d.phase === selectedPhase)
-          .map((d) => d.milestone),
-      ),
-    ];
+    const map = new Map();
+
+    documents
+      .filter((d) => !selectedPhase || d.phaseId === selectedPhase)
+      .forEach((d) => {
+        map.set(d.milestoneId, {
+          label: d.milestone,
+          value: d.milestoneId,
+        });
+      });
+
+    return [...map.values()];
   }, [documents, selectedPhase]);
 
   const tasks = useMemo(() => {
-    return [
-      ...new Set(
-        documents
-          .filter(
-            (d) =>
-              selectedMilestone.length === 0 ||
-              selectedMilestone.includes(d.milestone),
-          )
-          .map((d) => d.task),
-      ),
-    ];
+    const map = new Map();
+
+    documents
+      .filter(
+        (d) =>
+          selectedMilestone.length === 0 ||
+          selectedMilestone.includes(d.milestoneId)
+      )
+      .forEach((d) => {
+        const milestoneCode = d.milestone.split(" - ")[0];
+
+        map.set(d.taskId, {
+          label: `${d.task} (${milestoneCode})`,
+          value: d.taskId,
+        });
+      });
+
+    return [...map.values()];
   }, [documents, selectedMilestone]);
 
   const subTasks = useMemo(() => {
-    return [
-      ...new Set(
-        documents
-          .filter((d) => !selectedTask || d.task === selectedTask)
-          .map((d) => d.subTask),
-      ),
-    ];
+    const map = new Map();
+
+    documents
+      .filter((d) => !selectedTask || d.taskId === selectedTask)
+      .forEach((d) => {
+        map.set(d.subTaskId, {
+          label: d.subTask,
+          value: d.subTaskId,
+        });
+      });
+
+    return [...map.values()];
   }, [documents, selectedTask]);
 
   const activities = useMemo(() => {
-    return [
-      ...new Set(
-        documents
-          .filter((d) => !selectedSubTask || d.subTask === selectedSubTask)
-          .map((d) => d.activity),
-      ),
-    ];
+    const map = new Map();
+
+    documents
+      .filter((d) => !selectedSubTask || d.subTaskId === selectedSubTask)
+      .forEach((d) => {
+        map.set(d.activityId, {
+          label: d.activity,
+          value: d.activityId,
+        });
+      });
+
+    return [...map.values()];
   }, [documents, selectedSubTask]);
 
   /* Handlers */
@@ -100,26 +130,31 @@ export default function useDocumentFilters(documents = []) {
 
   const filteredDocuments = useMemo(() => {
     return documents.filter((doc) => {
-      if (selectedPhase && doc.phase !== selectedPhase) {
+      // Phase
+      if (selectedPhase && doc.phaseId !== selectedPhase) {
         return false;
       }
 
+      // Milestone (Multi Select)
       if (
         selectedMilestone.length > 0 &&
-        !selectedMilestone.includes(doc.milestone)
+        !selectedMilestone.includes(doc.milestoneId)
       ) {
         return false;
       }
 
-      if (selectedTask && doc.task !== selectedTask) {
+      // Task
+      if (selectedTask && doc.taskId !== selectedTask) {
         return false;
       }
 
-      if (selectedSubTask && doc.subTask !== selectedSubTask) {
+      // Sub Task
+      if (selectedSubTask && doc.subTaskId !== selectedSubTask) {
         return false;
       }
 
-      if (selectedActivity && doc.activity !== selectedActivity) {
+      // Activity
+      if (selectedActivity && doc.activityId !== selectedActivity) {
         return false;
       }
 

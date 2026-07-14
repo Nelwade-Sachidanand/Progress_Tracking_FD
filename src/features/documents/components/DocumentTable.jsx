@@ -61,37 +61,37 @@ export default function DocumentTable({
           <thead>
             <tr className="border-b border-[#CDD7E3] bg-blue-100">
               {/* Sr No */}
-              <th className="w-[60px] px-4 py-3 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
+              <th className="w-[60px] px-2 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
                 Sr. No.
               </th>
 
               {/* Activity */}
-              <th className="w-[24%] px-4 py-3 text-left text-base font-semibold text-slate-600">
+              <th className="w-[24%] px-4 py-4 text-left text-base font-semibold text-slate-600">
                 Activity
               </th>
 
               {/* File */}
-              <th className="w-[22%] px-4 py-3 text-left text-base font-semibold text-slate-600">
+              <th className="w-[22%] px-4 py-4 text-left text-base font-semibold text-slate-600">
                 File
               </th>
 
               {/* Uploaded By */}
-              <th className="w-[15%] px-4 py-3 text-left text-base font-semibold text-slate-600">
+              <th className="w-[15%] px-4 py-4 text-left text-base font-semibold text-slate-600">
                 Uploaded By
               </th>
 
               {/* Upload Date */}
-              <th className="w-[16%] px-4 py-3 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
+              <th className="w-[16%] px-4 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
                 Upload Date
               </th>
 
               {/* Status */}
-              <th className="w-[13%] px-4 py-3 text-center text-base font-semibold text-slate-600">
+              <th className="w-[13%] px-4 py-4 text-center text-base font-semibold text-slate-600">
                 Status
               </th>
 
               {/* Actions */}
-              <th className="w-[90px] px-4 py-3 text-center text-base font-semibold text-slate-600">
+              <th className="w-[100px] px-4 py-4 text-center text-base font-semibold text-slate-600">
                 Actions
               </th>
             </tr>
@@ -111,14 +111,14 @@ export default function DocumentTable({
                     className="border-b border-[#CDD7E3]"
                   >
                     {/* Sr No */}
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2">
                       <span className="text-sm font-medium text-slate-700">
                         {index + 1}
                       </span>
                     </td>
 
                     {/* Activity */}
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2">
                       <div>
                         <p
                           className="truncate text-sm font-semibold text-slate-700"
@@ -137,7 +137,7 @@ export default function DocumentTable({
                     </td>
 
                     {/* File */}
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2">
                       {latestDocument ? (
                         <p
                           className="truncate text-sm font-medium text-slate-700"
@@ -153,12 +153,12 @@ export default function DocumentTable({
                     </td>
 
                     {/* Uploaded By */}
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2">
                       <span
                         className="
                           block
                           truncate
-                          text-sm
+                          text-base
                           text-slate-700
                         "
                         title={latestDocument?.uploadedBy}
@@ -168,7 +168,7 @@ export default function DocumentTable({
                     </td>
 
                     {/* Upload Date */}
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2">
                       <span
                         className="
                           whitespace-nowrap
@@ -185,14 +185,14 @@ export default function DocumentTable({
                     </td>
 
                     {/* Status */}
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-4 py-2 text-center">
                       {getStatusBadge(
                         latestDocument ? "Uploaded" : "Pending",
                       )}
                     </td>
 
                     {/* Actions */}
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2">
                       <div className="flex items-center justify-center gap-2">
                         <button
                           title="Upload"

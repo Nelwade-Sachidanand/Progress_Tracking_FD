@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import useCreateProject from "../hooks/useCreateProject";
 import { mapProjectPayload } from "../utils/projectMapper";
+import { useNavigate } from "react-router-dom";
 
 export default function ProjectNavigation({
   currentStep,
@@ -11,8 +12,12 @@ export default function ProjectNavigation({
   disabled = false,
   isView,
   isEdit,
+  selectedInfoId,
+  setSelectedInfoId
 }) {
   const { saveProject, loading, updateProject } = useCreateProject();
+
+  const navigate = useNavigate();
 
   const totalSteps = 6;
 
@@ -22,7 +27,7 @@ export default function ProjectNavigation({
     console.log(payload);
 
     const response = isEdit
-      ? await updateProject(payload)
+      ? await updateProject(selectedInfoId,payload)
       : await saveProject(payload);
 
     if (response.statusType === "S") {
@@ -30,6 +35,7 @@ export default function ProjectNavigation({
 
       resetForm();
       setSelectedProjectId("");
+      setSelectedInfoId("");
       setCurrentStep(0);
 
       navigate("/projects");

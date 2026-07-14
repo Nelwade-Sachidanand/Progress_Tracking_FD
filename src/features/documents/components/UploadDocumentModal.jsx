@@ -48,17 +48,18 @@ export default function UploadDocumentModal({
     if (!selectedFile) return;
 
     const payload = {
-      projectId:
-        document.projectId || sessionStorage.getItem("selectedProjectId"),
+      projectId: document.projectId || sessionStorage.getItem("selectedProjectId"),
+
       projectName: document.projectName,
       bankName: document.bankName,
-      phaseName: document.phase,
-      milestoneName: document.milestone,
-      taskName: document.task,
-      subTaskName: document.subTask,
-      activityName: document.activity,
-    };
 
+      phaseId: document.phaseId,
+      milestoneId: document.milestoneId,
+      taskId: document.taskId,
+      subTaskId: document.subTaskId,
+      activityId: document.activityId,
+    };
+    console.log("payload : ", payload);
     try {
       const response = await uploadDocument(selectedFile, payload);
 
@@ -71,7 +72,7 @@ export default function UploadDocumentModal({
         toast.error(response.statusDesc || "Upload failed");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Response Data:", err.response?.data);
       toast.error("Failed to upload document");
     }
   };
