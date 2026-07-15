@@ -22,12 +22,14 @@ import {
 
 import PrintReport from "../components//PrintReport";
 
+
 export default function TaskActions({
   selectedPhase,
 selectedPhaseId,
 
   selectedMilestone,
 selectedMilestoneIds,
+  selectedMilestoneNames,
 
   selectedTask,
  selectedTaskId,
