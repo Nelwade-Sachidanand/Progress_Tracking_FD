@@ -679,6 +679,7 @@ const handleGenerateWord = async () => {
         selectedProject={project?.projectName}
         selectedPhase={selectedPhase}
         selectedMilestone={selectedMilestone}
+        selectedMilestoneNames={selectedMilestoneNames}
         selectedTask={selectedTask}
         selectedSubTask={selectedSubTask}
         selectedActivity={selectedActivity}

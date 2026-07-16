@@ -132,25 +132,31 @@ export default function ExecutiveHealth({
       );
   }
 
-  const weeklyTrend =
-    overallProgress -
-    timelineProgress;
-
-  const trendLabel =
-    weeklyTrend > 0
-      ? "Ahead of Plan"
-      : weeklyTrend < 0
-      ? "Behind Plan"
-      : "Stable";
+  
 
   const confidenceScore =
-    totalActivities > 0
-      ? Math.round(
-          (completedActivities /
-            totalActivities) *
-            100
-        )
-      : 0;
+  totalActivities > 0
+    ? Math.round(
+        (completedActivities /
+          totalActivities) *
+          100
+      )
+    : 0;
+
+const deliveryConfidence =
+  confidenceScore >= 80
+    ? "HIGH"
+    : confidenceScore >= 60
+    ? "MEDIUM"
+    : "LOW";
+
+const deliverySubtitle =
+  confidenceScore >= 80
+    ? "Likely On Schedule"
+    : confidenceScore >= 60
+    ? "Minor Delays Expected"
+    : "Delivery At Risk";
+
 
   const projectHealthLabel =
     overallProgress >= 80
@@ -163,140 +169,147 @@ export default function ExecutiveHealth({
 
   const cards = [
     {
-      title: "Project Health",
-      value: `${overallProgress}%`,
-      subtitle:
-        projectHealthLabel,
-      icon: Target,
-      iconColor: "#2563EB",
-bg:
-  overallProgress >= 80
-    ? "#F0FDF4"
-    : overallProgress >= 60
-    ? "#F0FDF4"
-    : overallProgress >= 40
-    ? "#FFF7ED"
-    : "#FEF2F2",
+  title: "Project Health",
+  value: `${overallProgress}%`,
+  status: projectHealthLabel,
+  subtitle: "Overall milestone progress",
 
-border:
-  overallProgress >= 80
-    ? "#BBF7D0"
-    : overallProgress >= 60
-    ? "#BBF7D0"
-    : overallProgress >= 40
-    ? "#FED7AA"
-    : "#FECACA",
-      valueColor:
-        overallProgress >= 60
-          ? "#16A34A"
-          : overallProgress >= 40
-          ? "#F59E0B"
-          : "#DC2626",
-      subtitleColor:
-        overallProgress >= 60
-          ? "#16A34A"
-          : overallProgress >= 40
-          ? "#F59E0B"
-          : "#DC2626",
-    },
+  icon: Target,
 
-    {
-      title: "Risk Level",
-      value:
-        riskLevel.toUpperCase(),
-      subtitle: `${delayedActivities} delayed activities`,
-      icon: TriangleAlert,
-      iconColor: "#F59E0B",
-      bg:
-  riskLevel === "High"
-    ? "#FEF2F2"
-    : riskLevel ===
-      "Medium"
-    ? "#FFF7ED"
-    : "#F0FDF4",
+  iconColor: "#16A34A",
 
-border:
-  riskLevel === "High"
-    ? "#FECACA"
-    : riskLevel ===
-      "Medium"
-    ? "#FED7AA"
-    : "#BBF7D0",
-      valueColor:
-        riskLevel === "High"
-          ? "#DC2626"
-          : riskLevel ===
-            "Medium"
-          ? "#F59E0B"
-          : "#16A34A",
-      subtitleColor:
-        "#64748B",
-    },
+  bg:
+    overallProgress >= 80
+      ? "#F0FDF4"
+      : overallProgress >= 60
+      ? "#EFF6FF"
+      : overallProgress >= 40
+      ? "#FFF7ED"
+      : "#FEF2F2",
+
+  border:
+    overallProgress >= 80
+      ? "#BBF7D0"
+      : overallProgress >= 60
+      ? "#BFDBFE"
+      : overallProgress >= 40
+      ? "#FED7AA"
+      : "#FECACA",
+
+  valueColor:
+    overallProgress >= 80
+      ? "#16A34A"
+      : overallProgress >= 60
+      ? "#2563EB"
+      : overallProgress >= 40
+      ? "#F59E0B"
+      : "#DC2626",
+
+  statusColor:
+    overallProgress >= 80
+      ? "#16A34A"
+      : overallProgress >= 60
+      ? "#2563EB"
+      : overallProgress >= 40
+      ? "#F59E0B"
+      : "#DC2626",
+},
 
     {
-      title: "Weekly Trend",
-      value: `${
-        weeklyTrend > 0
-          ? "+"
-          : ""
-      }${weeklyTrend}%`,
-      subtitle: trendLabel,
-      icon: TrendingUp,
-      iconColor: "#6366F1",
-     bg:
-  weeklyTrend > 0
-    ? "#F0FDF4"
-    : weeklyTrend < 0
-    ? "#FEF2F2"
-    : "#F8FAFC",
+  title: "Risk Level",
 
-border:
-  weeklyTrend > 0
-    ? "#BBF7D0"
-    : weeklyTrend < 0
-    ? "#FECACA"
-    : "#CBD5E1",
-      valueColor:
-        weeklyTrend >= 0
-          ? "#16A34A"
-          : "#DC2626",
-      subtitleColor:
-        "#64748B",
-    },
+  value: riskLevel.toUpperCase(),
+
+  status: `${delayedActivities} Critical Activities`,
+
+  subtitle: "Based on active activities",
+
+  icon: TriangleAlert,
+
+  iconColor:
+    riskLevel === "Low"
+      ? "#16A34A"
+      : riskLevel === "Medium"
+      ? "#F59E0B"
+      : "#DC2626",
+
+  bg:
+    riskLevel === "Low"
+      ? "#F0FDF4"
+      : riskLevel === "Medium"
+      ? "#FFF7ED"
+      : "#FEF2F2",
+
+  border:
+    riskLevel === "Low"
+      ? "#BBF7D0"
+      : riskLevel === "Medium"
+      ? "#FED7AA"
+      : "#FECACA",
+
+  valueColor:
+    riskLevel === "Low"
+      ? "#16A34A"
+      : riskLevel === "Medium"
+      ? "#F59E0B"
+      : "#DC2626",
+
+  statusColor:
+    riskLevel === "Low"
+      ? "#16A34A"
+      : riskLevel === "Medium"
+      ? "#F59E0B"
+      : "#DC2626",
+},
+
+    
 
     {
-      title:
-        "Confidence Score",
-      value: `${confidenceScore}%`,
-      subtitle:
-        confidenceScore >= 80
-          ? "High Confidence"
-          : confidenceScore >=
-            60
-          ? "Moderate Confidence"
-          : "Low Confidence",
-      icon: Shield,
-      iconColor: "#3B82F6",
-      bg:
-  confidenceScore >= 80
-    ? "#F0FDF4"
-    : confidenceScore >= 60
-    ? "#FFF7ED"
-    : "#FEF2F2",
+  title: "Delivery Confidence",
 
-border:
-  confidenceScore >= 80
-    ? "#BBF7D0"
-    : confidenceScore >= 60
-    ? "#FED7AA"
-    : "#FECACA",
-      valueColor:
-        confidenceScore >= 60
-          ? "#16A34A"
-          : "#DC2626",
-      subtitleColor:
-        "#64748B",
-    },
+  value: deliveryConfidence,
+
+  status: deliverySubtitle,
+
+  subtitle: "Project delivery forecast",
+
+  icon: Shield,
+
+  iconColor:
+    confidenceScore >= 80
+      ? "#2563EB"
+      : confidenceScore >= 60
+      ? "#F59E0B"
+      : "#DC2626",
+
+  bg:
+    confidenceScore >= 80
+      ? "#EFF6FF"
+      : confidenceScore >= 60
+      ? "#FFF7ED"
+      : "#FEF2F2",
+
+  border:
+    confidenceScore >= 80
+      ? "#BFDBFE"
+      : confidenceScore >= 60
+      ? "#FED7AA"
+      : "#FECACA",
+
+  valueColor:
+    confidenceScore >= 80
+      ? "#2563EB"
+      : confidenceScore >= 60
+      ? "#F59E0B"
+      : "#DC2626",
+
+  statusColor:
+    confidenceScore >= 80
+      ? "#2563EB"
+      : confidenceScore >= 60
+      ? "#F59E0B"
+      : "#DC2626",
+},
   ];
 
   return (
@@ -336,13 +349,12 @@ border:
         </h2>
       </div>
 
-    <div
+  <div
   className="
-  grid
-  grid-cols-1
-  sm:grid-cols-2
-  xl:grid-cols-4
-  gap-4
+    grid
+    grid-cols-1
+    md:grid-cols-3
+    gap-3
   "
 >
         {cards.map((card) => {
@@ -350,89 +362,100 @@ border:
             card.icon;
 
           return (
-            <div
-              key={card.title}
-              className="
-              rounded-2xl
-              border
-             px-4
-              py-4
-            lg:px-5
-             lg:py-5
-             min-h-[130px]
-             lg:min-h-[150px]
-              "
-              style={{
-                borderColor:
-                  card.border,
-                backgroundColor:
-                  card.bg,
-              }}
-            >
-            <div
+<div
+  key={card.title}
   className="
-  flex
-  items-center
-  justify-center
-  gap-2
-  lg:gap-3
+    relative
+    rounded-xl
+    border
+    px-4
+    py-4
+    min-h-[120px]
+    shadow-sm
   "
-><Icon
-  size={20}
-  className="lg:w-6 lg:h-6"
   style={{
-    color: card.iconColor,
+    backgroundColor: card.bg,
+    borderColor: card.border,
   }}
-/>
-
-             <span
-  className="
-  text-[12px]
-  lg:text-[13px]
-  font-semibold
-  text-[#0B1F59]
-  text-center
-  "
 >
-                  {card.title}
-                </span>
-              </div>
+  {/* Icon */}
 
-              <div className="mt-6 text-center">
-                <h3
-                  className="
-                 text-[24px]
-                 sm:text-[26px]
-                 lg:text-[30px]
-                  font-bold
-                  leading-none
-                  "
-                  style={{
-                    color:
-                      card.valueColor,
-                  }}
-                >
-                  {card.value}
-                </h3>
+ <div
+  className="
+    absolute
+    left-4
+    top-4
+    h-10
+    w-10
+    rounded-lg
+    flex
+    items-center
+    justify-center
+  "
+  style={{
+    backgroundColor: `${card.iconColor}15`,
+  }}
+>
+  <Icon
+    size={20}
+    color={card.iconColor}
+  />
 
-                <p
-                  className="
-                  mt-4
-                  text-[11px]
-                  sm:text-[12px]
-                  lg:text-[13px]
-                  font-medium
-                  "
-                  cursor-pointer
-                  style={{
-                    color:
-                      card.subtitleColor,
-                  }}
-                >
-                  {card.subtitle}
-                </p>
-              </div>
-            </div>
+    
+  </div>
+
+  {/* Content */}
+<div className="text-center mt-6">
+
+  <p
+    className="
+      text-[12px]
+      font-semibold
+      text-[#0B1F59]
+    "
+  >
+    {card.title}
+  </p>
+
+  <h2
+    className="
+      mt-2
+      text-[28px]
+      font-bold
+      leading-none
+    "
+    style={{
+      color: card.valueColor,
+    }}
+  >
+    {card.value}
+  </h2>
+
+  <p
+    className="
+      mt-2
+      text-[14px]
+      font-semibold
+    "
+    style={{
+      color: card.statusColor,
+    }}
+  >
+    {card.status}
+  </p>
+
+  <p
+    className="
+      mt-1
+      text-[11px]
+      text-slate-500
+    "
+  >
+    {card.subtitle}
+  </p>
+
+</div>
+</div>
           );
         })}
       </div>

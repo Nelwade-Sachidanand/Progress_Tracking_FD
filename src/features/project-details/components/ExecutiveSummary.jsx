@@ -315,10 +315,10 @@ export default function ExecutiveSummary({
             placeholder="All Milestones"
             options={milestones}
             selected={selectedMilestones}
-           // onChange={setSelectedMilestones}
-           onChange={(value) => {
-    setSelectedMilestones(value);
-}}
+            // onChange={setSelectedMilestones}
+            onChange={(value) => {
+              setSelectedMilestones(value);
+            }}
             width="w-full"
             dropdownWidth="w-[350px]"
           />
@@ -412,7 +412,7 @@ export default function ExecutiveSummary({
                 backgroundColor: "#2563EB15",
               }}
             >
-              <ChartNoAxesCombined 
+              <ChartNoAxesCombined
                 size={24}
                 color="#2563EB"
               />
@@ -499,7 +499,7 @@ export default function ExecutiveSummary({
                 subText={`${Math.round(
                   (inProgressActivities / (totalActivities || 1)) * 100,
                 )}% of total`}
-                icon={TrendingUp }
+                icon={TrendingUp}
                 color="#2563EB"
                 bg="#F8FBFF"
                 border="#E5EDF8"
