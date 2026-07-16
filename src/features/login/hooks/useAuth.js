@@ -14,12 +14,15 @@ export const useAuth = () => {
       if (response.statusType === "S") {
         toast.success(response.statusDesc);
 
-        sessionStorage.setItem("user", JSON.stringify(response.details.user));
+        const user = {
+          ...response.details.user,
+          forcePasswordChange: response.details.forcePasswordChange,
+        };
+
+        sessionStorage.setItem("user", JSON.stringify(user));
 
         sessionStorage.setItem("accessToken", response.details.accessToken);
-
-        sessionStorage.setItem("refreshToken", response.details.refreshToken);
-
+        
         return response;
       }
 

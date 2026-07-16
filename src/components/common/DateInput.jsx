@@ -11,7 +11,7 @@ export default function DateInput({
   return (
     <div className={className}>
       {/* Label */}
-      <label className="mb-1 ml-1 block text-sm font-medium text-slate-700 2xl:text-base">
+      <label className="mb-1 ml-1 block text-sm font-medium text-slate-800 2xl:text-base">
         {label}
       </label>
 
@@ -49,7 +49,7 @@ export default function DateInput({
           bg-white
 
           text-sm
-          text-slate-700
+          text-slate-800
           2xl:text-base
 
           outline-none

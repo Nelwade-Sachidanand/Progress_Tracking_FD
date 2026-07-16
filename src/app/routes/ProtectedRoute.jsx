@@ -12,8 +12,12 @@ const ProtectedRoute = ({ allowedRoles }) => {
     return <Navigate to="/" replace />;
   }
 
+  if (user?.forcePasswordChange &&location.pathname !== "/change-password") {
+    return <Navigate to="/change-password" replace />;
+  }
+
   if (allowedRoles && !allowedRoles.includes(user?.role)) {
-    console.log("Access Denied");
+    console.log("Access Denied"); 
 
     if (user?.role === "USER") {
       return <Navigate to="/project-details" replace />;

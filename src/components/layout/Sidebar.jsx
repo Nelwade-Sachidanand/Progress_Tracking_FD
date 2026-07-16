@@ -72,11 +72,11 @@ export default function Sidebar() {
               icon: Package,
               path: "/products",
             },
-            // {
-            //   name: "Projects",
-            //   icon: FolderKanban,
-            //   path: "/projects",
-            // },
+            {
+              name: "Projects",
+              icon: FolderKanban,
+              path: "/projects",
+            },
             ...(canUploadExcel
               ? [
                   {

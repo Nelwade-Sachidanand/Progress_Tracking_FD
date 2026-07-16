@@ -88,54 +88,54 @@ export default function GenerateReportModal({
           <button
             onClick={onClose}
             className="w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors shrink-0 cursor-pointer"
->
-<X size={18} className="text-slate-500" />
-</button>
-</div>
- 
-        {/* Body - Scrollable */}
-<div className="px-6 py-5 space-y-5 overflow-y-auto flex-1">
-          {/* Report Format */}
-{/* Report Format */}
-<div>
-  <label className="block text-sm font-semibold text-[#0F172A] mb-3">
-    Report Format
-  </label>
+          >
+            <X size={18} className="text-slate-500" />
+          </button>
+        </div>
 
-  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-    {[
-      {
-        type: "pdf",
-        label: "PDF",
-        ext: ".pdf",
-        icon: FileText,
-        color: "text-red-500",
-      },
-      {
-        type: "excel",
-        label: "Excel",
-        ext: ".xlsx",
-        icon: FileSpreadsheet,
-        color: "text-green-600",
-      },
-      {
-        type: "csv",
-        label: "CSV",
-        ext: ".csv",
-        icon: FileSpreadsheet,
-        color: "text-blue-600",
-      },
-      {
-        type: "word",
-        label: "Word",
-        ext: ".docx",
-        icon: FileType,
-        color: "text-indigo-600",
-      },
-    ].map(({ type, label, ext, icon: Icon, color }) => (
-      <label
-        key={type}
-        className={`
+        {/* Body - Scrollable */}
+        <div className="px-6 py-5 space-y-5 overflow-y-auto flex-1">
+          {/* Report Format */}
+          {/* Report Format */}
+          <div>
+            <label className="block text-sm font-semibold text-[#0F172A] mb-3">
+              Report Format
+            </label>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              {[
+                {
+                  type: "pdf",
+                  label: "PDF",
+                  ext: ".pdf",
+                  icon: FileText,
+                  color: "text-red-500",
+                },
+                {
+                  type: "excel",
+                  label: "Excel",
+                  ext: ".xlsx",
+                  icon: FileSpreadsheet,
+                  color: "text-green-600",
+                },
+                {
+                  type: "csv",
+                  label: "CSV",
+                  ext: ".csv",
+                  icon: FileSpreadsheet,
+                  color: "text-blue-600",
+                },
+                {
+                  type: "word",
+                  label: "Word",
+                  ext: ".docx",
+                  icon: FileType,
+                  color: "text-indigo-600",
+                },
+              ].map(({ type, label, ext, icon: Icon, color }) => (
+                <label
+                  key={type}
+                  className={`
           
           rounded-xl
           border
@@ -279,19 +279,19 @@ export default function GenerateReportModal({
                       </div>
                       {/* Tooltip - Shows all milestone names */}
                       {selectedMilestone.length > 1 && (
-                        <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block z-50">
+                        <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block z-60">
                           <div
                             className="
-      relative
-      bg-white
-      border
-      border-slate-200
-      rounded-lg
-      shadow-xl
-      p-2.5
-      min-w-[220px]
-      max-w-[280px]
-    "
+                            relative
+                            bg-white
+                            border
+                            border-slate-200
+                            rounded-lg
+                            shadow-xl
+                            p-2.5
+                            min-w-[220px]
+                            max-w-[280px]
+                          "
                           >
                             <p className="text-[11px] font-semibold text-black mb-2">
                               All Milestones ({selectedMilestone.length})
@@ -302,16 +302,16 @@ export default function GenerateReportModal({
                                 <span
                                   key={index}
                                   className="
-            px-2
-            py-0.5
-            rounded-md
-            bg-slate-100
-            border
-            border-slate-200
-            text-black
-            text-[11px]
-            font-medium
-          "
+                                  px-2
+                                  py-0.5
+                                  rounded-md
+                                  bg-slate-100
+                                  border
+                                  border-slate-200
+                                  text-black
+                                  text-[11px]
+                                  font-medium
+                                "
                                 >
                                   {item}
                                 </span>
@@ -321,17 +321,17 @@ export default function GenerateReportModal({
                             {/* Arrow */}
                             <div
                               className="
-        absolute
-        left-4
-        -bottom-1.5
-        w-3
-        h-3
-        bg-white
-        border-r
-        border-b
-        border-slate-200
-        rotate-45
-      "
+                              absolute
+                              left-4
+                              -bottom-1.5
+                              w-3
+                              h-3
+                              bg-white
+                              border-r
+                              border-b
+                              border-slate-200
+                              rotate-45
+                            "
                             />
                           </div>
                         </div>
