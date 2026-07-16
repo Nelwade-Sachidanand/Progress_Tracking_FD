@@ -10,7 +10,7 @@ export default function SearchInput({
   return (
     <div className={className}>
       {/* Label */}
-      <label className="mb-1 ml-1 block text-sm font-medium text-slate-800 2xl:text-base">
+      <label className="mb-1 ml-1 block text-sm font-medium text-slate-700 2xl:text-base">
         {label}
       </label>
 
@@ -48,7 +48,7 @@ export default function SearchInput({
           bg-white
 
           text-sm
-          text-slate-800
+          text-slate-700
           placeholder:text-slate-700
           2xl:text-base
 

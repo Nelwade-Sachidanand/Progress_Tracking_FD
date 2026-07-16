@@ -180,7 +180,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
         mode === "add" ? await createUser(payload) : await updateUser(payload);
 
       if (response?.statusType === "S") {
-        navigate("/users");
+        onClose?.();
       }
     } catch (error) {
       console.error(error);
@@ -201,7 +201,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
     text-sm
     outline-none
     focus:border-blue-500
-    placeholder:text-slate-600`;
+    placeholder:text-slate-500`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
@@ -249,6 +249,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
             rounded-lg
             hover:bg-slate-100
             transition
+            hover:text-red-500 transition
             cursor-pointer
           "
           >
@@ -263,7 +264,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
             {/* Full Name */}
 
             <div>
-              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-800">
+              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-700">
                 Full Name
               </label>
 
@@ -279,7 +280,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
             {/* Username */}
 
             <div>
-              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-800">
+              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-700">
                 Username
               </label>
 
@@ -295,7 +296,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
             {/* Email */}
 
             <div>
-              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-800">
+              <label className="block mb-1 ml-1 text-sm font-semibold text-slate-700">
                 Email
               </label>
 
@@ -312,7 +313,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
 
             {mode === "add" && (
               <div>
-                <label className="block mb-1 ml-1 text-sm font-semibold text-slate-800">
+                <label className="block mb-1 ml-1 text-sm font-semibold text-slate-700">
                   Password
                 </label>
 
@@ -421,7 +422,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
 
             {/* Right Column */}
             <div>
-              <label className="mb-1 ml-1 block text-sm font-semibold text-slate-800">
+              <label className="mb-1 ml-1 block text-sm font-semibold text-slate-700">
                 Selected Projects ({selectedProjects.length})
               </label>
 
@@ -435,7 +436,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
               "
               >
                 {selectedProjects.length === 0 ? (
-                  <div className="flex h-[60px] items-center justify-center text-sm text-slate-700">
+                  <div className="flex h-[60px] items-center justify-center text-sm text-slate-600">
                     No project selected
                   </div>
                 ) : (
@@ -531,7 +532,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
               onClick={() => navigate("/users")}
               className="
               h-9
-              rounded-lg
+              rounded-xl
               border
               border-slate-300
               bg-white
@@ -557,13 +558,15 @@ const UserForm = ({ mode = "add", userData = null }) => {
               items-center
               justify-center
               gap-2
-              rounded-lg
-              bg-blue-600
+              rounded-xl
+              bg-gradient-to-r
+              from-[#2563EB]
+              to-[#3B82F6]
               px-6
               text-sm
               font-semibold
               text-white
-              hover:bg-blue-700
+              hover:opacity-95
               disabled:cursor-not-allowed
               disabled:opacity-60
               cursor-pointer 

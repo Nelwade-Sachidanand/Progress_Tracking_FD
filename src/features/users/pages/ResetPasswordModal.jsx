@@ -1,27 +1,32 @@
 import { KeyRound, X } from "lucide-react";
-import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
 export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
-  const [tempPassword, setTempPassword] = useState("");
-  const [showTempPassword, setShowTempPassword] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   if (!isOpen) return null;
 
   const handleSubmit = () => {
-    if (!tempPassword.trim()) {
+    if (!newPassword.trim()) {
       toast.error("Password is required");
       return;
     }
 
-    if (tempPassword.length < 8) {
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    if (newPassword.length < 8) {
       toast.error("Password must be at least 8 characters");
       return false;
     }
 
     if (
-      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/.test(tempPassword)
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/.test(newPassword)
     ) {
       toast.error(
         "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
@@ -29,9 +34,10 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
       return false;
     }
 
-    onReset?.(user, tempPassword);
+    onReset?.(user, newPassword, confirmPassword);
 
-    setTempPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
   };
 
   return (
@@ -71,10 +77,10 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
           <div className="flex items-center gap-2">
             <KeyRound size={20} className="text-[#2563EB]" />
 
-            <h2 className="text-lg font-bold text-[#0F172A]">Generate Temprary Password</h2>
+            <h2 className="text-lg font-bold text-[#0F172A]">Reset Password</h2>
           </div>
 
-          <button onClick={onClose} className="cursor-pointer">
+          <button onClick={onClose} className="cursor-pointer hover:text-red-500 transition">
             <X size={20} />
           </button>
         </div>
@@ -112,59 +118,37 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
           <div className="mb-5">
             <label
               className="
-              mb-2
               block
               text-sm
               font-medium
               text-slate-700
-            "
+              mb-2
+              "
             >
-              Temp Password
+              New Password
               <span className="text-red-500">*</span>
             </label>
 
-            <div className="relative">
-              <input
-                type={showTempPassword ? "text" : "password"}
-                value={tempPassword}
-                onChange={(e) => setTempPassword(e.target.value)}
-                placeholder="Enter Temporary Password"
-                className="
-                h-9
-                w-full
-                rounded-lg
-                border
-                border-[#B8C4D1]
-                p-3
-                pr-10
-                outline-none
-                placeholder:text-slate-500
-                focus:border-blue-500
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Enter new password"
+              className="
+              w-full
+              p-3
+              h-9
+              rounded-lg
+              border
+              border-[#B8C4D1]
+              outline-none
+              focus:border-blue-500
+              placeholder:text-slate-500
               "
-              />
-
-              <button
-                type="button"
-                onClick={() => setShowTempPassword(!showTempPassword)}
-                className="
-                absolute
-                right-3
-                top-1/2
-                -translate-y-1/2
-                text-slate-500
-                hover:text-slate-700
-                cursor-pointer
-              "
-              >
-                {showTempPassword ? (
-                  <EyeOff size={18} />
-                ) : (
-                  <Eye size={18} />
-                )}
-              </button>
-            </div>
+            />
           </div>
-          {/* <div>
+
+          <div>
             <label
               className="
               block
@@ -195,7 +179,7 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
               placeholder:text-slate-500
               "
             />
-          </div> */}
+          </div>
         </div>
 
         {/* Footer */}

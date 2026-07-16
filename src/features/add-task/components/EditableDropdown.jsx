@@ -35,17 +35,17 @@ export default function EditableDropdown({
 
   disabled = false,
 }) {
-  const hasUnsavedItem = items.some((item) => item.isNew);
+    const hasUnsavedItem = items.some((item) => item.isNew);
   return (
     <div className="relative w-full">
       {/* Label */}
-      <label className="block mb-1 ml-1 text-sm font-medium text-slate-800">
-        {label} <span className="text-red-500">*</span>
-      </label>
-
+<label className="block mb-1 ml-1 text-sm font-medium text-slate-700">
+                {label} <span className="text-red-500">*</span>
+              </label>
+      
 
       {/* Button */}
-      {/* 
+{/* 
       <button
         type="button"
         disabled={disabled}
@@ -65,28 +65,29 @@ export default function EditableDropdown({
           cursor-pointer
         "
       > */}
-      <button
-        data-testid="phase-dropdown"
-        type="button"
-        disabled={disabled}
-        onClick={() => setShowDropdown(!showDropdown)}
+       <button
+                  data-testid="phase-dropdown"
+                  type="button"
+                  disabled={disabled}
+                         onClick={() => setShowDropdown(!showDropdown)}
 
-        className="w-full h-9 px-3 bg-white border border-[#B8C4D1] rounded-lg flex items-center justify-between text-sm cursor-pointer focus:border-blue-500"
-      >
-        <span className={
-          value
-            ? "text-slate-800"
-            : "text-slate-800"
-        }>
-          {value || placeholder}
-        </span>
-        <ChevronDown
-          size={14}
-          className={`transition-transform ${showDropdown ? "rotate-180" : ""
-            }`}
-        //  className={`transition-transform ${showPhaseDropdown ? "rotate-180" : ""}`}
-        />
-
+                  className="w-full h-9 px-3 bg-white border border-[#DCE3EE] rounded-lg flex items-center justify-between text-sm cursor-pointer"
+                >
+                  <span  className={
+            value
+              ? "text-slate-900"
+              : "text-slate-900"
+          }>
+                     {value || placeholder}
+                  </span>
+                  <ChevronDown
+                    size={14}
+                     className={`transition-transform ${
+            showDropdown ? "rotate-180" : ""
+          }`}
+                  //  className={`transition-transform ${showPhaseDropdown ? "rotate-180" : ""}`}
+                  />
+                
         {/* <span
           className={
             value
@@ -108,8 +109,8 @@ export default function EditableDropdown({
       {/* Dropdown */}
 
       {showDropdown && (
-        <div className="absolute top-full left-0 mt-2 w-full bg-white border border-[#DCE3EE] rounded-xl shadow-xl z-50">
-          <div className="max-h-52 overflow-y-auto">
+                         <div className="absolute top-full left-0 mt-2 w-full bg-white border border-[#DCE3EE] rounded-xl shadow-xl z-50">
+                    <div className="max-h-52 overflow-y-auto">
 
             {items.length > 0 ? (
 
@@ -156,7 +157,7 @@ export default function EditableDropdown({
                            border 
       
                         "
-
+                        
                       >
                         <Check size={14} />
                       </button>
@@ -226,21 +227,22 @@ export default function EditableDropdown({
             )}
 
           </div>
-          <div className="border-t border-[#E5E7EB]" />
+                    <div className="border-t border-[#E5E7EB]" />
 
           <div className="p-4">
             {!showAdd ? (
-              <button
-                type="button"
-                disabled={showAdd || hasUnsavedItem}
-                onClick={() => setShowAdd(true)}
-                className={`text-sm font-medium ${showAdd || hasUnsavedItem
-                    ? "text-slate-400 cursor-not-allowed"
-                    : "text-[#6D4AFF] cursor-pointer"
-                  }`}
-              >
-                + Add New {label}
-              </button>) : (
+<button
+  type="button"
+  disabled={showAdd || hasUnsavedItem}
+  onClick={() => setShowAdd(true)}
+  className={`text-sm font-medium ${
+    showAdd || hasUnsavedItem
+      ? "text-slate-400 cursor-not-allowed"
+      : "text-[#6D4AFF] cursor-pointer"
+  }`}
+>
+  + Add New {label}
+</button>            ) : (
               <div className="space-y-3">
                 <input
                   type="text"

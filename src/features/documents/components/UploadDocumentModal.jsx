@@ -84,19 +84,19 @@ export default function UploadDocumentModal({
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden">
 
         {/* HEADER */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#CDD7E3] bg-slate-50">
+        <div className="flex items-center justify-between px-6 py-4 border-b bg-slate-50">
           <div>
             <h2 className="text-lg font-bold text-[#0B1F59]">
               Upload Document
             </h2>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-500">
               {document?.activity}
             </p>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-slate-200 cursor-pointer"
+            className="p-2 rounded-lg hover:bg-slate-200 cursor-pointer hover:text-red-500 transition"
           >
             <X />
           </button>
@@ -114,7 +114,6 @@ export default function UploadDocumentModal({
               p-10
               flex flex-col items-center justify-center
               cursor-pointer
-              bg-blue-50/40
               hover:bg-blue-50
               transition
               text-center
@@ -122,11 +121,11 @@ export default function UploadDocumentModal({
           >
             <Upload size={45} className="text-blue-500" />
 
-            <p className="mt-3 font-semibold text-slate-700">
+            <p className="mt-3 font-semibold text-gray-700">
               Drag & Drop or Click to Upload
             </p>
 
-            <p className="text-xs text-slate-600">
+            <p className="text-xs text-gray-400">
               PDF, Excel, Word, Images (max 10MB)
             </p>
 
@@ -140,9 +139,9 @@ export default function UploadDocumentModal({
 
           {/* FILE PREVIEW */}
           {selectedFile && (
-            <div className="mt-5 p-4 border border-[#B8C4D1] rounded-xl bg-gray-50 flex justify-between items-center">
+            <div className="mt-5 p-4 border rounded-xl bg-gray-50 flex justify-between items-center">
               <div>
-                <p className="font-medium text-base text-gray-800">
+                <p className="font-medium text-gray-800">
                   {selectedFile.name}
                 </p>
                 <p className="text-xs text-gray-500">
@@ -161,26 +160,14 @@ export default function UploadDocumentModal({
         </div>
 
         {/* FOOTER */}
-        <div className="flex justify-end gap-3 px-6 py-4 border-t border-[#CDD7E3] bg-slate-50">
+        <div className="flex justify-end gap-3 px-6 py-4 border-t bg-slate-50">
 
           <button
             onClick={() => {
               setSelectedFile(null);
               onClose();
             }}
-            className="
-              h-9
-              rounded-lg
-              border
-              border-slate-300
-              bg-white
-              px-6
-              text-sm
-              font-semibold
-              text-slate-700
-              hover:bg-slate-50
-              transition
-              cursor-pointer"
+            className="px-5 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 cursor-pointer"
           >
             Cancel
           </button>
@@ -188,7 +175,7 @@ export default function UploadDocumentModal({
           <button
             disabled={!selectedFile}
             onClick={handleUpload}
-            className="h-9 px-5 py-1 rounded-lg bg-blue-600 text-white disabled:bg-gray-300 cursor-pointer"
+            className="px-5 py-2 rounded-lg bg-blue-600 text-white disabled:bg-gray-300 cursor-pointer"
           >
             Upload
           </button>

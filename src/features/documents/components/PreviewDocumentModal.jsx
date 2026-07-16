@@ -99,6 +99,7 @@ export default function PreviewDocumentModal({
               flex
               items-center
               justify-center
+              hover:text-red-500 transition
               cursor-pointer
             "
           >

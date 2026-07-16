@@ -22,24 +22,26 @@ import {
 
 import PrintReport from "../components//PrintReport";
 
+
 export default function TaskActions({
   selectedPhase,
-  selectedPhaseId,
+selectedPhaseId,
 
   selectedMilestone,
-  selectedMilestoneIds,
+selectedMilestoneIds,
+  selectedMilestoneNames,
 
   selectedTask,
-  selectedTaskId,
+ selectedTaskId,
 
   selectedSubTask,
-  selectedSubTaskId,
+ selectedSubTaskId,
 
   selectedActivity,
-  selectedActivityId,
+ selectedActivityId,
 
   selectedStatus,
-}) {
+})  {
   const navigate = useNavigate();
   const [showReportModal, setShowReportModal] = useState(false);
 
@@ -57,127 +59,121 @@ export default function TaskActions({
   const project = projects.find(
     (p) => String(p.id) === String(selectedProjectId),
   );
+const allActivities =
+  project?.phases?.flatMap((phase) =>
+    phase.milestones?.flatMap((milestone) =>
+      milestone.tasks?.flatMap((task) =>
+        task.subTasks?.flatMap((subTask) =>
+          subTask.activities?.map((activity) => ({
+            ...activity,
 
-  const allActivities =
-    project?.phases?.flatMap((phase) =>
-      phase.milestones?.flatMap((milestone) =>
-        milestone.tasks?.flatMap((task) =>
-          task.subTasks?.flatMap((subTask) =>
-            subTask.activities?.map((activity) => ({
-              ...activity,
+            // IDs
+            phaseId: phase.phaseId,
+            milestoneId: milestone.milestoneId,
+            taskId: task.taskId,
+            subTaskId: subTask.subTaskId,
+            activityId: activity.activityId,
 
-              // IDs
-              phaseId: phase.phaseId,
-              milestoneId: milestone.milestoneId,
-              taskId: task.taskId,
-              subTaskId: subTask.subTaskId,
-              activityId: activity.activityId,
-
-              // Names
-              phase: phase.phaseName,
-              milestone: milestone.milestoneName,
-              task: task.taskName,
-              subTask: subTask.subTaskName,
-              activityName: activity.activityName,
-            })) || []
-          ) || []
+            // Names
+            phase: phase.phaseName,
+            milestone: milestone.milestoneName,
+            task: task.taskName,
+            subTask: subTask.subTaskName,
+            activityName: activity.activityName,
+          })) || []
         ) || []
       ) || []
-    ) || [];
+    ) || []
+  ) || [];
 
-  const selectedMilestoneNames = allActivities
-    .filter((a) => selectedMilestone.includes(a.milestoneId))
-    .map((a) => a.milestone)
-    .filter((name, index, arr) => arr.indexOf(name) === index);
+const filteredActivities = allActivities.filter((activity) => {
+  const phaseMatch =
+    !selectedPhase ||
+    selectedPhase === "All Phases" ||
+    activity.phase === selectedPhase;
 
-  const filteredActivities = allActivities.filter((activity) => {
-    const phaseMatch =
-      !selectedPhase ||
-      selectedPhase === "All Phases" ||
-      activity.phase === selectedPhase;
+  const milestoneMatch =
+    !selectedMilestone ||
+    selectedMilestone.length === 0 ||
+    selectedMilestone.includes(activity.milestone);
 
-    const milestoneMatch =
-      !selectedMilestone ||
-      selectedMilestone.length === 0 ||
-      selectedMilestone.includes(activity.milestone);
+  const taskMatch =
+    !selectedTask ||
+    selectedTask === "All Tasks" ||
+    activity.task === selectedTask;
 
-    const taskMatch =
-      !selectedTask ||
-      selectedTask === "All Tasks" ||
-      activity.task === selectedTask;
+  const subTaskMatch =
+    !selectedSubTask ||
+    selectedSubTask === "All Sub Tasks" ||
+    activity.subTask === selectedSubTask;
 
-    const subTaskMatch =
-      !selectedSubTask ||
-      selectedSubTask === "All Sub Tasks" ||
-      activity.subTask === selectedSubTask;
+  const activityMatch =
+    !selectedActivity ||
+    selectedActivity === "All Activities" ||
+    activity.activityName === selectedActivity;
 
-    const activityMatch =
-      !selectedActivity ||
-      selectedActivity === "All Activities" ||
-      activity.activityName === selectedActivity;
+  const statusMatch =
+    !selectedStatus ||
+    selectedStatus === "All Status" ||
+    activity.executionStatus === selectedStatus;
 
-    const statusMatch =
-      !selectedStatus ||
-      selectedStatus === "All Status" ||
-      activity.executionStatus === selectedStatus;
+  const dateMatch =
+    (!fromDate ||
+      new Date(activity.plannedStartDate) >= new Date(fromDate)) &&
+    (!toDate ||
+      new Date(activity.plannedEndDate) <= new Date(toDate));
 
-    const dateMatch =
-      (!fromDate ||
-        new Date(activity.plannedStartDate) >= new Date(fromDate)) &&
-      (!toDate ||
-        new Date(activity.plannedEndDate) <= new Date(toDate));
-
-    return (
-      phaseMatch &&
-      milestoneMatch &&
-      taskMatch &&
-      subTaskMatch &&
-      activityMatch &&
-      statusMatch &&
-      dateMatch
-    );
-  });
+  return (
+    phaseMatch &&
+    milestoneMatch &&
+    taskMatch &&
+    subTaskMatch &&
+    activityMatch &&
+    statusMatch &&
+    dateMatch
+  );
+});
 
 
 
 
-  const handleGenerate = () => {
+const handleGenerate = () => {
 
-    if (!project || !selectedProjectId) {
-      toast.error("No project selected. No permission to generate report.");
+  if (!project || !selectedProjectId) {
+    toast.error("No project selected. No permission to generate report.");
+    return;
+  }
+
+  
+  if (!project.projectName) {
+    toast.error("Invalid project selection.");
+    return;
+  }
+
+  switch (reportType) {
+    case "pdf":
+      handleGeneratePdf();
+      break;
+
+    case "excel":
+      handleExportExcel();
+      break;
+
+    case "csv":
+      handleGenerateCsv();
+      break;
+
+    case "word":
+      handleGenerateWord();
+      break;
+
+    default:
+      toast.error("Please select report format");
       return;
-    }
+  }
 
-
-    if (!project.projectName) {
-      toast.error("Invalid project selection.");
-      return;
-    }
-
-    switch (reportType) {
-      case "pdf":
-        handleGeneratePdf();
-        break;
-
-      case "excel":
-        handleExportExcel();
-        break;
-
-      case "csv":
-        handleGenerateCsv();
-        break;
-
-      case "word":
-        handleGenerateWord();
-        break;
-
-      default:
-        toast.error("Please select report format");
-        return;
-    }
-
-    setShowReportModal(false);
-  };
+  setShowReportModal(false);
+};
   const handleExportExcel = async () => {
     try {
       const selectedProjectId = sessionStorage.getItem("selectedProjectId");
@@ -185,46 +181,46 @@ export default function TaskActions({
       const selectedProjectName = sessionStorage.getItem("selectedProjectName");
 
       const payload = {
-        projectId: selectedProjectId,
-        projectName: selectedProjectName,
+  projectId: selectedProjectId,
+  projectName: selectedProjectName,
 
-        // Phase
-        phaseId:
-          selectedPhase === "All Phases" ? null : selectedPhaseId,
-        phaseName:
-          selectedPhase === "All Phases" ? null : selectedPhase,
+  // Phase
+  phaseId:
+    selectedPhase === "All Phases" ? null : selectedPhaseId,
+  phaseName:
+    selectedPhase === "All Phases" ? null : selectedPhase,
 
-        // Milestone
-        milestoneIds:
-          selectedMilestone?.length > 0 ? selectedMilestone : null,
-        milestoneNames:
-          selectedMilestone?.length > 0 ? selectedMilestone : null,
+  // Milestone
+  milestoneIds:
+    selectedMilestone?.length > 0 ? selectedMilestone : null,
+  milestoneNames:
+    selectedMilestone?.length > 0 ? selectedMilestone : null,
 
-        // Task
-        taskId:
-          selectedTask === "All Tasks" ? null : selectedTaskId,
-        taskName:
-          selectedTask === "All Tasks" ? null : selectedTask,
+  // Task
+  taskId:
+    selectedTask === "All Tasks" ? null : selectedTaskId,
+  taskName:
+    selectedTask === "All Tasks" ? null : selectedTask,
 
-        // Sub Task
-        subTaskId:
-          selectedSubTask === "All Sub Tasks" ? null : selectedSubTaskId,
-        subTaskName:
-          selectedSubTask === "All Sub Tasks" ? null : selectedSubTask,
+  // Sub Task
+  subTaskId:
+    selectedSubTask === "All Sub Tasks" ? null : selectedSubTaskId,
+  subTaskName:
+    selectedSubTask === "All Sub Tasks" ? null : selectedSubTask,
 
-        // Activity
-        activityId:
-          selectedActivity === "All Activities" ? null : selectedActivityId,
-        activityName:
-          selectedActivity === "All Activities" ? null : selectedActivity,
+  // Activity
+  activityId:
+    selectedActivity === "All Activities" ? null : selectedActivityId,
+  activityName:
+    selectedActivity === "All Activities" ? null : selectedActivity,
 
-        executionStatus:
-          selectedStatus === "All Status" ? null : selectedStatus,
+  executionStatus:
+    selectedStatus === "All Status" ? null : selectedStatus,
 
-        plannedStartDate: fromDate || null,
-        plannedEndDate: toDate || null,
-      };
-      console.log("Payload:", payload);
+  plannedStartDate: fromDate || null,
+  plannedEndDate: toDate || null,
+};
+console.log("Payload:", payload);
       const blob = await exportExcelReport(payload);
 
       const url = window.URL.createObjectURL(blob);
@@ -398,20 +394,104 @@ export default function TaskActions({
     }, 500);
   };
 
-  const handleGenerateCsv = () => {
-    try {
-      if (!project) {
-        toast.error("No project selected");
-        return;
-      }
+const handleGenerateCsv = () => {
+  try {
+    if (!project) {
+      toast.error("No project selected");
+      return;
+    }
 
-      if (!filteredActivities || filteredActivities.length === 0) {
-        toast.error("No activities found for selected filters");
-        return;
-      }
+    if (!filteredActivities || filteredActivities.length === 0) {
+      toast.error("No activities found for selected filters");
+      return;
+    }
 
-      const rows = [
-        [
+    const rows = [
+      [
+        "Phase",
+        "Milestone",
+        "Task",
+        "Sub Task",
+        "Activity",
+        "Owner",
+        "Progress",
+        "Status",
+        "Schedule Health",
+        "Planned Start",
+        "Planned End",
+        "Actual Start",
+        "Actual End",
+      ],
+    ];
+
+    filteredActivities.forEach((activity) => {
+      rows.push([
+        activity.phase ?? "",
+        activity.milestone ?? "",
+        activity.task ?? "",
+        activity.subTask ?? "",
+        activity.activityName ?? "",
+        activity.owner ?? "",
+        `${activity.progress ?? 0}%`,
+        activity.executionStatus ?? "",
+        activity.scheduleHealth ?? "",
+        activity.plannedStartDate ?? "",
+        activity.plannedEndDate ?? "",
+        activity.actualStartDate ?? "",
+        activity.actualEndDate ?? "",
+      ]);
+    });
+
+    const csvContent = rows
+      .map((row) =>
+        row
+          .map((cell) => `"${String(cell).replace(/"/g, '""')}"`)
+          .join(",")
+      )
+      .join("\n");
+
+    const blob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const link = document.createElement("a");
+
+    link.href = URL.createObjectURL(blob);
+
+    link.download = `${project.projectName}_Report.csv`;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(link.href);
+
+    toast.success("CSV report downloaded successfully");
+  } catch (error) {
+    console.error("CSV Generation Error:", error);
+
+    toast.error("Failed to generate CSV report");
+  }
+};
+
+
+const handleGenerateWord = async () => {
+  try {
+    if (!project) {
+      toast.error("No project selected");
+      return;
+    }
+
+    if (!filteredActivities || filteredActivities.length === 0) {
+      toast.error("No activities found for selected filters");
+      return;
+    }
+
+    const tableRows = [
+      new TableRow({
+        children: [
           "Phase",
           "Milestone",
           "Task",
@@ -420,181 +500,97 @@ export default function TaskActions({
           "Owner",
           "Progress",
           "Status",
-          "Schedule Health",
-          "Planned Start",
-          "Planned End",
-          "Actual Start",
-          "Actual End",
-        ],
-      ];
-
-      filteredActivities.forEach((activity) => {
-        rows.push([
-          activity.phase ?? "",
-          activity.milestone ?? "",
-          activity.task ?? "",
-          activity.subTask ?? "",
-          activity.activityName ?? "",
-          activity.owner ?? "",
-          `${activity.progress ?? 0}%`,
-          activity.executionStatus ?? "",
-          activity.scheduleHealth ?? "",
-          activity.plannedStartDate ?? "",
-          activity.plannedEndDate ?? "",
-          activity.actualStartDate ?? "",
-          activity.actualEndDate ?? "",
-        ]);
-      });
-
-      const csvContent = rows
-        .map((row) =>
-          row
-            .map((cell) => `"${String(cell).replace(/"/g, '""')}"`)
-            .join(",")
-        )
-        .join("\n");
-
-      const blob = new Blob([csvContent], {
-        type: "text/csv;charset=utf-8;",
-      });
-
-      const link = document.createElement("a");
-
-      link.href = URL.createObjectURL(blob);
-
-      link.download = `${project.projectName}_Report.csv`;
-
-      document.body.appendChild(link);
-
-      link.click();
-
-      document.body.removeChild(link);
-
-      URL.revokeObjectURL(link.href);
-
-      toast.success("CSV report downloaded successfully");
-    } catch (error) {
-      console.error("CSV Generation Error:", error);
-
-      toast.error("Failed to generate CSV report");
-    }
-  };
-
-
-  const handleGenerateWord = async () => {
-    try {
-      if (!project) {
-        toast.error("No project selected");
-        return;
-      }
-
-      if (!filteredActivities || filteredActivities.length === 0) {
-        toast.error("No activities found for selected filters");
-        return;
-      }
-
-      const tableRows = [
-        new TableRow({
-          children: [
-            "Phase",
-            "Milestone",
-            "Task",
-            "Sub Task",
-            "Activity",
-            "Owner",
-            "Progress",
-            "Status",
-          ].map(
-            (value) =>
-              new TableCell({
-                children: [new Paragraph(String(value))],
-              })
-          ),
-        }),
-
-        ...filteredActivities.map(
-          (activity) =>
-            new TableRow({
-              children: [
-                activity.phase,
-                activity.milestone,
-                activity.task,
-                activity.subTask,
-                activity.activityName,
-                activity.owner,
-                `${activity.progress}%`,
-                activity.executionStatus,
-              ].map(
-                (value) =>
-                  new TableCell({
-                    children: [
-                      new Paragraph(String(value ?? "")),
-                    ],
-                  })
-              ),
+        ].map(
+          (value) =>
+            new TableCell({
+              children: [new Paragraph(String(value))],
             })
         ),
-      ];
+      }),
 
-      const doc = new Document({
-        sections: [
-          {
+      ...filteredActivities.map(
+        (activity) =>
+          new TableRow({
             children: [
-              new Paragraph({
-                text: "PROJECT PROGRESS REPORT",
-                heading: HeadingLevel.HEADING_1,
-              }),
+              activity.phase,
+              activity.milestone,
+              activity.task,
+              activity.subTask,
+              activity.activityName,
+              activity.owner,
+              `${activity.progress}%`,
+              activity.executionStatus,
+            ].map(
+              (value) =>
+                new TableCell({
+                  children: [
+                    new Paragraph(String(value ?? "")),
+                  ],
+                })
+            ),
+          })
+      ),
+    ];
 
-              new Paragraph(""),
+    const doc = new Document({
+      sections: [
+        {
+          children: [
+            new Paragraph({
+              text: "PROJECT PROGRESS REPORT",
+              heading: HeadingLevel.HEADING_1,
+            }),
 
-              new Paragraph(
-                `Project : ${project.projectName}`
-              ),
+            new Paragraph(""),
 
-              new Paragraph(
-                `Bank : ${project.bankName}`
-              ),
+            new Paragraph(
+              `Project : ${project.projectName}`
+            ),
 
-              new Paragraph(
-                `Generated : ${new Date().toLocaleString()}`
-              ),
+            new Paragraph(
+              `Bank : ${project.bankName}`
+            ),
 
-              new Paragraph(""),
+            new Paragraph(
+              `Generated : ${new Date().toLocaleString()}`
+            ),
 
-              new Table({
-                rows: tableRows,
-              }),
-            ],
-          },
-        ],
-      });
+            new Paragraph(""),
 
-      const blob = await Packer.toBlob(doc);
+            new Table({
+              rows: tableRows,
+            }),
+          ],
+        },
+      ],
+    });
 
-      saveAs(
-        blob,
-        `${project.projectName}_Report.docx`
-      );
+    const blob = await Packer.toBlob(doc);
 
-      toast.success("Word report downloaded successfully");
-    } catch (error) {
-      console.error("Word Generation Error:", error);
+    saveAs(
+      blob,
+      `${project.projectName}_Report.docx`
+    );
 
-      toast.error("Failed to generate Word report");
-    }
-  };
+    toast.success("Word report downloaded successfully");
+  } catch (error) {
+    console.error("Word Generation Error:", error);
+
+    toast.error("Failed to generate Word report");
+  }
+};
   return (
     <div
       className="
-      flex
-      flex-col
-      lg:flex-row
-      lg:items-center
-      lg:justify-between
-      gap-4
-      mb-3
-      cursor-pointer
-      "
+    flex
+    flex-col
+    lg:flex-row
+    lg:items-center
+    lg:justify-between
+    gap-4
+    mb-3
+    cursor-pointer
+    "
     >
       {/* Action Buttons */}
       <div
@@ -609,22 +605,22 @@ export default function TaskActions({
         <button
           onClick={() => setShowReportModal(true)}
           className="
-          bg-[#6D4AFF]
-          h-10
-          hover:bg-[#5B3DF4]
-          text-white
-          px-4
-          py-2.5
-          rounded-xl
-          text-sm
-          font-medium
-          cursor-pointer
-        "
+    bg-[#6D4AFF]
+    h-10
+    hover:bg-[#5B3DF4]
+    text-white
+    px-4
+    py-2.5
+    rounded-xl
+    text-sm
+    font-medium
+    cursor-pointer
+  "
         >
           Generate Report
         </button>
 
-
+  
       </div>
 
       {(user?.role === "ADMIN" || user?.role === "IMPLEMENTATION USER") && (
@@ -632,9 +628,8 @@ export default function TaskActions({
           onClick={() => navigate("add-task")}
           className="
           h-10
-          bg-gradient-to-r
-          from-[#7C3AED]
-          to-[#A855F7]
+          bg-[#6D4AFF]
+          hover:bg-[#5B3DF4]
           text-white
           text-sm
           px-5
@@ -683,7 +678,8 @@ export default function TaskActions({
         setToDate={setToDate}
         selectedProject={project?.projectName}
         selectedPhase={selectedPhase}
-        selectedMilestone={selectedMilestoneNames}
+        selectedMilestone={selectedMilestone}
+        selectedMilestoneNames={selectedMilestoneNames}
         selectedTask={selectedTask}
         selectedSubTask={selectedSubTask}
         selectedActivity={selectedActivity}
@@ -693,3 +689,4 @@ export default function TaskActions({
     </div>
   );
 }
+ 

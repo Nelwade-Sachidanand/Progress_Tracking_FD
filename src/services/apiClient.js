@@ -4,7 +4,6 @@ import axios from "axios";
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -32,25 +31,43 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // console.log("Trying refresh token...");
+
       originalRequest._retry = true;
 
       try {
+        const refreshToken = sessionStorage.getItem("refreshToken");
+
+        // console.log("Refresh Token:", refreshToken);
+
         const refreshResponse = await axios.post(
           `${import.meta.env.VITE_API_BASE_URL}/user/refresh`,
-          {},
+          null,
           {
-            withCredentials: true,
-          }
+            params: {
+              refreshToken,
+            },
+          },
         );
+
+        // console.log("Refresh Success");
+
+        // console.log("Refresh Response:", refreshResponse.data);
 
         const newAccessToken = refreshResponse.data.details;
 
         sessionStorage.setItem("accessToken", newAccessToken);
 
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-
-        return apiClient(originalRequest);
+        return apiClient({
+          ...originalRequest,
+          headers: {
+            ...originalRequest.headers,
+            Authorization: `Bearer ${newAccessToken}`,
+          },
+        });
       } catch (e) {
+        // console.log("Refresh Failed", e);
+
         sessionStorage.clear();
 
         window.dispatchEvent(new Event("session-expired"));

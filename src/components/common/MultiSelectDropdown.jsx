@@ -78,7 +78,7 @@ export default function MultiSelectDropdown({
     <div className={`${width} min-w-0`}>
       {/* Label */}
       {label && (
-        <label className="block mb-1 ml-1 text-sm font-medium text-slate-800 2xl:text-base">
+        <label className="block mb-1 ml-1 text-sm font-medium text-slate-700 2xl:text-base">
           {label}
         </label>
       )}
@@ -132,7 +132,7 @@ export default function MultiSelectDropdown({
               whitespace-nowrap
               text-left
               text-sm
-              text-slate-800
+              text-slate-700
               2xl:text-lg
               2xl:text-slate-800
             "
@@ -184,7 +184,7 @@ export default function MultiSelectDropdown({
               <div className="relative">
                 <Search
                   size={16}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
                 />
 
                 <input
@@ -254,7 +254,7 @@ export default function MultiSelectDropdown({
             {/* Options */}
             <div className="max-h-50 overflow-y-auto">
               {filteredOptions.length === 0 ? (
-                <div className="py-6 text-center text-sm 2xl:text-base text-slate-800">
+                <div className="py-6 text-center text-sm 2xl:text-base text-slate-600">
                   No Results Found
                 </div>
               ) : (
@@ -297,7 +297,7 @@ export default function MultiSelectDropdown({
                       <Square className="h-4 w-4 2xl:h-5 2xl:w-5 shrink-0 text-slate-500" />
                     )}
 
-                    <span className="truncate text-slate-800">{option.label}</span>
+                    <span className="truncate text-slate-700">{option.label}</span>
                   </button>
                 ))
               )}

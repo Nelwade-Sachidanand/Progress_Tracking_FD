@@ -17,7 +17,7 @@ import {
   User,
   Users,
   Eye,
-  FolderOpen,
+  FolderOpen, 
 } from "lucide-react";
 
 import { useEffect, useRef, useState } from "react";
@@ -30,7 +30,6 @@ import {
   markAsRead,
 } from "../../services/notificationService";
 import MultiSelectDropdown from "../common/MultiSelectDropdown";
-import { logoutUser } from "../../features/login/services/authService";
 
 const DashboardHeader = ({
   title,
@@ -117,20 +116,10 @@ const DashboardHeader = ({
     .substring(0, 2)
     .toUpperCase();
 
-  const handleLogout = async () => {
-    try {
-      await logoutUser();
-    } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
-      setProjects([]);
-
-      sessionStorage.clear();
-
-      navigate("/", {
-        replace: true,
-      });
-    }
+  const handleLogout = () => {
+    setProjects([]);
+    sessionStorage.clear();
+    navigate("/", { replace: true });
   };
 
   useEffect(() => {
@@ -384,7 +373,7 @@ const DashboardHeader = ({
       subtitleClass: "text-[12px]",
     },
 
-
+    
 
     "/upload-excel": {
       title: "Upload Excel",
@@ -528,9 +517,55 @@ const DashboardHeader = ({
                   selected={selectedBanks}
                   onChange={setSelectedBanks}
                   icon={Building2}
-                  width="w-full sm:w-[180px] md:w-[180px] lg:w-[200px] xl:w-[220px]"
+                  width="w-full sm:w-[220px] md:w-[220px] lg:w-[240px] xl:w-[260px]"
                   dropdownWidth="w-full"
                 />
+
+                {/* Search */}
+                {/* <div
+                  className="
+                hidden xl:flex
+                items-center gap-2
+                border border-[#E2E8F0]
+                rounded-xl
+                px-4
+                h-11
+                bg-white
+                w-[200px]
+                2xl:w-[340px]
+                2xl:h-12
+                2xl:px-5
+                2xl:gap-3
+              outline-none
+              focus-within:border-blue-500
+              "
+                >
+                  <Search
+                    size={16}
+                    className="text-[#94A3B8] 2xl:text-2xl 2xl:w-5 2xl:h-5"
+                  />
+
+                  <input
+                    type="text"
+                    placeholder="Search banks, projects..."
+                    className="
+                    flex-1
+                    outline-none
+                    text-sm
+                    bg-transparent
+                    2xl:text-[17px]
+                    2xl:font-medium
+                    2xl:tracking-wide
+                    "
+                    onChange={(e) => {
+                      window.dispatchEvent(
+                        new CustomEvent("dashboardSearch", {
+                          detail: e.target.value,
+                        }),
+                      );
+                    }}
+                  />
+                </div> */}
               </>
             )}
             {/* Notification */}

@@ -7,20 +7,19 @@ import {
 
 export default function ExecutiveHealth({
   project,
-}) {
+  selectedMilestones,
+})  {
   const activities =
-    project?.phases?.flatMap((phase) =>
-      phase.milestones?.flatMap(
-        (milestone) =>
-          milestone.tasks?.flatMap(
-            (task) =>
-              task.subTasks?.flatMap(
-                (subTask) =>
-                  subTask.activities || []
-              ) || []
-          ) || []
-      ) || []
-    ) || [];
+  project?.phases
+    ?.flatMap((phase) => phase.milestones || [])
+    .filter(
+      (milestone) =>
+        selectedMilestones.length === 0 ||
+        selectedMilestones.includes(milestone.milestoneId)
+    )
+    .flatMap((milestone) => milestone.tasks || [])
+    .flatMap((task) => task.subTasks || [])
+    .flatMap((subTask) => subTask.activities || []) || [];
 
   const today = new Date();
 
@@ -327,7 +326,7 @@ const deliverySubtitle =
       <div className="flex items-center gap-3 mb-5">
         <div
           className="
-          w-8 h-8
+          w-7 h-7
           rounded-full
           bg-[#2563EB]
           text-white
@@ -338,16 +337,12 @@ const deliverySubtitle =
           font-bold
           "
         >
-          7
+          6
         </div>
 
        <h2
   className="
-  text-[16px]
-  sm:text-[18px]
-  lg:text-[20px]
-  font-bold
-  text-[#0B1F59]
+  text-base sm:text-lg lg:text-xl font-bold text-[#0B1F59]
   "
 >
           Executive Health

@@ -90,7 +90,7 @@ const payload = {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Task Remark</h2>
 
-          <button onClick={onClose} className="cursor-pointer">
+          <button onClick={onClose} className="cursor-pointer hover:text-red-500 transition">
             <X />
           </button>
         </div>

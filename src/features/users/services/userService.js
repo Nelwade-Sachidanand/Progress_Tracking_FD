@@ -30,17 +30,11 @@ export const deleteUser = async (userId) => {
   return response.data;
 };
 
-export const resetPassword = async (userId, temporaryPassword) => {
-  const response = await apiClient.put(
-    "/user/generateTemporaryPassword",
-    null,
-    {
-      params: {
-        userId,
-        temporaryPassword,
-      },
-    }
-  );
-
+export const resetPassword = async (userId, newPassword, confirmPassword) => {
+  const response = await apiClient.put("/user/resetPassword", {
+    userId,
+    newPassword,
+    confirmPassword,
+  });
   return response.data;
 };

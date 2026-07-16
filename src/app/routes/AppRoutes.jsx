@@ -18,7 +18,6 @@ import AllTasksPage from "../../features/tasks/pages/AllTasksPage";
 import AddUserPage from "../../features/users/pages/AddUserPage";
 import EditUserPage from "../../features/users/pages/EditUserPage";
 import UserManagementPage from "../../features/users/pages/UserManagementPage";
-import ChangePasswordPage from "../../features/login/pages/ChangePasswordPage";
 
 import ProjectsPage from "../../features/projects/pages/ProjectsPage";
 import ProtectedRoute from "./ProtectedRoute";
@@ -52,7 +51,6 @@ const AppRoutes = () => {
           <Route path="/tasks" element={<AllTasksPage />} />
           <Route path="/notifications" element={<NotificationPage />} />
           <Route path="/documents" element={<Documents />} />
-          <Route path="/change-password" element={<ChangePasswordPage />} />
         </Route>
       </Route>
 

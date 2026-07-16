@@ -115,13 +115,14 @@ export const useUsers = () => {
     }
   };
 
-  const resetPassword = async (userId, tempPassword) => {
+  const resetPassword = async (userId, newPassword, confirmPassword) => {
     try {
       setLoading(true);
 
       const response = await resetPasswordApi(
         userId,
-        tempPassword,
+        newPassword,
+        confirmPassword,
       );
 
       if (response?.statusType === "S") {
