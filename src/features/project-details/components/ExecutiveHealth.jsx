@@ -7,20 +7,19 @@ import {
 
 export default function ExecutiveHealth({
   project,
+  selectedMilestones,
 }) {
   const activities =
-    project?.phases?.flatMap((phase) =>
-      phase.milestones?.flatMap(
+    project?.phases
+      ?.flatMap((phase) => phase.milestones || [])
+      .filter(
         (milestone) =>
-          milestone.tasks?.flatMap(
-            (task) =>
-              task.subTasks?.flatMap(
-                (subTask) =>
-                  subTask.activities || []
-              ) || []
-          ) || []
-      ) || []
-    ) || [];
+          selectedMilestones.length === 0 ||
+          selectedMilestones.includes(milestone.milestoneId)
+      )
+      .flatMap((milestone) => milestone.tasks || [])
+      .flatMap((task) => task.subTasks || [])
+      .flatMap((subTask) => subTask.activities || []) || [];
 
   const today = new Date();
 
@@ -47,38 +46,38 @@ export default function ExecutiveHealth({
     activeActivities.filter(
       (activity) =>
         activity.scheduleHealth ===
-          "Delayed" ||
+        "Delayed" ||
         activity.executionStatus ===
-          "Delayed"
+        "Delayed"
     ).length;
 
   const overallProgress =
     totalActivities > 0
       ? Math.round(
-          activeActivities.reduce(
-            (sum, activity) =>
-              sum +
-              (activity.progress || 0),
-            0
-          ) / totalActivities
-        )
+        activeActivities.reduce(
+          (sum, activity) =>
+            sum +
+            (activity.progress || 0),
+          0
+        ) / totalActivities
+      )
       : 0;
 
   const riskPercentage =
     totalActivities > 0
       ? Math.round(
-          (delayedActivities /
-            totalActivities) *
-            100
-        )
+        (delayedActivities /
+          totalActivities) *
+        100
+      )
       : 0;
 
   const riskLevel =
     riskPercentage >= 20
       ? "High"
       : riskPercentage >= 10
-      ? "Medium"
-      : "Low";
+        ? "Medium"
+        : "Low";
 
   const projectStartDate =
     activities
@@ -127,195 +126,195 @@ export default function ExecutiveHealth({
           Math.round(
             (elapsedDays /
               totalDays) *
-              100
+            100
           )
         )
       );
   }
 
-  
+
 
   const confidenceScore =
-  totalActivities > 0
-    ? Math.round(
+    totalActivities > 0
+      ? Math.round(
         (completedActivities /
           totalActivities) *
-          100
+        100
       )
-    : 0;
+      : 0;
 
-const deliveryConfidence =
-  confidenceScore >= 80
-    ? "HIGH"
-    : confidenceScore >= 60
-    ? "MEDIUM"
-    : "LOW";
+  const deliveryConfidence =
+    confidenceScore >= 80
+      ? "HIGH"
+      : confidenceScore >= 60
+        ? "MEDIUM"
+        : "LOW";
 
-const deliverySubtitle =
-  confidenceScore >= 80
-    ? "Likely On Schedule"
-    : confidenceScore >= 60
-    ? "Minor Delays Expected"
-    : "Delivery At Risk";
+  const deliverySubtitle =
+    confidenceScore >= 80
+      ? "Likely On Schedule"
+      : confidenceScore >= 60
+        ? "Minor Delays Expected"
+        : "Delivery At Risk";
 
 
   const projectHealthLabel =
     overallProgress >= 80
       ? "Excellent"
       : overallProgress >= 60
-      ? "Good"
-      : overallProgress >= 40
-      ? "Attention"
-      : "Critical";
+        ? "Good"
+        : overallProgress >= 40
+          ? "Attention"
+          : "Critical";
 
   const cards = [
     {
-  title: "Project Health",
-  value: `${overallProgress}%`,
-  status: projectHealthLabel,
-  subtitle: "Overall milestone progress",
+      title: "Project Health",
+      value: `${overallProgress}%`,
+      status: projectHealthLabel,
+      subtitle: "Overall milestone progress",
 
-  icon: Target,
+      icon: Target,
 
-  iconColor: "#16A34A",
+      iconColor: "#16A34A",
 
-  bg:
-    overallProgress >= 80
-      ? "#F0FDF4"
-      : overallProgress >= 60
-      ? "#EFF6FF"
-      : overallProgress >= 40
-      ? "#FFF7ED"
-      : "#FEF2F2",
+      bg:
+        overallProgress >= 80
+          ? "#F0FDF4"
+          : overallProgress >= 60
+            ? "#EFF6FF"
+            : overallProgress >= 40
+              ? "#FFF7ED"
+              : "#FEF2F2",
 
-  border:
-    overallProgress >= 80
-      ? "#BBF7D0"
-      : overallProgress >= 60
-      ? "#BFDBFE"
-      : overallProgress >= 40
-      ? "#FED7AA"
-      : "#FECACA",
+      border:
+        overallProgress >= 80
+          ? "#BBF7D0"
+          : overallProgress >= 60
+            ? "#BFDBFE"
+            : overallProgress >= 40
+              ? "#FED7AA"
+              : "#FECACA",
 
-  valueColor:
-    overallProgress >= 80
-      ? "#16A34A"
-      : overallProgress >= 60
-      ? "#2563EB"
-      : overallProgress >= 40
-      ? "#F59E0B"
-      : "#DC2626",
+      valueColor:
+        overallProgress >= 80
+          ? "#16A34A"
+          : overallProgress >= 60
+            ? "#2563EB"
+            : overallProgress >= 40
+              ? "#F59E0B"
+              : "#DC2626",
 
-  statusColor:
-    overallProgress >= 80
-      ? "#16A34A"
-      : overallProgress >= 60
-      ? "#2563EB"
-      : overallProgress >= 40
-      ? "#F59E0B"
-      : "#DC2626",
-},
-
-    {
-  title: "Risk Level",
-
-  value: riskLevel.toUpperCase(),
-
-  status: `${delayedActivities} Critical Activities`,
-
-  subtitle: "Based on active activities",
-
-  icon: TriangleAlert,
-
-  iconColor:
-    riskLevel === "Low"
-      ? "#16A34A"
-      : riskLevel === "Medium"
-      ? "#F59E0B"
-      : "#DC2626",
-
-  bg:
-    riskLevel === "Low"
-      ? "#F0FDF4"
-      : riskLevel === "Medium"
-      ? "#FFF7ED"
-      : "#FEF2F2",
-
-  border:
-    riskLevel === "Low"
-      ? "#BBF7D0"
-      : riskLevel === "Medium"
-      ? "#FED7AA"
-      : "#FECACA",
-
-  valueColor:
-    riskLevel === "Low"
-      ? "#16A34A"
-      : riskLevel === "Medium"
-      ? "#F59E0B"
-      : "#DC2626",
-
-  statusColor:
-    riskLevel === "Low"
-      ? "#16A34A"
-      : riskLevel === "Medium"
-      ? "#F59E0B"
-      : "#DC2626",
-},
-
-    
+      statusColor:
+        overallProgress >= 80
+          ? "#16A34A"
+          : overallProgress >= 60
+            ? "#2563EB"
+            : overallProgress >= 40
+              ? "#F59E0B"
+              : "#DC2626",
+    },
 
     {
-  title: "Delivery Confidence",
+      title: "Risk Level",
 
-  value: deliveryConfidence,
+      value: riskLevel.toUpperCase(),
 
-  status: deliverySubtitle,
+      status: `${delayedActivities} Critical Activities`,
 
-  subtitle: "Project delivery forecast",
+      subtitle: "Based on active activities",
 
-  icon: Shield,
+      icon: TriangleAlert,
 
-  iconColor:
-    confidenceScore >= 80
-      ? "#2563EB"
-      : confidenceScore >= 60
-      ? "#F59E0B"
-      : "#DC2626",
+      iconColor:
+        riskLevel === "Low"
+          ? "#16A34A"
+          : riskLevel === "Medium"
+            ? "#F59E0B"
+            : "#DC2626",
 
-  bg:
-    confidenceScore >= 80
-      ? "#EFF6FF"
-      : confidenceScore >= 60
-      ? "#FFF7ED"
-      : "#FEF2F2",
+      bg:
+        riskLevel === "Low"
+          ? "#F0FDF4"
+          : riskLevel === "Medium"
+            ? "#FFF7ED"
+            : "#FEF2F2",
 
-  border:
-    confidenceScore >= 80
-      ? "#BFDBFE"
-      : confidenceScore >= 60
-      ? "#FED7AA"
-      : "#FECACA",
+      border:
+        riskLevel === "Low"
+          ? "#BBF7D0"
+          : riskLevel === "Medium"
+            ? "#FED7AA"
+            : "#FECACA",
 
-  valueColor:
-    confidenceScore >= 80
-      ? "#2563EB"
-      : confidenceScore >= 60
-      ? "#F59E0B"
-      : "#DC2626",
+      valueColor:
+        riskLevel === "Low"
+          ? "#16A34A"
+          : riskLevel === "Medium"
+            ? "#F59E0B"
+            : "#DC2626",
 
-  statusColor:
-    confidenceScore >= 80
-      ? "#2563EB"
-      : confidenceScore >= 60
-      ? "#F59E0B"
-      : "#DC2626",
-},
+      statusColor:
+        riskLevel === "Low"
+          ? "#16A34A"
+          : riskLevel === "Medium"
+            ? "#F59E0B"
+            : "#DC2626",
+    },
+
+
+
+    {
+      title: "Delivery Confidence",
+
+      value: deliveryConfidence,
+
+      status: deliverySubtitle,
+
+      subtitle: "Project delivery forecast",
+
+      icon: Shield,
+
+      iconColor:
+        confidenceScore >= 80
+          ? "#2563EB"
+          : confidenceScore >= 60
+            ? "#F59E0B"
+            : "#DC2626",
+
+      bg:
+        confidenceScore >= 80
+          ? "#EFF6FF"
+          : confidenceScore >= 60
+            ? "#FFF7ED"
+            : "#FEF2F2",
+
+      border:
+        confidenceScore >= 80
+          ? "#BFDBFE"
+          : confidenceScore >= 60
+            ? "#FED7AA"
+            : "#FECACA",
+
+      valueColor:
+        confidenceScore >= 80
+          ? "#2563EB"
+          : confidenceScore >= 60
+            ? "#F59E0B"
+            : "#DC2626",
+
+      statusColor:
+        confidenceScore >= 80
+          ? "#2563EB"
+          : confidenceScore >= 60
+            ? "#F59E0B"
+            : "#DC2626",
+    },
   ];
 
   return (
-   <div
-  className="
+    <div
+      className="
   bg-white
   rounded-2xl
   border
@@ -323,11 +322,11 @@ const deliverySubtitle =
   p-4
   lg:p-5
   "
->
+    >
       <div className="flex items-center gap-3 mb-5">
         <div
           className="
-          w-8 h-8
+          w-7 h-7
           rounded-full
           bg-[#2563EB]
           text-white
@@ -338,38 +337,34 @@ const deliverySubtitle =
           font-bold
           "
         >
-          7
+          6
         </div>
 
-       <h2
-  className="
-  text-[16px]
-  sm:text-[18px]
-  lg:text-[20px]
-  font-bold
-  text-[#0B1F59]
+        <h2
+          className="
+  text-base sm:text-lg lg:text-xl font-bold text-[#0B1F59]
   "
->
+        >
           Executive Health
         </h2>
       </div>
 
-  <div
-  className="
+      <div
+        className="
     grid
     grid-cols-1
     md:grid-cols-3
     gap-3
   "
->
+      >
         {cards.map((card) => {
           const Icon =
             card.icon;
 
           return (
-<div
-  key={card.title}
-  className="
+            <div
+              key={card.title}
+              className="
     relative
     rounded-xl
     border
@@ -378,15 +373,15 @@ const deliverySubtitle =
     min-h-[120px]
     shadow-sm
   "
-  style={{
-    backgroundColor: card.bg,
-    borderColor: card.border,
-  }}
->
-  {/* Icon */}
+              style={{
+                backgroundColor: card.bg,
+                borderColor: card.border,
+              }}
+            >
+              {/* Icon */}
 
- <div
-  className="
+              <div
+                className="
     absolute
     left-4
     top-4
@@ -397,70 +392,70 @@ const deliverySubtitle =
     items-center
     justify-center
   "
-  style={{
-    backgroundColor: `${card.iconColor}15`,
-  }}
->
-  <Icon
-    size={20}
-    color={card.iconColor}
-  />
+                style={{
+                  backgroundColor: `${card.iconColor}15`,
+                }}
+              >
+                <Icon
+                  size={20}
+                  color={card.iconColor}
+                />
 
-    
-  </div>
 
-  {/* Content */}
-<div className="text-center mt-6">
+              </div>
 
-  <p
-    className="
+              {/* Content */}
+              <div className="text-center mt-6">
+
+                <p
+                  className="
       text-[12px]
       font-semibold
       text-[#0B1F59]
     "
-  >
-    {card.title}
-  </p>
+                >
+                  {card.title}
+                </p>
 
-  <h2
-    className="
+                <h2
+                  className="
       mt-2
       text-[28px]
       font-bold
       leading-none
     "
-    style={{
-      color: card.valueColor,
-    }}
-  >
-    {card.value}
-  </h2>
+                  style={{
+                    color: card.valueColor,
+                  }}
+                >
+                  {card.value}
+                </h2>
 
-  <p
-    className="
+                <p
+                  className="
       mt-2
       text-[14px]
       font-semibold
     "
-    style={{
-      color: card.statusColor,
-    }}
-  >
-    {card.status}
-  </p>
+                  style={{
+                    color: card.statusColor,
+                  }}
+                >
+                  {card.status}
+                </p>
 
-  <p
-    className="
+                <p
+                  className="
       mt-1
       text-[11px]
       text-slate-500
     "
-  >
-    {card.subtitle}
-  </p>
+                >
+                  {card.subtitle}
+                </p>
 
-</div>
-</div>
+              </div>
+            </div>
           );
         })}
       </div>
