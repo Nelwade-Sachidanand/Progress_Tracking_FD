@@ -249,7 +249,6 @@ const UserForm = ({ mode = "add", userData = null }) => {
             rounded-lg
             hover:bg-slate-100
             transition
-            hover:text-red-500 transition
             cursor-pointer
           "
           >

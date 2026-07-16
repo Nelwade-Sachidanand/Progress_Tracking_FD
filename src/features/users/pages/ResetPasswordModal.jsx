@@ -74,7 +74,7 @@ export default function ResetPasswordModal({ isOpen, onClose, user, onReset }) {
             <h2 className="text-lg font-bold text-[#0F172A]">Generate Temprary Password</h2>
           </div>
 
-          <button onClick={onClose} className="cursor-pointer hover:text-red-500 transition">
+          <button onClick={onClose} className="cursor-pointer">
             <X size={20} />
           </button>
         </div>

@@ -10,12 +10,12 @@ import RiskAndIssues from "../components/RiskAndIssues";
 import ExecutiveHealth from "../components/ExecutiveHealth";
 import Footer from "../../../components/layout/Footer";
 import { useProjects } from "../../../context/ProjectContext";
-import { useState } from "react";
+
 export default function ProjectDetailPage() {
   const { projects, loading } = useProjects();
 
   const project = getSelectedProject(projects);
-const [selectedMilestones, setSelectedMilestones] = useState([]);
+
   if (loading) {
     return (
       <div className="p-6">
@@ -37,12 +37,7 @@ const [selectedMilestones, setSelectedMilestones] = useState([]);
       <ProjectOverview project={project} />
       <div className="h-5"></div>
 
-      {/* <ExecutiveSummary project={project} /> */}
-      <ExecutiveSummary
-  project={project}
-  selectedMilestones={selectedMilestones}
-  setSelectedMilestones={setSelectedMilestones}
-/>
+      <ExecutiveSummary project={project} />
       <div className="h-5"></div>
 
       <MilestoneJourney project={project} />
@@ -57,10 +52,8 @@ const [selectedMilestones, setSelectedMilestones] = useState([]);
       {/* <GoLiveReadiness project={project} />
       <div className="h-5"></div> */}
 
-     <ExecutiveHealth
-    project={project}
-     selectedMilestones={selectedMilestones}
-/>
+      <ExecutiveHealth />
+
       <Footer />
     </div>
   );

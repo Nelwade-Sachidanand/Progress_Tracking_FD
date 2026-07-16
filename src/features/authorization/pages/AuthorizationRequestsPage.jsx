@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import AuthorizationFilters from "../components/AuthorizationFilters";
 import AuthorizationRequestModal from "../components/AuthorizationRequestModal";
 import AuthorizationSummaryCards from "../components/AuthorizationSummaryCards";
