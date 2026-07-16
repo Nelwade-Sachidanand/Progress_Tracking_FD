@@ -15,11 +15,7 @@ import CustomDropdown from "../../../components/common/CustomDropdown";
 import MultiSelectDropdown from "../../../components/common/MultiSelectDropdown";
 import DateInput from "../../../components/common/DateInput";
 
-export default function ExecutiveSummary({
-  project,
-  selectedMilestones,
-  setSelectedMilestones,
-}) {
+export default function ExecutiveSummary({ project }) {
   function SmallCard({
     title,
     value,
@@ -100,7 +96,7 @@ export default function ExecutiveSummary({
   // const dropdownRef = useRef(null);
   const dateDropdownRef = useRef(null);
   const [showDateDropdown, setShowDateDropdown] = useState(false);
-  //const [selectedMilestones, setSelectedMilestones] = useState([]);
+  const [selectedMilestones, setSelectedMilestones] = useState([]);
 
   const [fromDate, setFromDate] = useState("");
 
@@ -315,10 +311,14 @@ export default function ExecutiveSummary({
             placeholder="All Milestones"
             options={milestones}
             selected={selectedMilestones}
+<<<<<<< HEAD
             // onChange={setSelectedMilestones}
             onChange={(value) => {
               setSelectedMilestones(value);
             }}
+=======
+            onChange={setSelectedMilestones}
+>>>>>>> 6e017cd5811fe8603b3f03a01958d8cbb4d07dd9
             width="w-full"
             dropdownWidth="w-[350px]"
           />

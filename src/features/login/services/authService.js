@@ -20,3 +20,8 @@ export const forgotPassword = async (username) => {
 
   return response.data;
 };
+ 
+export const logoutUser = async () => {
+  const response = await apiClient.post("/user/logout");
+  return response.data;
+};

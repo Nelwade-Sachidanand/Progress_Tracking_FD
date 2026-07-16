@@ -128,20 +128,14 @@ export default function AllTasksPage() {
 
   const selectedPhaseId = selectedPhaseObj?.phaseId || null;
 
-  // const selectedMilestoneIds = [
-  //   ...new Set(
-  //     tasks
-  //       .filter((t) => selectedMilestone.includes(t.milestoneId))
-  //       .map((t) => t.milestoneId),
-  //   ),
-  // ];
-const selectedMilestoneNames = [
-  ...new Set(
-    tasks
-      .filter((t) => selectedMilestone.includes(t.milestoneId))
-      .map((t) => t.milestoneName),
-  ),
-];
+  const selectedMilestoneIds = [
+    ...new Set(
+      tasks
+        .filter((t) => selectedMilestone.includes(t.milestoneId))
+        .map((t) => t.milestoneId),
+    ),
+  ];
+
   const selectedTaskObj = tasks.find(
     (t) => t.task === selectedTask,
   );
@@ -335,14 +329,12 @@ const selectedMilestoneNames = [
             </p>
           </div>
 
- 
           <TaskActions
             selectedPhase={selectedPhase}
             selectedPhaseId={selectedPhaseId}
 
             selectedMilestone={selectedMilestone}
-          //  selectedMilestoneIds={selectedMilestoneIds}
-            selectedMilestoneNames={selectedMilestoneNames}
+            selectedMilestoneIds={selectedMilestoneIds}
 
             selectedTask={selectedTask}
             selectedTaskId={selectedTaskId}

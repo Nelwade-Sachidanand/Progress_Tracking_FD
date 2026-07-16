@@ -153,7 +153,7 @@ export default function AuditDetailsModal({ log, onClose }) {
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-lg hover:bg-slate-100 hover:text-red-500 transition flex items-center justify-center cursor-pointer"
+            className="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center cursor-pointer"
           >
             <X size={18} />
           </button>

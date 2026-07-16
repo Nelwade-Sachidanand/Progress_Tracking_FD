@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation,useNavigate  } from "react-router-dom";
 
 import Swal from "sweetalert2";
 import { useProjects } from "../../../context/ProjectContext";
@@ -23,6 +24,16 @@ const UserManagementPage = () => {
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const location = useLocation();
+
+  const navigate = useNavigate();
+
+  const queryParams = new URLSearchParams(location.search);
+
+  const userId = queryParams.get("userId");
+
+  const action = queryParams.get("action");
 
   const banks = [
     ...new Set(projects.map((project) => project.bankName).filter(Boolean)),
@@ -87,11 +98,27 @@ const UserManagementPage = () => {
 
   const endIndex = startIndex + USERS_PER_PAGE;
 
-  const paginatedUsers = users.slice(startIndex, endIndex);
+  const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
 
-  useEffect(() =>{
+  useEffect(() => {
     setCurrentPage(1);
-  },[searchTerm,roleFilter,bankFilter,statusFilter])
+  }, [searchTerm, roleFilter, bankFilter, statusFilter])
+
+  useEffect(() => {
+    if (!userId || action !== "resetPassword") return;
+
+    const user = users.find((u) => String(u.id) === String(userId));
+
+    if (!user) return;
+
+    setSearchTerm(user.username);
+    setSelectedUser(user);
+    setShowResetPasswordModal(true);
+
+    // Remove query parameters so refresh doesn't reopen the modal
+    navigate("/users", { replace: true });
+
+  }, [users, userId, action, navigate]);
 
   return (
     <div
@@ -138,7 +165,7 @@ const UserManagementPage = () => {
             }}
             currentPage={currentPage}
             totalPages={totalPages}
-            totalRecords={totalPages}
+            totalRecords={filteredUsers.length}
             onPageChange={setCurrentPage}
           />
         </div>
