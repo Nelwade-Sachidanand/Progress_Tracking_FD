@@ -96,43 +96,38 @@ export default function Sidebar() {
               icon: CheckSquare,
               path: "/tasks",
             },
-             {
+          ],
+    },
+
+    ...(isAdmin || isManagement || isImplementation
+      ? [
+          {
+            title: "MONITORING",
+            items: [
+              {
+                name: "Issues",
+                icon: AlertTriangle,
+                path: "/issues",
+              },
+              {
+                name: "Risks",
+                icon: ShieldAlert,
+                path: "/risks",
+              },
+              // {
+              //   name: "Reports",
+              //   icon: FileBarChart,
+              //   path: "/reports",
+              // },
+              {
                 name: "Documents",
                 icon: FileText,
                 path: "/documents",
               },
-          ],
-    },
-
-    // ...(isAdmin || isManagement || isImplementation
-    //   ? [
-    //       {
-    //         title: "MONITORING",
-    //         items: [
-    //           {
-    //             name: "Issues",
-    //             icon: AlertTriangle,
-    //             path: "/issues",
-    //           },
-    //           {
-    //             name: "Risks",
-    //             icon: ShieldAlert,
-    //             path: "/risks",
-    //           },
-    //           // {
-    //           //   name: "Reports",
-    //           //   icon: FileBarChart,
-    //           //   path: "/reports",
-    //           // },
-    //           {
-    //             name: "Documents",
-    //             icon: FileText,
-    //             path: "/documents",
-    //           },
-    //         ],
-    //       },
-    //     ]
-    //   : []),
+            ],
+          },
+        ]
+      : []),
 
     ...(isAdmin
       ? [

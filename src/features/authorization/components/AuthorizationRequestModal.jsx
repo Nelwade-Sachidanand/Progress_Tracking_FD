@@ -172,7 +172,7 @@ export default function AuthorizationRequestModal({
 
             hover:bg-slate-100
             hover:text-[#2563EB]
-hover:text-red-500 transition
+
             cursor-pointer
           "
           >

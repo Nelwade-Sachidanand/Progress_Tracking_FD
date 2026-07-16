@@ -49,7 +49,7 @@ export default function CustomDropdown({
   return (
     <div className="w-full min-w-0">
       {/* Label */}
-      <label className="mb-1 ml-1 block text-sm font-medium text-slate-700 2xl:text-base">
+      <label className="mb-1 ml-1 block text-sm font-medium text-slate-800 2xl:text-base">
         {label}
       </label>
 
@@ -105,7 +105,7 @@ export default function CustomDropdown({
               whitespace-nowrap
               text-left
               text-sm
-              text-slate-700
+              text-slate-800
               2xl:text-lg
             "
               title={formatValue(selectedLabel)}
@@ -118,7 +118,7 @@ export default function CustomDropdown({
             size={18}
             className={`
             shrink-0
-            text-slate-500
+            text-slate-600
             transition-transform
             duration-200
             ${open ? "rotate-180" : ""}
@@ -168,7 +168,7 @@ export default function CustomDropdown({
               text-left
               text-sm
               2xl:text-base
-              text-slate-600
+              text-slate-800 
 
               border-b
               border-[#E1E7EF]
@@ -214,7 +214,7 @@ export default function CustomDropdown({
 
                   ${value === option.value
                       ? "bg-blue-50 font-semibold text-blue-600"
-                      : "text-slate-700 hover:bg-slate-50"
+                      : "text-slate-800 hover:bg-slate-50"
                     }
                 `}
                 >

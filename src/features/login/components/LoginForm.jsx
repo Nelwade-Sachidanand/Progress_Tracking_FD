@@ -67,7 +67,29 @@ const LoginForm = () => {
       const response = await login(username, password);
 
       if (response?.statusType === "S") {
-        const user = response.details.user;
+        const user = {
+          ...response.details.user,
+          forcePasswordChange: response.details.forcePasswordChange,
+        };
+        
+        if (rememberMe) {
+          localStorage.setItem("rememberUsername", username);
+        } else {
+          localStorage.removeItem("rememberUsername");
+        }
+
+        if (!rememberMe) {
+          setUsername("");
+        }
+        setPassword("");
+        setShowPassword(false);
+
+        if (user?.forcePasswordChange) {
+          navigate("/change-password", {
+            replace: true,
+          });
+          return;
+        }
 
         const projects = await fetchProjects(user.id);
 
@@ -84,18 +106,6 @@ const LoginForm = () => {
             replace: true,
           });
         }
-
-        if (rememberMe) {
-          localStorage.setItem("rememberUsername", username);
-        } else {
-          localStorage.removeItem("rememberUsername");
-        }
-
-        if (!rememberMe) {
-          setUsername("");
-        }
-        setPassword("");
-        setShowPassword(false);
       }
     } catch (error) {
       console.log(error);
@@ -639,30 +649,6 @@ const LoginForm = () => {
       <ForgotPasswordModal
         isOpen={showForgotModal}
         onClose={() => setShowForgotModal(false)}
-        // onSubmit={async (request) => {
-        //   try {
-        //     const response = await forgotPassword(request.username);
-
-        //     if (response?.statusType === "S") {
-        //       toast.success(
-        //         response.message || "Password reset request submitted successfully."
-        //       );
-
-        //       setShowForgotModal(false);
-        //     } else {
-        //       toast.error(
-        //         response?.message || "Failed to submit password reset request."
-        //       );
-        //     }
-        //   } catch (error) {
-        //     console.error(error);
-
-        //     toast.error(
-        //       error?.response?.data?.message ||
-        //         "Something went wrong. Please try again."
-        //     );
-        //   }
-        // }}
         onSubmit={async (request) => {
           try {
             const response = await forgotPassword(request.username);
