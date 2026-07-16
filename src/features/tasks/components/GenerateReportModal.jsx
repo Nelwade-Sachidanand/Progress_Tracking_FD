@@ -17,6 +17,7 @@ export default function GenerateReportModal({
   selectedActivity,
   selectedStatus,
   onGenerate,
+  selectedMilestoneNames = [],
 }) {
   if (!isOpen) return null;
 
@@ -272,9 +273,12 @@ export default function GenerateReportModal({
                       <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("milestone")}`}>
                         <span className="opacity-60 text-[10px] uppercase tracking-wider">Milestone:</span>
                         <span className="font-semibold">
-                          {selectedMilestone.length === 1
+                          {/* {selectedMilestone.length === 1
                             ? selectedMilestone[0]
-                            : `${selectedMilestone[0]} +${selectedMilestone.length - 1} more`}
+                            : `${selectedMilestone[0]} +${selectedMilestone.length - 1} more`} */}
+                            {selectedMilestoneNames?.length === 1
+    ? selectedMilestoneNames[0]
+    : `${selectedMilestoneNames[0]} +${selectedMilestoneNames.length - 1} more`}
                         </span>
                       </div>
                       {/* Tooltip - Shows all milestone names */}
@@ -298,7 +302,7 @@ export default function GenerateReportModal({
                             </p>
 
                             <div className="flex flex-wrap gap-1">
-                              {selectedMilestone.map((item, index) => (
+                              {selectedMilestoneNames.map((item, index) => (
                                 <span
                                   key={index}
                                   className="

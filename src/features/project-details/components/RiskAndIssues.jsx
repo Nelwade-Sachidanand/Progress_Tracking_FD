@@ -19,17 +19,23 @@ export default function RiskAndIssues({
             task.subTasks?.flatMap(
               (subTask) =>
                 subTask.activities?.map(
-                  (activity) => ({
-                    ...activity,
-                    phaseName:
-                      phase.phaseName,
-                    milestoneName:
-                      milestone.milestoneName,
-                    taskName:
-                      task.taskName,
-                    subTaskName:
-                      subTask.subTaskName,
-                  })
+                  activity => ({
+  ...activity,
+
+  phaseId: phase.phaseId,
+  phaseName: phase.phaseName,
+
+  milestoneId: milestone.milestoneId,
+  milestoneName: milestone.milestoneName,
+
+  taskId: task.taskId,
+  taskName: task.taskName,
+
+  subTaskId: subTask.subTaskId,
+  subTaskName: subTask.subTaskName,
+
+  activityId: activity.activityId,
+})
                 ) || []
             ) || []
         ) || []
@@ -52,25 +58,36 @@ const role = user?.role;
 
 
 
-const criticalRiskActivities = activities.filter((activity) => {
+const startOfWeek = new Date(today);
+startOfWeek.setHours(0, 0, 0, 0);
+
+const day = startOfWeek.getDay();
+const diff = day === 0 ? -6 : 1 - day; // Monday
+
+startOfWeek.setDate(startOfWeek.getDate() + diff);
+
+const endOfWeek = new Date(startOfWeek);
+endOfWeek.setDate(endOfWeek.getDate() + 6);
+endOfWeek.setHours(23, 59, 59, 999);
+
+const currentWeekActivities = activities.filter((activity) => {
   if (
-    !activity.plannedEndDate ||
-    activity.executionStatus === "Completed"
+    activity.executionStatus === "Completed" ||
+    !activity.plannedStartDate ||
+    !activity.plannedEndDate
   ) {
     return false;
   }
 
-  const endDate = new Date(activity.plannedEndDate);
-
-  const delayedDays = Math.floor(
-    (today - endDate) / (1000 * 60 * 60 * 24)
-  );
+  const start = new Date(activity.plannedStartDate);
+  const end = new Date(activity.plannedEndDate);
 
   return (
-    delayedDays >= 7 &&
-    Number(activity.progress || 0) < 80
+    start <= endOfWeek &&
+    end >= startOfWeek
   );
 });
+
 const getDelayDays = (plannedEndDate) => {
   if (!plannedEndDate) return 0;
 
@@ -86,78 +103,170 @@ const getDelayDays = (plannedEndDate) => {
 };
 
 const getRiskDetails = (activity) => {
-  const delay = getDelayDays(activity.plannedEndDate);
+  const start = new Date(activity.plannedStartDate);
+  const end = new Date(activity.plannedEndDate);
+
   const progress = Number(activity.progress || 0);
 
+  // Completed
   if (activity.executionStatus === "Completed") {
     return {
-      level: "On Track",
+      level: "Low",
       color: "bg-green-100 text-green-700",
       reason: "Completed"
     };
   }
 
-  if (delay >= 14 && progress < 80) {
+  // Planned End Date Crossed
+  if (
+    today > end &&
+    activity.executionStatus !== "Completed"
+  ) {
     return {
       level: "Critical",
       color: "bg-red-100 text-red-700",
-      reason: `Delayed by ${delay} days`
+      reason: "Planned end date crossed"
     };
   }
 
-  if (delay > 0) {
+  // Current week but not started yet
+  if (
+    today >= start &&
+    today <= end &&
+    activity.executionStatus === "Not Started"
+  ) {
+    return {
+      level: "Low",
+      color: "bg-blue-100 text-blue-700",
+      reason: "Planned for current week"
+    };
+  }
+
+  // High
+  if (
+    activity.executionStatus === "In Progress" &&
+    progress < 50
+  ) {
     return {
       level: "High",
       color: "bg-orange-100 text-orange-700",
-      reason: "End date crossed"
+      reason: "Progress below 50%"
     };
   }
 
+  // Medium
   if (
-    activity.executionStatus === "Not Started" &&
-    activity.plannedStartDate &&
-    new Date(activity.plannedStartDate) < today
+    activity.executionStatus === "In Progress" &&
+    progress >= 50 &&
+    progress < 80
   ) {
     return {
-      level: "Pending Start",
+      level: "Medium",
       color: "bg-yellow-100 text-yellow-700",
-      reason: "Start date crossed"
+      reason: "Progress between 50% and 79%"
     };
   }
 
+  // Low
   return {
-    level: "On Track",
+    level: "Low",
     color: "bg-green-100 text-green-700",
-    reason: "On schedule"
+    reason: "On Track"
   };
 };
 
+const riskActivities = currentWeekActivities.filter(
+  (activity) => getRiskDetails(activity) !== null
+);
+const escalationActivities = activities.filter((activity) => {
+  // Ignore completed activities
+  if (activity.executionStatus === "Completed") {
+    return false;
+  }
 
-const escalationActivities =
-  activities.filter(
-    (activity) =>
-      activity.plannedEndDate &&
-      new Date(
-        activity.plannedEndDate
-      ) < today &&
-      activity.executionStatus !==
-        "Completed"
+  // Planned start date is mandatory
+  if (!activity.plannedStartDate) {
+    return false;
+  }
+
+  const plannedStart = new Date(activity.plannedStartDate);
+
+  // Previous week activities only
+  const previousWeekActivity = plannedStart < startOfWeek;
+
+  // Only not started activities
+  const notStarted =
+    activity.executionStatus === "Not Started" ||
+    !activity.executionStatus;
+
+  // Progress should be 0
+  const zeroProgress = Number(activity.progress || 0) === 0;
+
+  return (
+    previousWeekActivity &&
+    notStarted &&
+    zeroProgress
+  );
+});
+const getEscalationDetails = (activity) => {
+  const start = new Date(activity.plannedStartDate);
+
+  const pendingDays = Math.max(
+    0,
+    Math.floor(
+      (today - start) / (1000 * 60 * 60 * 24)
+    )
   );
 
+  return {
+    level: "High",
+    color: "bg-orange-100 text-orange-700",
+    reason: `Pending from previous week (${pendingDays} days)`,
+  };
+};
 const dependencyActivities = [];
 
 for (let i = 1; i < activities.length; i++) {
   const previous = activities[i - 1];
   const current = activities[i];
 
+  // Ignore completed current activity
+  if (current.executionStatus === "Completed") {
+    continue;
+  }
+
+  // Planned start date is mandatory
+  if (!current.plannedStartDate) {
+    continue;
+  }
+
+  const plannedStart = new Date(current.plannedStartDate);
+
+  // Ignore future activities
+  if (plannedStart > today) {
+    continue;
+  }
+
+  // Current activity should not have started
+  const notStarted =
+    current.executionStatus === "Not Started" ||
+    !current.executionStatus;
+
+  if (!notStarted) {
+    continue;
+  }
+
+  // Previous activity must not be completed
+  if (previous.executionStatus === "Completed") {
+    continue;
+  }
+
+  // Same workflow hierarchy
   if (
-    previous.phaseName === current.phaseName &&
-    previous.milestoneName === current.milestoneName &&
-    previous.taskName === current.taskName &&
-    previous.subTaskName === current.subTaskName &&
-    previous.executionStatus !== "Completed" &&
-    (current.executionStatus === "Not Started" ||
-      !current.executionStatus)
+    previous.phaseId === current.phaseId &&
+    previous.milestoneId === current.milestoneId &&
+    previous.taskId === current.taskId &&
+    previous.subTaskId === current.subTaskId
   ) {
     dependencyActivities.push({
       ...current,
@@ -166,12 +275,19 @@ for (let i = 1; i < activities.length; i++) {
   }
 }
 const getDependencyDetails = (activity) => {
+  const pendingDays = Math.max(
+    0,
+    Math.floor(
+      (today - new Date(activity.plannedStartDate)) /
+      (1000 * 60 * 60 * 24)
+    )
+  );
+
   return {
     status: "Blocked",
     color: "bg-red-100 text-red-700",
-    action: activity.blockedBy
-      ? `Complete "${activity.blockedBy}"`
-      : "-"
+    action: `Complete "${activity.blockedBy}"`,
+    reason: `Pending for ${pendingDays} day(s)`
   };
 };
 
@@ -230,10 +346,10 @@ const getOpenRiskDetails = (activity) => {
 
 const cards = [
   {
-    value: criticalRiskActivities.length,
-    title: "Critical Risks / Issues",
-    subtitle: "Require immediate attention",
-    activities: criticalRiskActivities,
+    value: riskActivities.length,
+    title: "Critical Risks",
+    subtitle: "",
+    activities: riskActivities,
     icon: AlertTriangle,
     iconBg: "#EF4444",
     textColor: "#DC2626",
@@ -247,7 +363,7 @@ const cards = [
         {
           value: escalationActivities.length,
           title: "Escalations",
-          subtitle: "Past due activities",
+          subtitle: "",
           activities: escalationActivities,
           icon: CircleAlert,
           iconBg: "#F59E0B",
@@ -262,7 +378,7 @@ const cards = [
   {
     value: dependencyActivities.length,
     title: "Dependencies",
-    subtitle: "Pending dependencies",
+    subtitle: "",
     activities: dependencyActivities,
     icon: Link2,
     iconBg: "#2563EB",
@@ -272,18 +388,7 @@ const cards = [
     linkColor: "#2563EB",
   },
 
-  {
-    value: openRiskActivities.length,
-    title: "Open Risks",
-    subtitle: "Active open risks",
-    activities: openRiskActivities,
-    icon: Flag,
-    iconBg: "#10B981",
-    textColor: "#059669",
-    bg: "#F8FFFC",
-    border: "#DDF7EC",
-    linkColor: "#059669",
-  },
+
 ];
   return (
     <div className="bg-white rounded-2xl border border-[#E5EAF2] p-5">
@@ -291,7 +396,7 @@ const cards = [
       <div className="flex items-center gap-3 mb-5">
         <div
           className="
-          w-8 h-8
+          w-7 h-7
           rounded-full
           bg-[#2563EB]
           text-white
@@ -305,138 +410,121 @@ const cards = [
           5
         </div>
 
-        <h2 className="text-[20px] font-bold text-[#0B1F59]">
+      <h2
+          className="
+  text-base sm:text-lg lg:text-xl font-bold text-[#0B1F59]
+  "
+        >
           Risks & Issues
         </h2>
       </div>
 
       {/* Cards */}
 <div
-  className="
-  grid
-  grid-cols-1
-  sm:grid-cols-2
-  xl:grid-cols-4
-  gap-4
-  "
+  className={`
+    grid
+    grid-cols-1
+    md:grid-cols-2
+    gap-4
+    ${
+      cards.length === 3
+        ? "xl:grid-cols-3"
+        : "xl:grid-cols-2"
+    }
+  `}
 >
         {cards.map((card) => {
           const Icon = card.icon;
 
           return (
-            <div
+  <div
   key={card.title}
-className="
-rounded-2xl
-border
-p-4
-lg:p-5
-min-h-[170px]
-lg:min-h-[190px]
-flex
-flex-col
-"
+  className="
+    rounded-xl
+    border
+    bg-white
+    px-5
+    py-4
+    flex
+    items-center
+    justify-between
+    transition-all
+    hover:shadow-md
+    min-h-[100px]
+  "
   style={{
     backgroundColor: card.bg,
     borderColor: card.border,
   }}
 >
-
-  {/* Icon + Value */}
-  <div className="flex items-center gap-4 mb-5">
+  {/* Left Section */}
+  <div className="flex items-center gap-4 flex-1">
+    {/* Icon */}
     <div
-     className="
-w-10
-h-10
-lg:w-11
-lg:h-11
-rounded-full
-flex
-items-center
-justify-center
-shrink-0
-"
+      className="
+        w-11
+        h-11
+        rounded-full
+        flex
+        items-center
+        justify-center
+        shrink-0
+      "
       style={{
         backgroundColor: card.iconBg,
       }}
     >
-      <Icon
-        size={18}
-        color="white"
-      />
+      <Icon size={15} color="white" />
     </div>
 
-    <h3
-      className="
-     text-[22px]
-sm:text-[24px]
-lg:text-[30px]
-      font-bold
-      leading-none
-      "
-      style={{
-        color: card.textColor,
-      }}
-    >
-      {card.value}
-    </h3>
-  </div>
+    {/* Content */}
+    <div className="min-w-0">
+      <div
+        className="text-[25px] font-bold leading-none"
+        style={{
+          color: card.textColor,
+        }}
+      >
+        {card.value}
+      </div>
 
-  {/* Center Content */}
-  <div className="flex-1 text-center">
-    <h4
-      className="
-      text-[15px]
-sm:text-[16px]
-lg:text-[18px]
-      font-bold
-      text-[#0B1F59]
-      leading-6
-      "
-    >
-      {card.title}
-    </h4>
+      <h3 className="mt-1 text-base font-bold text-[#0B1F59]">
+        {card.title}
+      </h3>
 
-    <p
-      className="
-     text-[12px]
-lg:text-[13px]
-      text-[#64748B]
-      mt-2
-      "
-    >
-      {card.subtitle}
-    </p>
+      <p className="mt-1 text-sm text-[#64748B]">
+        {card.subtitle}
+      </p>
+    </div>
   </div>
 
   {/* Divider */}
-  <div className="border-t border-[#E8EDF5] my-4" />
+  <div className="mx-6 h-14 w-px bg-[#E5EAF2]" />
 
-  {/* Footer */}
+  {/* Right Section */}
   <button
-  onClick={() => {
-    setModalTitle(card.title);
-    setModalData(
-      card.activities
-    );
-    setIsModalOpen(true);
-  }}
-  className="
-  flex
-  items-center
-  justify-center
-  gap-2
-  text-sm
-  font-semibold
-  cursor-pointer
-  "
-  style={{
-    color: card.linkColor,
-  }}
->
-  View Details
-  <ArrowRight size={14} />
-</button>
+    onClick={() => {
+      setModalTitle(card.title);
+      setModalData(card.activities);
+      setIsModalOpen(true);
+    }}
+    className="
+      flex
+      items-center
+      gap-2
+      text-sm
+      font-semibold
+      whitespace-nowrap
+      transition
+      hover:opacity-80
+    "
+    style={{
+      color: card.linkColor,
+    }}
+  >
+    View Details
+    <ArrowRight size={15} />
+  </button>
 </div>
           );
         })}
@@ -610,31 +698,68 @@ border-slate-200
 >
                 Planned End
               </th>
-{modalTitle === "Critical Risks / Issues" && (
+{modalTitle === "Critical Risks" && (
   <>
-    <th className="
-px-4
-py-3
-text-left
-text-sm
-font-semibold
-text-[#334155]
-border-b
-border-slate-200
-">Risk Level</th>
-    <th className="
-px-4
-py-3
-text-left
-text-sm
-font-semibold
-text-[#334155]
-border-b
-border-slate-200
-">Reason</th>
+    <th
+      className="
+      px-4
+      py-3
+      text-left
+      text-sm
+      font-semibold
+      text-[#334155]
+      border-b
+      border-slate-200
+      "
+    >
+      Risk Level
+    </th>
+
+    <th
+      className="
+      px-4
+      py-3
+      text-left
+      text-sm
+      font-semibold
+      text-[#334155]
+      border-b
+      border-slate-200
+      "
+    >
+      Reason
+    </th>
   </>
 )}
+{modalTitle === "Escalations" && (
+  <>
+    <th  className="
+      px-4
+      py-3
+      text-left
+      text-sm
+      font-semibold
+      text-[#334155]
+      border-b
+      border-slate-200
+      ">
+      Risk Level
+    </th>
 
+    <th  className="
+      px-4
+      py-3
+      text-left
+      text-sm
+      font-semibold
+      text-[#334155]
+      border-b
+      border-slate-200
+      ">
+      Reason
+    </th>
+  </>
+)}
 {modalTitle === "Dependencies" && (
   <>
     <th
@@ -667,57 +792,11 @@ border-slate-200
       Dependency Status
     </th>
 
-    <th
-      className="
-      px-4
-      py-3
-      text-left
-      text-sm
-      font-semibold
-      text-[#334155]
-      border-b
-      border-slate-200
-      "
-    >
-      Next Action
-    </th>
+    
   </>
 )}
 
-{modalTitle === "Open Risks" && (
-  <>
-    <th  className="
-      px-4
-      py-3
-      text-left
-      text-sm
-      font-semibold
-      text-[#334155]
-      border-b
-      border-slate-200
-      ">Risk Status</th>
-    <th  className="
-      px-4
-      py-3
-      text-left
-      text-sm
-      font-semibold
-      text-[#334155]
-      border-b
-      border-slate-200
-      ">Current Risk</th>
-    <th  className="
-      px-4
-      py-3
-      text-left
-      text-sm
-      font-semibold
-      text-[#334155]
-      border-b
-      border-slate-200
-      ">Recommended Action</th>
-  </>
-)}
+
             </tr>
 
           </thead>
@@ -739,6 +818,7 @@ border-slate-200
   {modalData.map((activity, index) => {
 
     const risk = getRiskDetails(activity);
+    const escalation = getEscalationDetails(activity);
 const dependency = getDependencyDetails(activity);
 const openRisk = getOpenRiskDetails(activity);
     return (
@@ -802,15 +882,15 @@ activity.executionStatus==="Completed"
                     }
                   </td> */}
 
-                  <td className="p-3">
-                    {
-                      activity.plannedEndDate
-                    }
-                  </td>
+                 <td className="p-3">
+  {activity.plannedEndDate
+    ? new Date(activity.plannedEndDate).toLocaleDateString("en-GB").replace(/\//g, "-")
+    : "-"}
+</td>
 
-          {modalTitle === "Critical Risks / Issues" && (
+  {modalTitle === "Critical Risks" && (
   <>
-    <td>
+    <td className="px-4 py-3">
       <span
         className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${risk.color}`}
       >
@@ -818,10 +898,26 @@ activity.executionStatus==="Completed"
       </span>
     </td>
 
-    <td>{risk.reason}</td>
+    <td className="px-4 py-3 text-sm text-[#475569]">
+      {risk.reason}
+    </td>
   </>
 )}
+{modalTitle === "Escalations" && (
+  <>
+    <td>
+      <span
+        className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${escalation.color}`}
+      >
+        {escalation.level}
+      </span>
+    </td>
 
+    <td>
+      {escalation.reason}
+    </td>
+  </>
+)}
 {modalTitle === "Dependencies" && (
   <>
     <td className="px-4 py-3 text-sm text-[#475569]">
@@ -836,27 +932,11 @@ activity.executionStatus==="Completed"
       </span>
     </td>
 
-    <td className="px-4 py-3 text-sm text-slate-600 font-medium">
-      {dependency.action}
-    </td>
+   
   </>
 )}
 
-{modalTitle === "Open Risks" && (
-  <>
-    <td>
-      <span
-        className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${openRisk.color}`}
-      >
-        {openRisk.status}
-      </span>
-    </td>
 
-    <td>{openRisk.risk}</td>
-
-    <td>{openRisk.action}</td>
-  </>
-)}
 
                 {/* </tr>
               )
