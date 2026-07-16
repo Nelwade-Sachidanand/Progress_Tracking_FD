@@ -17,7 +17,6 @@ export default function GenerateReportModal({
   selectedActivity,
   selectedStatus,
   onGenerate,
-  selectedMilestoneNames = [],
 }) {
   if (!isOpen) return null;
 
@@ -89,54 +88,54 @@ export default function GenerateReportModal({
           <button
             onClick={onClose}
             className="w-9 h-9 rounded-lg hover:bg-slate-100  flex items-center justify-center transition-colors shrink-0 cursor-pointer"
->
-<X size={18} className="text-slate-500 hover:text-red-500 transition" />
-</button>
-</div>
- 
-        {/* Body - Scrollable */}
-<div className="px-6 py-5 space-y-5 overflow-y-auto flex-1">
-          {/* Report Format */}
-{/* Report Format */}
-<div>
-  <label className="block text-sm font-semibold text-[#0F172A] mb-3">
-    Report Format
-  </label>
+          >
+            <X size={18} className="text-slate-500 hover:text-red-500 transition" />
+          </button>
+        </div>
 
-  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-    {[
-      {
-        type: "pdf",
-        label: "PDF",
-        ext: ".pdf",
-        icon: FileText,
-        color: "text-red-500",
-      },
-      {
-        type: "excel",
-        label: "Excel",
-        ext: ".xlsx",
-        icon: FileSpreadsheet,
-        color: "text-green-600",
-      },
-      {
-        type: "csv",
-        label: "CSV",
-        ext: ".csv",
-        icon: FileSpreadsheet,
-        color: "text-blue-600",
-      },
-      {
-        type: "word",
-        label: "Word",
-        ext: ".docx",
-        icon: FileType,
-        color: "text-indigo-600",
-      },
-    ].map(({ type, label, ext, icon: Icon, color }) => (
-      <label
-        key={type}
-        className={`
+        {/* Body - Scrollable */}
+        <div className="px-6 py-5 space-y-5 overflow-y-auto flex-1">
+          {/* Report Format */}
+          {/* Report Format */}
+          <div>
+            <label className="block text-sm font-semibold text-[#0F172A] mb-3">
+              Report Format
+            </label>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              {[
+                {
+                  type: "pdf",
+                  label: "PDF",
+                  ext: ".pdf",
+                  icon: FileText,
+                  color: "text-red-500",
+                },
+                {
+                  type: "excel",
+                  label: "Excel",
+                  ext: ".xlsx",
+                  icon: FileSpreadsheet,
+                  color: "text-green-600",
+                },
+                {
+                  type: "csv",
+                  label: "CSV",
+                  ext: ".csv",
+                  icon: FileSpreadsheet,
+                  color: "text-blue-600",
+                },
+                {
+                  type: "word",
+                  label: "Word",
+                  ext: ".docx",
+                  icon: FileType,
+                  color: "text-indigo-600",
+                },
+              ].map(({ type, label, ext, icon: Icon, color }) => (
+                <label
+                  key={type}
+                  className={`
           
           rounded-xl
           border
@@ -273,12 +272,9 @@ export default function GenerateReportModal({
                       <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("milestone")}`}>
                         <span className="opacity-60 text-[10px] uppercase tracking-wider">Milestone:</span>
                         <span className="font-semibold">
-                          {/* {selectedMilestone.length === 1
+                          {selectedMilestone.length === 1
                             ? selectedMilestone[0]
-                            : `${selectedMilestone[0]} +${selectedMilestone.length - 1} more`} */}
-                            {selectedMilestoneNames?.length === 1
-    ? selectedMilestoneNames[0]
-    : `${selectedMilestoneNames[0]} +${selectedMilestoneNames.length - 1} more`}
+                            : `${selectedMilestone[0]} +${selectedMilestone.length - 1} more`}
                         </span>
                       </div>
                       {/* Tooltip - Shows all milestone names */}
@@ -302,7 +298,7 @@ export default function GenerateReportModal({
                             </p>
 
                             <div className="flex flex-wrap gap-1">
-                              {selectedMilestoneNames.map((item, index) => (
+                              {selectedMilestone.map((item, index) => (
                                 <span
                                   key={index}
                                   className="
