@@ -56,36 +56,14 @@ export default function ProgressCard({ projects = [] }) {
 
   return (
     <div className="mt-[-10px]">
-      {/* <div className="flex items-center justify-between mb-6">
-        <h2
-          className="
-          text-xl
-          xl:text-2xl
-          font-bold
-          text-[#0B1F59]
-        "
-        >
+      <div className="flex items-center justify-between mb-6">
+
+        <h2 className="text-xl xl:text-2xl font-bold text-[#0B1F59]">
           Projects
         </h2>
 
-        <span
-          className="
-          text-sm
-          text-slate-600
-        "
-        >
-          {projects.length} Project
-          {projects.length > 1 ? "s" : ""}
-        </span>
-      </div> */}
-<div className="flex items-center justify-between mb-6">
-
-  <h2 className="text-xl xl:text-2xl font-bold text-[#0B1F59]">
-    Projects
-  </h2>
-
-  {/* ACTIVE PROJECT CHIP (LIKE IMAGE) */}
-  <div className="
+        {/* ACTIVE PROJECT CHIP (LIKE IMAGE) */}
+        <div className="
     bg-[#F0F4FF]
     border border-[#DDE6FF]
     text-[#2563EB]
@@ -95,11 +73,11 @@ export default function ProgressCard({ projects = [] }) {
     font-semibold
     shadow-sm
   ">
-   {projects.length} Project
+          {projects.length} Project
           {projects.length > 1 ? "s" : ""}
-  </div>
+        </div>
 
-</div>
+      </div>
       <div
         className="
         grid
@@ -121,11 +99,13 @@ export default function ProgressCard({ projects = [] }) {
                 ? "#F59E0B"
                 : "#22C55E";
 
+          const shortBankName = project.bankName.match(/\(([^)]+)\)/)?.[1] || project.bankName;
+
           return (
             <div
               key={project.id}
               className="
-              group
+              group 
               bg-white
               rounded-2xl
               border
@@ -146,7 +126,7 @@ export default function ProgressCard({ projects = [] }) {
                     h-12
                     w-12
                     rounded-2xl
-                    bg-blue-50
+                    bg-blue-100
                     flex
                     items-center
                     justify-center
@@ -166,18 +146,18 @@ export default function ProgressCard({ projects = [] }) {
                       truncate
                     "
                     >
-                      {project.projectName}
+                      {shortBankName}
                     </h3>
 
                     <p
                       className="
                       text-sm
                       2xl:base
-                      text-slate-600
+                      text-slate-700
                       truncate
                     "
                     >
-                      {project.bankName}
+                      {project.projectName}
                     </p>
                   </div>
                 </div>
@@ -191,13 +171,12 @@ export default function ProgressCard({ projects = [] }) {
                   2xl-text-sm
                   font-semibold
                   shrink-0
-                  ${
-                    metrics.status === "On Track"
+                  ${metrics.status === "On Track"
                       ? "bg-green-100 text-green-700"
                       : metrics.status === "At Risk"
                         ? "bg-yellow-100 text-yellow-700"
                         : "bg-red-100 text-red-700"
-                  }
+                    }
                 `}
                 >
                   {metrics.status}
@@ -276,8 +255,8 @@ export default function ProgressCard({ projects = [] }) {
                     <span className="ml-auto font-semibold text-slate-700">
                       {metrics.projectStartDate
                         ? new Date(metrics.projectStartDate)
-                            .toLocaleDateString("en-GB")
-                            .replace(/\//g, "-")
+                          .toLocaleDateString("en-GB")
+                          .replace(/\//g, "-")
                         : "-"}
                     </span>
                   </div>
@@ -291,8 +270,8 @@ export default function ProgressCard({ projects = [] }) {
                     <span className="ml-auto font-semibold text-slate-700">
                       {metrics.goLiveDate
                         ? new Date(metrics.goLiveDate)
-                            .toLocaleDateString("en-GB")
-                            .replace(/\//g, "-")
+                          .toLocaleDateString("en-GB")
+                          .replace(/\//g, "-")
                         : "-"}
                     </span>
                   </div>
@@ -320,16 +299,15 @@ export default function ProgressCard({ projects = [] }) {
                       className={`
                       ml-auto
                       font-semibold
-                      ${
-                        metrics.delayWeeks > 3
+                      ${metrics.delayWeeks > 3
                           ? "text-red-600"
                           : metrics.delayWeeks > 1
                             ? "text-yellow-600"
                             : "text-green-600"
-                      }
+                        }
                     `}
                     >
-                      {metrics.delayWeeks} weeks
+                      {metrics.delayWeeks} {metrics.delayWeeks <= 1 ? "week" : "weeks"}
                     </span>
                   </div>
                 </div>

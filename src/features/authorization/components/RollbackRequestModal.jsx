@@ -14,28 +14,28 @@ export default function RollbackRequestModal({
     return (
         <div
             className="
-        fixed
-        inset-0
-        z-[10000]
-        flex
-        items-center
-        justify-center
-        bg-black/40
-        backdrop-blur-sm
-        p-4
-      "
+            fixed
+            inset-0
+            z-[10000]
+            flex
+            items-center
+            justify-center
+            bg-black/40
+            backdrop-blur-sm
+            p-4
+        "
         >
             <div
                 className="
-          w-full
-          max-w-md
-          rounded-2xl
-          border
-          border-[#CDD7E3]
-          bg-white
-          shadow-2xl
-          overflow-hidden
-        "
+                w-full
+                max-w-md
+                rounded-2xl
+                border
+                border-[#CDD7E3]
+                bg-white
+                shadow-2xl
+                overflow-hidden
+                "
             >
                 {/* Header */}
                 <div className="border-b border-[#CDD7E3] px-6 py-4">
@@ -61,15 +61,15 @@ export default function RollbackRequestModal({
                             onChange={(e) => setReason(e.target.value)}
                             placeholder="Enter rollback reason..."
                             className="
-                w-full
-                rounded-xl
-                border
-                border-[#CDD7E3]
-                p-3
-                resize-none
-                outline-none
-                focus:border-[#2563EB]
-              "
+                            w-full
+                            rounded-xl
+                            border
+                            border-[#CDD7E3]
+                            p-3
+                            resize-none
+                            outline-none
+                            focus:border-[#2563EB]
+                        "
                         />
                     </div>
 
@@ -84,15 +84,15 @@ export default function RollbackRequestModal({
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Enter admin password"
                             className="
-                h-11
-                w-full
-                rounded-xl
-                border
-                border-[#CDD7E3]
-                px-3
-                outline-none
-                focus:border-[#2563EB]
-              "
+                            h-10
+                            w-full
+                            rounded-xl
+                            border
+                            border-[#CDD7E3]
+                            px-3
+                            outline-none
+                            focus:border-[#2563EB]
+                        "
                         />
                     </div>
                 </div>
@@ -100,34 +100,34 @@ export default function RollbackRequestModal({
                 {/* Footer */}
                 <div
                     className="
-            flex
-            items-center
-            justify-end
-            gap-3
-            border-t
-            border-[#CDD7E3]
-            bg-slate-50
-            px-6
-            py-4
-          "
+                    flex
+                    items-center
+                    justify-end
+                    gap-3
+                    border-t
+                    border-[#CDD7E3]
+                    bg-slate-50
+                    px-6
+                    py-4
+                "
                 >
                     <button
                         type="button"
                         onClick={onClose}
                         className="
-              rounded-xl
-              border
-              border-[#CDD7E3]
-              bg-white
-              px-5
-              py-2
-              text-sm
-              font-medium
-              text-slate-700
-              transition
-              hover:bg-slate-100
-              cursor-pointer
-            "
+                        rounded-xl
+                        border
+                        border-[#CDD7E3]
+                        bg-white
+                        px-5
+                        py-2
+                        text-sm
+                        font-medium
+                        text-slate-700
+                        transition
+                        hover:bg-slate-100
+                        cursor-pointer
+                        "
                     >
                         Cancel
                     </button>
@@ -148,17 +148,17 @@ export default function RollbackRequestModal({
                             onSubmit();
                         }}
                         className="
-              rounded-xl
-              bg-orange-600
-              px-5
-              py-2
-              text-sm
-              font-medium
-              text-white
-              transition
-              hover:bg-orange-700
-              cursor-pointer
-            "
+                        rounded-xl
+                        bg-orange-600
+                        px-5
+                        py-2
+                        text-sm
+                        font-medium
+                        text-white
+                        transition
+                        hover:bg-orange-700
+                        cursor-pointer
+                        "
                     >
                         Confirm Rollback
                     </button>

@@ -190,8 +190,8 @@ const UserTable = ({ users = [], loading, onDelete, onResetPassword, currentPage
                     px-3
                     py-1
                     rounded-full
-                    bg-slate-100
-                    text-slate-600
+                    bg-blue-100
+                    text-blue-700
                     text-xs
                     xl:text-sm
                     font-medium

@@ -40,8 +40,6 @@ export default function MilestoneTable({
     <div className="bg-white rounded-2xl border border-[#CDD7E3] p-5">
       {/* Header */}
 
-      {/* Header */}
-
       <div
         className="
     flex
@@ -150,6 +148,10 @@ export default function MilestoneTable({
                 Milestone
               </th>
 
+              <th className="px-5 py-3 text-left text-sm lg:text-base font-semibold text-slate-700">
+                Phase
+              </th>
+
               <th className="w-[150px] lg:w-[180px] px-4 py-3 text-center text-sm lg:text-base font-semibold text-slate-700">
                 Weightage (%)
               </th>
@@ -176,6 +178,15 @@ export default function MilestoneTable({
                         title={milestone.milestoneName}
                       >
                         {milestone.milestoneName}
+                      </span>
+                    </td>
+
+                    <td className="px-5 py-2">
+                      <span
+                        className="block truncate text-slate-700 text-sm xl:text-base font-semibold"
+                        title={milestone.phaseName}
+                      >
+                        {milestone.phaseName}
                       </span>
                     </td>
 

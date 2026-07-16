@@ -4,6 +4,7 @@ import {
   Link2,
   Flag,
   ArrowRight,
+  X,
 } from "lucide-react";
 import { useState } from "react";
 export default function RiskAndIssues({
@@ -412,8 +413,8 @@ export default function RiskAndIssues({
 
         <h2
           className="
-  text-base sm:text-lg lg:text-xl font-bold text-[#0B1F59]
-  "
+          text-base sm:text-lg lg:text-xl font-bold text-[#0B1F59]
+          "
         >
           Risks & Issues
         </h2>
@@ -422,15 +423,15 @@ export default function RiskAndIssues({
       {/* Cards */}
       <div
         className={`
-    grid
-    grid-cols-1
-    md:grid-cols-2
-    gap-4
-    ${cards.length === 3
+        grid
+        grid-cols-1
+        md:grid-cols-2
+        gap-4
+        ${cards.length === 3
             ? "xl:grid-cols-3"
             : "xl:grid-cols-2"
           }
-  `}
+        `}
       >
         {cards.map((card) => {
           const Icon = card.icon;
@@ -439,18 +440,18 @@ export default function RiskAndIssues({
             <div
               key={card.title}
               className="
-    rounded-xl
-    border
-    bg-white
-    px-5
-    py-4
-    flex
-    items-center
-    justify-between
-    transition-all
-    hover:shadow-md
-    min-h-[100px]
-  "
+              rounded-xl
+              border
+              bg-white
+              px-5
+              py-4
+              flex
+              items-center
+              justify-between
+              transition-all
+              hover:shadow-md
+              min-h-[100px]
+            "
               style={{
                 backgroundColor: card.bg,
                 borderColor: card.border,
@@ -461,14 +462,14 @@ export default function RiskAndIssues({
                 {/* Icon */}
                 <div
                   className="
-        w-11
-        h-11
-        rounded-full
-        flex
-        items-center
-        justify-center
-        shrink-0
-      "
+                  w-11
+                  h-11
+                  rounded-full
+                  flex
+                  items-center
+                  justify-center
+                  shrink-0
+                "
                   style={{
                     backgroundColor: card.iconBg,
                   }}
@@ -508,15 +509,15 @@ export default function RiskAndIssues({
                   setIsModalOpen(true);
                 }}
                 className="
-      flex
-      items-center
-      gap-2
-      text-sm
-      font-semibold
-      whitespace-nowrap
-      transition
-      hover:opacity-80
-    "
+                flex
+                items-center
+                gap-2
+                text-sm
+                font-semibold
+                whitespace-nowrap
+                transition
+                hover:opacity-80
+              "
                 style={{
                   color: card.linkColor,
                 }}
@@ -531,422 +532,250 @@ export default function RiskAndIssues({
       {isModalOpen && (
         <div
           className="
-fixed
-inset-0
-z-[9999]
-bg-black/50
-backdrop-blur-sm
-flex
-items-center
-justify-center
-p-3
-sm:p-5
-"
+          fixed
+          inset-0
+          z-[9999]
+          bg-black/50
+          backdrop-blur-sm
+          flex
+          items-center
+          justify-center
+          p-3
+          sm:p-5
+          "
         >
 
           <div
             className="
-bg-white
-rounded-2xl
-shadow-2xl
-w-full
-max-w-[98%]
-sm:max-w-4xl
-xl:max-w-6xl
-max-h-[90vh]
-overflow-hidden
-"
+            bg-white
+            rounded-2xl
+            shadow-2xl
+            w-full
+            max-w-[98%]
+            sm:max-w-4xl
+            xl:max-w-7xl
+            max-h-[90vh]
+            overflow-hidden
+            "
           >
 
             <div
               className="
-px-6
-py-4
-bg-[#F8FAFC]
-border-b
-border-slate-200
-flex
-justify-between
-items-center
-"
+              px-6
+              py-4
+              bg-[#F8FAFC]
+              border-b
+              border-slate-200
+              flex
+              justify-between
+              items-center
+              "
             >
               <h2 className="text-xl font-bold text-[#0F172A]">
                 {modalTitle}
               </h2>
 
               <button
-                onClick={() =>
-                  setIsModalOpen(false)
-                }
+                onClick={() => setIsModalOpen(false)}
                 className="
-w-9
-h-9
-rounded-lg
-hover:bg-slate-100
-text-slate-500
-hover:text-slate-800
-transition
-cursor-pointer
-
-"
+                flex
+                h-9
+                w-9
+                items-center
+                justify-center
+                rounded-lg
+                text-slate-500
+                hover:bg-slate-100
+                hover:text-red-600
+                transition-colors
+                cursor-pointer
+              "
+                title="Close"
               >
-                ×
+                <X size={20} />
               </button>
 
             </div>
 
             <div
               className="
-overflow-auto
-max-h-[72vh]
-"
+              overflow-auto
+              max-h-[72vh]
+              "
             >
-              <table
-                className="
-min-w-[850px]
-w-full
-"
-              >
-
-                <thead
-                  className="
-bg-[#F8FAFC]
-sticky
-top-0
-z-10
-"
-                >
-
-                  <tr>
-
-                    <th
-                      className="
-px-4
-py-3
-text-left
-text-sm
-font-semibold
-text-[#334155]
-border-b
-border-slate-200
-"
-                    >
+              <table className="w-full table-fixed">
+                <thead>
+                  <tr className="border-b border-[#CDD7E3] bg-blue-100">
+                    <th className="w-[22%] px-3 py-3 text-left text-sm font-semibold text-slate-600">
                       Activity
                     </th>
 
-
-                    <th
-                      className="
-px-4
-py-3
-text-left
-text-sm
-font-semibold
-text-[#334155]
-border-b
-border-slate-200
-"
-                    >
+                    <th className="w-[22%] px-3 py-3 text-left text-sm font-semibold text-slate-600">
                       Milestone
                     </th>
 
-
-                    <th
-                      className="
-px-4
-py-3
-text-left
-text-sm
-font-semibold
-text-[#334155]
-border-b
-border-slate-200
-"
-                    >
+                    <th className="w-[10%] px-3 py-3 text-center text-sm font-semibold text-slate-600">
                       Progress
                     </th>
 
-
-                    <th
-                      className="
-px-4
-py-3
-text-left
-text-sm
-font-semibold
-text-[#334155]
-border-b
-border-slate-200
-"
-                    >
+                    <th className="w-[14%] px-3 py-3 text-center text-sm font-semibold text-slate-600">
                       Status
                     </th>
 
-
-                    <th
-                      className="
-px-4
-py-3
-text-left
-text-sm
-font-semibold
-text-[#334155]
-border-b
-border-slate-200
-"
-                    >
+                    <th className="w-[12%] px-3 py-3 text-center text-sm font-semibold text-slate-600">
                       Planned End
                     </th>
-                    {modalTitle === "Critical Risks" && (
-                      <>
-                        <th
-                          className="
-      px-4
-      py-3
-      text-left
-      text-sm
-      font-semibold
-      text-[#334155]
-      border-b
-      border-slate-200
-      "
-                        >
-                          Risk Level
-                        </th>
 
-                        <th
-                          className="
-      px-4
-      py-3
-      text-left
-      text-sm
-      font-semibold
-      text-[#334155]
-      border-b
-      border-slate-200
-      "
-                        >
-                          Reason
-                        </th>
-                      </>
-                    )}
-                    {modalTitle === "Escalations" && (
-                      <>
-                        <th className="
-      px-4
-      py-3
-      text-left
-      text-sm
-      font-semibold
-      text-[#334155]
-      border-b
-      border-slate-200
-      ">
-                          Risk Level
-                        </th>
+                    {(modalTitle === "Critical Risks" ||
+                      modalTitle === "Escalations") && (
+                        <>
+                          <th className="w-[10%] px-3 py-3 text-center text-sm font-semibold text-slate-600">
+                            Risk Level
+                          </th>
 
-                        <th className="
-      px-4
-      py-3
-      text-left
-      text-sm
-      font-semibold
-      text-[#334155]
-      border-b
-      border-slate-200
-      ">
-                          Reason
-                        </th>
-                      </>
-                    )}
+                          <th className="w-[20%] px-3 py-3 text-left text-sm font-semibold text-slate-600">
+                            Reason
+                          </th>
+                        </>
+                      )}
+
                     {modalTitle === "Dependencies" && (
                       <>
-                        <th
-                          className="
-      px-4
-      py-3
-      text-left
-      text-sm
-      font-semibold
-      text-[#334155]
-      border-b
-      border-slate-200
-      "
-                        >
+                        <th className="w-[15%] px-3 py-3 text-left text-sm font-semibold text-slate-600">
                           Blocked By
                         </th>
 
-                        <th
-                          className="
-      px-4
-      py-3
-      text-left
-      text-sm
-      font-semibold
-      text-[#334155]
-      border-b
-      border-slate-200
-      "
-                        >
+                        <th className="w-[15%] px-3 py-3 text-center text-sm font-semibold text-slate-600">
                           Dependency Status
                         </th>
-
-
                       </>
                     )}
-
-
                   </tr>
-
                 </thead>
-
-                {/* <tbody> */}
-
-                {/* {modalData.map(
-              (
-
-                activity,
-                index
-              ) => (
-                <tr
-                  key={index}
-                 className="border-b border-slate-100 hover:bg-[#FAFAFA] transition"
-                > */}
 
                 <tbody>
                   {modalData.map((activity, index) => {
-
                     const risk = getRiskDetails(activity);
                     const escalation = getEscalationDetails(activity);
                     const dependency = getDependencyDetails(activity);
-                    const openRisk = getOpenRiskDetails(activity);
+
                     return (
                       <tr
                         key={index}
-                        className="border-b border-slate-100 hover:bg-[#FAFAFA] transition"
+                        className="border-b border-[#CDD7E3]"
                       >
-
-                        <td className="px-4 py-3 text-sm text-[#475569]">
-                          {
-                            activity.activityName
-                          }
+                        {/* Activity */}
+                        <td className="px-3 py-3 align-top">
+                          <div
+                            className="text-sm text-slate-700 truncate"
+                            title={activity.activityName}
+                          >
+                            {activity.activityName}
+                          </div>
                         </td>
 
-                        <td className="px-4 py-3 text-sm text-[#475569]">
-                          {
-                            activity.milestoneName
-                          }
+                        {/* Milestone */}
+                        <td className="px-3 py-3 align-top">
+                          <div
+                            className="text-sm text-slate-700 truncate"
+                            title={activity.milestoneName}
+                          >
+                            {activity.milestoneName}
+                          </div>
                         </td>
 
-                        <td className="px-4 py-3 text-sm text-[#475569]">
-                          <span className="font-semibold text-[#2563EB]">
+                        {/* Progress */}
+                        <td className="px-3 py-3 text-center">
+                          <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-700">
                             {activity.progress}%
                           </span>
-
                         </td>
-                        <td className="px-4 py-3 text-sm text-[#475569]">
 
+                        {/* Status */}
+                        <td className="px-3 py-3 text-center">
                           <span
-                            className={`
-
-inline-flex
-items-center
-justify-center
-rounded-full
-px-3
-py-1
-text-xs
-font-semibold
-
-${activity.executionStatus === "Completed"
-                                ? "bg-green-100 text-green-700"
-                                : activity.executionStatus === "Delayed"
-                                  ? "bg-red-100 text-red-700"
-                                  : activity.executionStatus === "In Progress"
-                                    ? "bg-blue-100 text-blue-700"
-                                    : "bg-slate-100 text-slate-600"
-                              }
-`}
+                            className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${activity.executionStatus === "Completed"
+                              ? "bg-green-100 text-green-700"
+                              : activity.executionStatus === "Delayed"
+                                ? "bg-red-100 text-red-700"
+                                : activity.executionStatus === "In Progress"
+                                  ? "bg-blue-100 text-blue-700"
+                                  : "bg-slate-100 text-slate-600"
+                              }`}
                           >
-
                             {activity.executionStatus}
-
                           </span>
-
                         </td>
-                        {/* <td className="p-3">
-                    {
-                      activity.executionStatus
-                    }
-                  </td> */}
 
-                        <td className="p-3">
+                        {/* Planned End */}
+                        <td className="px-3 py-3 text-center text-sm text-slate-700">
                           {activity.plannedEndDate
-                            ? new Date(activity.plannedEndDate).toLocaleDateString("en-GB").replace(/\//g, "-")
+                            ? new Date(activity.plannedEndDate)
+                              .toLocaleDateString("en-GB")
+                              .replace(/\//g, "-")
                             : "-"}
                         </td>
 
+                        {/* Critical Risks */}
                         {modalTitle === "Critical Risks" && (
                           <>
-                            <td className="px-4 py-3">
+                            <td className="px-3 py-3 text-center">
                               <span
-                                className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${risk.color}`}
+                                className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${risk.color}`}
                               >
                                 {risk.level}
                               </span>
                             </td>
 
-                            <td className="px-4 py-3 text-sm text-[#475569]">
-                              {risk.reason}
+                            <td className="px-3 py-3">
+                              <div className="text-sm text-slate-700 break-words">
+                                {risk.reason}
+                              </div>
                             </td>
                           </>
                         )}
+
+                        {/* Escalations */}
                         {modalTitle === "Escalations" && (
                           <>
-                            <td>
+                            <td className="px-3 py-3 text-center">
                               <span
-                                className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${escalation.color}`}
+                                className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${escalation.color}`}
                               >
                                 {escalation.level}
                               </span>
                             </td>
 
-                            <td>
-                              {escalation.reason}
+                            <td className="px-3 py-3">
+                              <div className="text-sm text-slate-700 break-words">
+                                {escalation.reason}
+                              </div>
                             </td>
                           </>
                         )}
+
+                        {/* Dependencies */}
                         {modalTitle === "Dependencies" && (
                           <>
-                            <td className="px-4 py-3 text-sm text-[#475569]">
-                              {activity.blockedBy || "-"}
+                            <td className="px-3 py-3">
+                              <div className="text-sm text-slate-700 break-words">
+                                {activity.blockedBy || "-"}
+                              </div>
                             </td>
 
-                            <td className="px-4 py-3">
+                            <td className="px-3 py-3 text-center">
                               <span
-                                className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${dependency.color}`}
+                                className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${dependency.color}`}
                               >
                                 {dependency.status}
                               </span>
                             </td>
-
-
                           </>
                         )}
-
-
-
-                        {/* </tr>
-              )
-            )} */}
                       </tr>
                     );
                   })}
-
-
-
                 </tbody>
-
               </table>
 
             </div>

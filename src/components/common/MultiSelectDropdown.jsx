@@ -307,7 +307,7 @@ export default function MultiSelectDropdown({
             <div className="border-t border-[#E1E7EF] p-2">
               <button
                 type="button"
-                onClick={() => onChange([])}
+                onClick={() => {onChange([]); setSearch("")}}
                 className="
                 w-full
                 rounded-lg

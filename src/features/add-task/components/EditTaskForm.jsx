@@ -64,7 +64,7 @@ export default function EditTaskForm() {
 
 
   return (
-    <div className="space-y-6 mx-auto w-full">
+    <div className="space-y-6 mx-auto w-full mt-[-10px]">
       {/* Single Professional Card */}
       <div className="w-full bg-white rounded-2xl shadow-sm border border-[#CDD7E3] overflow-hidden">
         {/* Card Body */}
@@ -258,11 +258,11 @@ export default function EditTaskForm() {
                     max="100"
                     placeholder="0"
                     className="
-                    h-9
+                    h-9 
                     w-14
                     rounded-lg
                     border
-                    border-[#DCE3EE]
+                    border-[#B8C4D1]
                     text-center
                     text-sm
                     outline-none
@@ -336,19 +336,30 @@ export default function EditTaskForm() {
 
             {/* Reason for Change - Shows when dates change */}
             {isDateChanged && (
-              <div className="mt-3">
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                  <label className="block mb-1 ml-1 text-sm font-medium text-amber-800">
-                    Reason For Change <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.changeReason || ""}
-                    onChange={(e) => handleChange("changeReason", e.target.value)}
-                    placeholder="Enter reason for changing planned dates"
-                    className="w-full h-10 px-3.5 text-sm bg-white border border-amber-300 rounded-lg outline-none transition-all duration-200 focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/10"
-                  />
-                </div>
+              <div className="mt-4 max-w-lg">
+                <label className="mb-1 ml-1 block text-sm font-medium text-slate-700">
+                  Reason for Change <span className="text-red-500">*</span>
+                </label>
+
+                <input
+                  type="text"
+                  value={formData.changeReason || ""}
+                  onChange={(e) => handleChange("changeReason", e.target.value)}
+                  placeholder="Enter Reason for Changing Planned Dates"
+                  className="
+                  h-10
+                  w-full
+                  rounded-lg
+                  border
+                  border-[#B8C4D1]
+                  bg-white
+                  px-3.5
+                  text-sm
+                  outline-none
+                  transition-all
+                  focus:border-blue-500
+                "
+                />
               </div>
             )}
           </div>
@@ -386,9 +397,9 @@ export default function EditTaskForm() {
             transition-all
 
             ${isUpdating
-                        ? "bg-slate-400 cursor-not-allowed opacity-70"
-                        : "bg-blue-600 hover:bg-blue-700 cursor-pointer"
-                      }
+                ? "bg-slate-400 cursor-not-allowed opacity-70"
+                : "bg-blue-600 hover:bg-blue-700 cursor-pointer"
+              }
           `}
           >
             <Check size={15} />
