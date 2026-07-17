@@ -9,7 +9,7 @@ export default function EditTaskPage() {
   return (
     <div className="p-6 sm:p-6">
       <div className="flex items-center justify-between gap-3 mb-6">
-        {/* Left Section */}
+        {/* Left Section */} 
         <div className="flex items-center gap-3 min-w-0 flex-1">
           <button
             onClick={() => navigate("/tasks")}
