@@ -477,7 +477,7 @@ export default function RiskAndIssues({
                 </div>
 
                 {/* Content */}
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <div
                     className="text-[25px] font-bold leading-none"
                     style={{
@@ -487,7 +487,7 @@ export default function RiskAndIssues({
                     {card.value}
                   </div>
 
-                  <h3 className="mt-1 text-base font-bold text-[#0B1F59]">
+                  <h3 className="mt-1 text-base font-semibold text-[#0B1F59] truncate">
                     {card.title}
                   </h3>
 
@@ -498,7 +498,7 @@ export default function RiskAndIssues({
               </div>
 
               {/* Divider */}
-              <div className="mx-6 h-14 w-px bg-[#E5EAF2]" />
+             <div className="mx-6 h-14 w-px bg-slate-300 shrink-0" />
 
               {/* Right Section */}
               <button
@@ -507,7 +507,9 @@ export default function RiskAndIssues({
                   setModalData(card.activities);
                   setIsModalOpen(true);
                 }}
+    
                 className="
+                shrink-0
       flex
       items-center
       gap-2

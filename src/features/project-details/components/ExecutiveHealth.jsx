@@ -9,17 +9,26 @@ export default function ExecutiveHealth({
   project,
   selectedMilestones,
 }) {
-  const activities =
-    project?.phases
-      ?.flatMap((phase) => phase.milestones || [])
-      .filter(
-        (milestone) =>
-          selectedMilestones.length === 0 ||
-          selectedMilestones.includes(milestone.milestoneId)
-      )
-      .flatMap((milestone) => milestone.tasks || [])
-      .flatMap((task) => task.subTasks || [])
-      .flatMap((subTask) => subTask.activities || []) || [];
+const milestones =
+  project?.phases
+    ?.flatMap((phase) => phase.milestones || [])
+    .filter(
+      (milestone) =>
+        selectedMilestones.length === 0 ||
+        selectedMilestones.includes(milestone.milestoneId)
+    ) || [];
+
+const activities =
+  milestones.flatMap(
+    (milestone) =>
+      milestone.tasks?.flatMap(
+        (task) =>
+          task.subTasks?.flatMap(
+            (subTask) =>
+              subTask.activities || []
+          ) || []
+      ) || []
+  );
 
   const today = new Date();
 
@@ -42,42 +51,173 @@ export default function ExecutiveHealth({
         "Completed"
     ).length;
 
-  const delayedActivities =
-    activeActivities.filter(
-      (activity) =>
-        activity.scheduleHealth ===
-        "Delayed" ||
-        activity.executionStatus ===
-        "Delayed"
-    ).length;
+  
 
   const overallProgress =
     totalActivities > 0
       ? Math.round(
-        activeActivities.reduce(
-          (sum, activity) =>
-            sum +
-            (activity.progress || 0),
+          activeActivities.reduce(
+            (sum, activity) =>
+              sum +
+              (activity.progress || 0),
+            0
+          ) / totalActivities
+        )
+      : 0;
+const totalMilestones = milestones.length;
+
+const completedMilestones =
+  milestones.filter((milestone) => {
+    const milestoneActivities =
+      milestone.tasks?.flatMap(
+        (task) =>
+          task.subTasks?.flatMap(
+            (subTask) =>
+              subTask.activities || []
+          ) || []
+      ) || [];
+
+    return (
+      milestoneActivities.length > 0 &&
+      milestoneActivities.every(
+        (activity) =>
+          activity.executionStatus === "Completed"
+      )
+    );
+  }).length;
+
+const milestoneCompletion =
+  totalMilestones > 0
+    ? Math.round(
+        (completedMilestones /
+          totalMilestones) *
+          100
+      )
+    : 0;
+   // ------------------------------------
+// Project Health
+// ------------------------------------
+
+const milestoneHealth = milestones.map((milestone) => {
+
+  const milestoneActivities =
+    milestone.tasks?.flatMap(task =>
+      task.subTasks?.flatMap(subTask =>
+        subTask.activities || []
+      ) || []
+    ) || [];
+
+  if (milestoneActivities.length === 0) {
+    return 0;
+  }
+
+  const progress = Math.round(
+    milestoneActivities.reduce(
+      (sum, activity) => sum + (activity.progress || 0),
+      0
+    ) / milestoneActivities.length
+  );
+
+  const completed =
+    milestoneActivities.every(
+      activity =>
+        activity.executionStatus === "Completed"
+    );
+
+  const plannedEndDate =
+    milestoneActivities
+      .map(activity => activity.plannedEndDate)
+      .filter(Boolean)
+      .sort()
+      .at(-1);
+
+  const actualEndDate =
+    milestoneActivities
+      .map(activity => activity.actualEndDate)
+      .filter(Boolean)
+      .sort()
+      .at(-1);
+
+  // -------------------------
+  // Scenario 1
+  // Completed On Time
+  // -------------------------
+
+  if (
+    completed &&
+    actualEndDate &&
+    new Date(actualEndDate) <= new Date(plannedEndDate)
+  ) {
+    return 100;
+  }
+
+  // -------------------------
+  // Scenario 2
+  // Completed Late
+  // -------------------------
+
+  if (
+    completed &&
+    actualEndDate &&
+    new Date(actualEndDate) > new Date(plannedEndDate)
+  ) {
+
+    const delayDays = Math.ceil(
+      (new Date(actualEndDate) -
+        new Date(plannedEndDate)) /
+      (1000 * 60 * 60 * 24)
+    );
+
+    if (delayDays <= 7) return 95;
+
+    if (delayDays <= 15) return 90;
+
+    return 80;
+  }
+
+  // -------------------------
+  // Scenario 3
+  // Not Completed
+  // -------------------------
+
+  return progress;
+
+});
+
+// Final Project Health
+
+const projectHealth =
+  milestoneHealth.length > 0
+    ? Math.round(
+        milestoneHealth.reduce(
+          (sum, value) => sum + value,
           0
-        ) / totalActivities
+        ) / milestoneHealth.length
       )
-      : 0;
+    : 0;
+ // Delayed Activities (Till Today Only)
+const delayedActivities = activeActivities.filter(
+  (activity) =>
+    activity.scheduleHealth === "Delayed" ||
+    activity.executionStatus === "Delayed"
+).length;
 
-  const riskPercentage =
-    totalActivities > 0
-      ? Math.round(
-        (delayedActivities /
-          totalActivities) *
-        100
+// Risk Percentage
+const delayedPercentage =
+  totalActivities > 0
+    ? Math.round(
+        (delayedActivities / totalActivities) * 100
       )
-      : 0;
+    : 0;
 
-  const riskLevel =
-    riskPercentage >= 20
-      ? "High"
-      : riskPercentage >= 10
-        ? "Medium"
-        : "Low";
+// Risk Level
+let riskLevel = "Low";
+
+if (delayedPercentage >= 20) {
+  riskLevel = "High";
+} else if (delayedPercentage >= 10) {
+  riskLevel = "Medium";
+}
 
   const projectStartDate =
     activities
@@ -126,195 +266,199 @@ export default function ExecutiveHealth({
           Math.round(
             (elapsedDays /
               totalDays) *
-            100
+              100
           )
         )
       );
   }
 
 
+  // ----------------------------
+// Delivery Confidence
+// ----------------------------
 
-  const confidenceScore =
-    totalActivities > 0
-      ? Math.round(
-        (completedActivities /
-          totalActivities) *
-        100
+// Schedule adherence (difference between actual progress and expected progress)
+const scheduleVariance = Math.abs(
+  overallProgress - timelineProgress
+);
+
+const scheduleScore = Math.max(
+  0,
+  100 - scheduleVariance
+);
+
+// Delay impact
+const delayScore =
+  totalActivities > 0
+    ? Math.max(
+        0,
+        100 -
+          Math.round(
+            (delayedActivities /
+              totalActivities) *
+              100
+          )
       )
-      : 0;
+    : 100;
 
-  const deliveryConfidence =
-    confidenceScore >= 80
-      ? "HIGH"
-      : confidenceScore >= 60
-        ? "MEDIUM"
-        : "LOW";
+// Final confidence score
+const confidenceScore = Math.round(
+  overallProgress * 0.4 +
+  scheduleScore * 0.4 +
+  delayScore * 0.2
+);
 
-  const deliverySubtitle =
-    confidenceScore >= 80
-      ? "Likely On Schedule"
-      : confidenceScore >= 60
-        ? "Minor Delays Expected"
-        : "Delivery At Risk";
+// Confidence Label
+const confidenceLevel =
+  confidenceScore >= 85
+    ? "HIGH"
+    : confidenceScore >= 65
+    ? "MEDIUM"
+    : "LOW";
 
+// Confidence Subtitle
+const confidenceSubtitle =
+  confidenceScore >= 85
+    ? "Likely On Schedule"
+    : confidenceScore >= 65
+    ? "Needs Monitoring"
+    : "Delivery At Risk";
 
-  const projectHealthLabel =
-    overallProgress >= 80
-      ? "Excellent"
-      : overallProgress >= 60
-        ? "Good"
-        : overallProgress >= 40
-          ? "Attention"
-          : "Critical";
+const projectHealthLabel =
+  projectHealth >= 95
+    ? "Excellent"
+    : projectHealth >= 80
+    ? "Good"
+    : projectHealth >= 60
+    ? "Attention"
+    : "Critical";
 
   const cards = [
     {
       title: "Project Health",
-      value: `${overallProgress}%`,
-      status: projectHealthLabel,
-      subtitle: "Overall milestone progress",
-
+//value: `${overallProgress}%`,
+value: `${projectHealth}%`,
+      subtitle:
+        projectHealthLabel,
       icon: Target,
+      iconColor: "#2563EB",
+bg:
+  overallProgress >= 80
+    ? "#F0FDF4"
+    : overallProgress >= 60
+    ? "#F0FDF4"
+    : overallProgress >= 40
+    ? "#FFF7ED"
+    : "#FEF2F2",
 
-      iconColor: "#16A34A",
-
-      bg:
-        overallProgress >= 80
-          ? "#F0FDF4"
-          : overallProgress >= 60
-            ? "#EFF6FF"
-            : overallProgress >= 40
-              ? "#FFF7ED"
-              : "#FEF2F2",
-
-      border:
-        overallProgress >= 80
-          ? "#BBF7D0"
-          : overallProgress >= 60
-            ? "#BFDBFE"
-            : overallProgress >= 40
-              ? "#FED7AA"
-              : "#FECACA",
-
+border:
+  overallProgress >= 80
+    ? "#BBF7D0"
+    : overallProgress >= 60
+    ? "#BBF7D0"
+    : overallProgress >= 40
+    ? "#FED7AA"
+    : "#FECACA",
       valueColor:
-        overallProgress >= 80
+        overallProgress >= 60
           ? "#16A34A"
-          : overallProgress >= 60
-            ? "#2563EB"
-            : overallProgress >= 40
-              ? "#F59E0B"
-              : "#DC2626",
-
-      statusColor:
-        overallProgress >= 80
+          : overallProgress >= 40
+          ? "#F59E0B"
+          : "#DC2626",
+      subtitleColor:
+        overallProgress >= 60
           ? "#16A34A"
-          : overallProgress >= 60
-            ? "#2563EB"
-            : overallProgress >= 40
-              ? "#F59E0B"
-              : "#DC2626",
+          : overallProgress >= 40
+          ? "#F59E0B"
+          : "#DC2626",
     },
+
+   {
+  title: "Risk Level",
+
+  value: riskLevel.toUpperCase(),
+
+  subtitle: `${delayedActivities} of ${totalActivities} delayed`,
+
+  icon: TriangleAlert,
+
+  iconColor:
+    riskLevel === "Low"
+      ? "#16A34A"
+      : riskLevel === "Medium"
+      ? "#F59E0B"
+      : "#DC2626",
+
+  bg:
+    riskLevel === "Low"
+      ? "#F0FDF4"
+      : riskLevel === "Medium"
+      ? "#FFF7ED"
+      : "#FEF2F2",
+
+  border:
+    riskLevel === "Low"
+      ? "#BBF7D0"
+      : riskLevel === "Medium"
+      ? "#FED7AA"
+      : "#FECACA",
+
+  valueColor:
+    riskLevel === "Low"
+      ? "#16A34A"
+      : riskLevel === "Medium"
+      ? "#F59E0B"
+      : "#DC2626",
+
+  subtitleColor: "#64748B",
+},
+
+    
 
     {
-      title: "Risk Level",
+  title: "Delivery Confidence",
 
-      value: riskLevel.toUpperCase(),
+  value: `${confidenceScore}%`,
 
-      status: `${delayedActivities} Critical Activities`,
+  subtitle: confidenceSubtitle,
 
-      subtitle: "Based on active activities",
+  icon: Shield,
 
-      icon: TriangleAlert,
+  iconColor:
+    confidenceLevel === "HIGH"
+      ? "#16A34A"
+      : confidenceLevel === "MEDIUM"
+      ? "#F59E0B"
+      : "#DC2626",
 
-      iconColor:
-        riskLevel === "Low"
-          ? "#16A34A"
-          : riskLevel === "Medium"
-            ? "#F59E0B"
-            : "#DC2626",
+  bg:
+    confidenceLevel === "HIGH"
+      ? "#F0FDF4"
+      : confidenceLevel === "MEDIUM"
+      ? "#FFF7ED"
+      : "#FEF2F2",
 
-      bg:
-        riskLevel === "Low"
-          ? "#F0FDF4"
-          : riskLevel === "Medium"
-            ? "#FFF7ED"
-            : "#FEF2F2",
+  border:
+    confidenceLevel === "HIGH"
+      ? "#BBF7D0"
+      : confidenceLevel === "MEDIUM"
+      ? "#FED7AA"
+      : "#FECACA",
 
-      border:
-        riskLevel === "Low"
-          ? "#BBF7D0"
-          : riskLevel === "Medium"
-            ? "#FED7AA"
-            : "#FECACA",
+  valueColor:
+    confidenceLevel === "HIGH"
+      ? "#16A34A"
+      : confidenceLevel === "MEDIUM"
+      ? "#F59E0B"
+      : "#DC2626",
 
-      valueColor:
-        riskLevel === "Low"
-          ? "#16A34A"
-          : riskLevel === "Medium"
-            ? "#F59E0B"
-            : "#DC2626",
-
-      statusColor:
-        riskLevel === "Low"
-          ? "#16A34A"
-          : riskLevel === "Medium"
-            ? "#F59E0B"
-            : "#DC2626",
-    },
-
-
-
-    {
-      title: "Delivery Confidence",
-
-      value: deliveryConfidence,
-
-      status: deliverySubtitle,
-
-      subtitle: "Project delivery forecast",
-
-      icon: Shield,
-
-      iconColor:
-        confidenceScore >= 80
-          ? "#2563EB"
-          : confidenceScore >= 60
-            ? "#F59E0B"
-            : "#DC2626",
-
-      bg:
-        confidenceScore >= 80
-          ? "#EFF6FF"
-          : confidenceScore >= 60
-            ? "#FFF7ED"
-            : "#FEF2F2",
-
-      border:
-        confidenceScore >= 80
-          ? "#BFDBFE"
-          : confidenceScore >= 60
-            ? "#FED7AA"
-            : "#FECACA",
-
-      valueColor:
-        confidenceScore >= 80
-          ? "#2563EB"
-          : confidenceScore >= 60
-            ? "#F59E0B"
-            : "#DC2626",
-
-      statusColor:
-        confidenceScore >= 80
-          ? "#2563EB"
-          : confidenceScore >= 60
-            ? "#F59E0B"
-            : "#DC2626",
-    },
+  subtitleColor: "#64748B",
+},
   ];
 
   return (
-    <div
-      className="
+   <div
+  className="
   bg-white
   rounded-2xl
   border
@@ -322,7 +466,7 @@ export default function ExecutiveHealth({
   p-4
   lg:p-5
   "
-    >
+>
       <div className="flex items-center gap-3 mb-5">
         <div
           className="
@@ -339,123 +483,114 @@ export default function ExecutiveHealth({
         >
           6
         </div>
+          <h2
+            className="
+            text-base
+            font-bold
+            text-[#0B1F59]
 
-        <h2
-          className="
-  text-base sm:text-lg lg:text-xl font-bold text-[#0B1F59]
-  "
-        >
+            sm:text-lg
+            lg:text-xl
+          "
+          >
           Executive Health
         </h2>
       </div>
 
-      <div
-        className="
-    grid
-    grid-cols-1
-    md:grid-cols-3
-    gap-3
-  "
-      >
+ <div
+  className="
+  grid
+  grid-cols-1
+  md:grid-cols-2
+  xl:grid-cols-3
+  gap-4
+"
+>
         {cards.map((card) => {
           const Icon =
             card.icon;
 
           return (
             <div
-              key={card.title}
-              className="
-    relative
-    rounded-xl
-    border
-    px-4
-    py-4
-    min-h-[120px]
-    shadow-sm
-  "
-              style={{
-                backgroundColor: card.bg,
-                borderColor: card.border,
-              }}
-            >
-              {/* Icon */}
+  key={card.title}
+  className="rounded-2xl border bg-white shadow-sm p-5 flex flex-col"
+  style={{
+    borderColor: card.border,
+  }}
+>
+  {/* Header */}
+  <div className="flex items-center gap-2">
+<div
+  className="w-9 h-9 rounded-full flex items-center justify-center"
+  style={{
+    background: `${card.iconColor}15`,
+  }}
+>
+  <Icon
+    size={18}
+    color={card.iconColor}
+  />
+</div>
+    <div>
+     <h3 className="text-sm font-semibold text-[#0B1F59]">
+  {card.title}
+</h3>
 
-              <div
-                className="
-    absolute
-    left-4
-    top-4
-    h-10
-    w-10
-    rounded-lg
-    flex
-    items-center
-    justify-center
-  "
-                style={{
-                  backgroundColor: `${card.iconColor}15`,
-                }}
-              >
-                <Icon
-                  size={20}
-                  color={card.iconColor}
-                />
+      <span
+  className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold"
+  style={{
+    background: `${card.valueColor}15`,
+    color: card.valueColor,
+  }}
+>
+  {card.subtitle}
+</span>
+    </div>
+  </div>
 
+  {/* Value */}
+ <div className="mt-4 text-center">
+  <h1
+    className="text-3xl lg:text-3xl font-bold"
+    style={{
+      color: card.valueColor,
+    }}
+  >
+    {card.value}
+  </h1>
+</div>
 
-              </div>
+  {/* Progress */}
+<div className="mt-4">
+  <div className="h-1.5 rounded-full bg-gray-200 overflow-hidden">
+    <div
+      className="h-full rounded-full"
+      style={{
+        width:
+          card.title === "Project Health"
+            ? `${projectHealth}%`
+            : card.title === "Delivery Confidence"
+            ? `${confidenceScore}%`
+            : `${100 - delayedPercentage}%`,
+        background: card.valueColor,
+      }}
+    />
+  </div>
+</div>
 
-              {/* Content */}
-              <div className="text-center mt-6">
+  {/* Footer */}
+ <div className="mt-4 flex justify-between text-[11px] lg:text-xs text-slate-600">
+  {/* <span>
+    {completedActivities}/{totalActivities} Done
+  </span> */}
 
-                <p
-                  className="
-      text-[12px]
-      font-semibold
-      text-[#0B1F59]
-    "
-                >
-                  {card.title}
-                </p>
-
-                <h2
-                  className="
-      mt-2
-      text-[28px]
-      font-bold
-      leading-none
-    "
-                  style={{
-                    color: card.valueColor,
-                  }}
-                >
-                  {card.value}
-                </h2>
-
-                <p
-                  className="
-      mt-2
-      text-[14px]
-      font-semibold
-    "
-                  style={{
-                    color: card.statusColor,
-                  }}
-                >
-                  {card.status}
-                </p>
-
-                <p
-                  className="
-      mt-1
-      text-[11px]
-      text-slate-500
-    "
-                >
-                  {card.subtitle}
-                </p>
-
-              </div>
-            </div>
+  <span>
+    {card.title === "Risk Level"
+      ? `${delayedActivities} Delayed`
+      : `${completedMilestones}/${totalMilestones} Milestones`}
+  </span>
+</div>
+</div>
           );
         })}
       </div>
