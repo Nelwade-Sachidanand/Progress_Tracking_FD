@@ -775,10 +775,20 @@ export default function AddTaskForm() {
               <div className="flex items-center gap-2">
                 <input
                   type="number"
-                  min="0"
-                  max="100"
-                  placeholder="0"
-                  className={`${inputClass} w-16`}
+                    min="0"
+                    max="100"
+                    placeholder="0"
+                    className="
+                    h-9 
+                    w-14
+                    rounded-lg
+                    border
+                    border-[#B8C4D1]
+                    text-center
+                    text-sm
+                    outline-none
+                    focus:border-blue-500
+                  "
                   value={formData.progress}
                   onChange={(e) => {
                     const value = e.target.value;

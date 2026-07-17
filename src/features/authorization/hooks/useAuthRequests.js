@@ -152,7 +152,7 @@ export const useAuthRequests = () => {
       setLoading(true);
 
       const response = await rollbackRequestApi(requestId, password, reason);
-      console.log(response);
+      // console.log(response);
 
       if (response?.statusType === "S") {
         toast.success(response.statusDesc);

@@ -2,8 +2,11 @@ import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useProjects } from "../../../context/ProjectContext";
 import { createActivity } from "../api/addTaskApi";
+import { useNavigate } from "react-router-dom";
 export default function useAddTask() {
   const { fetchProjects, projects } = useProjects();
+
+  const navigate = useNavigate();
 
   const selectedProjectId = sessionStorage.getItem("selectedProjectId");
 
@@ -125,8 +128,10 @@ export default function useAddTask() {
       if (response.statusType === "S") {
         toast.success(response.statusDesc);
         await fetchProjects(user.id);
-
         resetForm();
+        navigate("/tasks", {
+          replace: true,
+        });
       } else {
         toast.error(response.statusDesc);
       }
@@ -143,11 +148,11 @@ export default function useAddTask() {
     }
 
   };
-const resetForm = () => {
-  setFormData({
-    phaseId: "",
-    phaseName: "",
-    newPhase: false,
+  const resetForm = () => {
+    setFormData({
+      phaseId: "",
+      phaseName: "",
+      newPhase: false,
 
       milestoneId: "",
       milestoneName: "",
@@ -211,10 +216,10 @@ const resetForm = () => {
     );
   }, [selectedProject, formData.phaseId]);
 
-const taskOptions = useMemo(() => {
-  const phase = selectedProject?.phases?.find(
-    (p) => p.phaseId === formData.phaseId
-  );
+  const taskOptions = useMemo(() => {
+    const phase = selectedProject?.phases?.find(
+      (p) => p.phaseId === formData.phaseId
+    );
 
     const milestone = phase?.milestones?.find(
       (m) => m.milestoneId === formData.milestoneId
@@ -256,12 +261,12 @@ const taskOptions = useMemo(() => {
     formData.taskId,
   ]);
 
-const handleChange = (field, value) => {
-  setFormData((prev) => {
-   const updated = {
-  ...prev,
-  [field]: value,
-};
+  const handleChange = (field, value) => {
+    setFormData((prev) => {
+      const updated = {
+        ...prev,
+        [field]: value,
+      };
 
       // ======================================
       // Calculate Estimated Period Week
@@ -414,4 +419,3 @@ const handleChange = (field, value) => {
     isSubmitting,
   };
 }
- 

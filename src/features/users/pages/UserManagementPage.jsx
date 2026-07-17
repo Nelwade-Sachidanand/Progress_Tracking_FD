@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation,useNavigate  } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Swal from "sweetalert2";
 import { useProjects } from "../../../context/ProjectContext";
@@ -85,6 +85,9 @@ const UserManagementPage = () => {
 
     if (response?.statusType === "S") {
       toast.success(response.statusDesc);
+      navigate("/users", {
+        replace: true,
+      });
     } else {
       toast.error(response?.statusDesc || "Failed to reset password");
     }
@@ -175,7 +178,7 @@ const UserManagementPage = () => {
           user={selectedUser}
           onClose={() => setShowResetPasswordModal(false)}
           onReset={(user, password, confirmPassword) => {
-            console.log(user, password, confirmPassword);
+            // console.log(user, password, confirmPassword);
             handleResetPassword(user, password, confirmPassword);
           }}
         />

@@ -180,7 +180,9 @@ const UserForm = ({ mode = "add", userData = null }) => {
         mode === "add" ? await createUser(payload) : await updateUser(payload);
 
       if (response?.statusType === "S") {
-        navigate("/users");
+        navigate("/users", {
+          replace: true,
+        });
       }
     } catch (error) {
       console.error(error);
@@ -248,6 +250,7 @@ const UserForm = ({ mode = "add", userData = null }) => {
             justify-center
             rounded-lg
             hover:bg-slate-100
+            hover:text-red-600
             transition
             cursor-pointer
           "

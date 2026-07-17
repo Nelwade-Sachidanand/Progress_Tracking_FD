@@ -54,7 +54,7 @@ export default function AuthorizationRequestModal({
 
         const response = await getProjectNames([request.projectId]);
 
-        console.log(response);
+        // console.log(response);
 
         if (response?.statusType === "S") {
           const projectMap = response.details;
@@ -109,8 +109,8 @@ export default function AuthorizationRequestModal({
       <div
         className="
         bg-white
-        rounded-2xl
-        xl:rounded-3xl
+        rounded-xl
+        xl:rounded-2xl
         shadow-2xl
         w-full
         max-w-[95vw]
@@ -158,21 +158,10 @@ export default function AuthorizationRequestModal({
             items-center
             justify-center
 
-            rounded-xl
-
-            border
-            border-[#CDD7E3]
-
-            bg-white
-
-            text-slate-600
-
-            transition-all
-            duration-200
-
+            rounded-lg
             hover:bg-slate-100
-            hover:text-[#2563EB]
-
+            hover:text-red-600
+            transition
             cursor-pointer
           "
           >
@@ -999,21 +988,17 @@ export default function AuthorizationRequestModal({
 
           <div
             className="
-                        mt-5
-                        pt-4
-
-                        border-t
-
-                        text-center
-
-                        text-xs
-                        xl:text-sm
-
-                        text-slate-600
-                        "
+            mt-2
+            pt-2
+            border-t
+            border-[#CDD7E3]
+            text-center
+            text-xs
+            xl:text-sm
+            text-slate-600
+            "
           >
-            All authorization actions are logged and audited for security
-            compliance.
+            All Authorization Actions are Logged and Audited for Security Compliance.
           </div>
         </div>
       </div>

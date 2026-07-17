@@ -95,7 +95,8 @@ export default function PreviewDocumentModal({
               w-9
               h-9
               rounded-lg
-              hover:bg-slate-200
+              hover:bg-slate-100
+              hover:text-red-600
               flex
               items-center
               justify-center

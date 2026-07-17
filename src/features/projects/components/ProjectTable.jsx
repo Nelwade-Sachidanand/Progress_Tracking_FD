@@ -64,8 +64,12 @@ export default function ProjectTable({ projects = [] }) {
               Sr. No.
             </th>
 
-            <th className="w-[40%] px-1 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
-              Project / Bank
+            <th className="w-[20%] px-4 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
+              Bank
+            </th>
+
+            <th className="w-[20%] px-1 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
+              Project
             </th>
 
             <th className="w-[20%] px-4 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
@@ -94,6 +98,8 @@ export default function ProjectTable({ projects = [] }) {
 
               const progress = calculateOverallProgress([project]);
 
+              const shortBankName = project.bankName.match(/\(([^)]+)\)/)?.[1] || project.bankName;
+
               return (
                 <tr
                   key={project.id}
@@ -110,9 +116,9 @@ export default function ProjectTable({ projects = [] }) {
                     </span>
                   </td>
 
-                  <td className="px-1 py-3">
+                  <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <div
+                      {/* <div
                         className="
                         flex
                         h-9
@@ -125,7 +131,7 @@ export default function ProjectTable({ projects = [] }) {
                       "
                       >
                         <Building2 size={18} />
-                      </div>
+                      </div> */}
 
                       <div className="min-w-0">
                         <h4
@@ -136,12 +142,12 @@ export default function ProjectTable({ projects = [] }) {
                           font-semibold
                           text-slate-700
                         "
-                          title={project.projectName}
+                          title={project.bankName}
                         >
-                          {project.projectName}
+                          {shortBankName}
                         </h4>
 
-                        <p
+                        {/* <p
                           className="
                           truncate
                           text-xs
@@ -151,9 +157,30 @@ export default function ProjectTable({ projects = [] }) {
                           title={project.bankName}
                         >
                           {project.bankName}
-                        </p>
+                        </p> */}
                       </div>
                     </div>
+                  </td>
+
+                  <td className="px-1 py-3">
+                    <span
+                      className="
+                      inline-block
+                      max-w-full
+                      truncate
+                      rounded-xl
+                      bg-blue-100
+                      px-3
+                      py-1.5
+                      text-sm
+                      xl:text-sm
+                      font-medium
+                      text-blue-700
+                    "
+                      title={project.projectName}
+                    >
+                      {project.projectName}
+                    </span>
                   </td>
 
                   {/* Project Manager */}

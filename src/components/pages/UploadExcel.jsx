@@ -76,8 +76,8 @@ const UploadExcel = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10">
-      <div className="bg-white border border-[#CDD7E3] rounded-3xl shadow-sm p-8">
+    <div className="max-w-xl mx-auto mt-10">
+      <div className="bg-white border border-[#CDD7E3] rounded-2xl shadow-sm p-8">
         {/* Header */}
 
         <div className="mb-6">

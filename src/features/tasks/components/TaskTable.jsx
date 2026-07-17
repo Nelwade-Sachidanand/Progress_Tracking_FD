@@ -124,19 +124,23 @@ export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
                   {/* Dates */}
                   <td className="px-4 py-2">
                     <div className="space-y-1 text-sm">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-slate-600">Start:</span>
-                        <span className="text-slate-700">
-                          {formatDate(task.startDate)}
-                        </span>
-                      </div>
+                      {task.startDate && (
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-slate-600">Start:</span>
+                          <span className="text-slate-700">
+                            {formatDate(task.startDate)}
+                          </span>
+                        </div>
+                      )}
 
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-slate-600">End:</span>
-                        <span className="text-slate-700">
-                          {formatDate(task.endDate)}
-                        </span>
-                      </div>
+                      {task.endDate && (
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-slate-600">End:</span>
+                          <span className="text-slate-700">
+                            {formatDate(task.endDate)}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </td>
 
@@ -255,4 +259,3 @@ export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
     </div>
   );
 }
- 
