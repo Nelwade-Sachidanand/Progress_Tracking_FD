@@ -18,6 +18,9 @@ import {
   Users,
   Eye,
   FolderOpen,
+  PhoneCall,
+  Mail,
+  Clock3,
 } from "lucide-react";
 
 import { useEffect, useRef, useState } from "react";
@@ -868,52 +871,105 @@ const DashboardHeader = ({
                 />
               </button>
 
-              {open && (
-                <div
-                  className="
-                absolute
-                right-0
-                top-full
-                mt-2
-                bg-white
-                border
-                border-[#EAEFF5]
-                rounded-xl
-                shadow-lg
-                z-[999]
-                p-2
-                min-w-[140px]
-                2xl:min-w-[160px]
-                2xl:p-1
-              "
-                >
-                  <button
-                    onClick={handleLogout}
-                    className="
-                  flex
-                  items-center
-                  gap-2
-                  px-3
-                  py-2
-                  text-red-600
-                  hover:bg-red-100
-                  rounded-lg
-                  w-full
-                  2xl:px-4
-                  2xl:py-3
-                  2xl:gap-3
-                  cursor-pointer
-                  2xl:text-lg
-                  2xl:font-medium
-                  2xl:tracking-wide
-                "
-                  >
-                    <LogOut size={18} />
-                    Logout
-                  </button>
-                </div>
-              )}
-            </div>
+{open && (
+  <div
+    className="
+      absolute
+      right-0
+      top-full
+      mt-2
+      w-[230px]
+      bg-white
+      rounded-2xl
+      border
+      border-slate-200
+      shadow-xl
+      z-[999]
+      overflow-hidden
+    "
+  >
+    {/* User Info */}
+    <div className="flex items-center gap-3 px-4 py-2.5">
+
+      <div className="w-10 h-10 rounded-full bg-[#EEF4FF] flex items-center justify-center text-[#2563EB] font-bold text-base">
+        {initials}
+      </div>
+
+      <div>
+     <h4 className="font-semibold text-sm text-[#0B1F59]">
+          {fullname}
+        </h4>
+
+        <p className="text-xs text-slate-500 mt-0.5">
+          {formatAction(role)}
+        </p>
+      </div>
+
+    </div>
+
+    <div className="border-t border-slate-100" />
+
+    {/* Help & Support */}
+   <div className="px-4 py-3">
+
+  <p className="text-sm font-semibold  tracking-wide text-slate-700 mb-2">
+        Help & Support
+      </p>
+
+<div className="space-y-2.5">
+
+      
+
+        <div className="flex items-start gap-3">
+          <Mail size={15} className="text-slate-500 mt-0.5" />
+          <p className="text-sm text-slate-700">
+            support@novixsuite.com
+          </p>
+        </div>
+
+        <div className="flex items-start gap-3">
+          <Clock3 size={15} className="text-slate-500 mt-0.5" />
+          <div>
+            <p className="text-sm text-slate-700">
+              Mon - Fri
+            </p>
+            <p className="text-xs text-slate-500">
+              9:30 AM - 6:30 PM
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div className="border-t border-slate-100" />
+
+    {/* Logout */}
+    <div className="p-2">
+      <button
+        onClick={handleLogout}
+       className="
+w-full
+flex
+items-center
+gap-2
+px-3
+py-2
+rounded-lg
+          text-red-600
+          hover:bg-red-50
+          transition
+          font-medium
+        "
+      >
+        <LogOut size={18} />
+        Logout
+      </button>
+    </div>
+
+  </div>
+)}            </div>
           </div>
         </div>
       </div>

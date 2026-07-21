@@ -63,15 +63,15 @@ export default function Sidebar() {
               path: "/dashboard",
             },
             {
-              name: "Banks / Clients",
+              name: "Banks",
               icon: Building2,
               path: "/banks",
             },
-            {
-              name: "Products",
-              icon: Package,
-              path: "/products",
-            },
+            // {
+            //   name: "Products",
+            //   icon: Package,
+            //   path: "/products",
+            // },
             {
               name: "Projects",
               icon: FolderKanban,
@@ -96,38 +96,43 @@ export default function Sidebar() {
               icon: CheckSquare,
               path: "/tasks",
             },
-          ],
-    },
-
-    ...(isAdmin || isManagement || isImplementation
-      ? [
-          {
-            title: "MONITORING",
-            items: [
-              {
-                name: "Issues",
-                icon: AlertTriangle,
-                path: "/issues",
-              },
-              {
-                name: "Risks",
-                icon: ShieldAlert,
-                path: "/risks",
-              },
-              // {
-              //   name: "Reports",
-              //   icon: FileBarChart,
-              //   path: "/reports",
-              // },
               {
                 name: "Documents",
                 icon: FileText,
                 path: "/documents",
               },
-            ],
-          },
-        ]
-      : []),
+          ],
+    },
+
+    // ...(isAdmin || isManagement || isImplementation
+    //   ? [
+    //       {
+    //         title: "MONITORING",
+    //         items: [
+              // {
+              //   name: "Issues",
+              //   icon: AlertTriangle,
+              //   path: "/issues",
+              // },
+              // {
+              //   name: "Risks",
+              //   icon: ShieldAlert,
+              //   path: "/risks",
+              // },
+              // {
+              //   name: "Reports",
+              //   icon: FileBarChart,
+              //   path: "/reports",
+              // },
+              // {
+              //   name: "Documents",
+              //   icon: FileText,
+              //   path: "/documents",
+              // },
+      //       ],
+      //     },
+      //   ]
+      // : []),
 
     ...(isAdmin
       ? [
@@ -255,12 +260,12 @@ export default function Sidebar() {
         </div>
 
         {/* Help Section */}
-        <div className="p-4">
+        {/* <div className="p-4">
           <div className="border border-blue-500 rounded-2xl p-4 flex items-center gap-3 bg-[#103680]">
             <Headphones size={22} />
             <span className="font-medium">Help & Support</span>
           </div>
-        </div>
+        </div> */}
       </aside>
     </>
   );
