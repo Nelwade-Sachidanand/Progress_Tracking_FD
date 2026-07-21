@@ -226,8 +226,8 @@ export default function GenerateReportModal({
 
                 {/* Project */}
                 {selectedProject && (
-<div className="flex items-center px-4 py-1.5 border-b border-slate-100 min-h-[36px]">
-                    <span className="w-24 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <div className="flex items-center px-4 py-1.5 border-b border-slate-100 min-h-[36px]">
+                    <span className="w-24 text-xs font-semibold tracking-wide text-slate-500">
                       Project
                     </span>
 
@@ -240,7 +240,7 @@ export default function GenerateReportModal({
                 {/* Phase */}
                 {selectedPhase && selectedPhase !== "All Phases" && (
                   <div className="flex items-center px-4 py-1.5 border-b border-slate-100 min-h-[36px]">
-                    <span className="w-24 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <span className="w-24 text-xs font-semibold tracking-wide text-slate-500">
                       Phase
                     </span>
 
@@ -254,7 +254,7 @@ export default function GenerateReportModal({
                 {selectedMilestone?.length > 0 && (
                   <div className="flex items-center px-4 py-3 border-b border-slate-100 overflow-visible">
 
-                    <span className="w-24 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <span className="w-24 text-xs font-semibold tracking-wide text-slate-500">
                       Milestone
                     </span>
 
@@ -275,26 +275,26 @@ export default function GenerateReportModal({
                             {/* Keep your tooltip here */}
                             <div
                               className="
-    absolute
-    right-0
-    bottom-full
-    mb-3
-    hidden
-    group-hover:block
-    z-9999
-  "
+                              absolute
+                              right-0
+                              bottom-full
+                              mb-3
+                              hidden
+                              group-hover:block
+                              z-9999
+                            "
                             >
                               <div
                                 className="
-      relative
-      w-[360px]
-      rounded-xl
-      border
-      border-slate-200
-      bg-white
-      shadow-2xl
-      overflow-hidden
-    "
+                                relative
+                                w-[360px]
+                                rounded-xl
+                                border
+                                border-slate-200
+                                bg-white
+                                shadow-2xl
+                                overflow-hidden
+                              "
                               >
                                 {/* Header */}
                                 <div className="px-3 py-2 border-b border-slate-100 bg-slate-50">
@@ -333,17 +333,17 @@ export default function GenerateReportModal({
                                 {/* Arrow */}
                                 <div
                                   className="
-        absolute
-        right-6
-        -bottom-2
-        h-4
-        w-4
-        rotate-45
-        border-r
-        border-b
-        border-slate-200
-        bg-white
-      "
+                                  absolute
+                                  right-6
+                                  -bottom-2
+                                  h-4
+                                  w-4
+                                  rotate-45
+                                  border-r
+                                  border-b
+                                  border-slate-200
+                                  bg-white
+                                "
                                 />
                               </div>
                             </div>
@@ -357,8 +357,8 @@ export default function GenerateReportModal({
 
                 {/* Task */}
                 {selectedTask && selectedTask !== "All_Tasks" && (
-                <div className="flex items-center px-4 py-1.5 border-b border-slate-100 min-h-[36px]">
-                    <span className="w-24 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <div className="flex items-center px-4 py-1.5 border-b border-slate-100 min-h-[36px]">
+                    <span className="w-24 text-xs font-semibold tracking-wide text-slate-500">
                       Task
                     </span>
 
@@ -367,22 +367,22 @@ export default function GenerateReportModal({
                     </span>
                   </div>
                 )}
-{/* Sub Task */}
-{selectedSubTask && selectedSubTask !== "All Subtasks" && (
- <div className="flex items-center px-4 py-1.5 border-b border-slate-100 min-h-[36px]">
-    <span className="w-24 text-xs font-semibold uppercase tracking-wide text-slate-500">
-      Sub Task
-    </span>
+                {/* Sub Task */}
+                {selectedSubTask && selectedSubTask !== "All Subtasks" && (
+                  <div className="flex items-center px-4 py-1.5 border-b border-slate-100 min-h-[36px]">
+                    <span className="w-24 text-xs font-semibold tracking-wide text-slate-500">
+                      Sub Task
+                    </span>
 
-    <span className="flex-1 text-sm font-medium text-slate-800 truncate">
-      {selectedSubTask}
-    </span>
-  </div>
-)}
+                    <span className="flex-1 text-sm font-medium text-slate-800 truncate">
+                      {selectedSubTask}
+                    </span>
+                  </div>
+                )}
                 {/* Activity */}
                 {selectedActivity && selectedActivity !== "All Activities" && (
                   <div className="flex items-center px-4 py-1.5 border-b border-slate-100 min-h-[36px]">
-                    <span className="w-24 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <span className="w-24 text-xs font-semibold tracking-wide text-slate-500">
                       Activity
                     </span>
 
@@ -395,7 +395,7 @@ export default function GenerateReportModal({
                 {/* Status */}
                 {selectedStatus && (
                   <div className="flex items-center px-4 py-3">
-                    <span className="w-24 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <span className="w-24 text-xs font-semibold tracking-wide text-slate-500">
                       Status
                     </span>
 

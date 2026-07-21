@@ -68,7 +68,8 @@ const AuthorizationRequestsPage = () => {
   const filteredLogs = allAuths.filter((log) => {
     const matchesSearch =
       !search ||
-      log.activityName?.toLowerCase().includes(search.toLowerCase()) ||
+      log.newActivityName?.toLowerCase().includes(search.toLowerCase()) ||
+      log.oldActivityName?.toLowerCase().includes(search.toLowerCase()) ||
       log.requestedBy?.toLowerCase().includes(search.toLowerCase());
 
     const matchesRequestType =
@@ -80,7 +81,7 @@ const AuthorizationRequestsPage = () => {
 
     return matchesSearch && matchesRequestType && matchesStatus && matchesUser;
   });
-
+ 
   const sortedLogs = [...filteredLogs].sort((a, b) => {
     // Pending always first
     if (a.status === "PENDING" && b.status !== "PENDING") return -1;

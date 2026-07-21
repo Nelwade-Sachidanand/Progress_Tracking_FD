@@ -1,8 +1,9 @@
-export const getMilestoneManagementData = (selectedBank, projects) => {
+export const getMilestoneManagementData = (selectedProjectId, projects) => {
   const milestones = [];
 
   projects.forEach((project) => {
-    if (selectedBank && project.bankName !== selectedBank) return;
+    // Filter by selected project
+    if (selectedProjectId && project.id !== selectedProjectId) return;
 
     project.phases?.forEach((phase) => {
       phase.milestones?.forEach((milestone) => {
@@ -24,7 +25,7 @@ export const getMilestoneManagementData = (selectedBank, projects) => {
             : 0;
 
         milestones.push({
-          id: `${project.projectName}-${milestone.milestoneName}`,
+          id: `${project.id}-${milestone.milestoneId}`,
 
           // Project
           projectId: project.id,
@@ -47,8 +48,4 @@ export const getMilestoneManagementData = (selectedBank, projects) => {
   });
 
   return milestones;
-};
-
-export const getBanks = (projects) => {
-  return [...new Set(projects.map((project) => project.bankName))];
 };

@@ -41,7 +41,7 @@ export default function Documents() {
     try {
       const response = await getAllDocuments(selectedProjectId);
 
-      console.log("Documents Response:", response.details);
+      // console.log("Documents Response:", response.details);
 
       if (response.statusType === "S") {
         setDocumentsDetails(response.details);
