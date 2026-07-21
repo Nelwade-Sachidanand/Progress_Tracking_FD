@@ -462,7 +462,7 @@ border:
   bg-white
   rounded-2xl
   border
-  border-[#E5EAF2]
+  border-[#CDD7E3]
   p-4
   lg:p-5
   "

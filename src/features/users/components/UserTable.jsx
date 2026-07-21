@@ -93,228 +93,243 @@ const UserTable = ({ users = [], loading, onDelete, onResetPassword, currentPage
           </thead>
 
           <tbody>
-            {users.map((user) => (
-              <tr
-                key={user.id}
-                className="
-            border-b
-            border-[#CDD7E3]
-          "
-              >
-                {/* Full Name */}
-                <td className="px-4 py-2">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div
-                      className="
-                  h-9
-                  w-9
-                  rounded-full
-                  bg-purple-100
-                  text-purple-600
-                  flex
-                  items-center
-                  justify-center
-                  font-bold
-                  shrink-0
-                  2xl:h-10
-                  2xl:w-10
+            {users.length > 0 ? (
+              users.map((user) => (
+                <tr
+                  key={user.id}
+                  className="
+                  border-b
+                  border-[#CDD7E3]
                 "
-                    >
-                      {getInitials(user.fullname)}
-                    </div>
+                >
+                  {/* Full Name */}
+                  <td className="px-4 py-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div
+                        className="
+                          h-9
+                          w-9
+                          rounded-full
+                          bg-purple-100
+                          text-purple-600
+                          flex
+                          items-center
+                          justify-center
+                          font-bold
+                          shrink-0
+                          2xl:h-10
+                          2xl:w-10
+                        "
+                      >
+                        {getInitials(user.fullname)}
+                      </div>
 
+                      <span
+                        className="
+                          flex-1
+                          min-w-0
+                          truncate
+                          font-semibold
+                          text-slate-900
+                          text-sm
+                          xl:text-base
+                          2xl:text-base
+                        "
+                        title={user.fullname}
+                      >
+                        {user.fullname}
+                      </span>
+                    </div>
+                  </td>
+
+                  {/* Username */}
+                  <td className="px-6 py-2">
                     <span
                       className="
-                  flex-1
-                  min-w-0
-                  truncate
-                  font-semibold
-                  text-slate-900
-                  text-sm
-                  xl:text-base
-                  2xl:text-base
-                "
-                      title={user.fullname}
+                        block
+                        truncate
+                        text-slate-700
+                        text-sm
+                        xl:text-base
+                        2xl:text-base
+                      "
+                      title={user.username}
                     >
-                      {user.fullname}
+                      {user.username}
                     </span>
-                  </div>
-                </td>
+                  </td>
 
-                {/* Username */}
-                <td className="px-6 py-2">
-                  <span
-                    className="
-                block
-                truncate
-                text-slate-700
-                text-sm
-                xl:text-base
-                2xl:text-base
-              "
-                    title={user.username}
-                  >
-                    {user.username}
-                  </span>
-                </td>
+                  {/* Role */}
+                  <td className="px-6 py-2">
+                    <span
+                      className={`
+                        inline-flex
+                        items-center
+                        px-2
+                        py-1.5
+                        rounded-full
+                        text-sm
+                        font-semibold
+                        whitespace-nowrap
+                        ${getRoleStyle(user.role)}
+                      `}
+                    >
+                      {formatValue(user.role.replaceAll("_", " "))}
+                    </span>
+                  </td>
 
-                {/* Role */}
-                <td className="px-6 py-2">
-                  <span
-                    className={`
-                inline-flex
-                items-center
-                px-2
-                py-1.5
-                rounded-full
-                text-sm
-                font-semibold
-                whitespace-nowrap
-                ${getRoleStyle(user.role)}
-              `}
-                  >
-                    {formatValue(user.role.replaceAll("_", " "))}
-                  </span>
-                </td>
+                  {/* Projects */}
+                  <td className="px-6 py-2">
+                    <div
+                      className="flex flex-wrap items-center gap-2"
+                      title={user.projectNames?.join(", ")}
+                    >
+                      {user.projectNames?.slice(0, 2).map((project) => (
+                        <span
+                          key={project}
+                          className="
+                            px-3
+                            py-1
+                            rounded-full
+                            bg-blue-100
+                            text-blue-700
+                            text-xs
+                            xl:text-sm
+                            font-medium
+                            whitespace-nowrap
+                          "
+                        >
+                          {project}
+                        </span>
+                      ))}
 
-                {/* Projects */}
-                <td className="px-6 py-2">
-                  <div
-                    className="flex flex-wrap items-center gap-2"
-                    title={user.projectNames?.join(", ")}
-                  >
-                    {user.projectNames?.slice(0, 2).map((project) => (
-                      <span
-                        key={project}
+                      {user.projectNames?.length > 2 && (
+                        <span
+                          className="
+                            px-3
+                            py-1
+                            rounded-full
+                            bg-blue-50
+                            text-blue-600
+                            text-xs
+                            xl:text-sm
+                            font-semibold
+                            whitespace-nowrap
+                          "
+                        >
+                          +{user.projectNames.length - 2}
+                        </span>
+                      )}
+                    </div>
+                  </td>
+
+                  {/* Status */}
+                  <td className="px-6 py-2">
+                    <span
+                      className={`
+                        inline-flex
+                        items-center
+                        gap-1
+                        px-3
+                        py-1.5
+                        rounded-full
+                        text-sm
+                        font-semibold
+                        whitespace-nowrap
+                        ${user.status
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-600"
+                        }
+                        `}
+                    >
+                      <span className="text-xs">●</span>
+                      {user.status ? "Active" : "Inactive"}
+                    </span>
+                  </td>
+
+                  {/* Actions */}
+                  <td className="px-6 py-2">
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        onClick={() =>
+                          navigate("/users/edit", { state: { user } })
+                        }
+                        title="Edit User"
                         className="
-                    px-3
-                    py-1
-                    rounded-full
-                    bg-blue-100
-                    text-blue-700
-                    text-xs
-                    xl:text-sm
-                    font-medium
-                    whitespace-nowrap
-                  "
+                          h-9
+                          w-9
+                          rounded-lg
+                          bg-blue-50
+                          text-blue-600
+                          flex
+                          items-center
+                          justify-center
+                          hover:bg-blue-100
+                          transition-colors
+                          cursor-pointer
+                        "
                       >
-                        {project}
-                      </span>
-                    ))}
+                        <Pencil size={16} />
+                      </button>
 
-                    {user.projectNames?.length > 2 && (
-                      <span
+                      <button
+                        onClick={() => onResetPassword?.(user)}
+                        title="Reset Password"
                         className="
-                    px-3
-                    py-1
-                    rounded-full
-                    bg-blue-50
-                    text-blue-600
-                    text-xs
-                    xl:text-sm
-                    font-semibold
-                    whitespace-nowrap
-                  "
+                          h-9
+                          w-9
+                          rounded-lg
+                          bg-amber-50
+                          text-amber-600
+                          flex
+                          items-center
+                          justify-center
+                          hover:bg-amber-100
+                          transition-colors
+                          cursor-pointer
+                        "
                       >
-                        +{user.projectNames.length - 2}
-                      </span>
-                    )}
-                  </div>
-                </td>
+                        <KeyRound size={16} />
+                      </button>
 
-                {/* Status */}
-                <td className="px-6 py-2">
-                  <span
-                    className={`
-                inline-flex
-                items-center
-                gap-1
-                px-3
-                py-1.5
-                rounded-full
-                text-sm
-                font-semibold
-                whitespace-nowrap
-                ${
-                  user.status
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-600"
-                }
-              `}
-                  >
-                    <span className="text-xs">●</span>
-                    {user.status ? "Active" : "Inactive"}
-                  </span>
-                </td>
-
-                {/* Actions */}
-                <td className="px-6 py-2">
-                  <div className="flex items-center justify-center gap-2">
-                    <button
-                      onClick={() =>
-                        navigate("/users/edit", { state: { user } })
-                      }
-                      title="Edit User"
-                      className="
-                  h-9
-                  w-9
-                  rounded-lg
-                  bg-blue-50
-                  text-blue-600
-                  flex
-                  items-center
-                  justify-center
-                  hover:bg-blue-100
-                  transition-colors
-                  cursor-pointer
+                      <button
+                        onClick={() => onDelete(user.id)}
+                        title="Delete User"
+                        className="
+                          h-9
+                          w-9
+                          rounded-lg
+                          bg-red-50
+                          text-red-600
+                          flex
+                          items-center
+                          justify-center
+                          hover:bg-red-100
+                          transition-colors
+                          cursor-pointer
+                        "
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={6}
+                  className="
+                  py-14
+                  text-center
+                  text-sm
+                  text-slate-500
                 "
-                    >
-                      <Pencil size={16} />
-                    </button>
-
-                    <button
-                      onClick={() => onResetPassword?.(user)}
-                      title="Reset Password"
-                      className="
-                  h-9
-                  w-9
-                  rounded-lg
-                  bg-amber-50
-                  text-amber-600
-                  flex
-                  items-center
-                  justify-center
-                  hover:bg-amber-100
-                  transition-colors
-                  cursor-pointer
-                "
-                    >
-                      <KeyRound size={16} />
-                    </button>
-
-                    <button
-                      onClick={() => onDelete(user.id)}
-                      title="Delete User"
-                      className="
-                  h-9
-                  w-9
-                  rounded-lg
-                  bg-red-50
-                  text-red-600
-                  flex
-                  items-center
-                  justify-center
-                  hover:bg-red-100
-                  transition-colors
-                  cursor-pointer
-                "
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
+                >
+                  No users found.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

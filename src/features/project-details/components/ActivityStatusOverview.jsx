@@ -64,7 +64,7 @@ const inProgressActivities = activities.filter(
     activity.executionStatus === "In Progress"
 );
   return (
-    <div className="bg-white rounded-2xl border border-[#E5EAF2] p-5">
+    <div className="bg-white rounded-2xl border border-[#CDD7E3] p-5">
       {/* Header */}
       <div className="flex items-center gap-3 mb-5">
         <div
@@ -74,7 +74,7 @@ const inProgressActivities = activities.filter(
         >
           4
         </div>
-
+ 
         <h2
           className="
   text-base sm:text-lg lg:text-xl font-bold text-[#0B1F59]

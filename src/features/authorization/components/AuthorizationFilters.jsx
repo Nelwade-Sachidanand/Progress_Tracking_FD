@@ -103,7 +103,7 @@ export default function AuthorizationFilters({
             <SearchInput
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search Requests..."
+              placeholder="Search Resource..."
             />
           </div>
 

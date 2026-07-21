@@ -58,9 +58,9 @@ export default function ForgotPasswordModal({
               </h2>
 
               <p className="mt-1 text-sm leading-5 text-slate-600">
-                Enter your username below to submit a password reset request.
-                Your administrator will review the request and reset your
-                password if approved.
+                Enter your Username below to Submit a Password Reset Request.
+                Your Administrator will Review the Request and Reset your
+                Password if Approved.
               </p>
             </div>
 
@@ -80,10 +80,10 @@ export default function ForgotPasswordModal({
 
                 <input
                   type="text"
-                  placeholder="Enter Your Username"
+                  placeholder="Enter Username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full rounded-lg border border-[#CDD7E3] pl-12 pr-4 py-2.5 outline-none focus:border-blue-500"
+                  className="h-10 w-full rounded-lg border border-[#CDD7E3] pl-12 pr-4 py-2.5 outline-none focus:border-blue-500"
                 />
               </div>
 
@@ -108,8 +108,8 @@ export default function ForgotPasswordModal({
                 />
 
                 <p className="text-sm leading-6 text-slate-700">
-                  Password reset requests are handled only by authorized
-                  administrators.
+                  Password Reset Requests are Handled Only by Authorized
+                  Administrators.
                 </p>
               </div>
             </div>

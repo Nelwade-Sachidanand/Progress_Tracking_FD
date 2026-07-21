@@ -55,6 +55,7 @@ export default function NotificationPage() {
           try {
             await markAllRead();
             await loadNotifications();
+            window.dispatchEvent(new Event("notificationsUpdated"));
           } catch (error) {
             console.error(error);
           }

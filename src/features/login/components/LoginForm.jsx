@@ -654,7 +654,7 @@ const LoginForm = () => {
             const response = await forgotPassword(request.username);
 
             if (response?.statusType === "S") {
-              toast.success(response?.statusDesc);
+              // toast.success(response?.statusDesc);
               return true;
             }
 

@@ -6,6 +6,7 @@ import {
   approveRequest as approveRequestApi,
   approveSelectedRequests as approveSelectedRequestsApi,
   getAuthRequests,
+  getActivityUpdateRequestById as getAuthRequestByIdApi,
   rejectRequest as rejectRequestApi,
   rejectSelectedRequests as rejectSelectedRequestsApi,
   rollbackRequest as rollbackRequestApi,
@@ -28,7 +29,7 @@ export const useAuthRequests = () => {
     } catch (error) {
       toast.error(
         error.response?.data?.statusDesc ||
-          "Failed to load authorization requests",
+        "Failed to load authorization requests",
       );
     } finally {
       setLoading(false);
@@ -173,6 +174,29 @@ export const useAuthRequests = () => {
     }
   };
 
+  const getAuthRequestById = async (requestId) => {
+    try {
+      setLoading(true);
+
+      const response = await getAuthRequestByIdApi(requestId);
+
+      if (response?.statusType === "S") {
+        return response.details;
+      }
+
+      toast.error(response?.statusDesc);
+      return null;
+    } catch (error) {
+      toast.error(
+        error.response?.data?.statusDesc ||
+        "Failed to fetch authorization request"
+      );
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchAuthRequests();
     getAllAuthRequests();
@@ -190,6 +214,7 @@ export const useAuthRequests = () => {
     rejectSelectedRequests,
 
     getAllAuthRequests,
+    getAuthRequestById,
     allAuths,
   };
 };

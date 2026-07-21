@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
-
 import { toast } from "react-toastify";
 
-import BankSelector from "../components/BankSelector";
 import MilestoneTable from "../components/MilestoneTable";
 
-import {
-  getBanks,
-  getMilestoneManagementData,
-} from "../utils/milestoneManagementUtils";
+import { getMilestoneManagementData } from "../utils/milestoneManagementUtils";
 
 import { useProjects } from "../../../context/ProjectContext";
 import { useMilestone } from "../hooks/useMilestone";
@@ -16,55 +11,46 @@ import { useMilestone } from "../hooks/useMilestone";
 export default function MilestoneManagement() {
   const { projects } = useProjects();
 
-  const [banks, setBanks] = useState([]);
-
-  const [selectedBank, setSelectedBank] = useState("");
+  const selectedProjectId = sessionStorage.getItem("selectedProjectId");
 
   const [milestones, setMilestones] = useState([]);
 
   const { updateWeightages, loading } = useMilestone();
 
-  const [submitting, setSubmitting] = useState(false);
-
   useEffect(() => {
-    const bankList = getBanks(projects);
-
-    setBanks(bankList);
-
-    if (bankList.length) {
-      setSelectedBank(bankList[0]);
+    if (!selectedProjectId) {
+      setMilestones([]);
+      return;
     }
-  }, [projects]);
 
-  useEffect(() => {
-    if (!selectedBank) return;
-    setMilestones(getMilestoneManagementData(selectedBank, projects));
-  }, [selectedBank, projects]);
+    setMilestones(
+      getMilestoneManagementData(selectedProjectId, projects)
+    );
+  }, [selectedProjectId, projects]);
 
   const handleWeightageChange = (index, value) => {
     const updated = [...milestones];
 
-    updated[index].weightage = value === "" ? "" : Number(value);
+    updated[index].weightage =
+      value === "" ? "" : Number(value);
 
     setMilestones(updated);
   };
 
   const handleUpdate = async () => {
     try {
-      if (
-        milestones.reduce(
-          (sum, item) => sum + Number(item.weightage || 0),
-          0,
-        ) !== 100
-      ) {
-        toast.error("Total weightage must equal 100%");
+      const totalWeightage = milestones.reduce(
+        (sum, item) => sum + Number(item.weightage || 0),
+        0
+      );
 
+      if (totalWeightage !== 100) {
+        toast.error("Total weightage must equal 100%");
         return;
       }
 
       const payload = {
-        projectId: milestones[0]?.projectId,
-
+        projectId: selectedProjectId,
         milestones: milestones.map((item) => ({
           phaseId: item.phaseId,
           milestoneId: item.milestoneId,
@@ -72,29 +58,22 @@ export default function MilestoneManagement() {
         })),
       };
 
-      // console.log("Update Payload",payload);
-
       await updateWeightages(payload);
     } catch (error) {
       console.error(error);
+      toast.error("Failed to update milestone weightages.");
     }
   };
 
   return (
     <div
       className="
-      p-4
-      xl:p-5
-      2xl:p-6
-      space-y-4
-    "
+        p-4
+        xl:p-5
+        2xl:p-6
+        space-y-4
+      "
     >
-      <BankSelector
-        banks={banks}
-        selectedBank={selectedBank}
-        setSelectedBank={setSelectedBank}
-      />
-
       <MilestoneTable
         milestones={milestones}
         loading={loading}

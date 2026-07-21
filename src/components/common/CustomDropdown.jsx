@@ -197,7 +197,7 @@ export default function CustomDropdown({
                   className={`
                   w-full
                   px-4
-                  py-3
+                  py-2
 
                   truncate
                   text-left
@@ -214,7 +214,7 @@ export default function CustomDropdown({
 
                   ${value === option.value
                       ? "bg-blue-50 font-semibold text-blue-600"
-                      : "text-slate-800 hover:bg-slate-50"
+                      : "text-slate-800 hover:bg-blue-100"
                     }
                 `}
                 >

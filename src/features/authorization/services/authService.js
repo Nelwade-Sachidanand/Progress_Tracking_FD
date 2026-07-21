@@ -12,6 +12,14 @@ export const getAllAuthRequests = async () => {
   return response.data;
 };
 
+export const getActivityUpdateRequestById = async (requestId) => {
+  const response = await apiClient.get(
+    `/activity-request/activityUpdateRequest/${requestId}`
+  );
+
+  return response.data;
+};
+
 export const getProjectNames = async (projectIds) => {
   const response = await apiClient.post("/projects/getNames", { projectIds });
 

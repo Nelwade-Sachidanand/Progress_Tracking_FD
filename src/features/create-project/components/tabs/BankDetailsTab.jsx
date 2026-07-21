@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import CustomDropdown from "../../../../components/common/CustomDropdown";
 import NumberInput from "../../../../components/common/NumberInput";
 
-export default function BankDetailsTab({ data, updateRootFields,disabled = false }) {
+export default function BankDetailsTab({ data, updateRootFields, disabled = false }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -104,32 +104,6 @@ export default function BankDetailsTab({ data, updateRootFields,disabled = false
         ============================ */}
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {/* Project Name */}
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">
-              Project Name
-            </label>
-
-            <div className="relative">
-              <Briefcase
-                size={16}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
-              />
-
-              <input
-                type="text"
-                name="projectName"
-                value={data.projectName || ""}
-                onChange={handleChange}
-                placeholder="Enter Project Name"
-                className={iconInputClass}
-                autoComplete="off"
-                disabled={disabled}
-
-              />
-            </div>
-          </div>
 
           {/* Bank Name */}
 
@@ -153,6 +127,32 @@ export default function BankDetailsTab({ data, updateRootFields,disabled = false
                 className={iconInputClass}
                 autoComplete="off"
                 disabled={disabled}
+              />
+            </div>
+          </div>
+
+          {/* Project Name */}
+          <div>
+            <label className="mb-1 block text-sm font-medium text-slate-700">
+              Project Name
+            </label>
+
+            <div className="relative">
+              <Briefcase
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"
+              />
+
+              <input
+                type="text"
+                name="projectName"
+                value={data.projectName || ""}
+                onChange={handleChange}
+                placeholder="Enter Project Name"
+                className={iconInputClass}
+                autoComplete="off"
+                disabled={disabled}
+
               />
             </div>
           </div>

@@ -242,6 +242,18 @@ const DashboardHeader = ({
     return `${Math.floor(diff / 86400)} days ago`;
   };
 
+  useEffect(() => {
+    const handleNotificationsUpdated = () => {
+      loadNotifications();
+    };
+
+    window.addEventListener("notificationsUpdated",handleNotificationsUpdated);
+
+    return () => {
+      window.removeEventListener("notificationsUpdated",handleNotificationsUpdated);
+    };
+  }, []);
+
   const pageConfig = {
     "/dashboard": {
       title: "Implementation Command Center",

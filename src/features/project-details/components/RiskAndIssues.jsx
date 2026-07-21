@@ -392,7 +392,7 @@ export default function RiskAndIssues({
 
   ];
   return (
-    <div className="bg-white rounded-2xl border border-[#E5EAF2] p-5">
+    <div className="bg-white rounded-2xl border border-[#CDD7E3] p-5">
       {/* Header */}
       <div className="flex items-center gap-3 mb-5">
         <div
@@ -448,8 +448,6 @@ export default function RiskAndIssues({
               flex
               items-center
               justify-between
-              transition-all
-              hover:shadow-md
               min-h-[100px]
             "
               style={{
@@ -511,15 +509,14 @@ export default function RiskAndIssues({
     
                 className="
                 shrink-0
-      flex
-      items-center
-      gap-2
-      text-sm
-      font-semibold
-      whitespace-nowrap
-      transition
-      hover:opacity-80
-    "
+                flex
+                items-center
+                gap-2
+                text-sm
+                font-semibold
+                whitespace-nowrap
+                cursor-pointer
+              "
                 style={{
                   color: card.linkColor,
                 }}
@@ -635,7 +632,7 @@ export default function RiskAndIssues({
                             Risk Level
                           </th>
 
-                          <th className="w-[20%] px-3 py-3 text-left text-sm font-semibold text-slate-600">
+                          <th className="w-[25%] px-3 py-3 text-left text-sm font-semibold text-slate-600">
                             Reason
                           </th>
                         </>
@@ -643,11 +640,11 @@ export default function RiskAndIssues({
 
                     {modalTitle === "Dependencies" && (
                       <>
-                        <th className="w-[15%] px-3 py-3 text-left text-sm font-semibold text-slate-600">
+                        <th className="w-[20%] px-3 py-3 text-left text-sm font-semibold text-slate-600">
                           Blocked By
                         </th>
 
-                        <th className="w-[15%] px-3 py-3 text-center text-sm font-semibold text-slate-600">
+                        <th className="w-[14%] px-3 py-3 text-center text-sm font-semibold text-slate-600">
                           Dependency Status
                         </th>
                       </>

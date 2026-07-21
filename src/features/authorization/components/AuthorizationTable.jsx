@@ -45,6 +45,7 @@ const getStatusStyle = (status) => {
 
 export default function AuthorizationTable({
   logs = [],
+  allLogs,
   loading,
   onView,
   approveSelectedRequests,
@@ -85,7 +86,7 @@ export default function AuthorizationTable({
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
-      const pendingIds = paginatedLogs
+      const pendingIds = allLogs
         .filter((log) => log.status === "PENDING")
         .map((log) => log.id);
 
@@ -224,9 +225,9 @@ export default function AuthorizationTable({
                   type="checkbox"
                   className="h-3 w-3 cursor-pointer"
                   checked={
-                    logs.filter((log) => log.status === "PENDING")
+                    allLogs.filter((log) => log.status === "PENDING")
                       .length > 0 &&
-                    logs
+                    allLogs
                       .filter((log) => log.status === "PENDING")
                       .every((log) => selectedRows.includes(log.id))
                   }
