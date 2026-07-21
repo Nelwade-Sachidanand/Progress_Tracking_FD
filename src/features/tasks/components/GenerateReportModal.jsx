@@ -1,5 +1,6 @@
 import { X, FileText, FileSpreadsheet, FileType, Filter } from "lucide-react";
-
+import { FaFilePdf, FaFileExcel, FaFileWord, FaFileCsv } from "react-icons/fa6";
+//import { FaFileCsv } from "react-icons/fa6";
 export default function GenerateReportModal({
   isOpen,
   onClose,
@@ -93,58 +94,51 @@ export default function GenerateReportModal({
           </button>
         </div>
 
+
+
         {/* Body - Scrollable */}
-        <div className="px-6 py-5 space-y-5 overflow-y-auto flex-1">
+        <div className="px-6 py-5 space-y-5 overflow-y-auto overflow-x-visible flex-1 relative">
           {/* Report Format */}
           {/* Report Format */}
           <div>
-            <label className="block text-sm font-semibold text-[#0F172A] mb-3">
-              Report Format
-            </label>
-
-            {/* Body - Scrollable */}
-            <div className="px-6 py-5 space-y-5 overflow-y-auto flex-1">
-              {/* Report Format */}
-              {/* Report Format */}
-              <div>
-                <label className="block text-sm font-semibold text-[#0F172A] mb-3">
+            {/* <label className="block text-sm font-semibold text-[#0F172A] mb-3">
                   Report Format
-                </label>
+                </label> */}
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                  {[
-                    {
-                      type: "pdf",
-                      label: "PDF",
-                      ext: ".pdf",
-                      icon: FileText,
-                      color: "text-red-500",
-                    },
-                    {
-                      type: "excel",
-                      label: "Excel",
-                      ext: ".xlsx",
-                      icon: FileSpreadsheet,
-                      color: "text-green-600",
-                    },
-                    {
-                      type: "csv",
-                      label: "CSV",
-                      ext: ".csv",
-                      icon: FileSpreadsheet,
-                      color: "text-blue-600",
-                    },
-                    {
-                      type: "word",
-                      label: "Word",
-                      ext: ".docx",
-                      icon: FileType,
-                      color: "text-indigo-600",
-                    },
-                  ].map(({ type, label, ext, icon: Icon, color }) => (
-                    <label
-                      key={type}
-                      className={`
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              {[
+                {
+                  type: "pdf",
+                  label: "PDF",
+                  ext: ".pdf",
+                  icon: FaFilePdf,
+                  color: "text-red-600",
+                },
+                {
+                  type: "excel",
+                  label: "Excel",
+                  ext: ".xlsx",
+                  icon: FaFileExcel,
+                  color: "text-green-600",
+                },
+                {
+                  type: "csv",
+                  label: "CSV",
+                  ext: ".csv",
+                  icon: FaFileCsv,
+                  color: "text-emerald-600",
+                },
+                {
+                  type: "word",
+                  label: "Word",
+                  ext: ".docx",
+                  icon: FaFileWord,
+                  color: "text-blue-600",
+                },
+              ].map(({ type, label, ext, icon: Icon, color }) => (
+                <label
+                  key={type}
+                  className={`
           
           rounded-xl
           border
@@ -152,38 +146,38 @@ export default function GenerateReportModal({
           py-3
           transition-all
           ${reportType === type
-                          ? "border-[#6D4AFF] bg-[#F6F3FF] shadow-md"
-                          : "border-slate-200 bg-white hover:border-[#6D4AFF]/50 hover:bg-slate-50"
-                        }
+                      ? "border-[#6D4AFF] bg-[#F6F3FF] shadow-md"
+                      : "border-slate-200 bg-white hover:border-[#6D4AFF]/50 hover:bg-slate-50"
+                    }
         `}
-                    >
-                      <div className="flex items-start justify-between">
+                >
+                  <div className="flex items-start justify-between">
 
-                        {/* Left */}
-                        <div className="flex gap-2">
-                          <input
-                            type="radio"
-                            name="reportType"
-                            value={type}
-                            checked={reportType === type}
-                            onChange={(e) => setReportType(e.target.value)}
-                            className="mt-1 accent-[#6D4AFF]"
-                          />
+                    {/* Left */}
+                    <div className="flex gap-2">
+                      <input
+                        type="radio"
+                        name="reportType"
+                        value={type}
+                        checked={reportType === type}
+                        onChange={(e) => setReportType(e.target.value)}
+                        className="mt-1 accent-[#6D4AFF]"
+                      />
 
-                          <div>
-                            <p className="text-sm font-semibold text-slate-800">
-                              {label}
-                            </p>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-800">
+                          {label}
+                        </p>
 
-                            <p className="text-[11px] text-slate-500">
-                              {ext}
-                            </p>
-                          </div>
-                        </div>
+                        <p className="text-[11px] text-slate-500">
+                          {ext}
+                        </p>
+                      </div>
+                    </div>
 
-                        {/* Right Icon */}
-                        <div
-                          className={`
+                    {/* Right Icon */}
+                    <div
+                      className={`
               w-8
               h-8
               rounded-lg
@@ -191,224 +185,256 @@ export default function GenerateReportModal({
               items-center
               justify-center
               ${reportType === type
-                              ? "bg-[#6D4AFF]/10"
-                              : "bg-slate-100"
-                            }
+                          ? "bg-[#6D4AFF]/10"
+                          : "bg-slate-100"
+                        }
             `}
-                        >
-                          <Icon
-                            size={18}
-                            className={
-                              reportType === type
-                                ? "text-[#6D4AFF]"
-                                : color
-                            }
-                          />
-                        </div>
+                    >
+                      <Icon
+                        size={18}
+                        className={
+                          reportType === type
+                            ? "text-[#6D4AFF]"
+                            : color
+                        }
+                      />
+                    </div>
 
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Date Range */}
-              <div>
-                <label className="block text-sm font-semibold text-[#0F172A] mb-3">
-                  Date Range
+                  </div>
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-medium text-slate-500 block mb-1">
-                      From Date
-                    </label>
-                    <input
-                      type="date"
-                      value={fromDate}
-                      onChange={(e) => setFromDate(e.target.value)}
-                      className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/10 outline-none transition-all"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-slate-500 block mb-1">
-                      To Date
-                    </label>
-                    <input
-                      type="date"
-                      value={toDate}
-                      onChange={(e) => setToDate(e.target.value)}
-                      className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:border-[#6D4AFF] focus:ring-2 focus:ring-[#6D4AFF]/10 outline-none transition-all"
-                    />
-                  </div>
-                </div>
-              </div>
+              ))}
+            </div>
+          </div>
 
-              {/* Applied Filters */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <label className="text-sm font-semibold text-[#0F172A]">
-                    Applied Filters
-                  </label>
-                  {activeFilterCount > 0 && (
-                    <span className="text-xs font-medium text-[#6D4AFF] bg-[#F5F3FF] px-2.5 py-1 rounded-full">
-                      {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""} applied
+
+          {/* Applied Filters */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <label className="text-sm font-semibold text-[#0F172A]">
+                Applied Filters
+              </label>
+
+              {activeFilterCount > 0 && (
+                <span className="text-xs font-medium text-[#6D4AFF] bg-[#F5F3FF] px-2.5 py-1 rounded-full">
+                  {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""} applied
+                </span>
+              )}
+            </div>
+
+            {activeFilterCount > 0 ? (
+              <div className="rounded-xl border border-slate-200 bg-slate-50 shadow-sm relative overflow-visible">
+
+                {/* Project */}
+                {selectedProject && (
+<div className="flex items-center px-4 py-1.5 border-b border-slate-100 min-h-[36px]">
+                    <span className="w-24 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      Project
                     </span>
-                  )}
-                </div>
 
-                <div className="bg-[#F8FAFC] rounded-xl border border-slate-200 p-3 min-h-[50px]">
-                  {activeFilterCount > 0 ? (
-                    <div className="flex flex-wrap gap-2">
-                      {/* Project */}
-                      {selectedProject && (
-                        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("project")}`}>
-                          <span className="opacity-60 text-[10px] uppercase tracking-wider">Project:</span>
-                          <span className="font-semibold">{selectedProject}</span>
-                        </div>
-                      )}
+                    <span className="flex-1 text-sm font-medium text-slate-800 truncate">
+                      {selectedProject}
+                    </span>
+                  </div>
+                )}
 
-                      {/* Phase */}
-                      {selectedPhase && selectedPhase !== "All Phases" && (
-                        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("phase")}`}>
-                          <span className="opacity-60 text-[10px] uppercase tracking-wider">Phase:</span>
-                          <span className="font-semibold">{selectedPhase}</span>
-                        </div>
-                      )}
+                {/* Phase */}
+                {selectedPhase && selectedPhase !== "All Phases" && (
+                  <div className="flex items-center px-4 py-1.5 border-b border-slate-100 min-h-[36px]">
+                    <span className="w-24 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      Phase
+                    </span>
 
-                      {/* Milestone - With Tooltip */}
-                      {selectedMilestone && selectedMilestone.length > 0 && (
-                        <div className="relative group">
-                          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("milestone")}`}>
-                            <span className="opacity-60 text-[10px] uppercase tracking-wider">Milestone:</span>
-                            <span className="font-semibold">
-                              {selectedMilestone.length === 1
-                                ? selectedMilestone[0]
-                                : `${selectedMilestone[0]} +${selectedMilestone.length - 1} more`}
+                    <span className="flex-1 text-sm font-medium text-slate-800 truncate">
+                      {selectedPhase}
+                    </span>
+                  </div>
+                )}
+
+                {/* Milestone */}
+                {selectedMilestone?.length > 0 && (
+                  <div className="flex items-center px-4 py-3 border-b border-slate-100 overflow-visible">
+
+                    <span className="w-24 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      Milestone
+                    </span>
+
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+
+                      <span className="text-sm font-medium text-slate-800 truncate">
+                        {selectedMilestone[0]}
+                      </span>
+
+                      {selectedMilestone.length > 1 && (
+                        <div className="relative shrink-0">
+                          <div className="group inline-block">
+
+                            <span className="cursor-pointer rounded-full bg-violet-100 px-2.5 py-1 text-[11px] font-semibold text-violet-700 hover:bg-violet-200">
+                              +{selectedMilestone.length - 1} more
                             </span>
-                          </div>
-                          {/* Tooltip - Shows all milestone names */}
-                          {selectedMilestone.length > 1 && (
-                            <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block z-60">
+
+                            {/* Keep your tooltip here */}
+                            <div
+                              className="
+    absolute
+    right-0
+    bottom-full
+    mb-3
+    hidden
+    group-hover:block
+    z-9999
+  "
+                            >
                               <div
                                 className="
-                            relative
-                            bg-white
-                            border
-                            border-slate-200
-                            rounded-lg
-                            shadow-xl
-                            p-2.5
-                            min-w-[220px]
-                            max-w-[280px]
-                          "
+      relative
+      w-[360px]
+      rounded-xl
+      border
+      border-slate-200
+      bg-white
+      shadow-2xl
+      overflow-hidden
+    "
                               >
-                                <p className="text-[11px] font-semibold text-black mb-2">
-                                  All Milestones ({selectedMilestone.length})
-                                </p>
+                                {/* Header */}
+                                <div className="px-3 py-2 border-b border-slate-100 bg-slate-50">
+                                  <h4 className="text-xs font-semibold text-slate-800">
+                                    Selected Milestones
+                                  </h4>
 
-                                <div className="flex flex-wrap gap-1">
-                                  {selectedMilestone.map((item, index) => (
-                                    <span
-                                      key={index}
-                                      className="
-                                  px-2
-                                  py-0.5
-                                  rounded-md
-                                  bg-slate-100
-                                  border
-                                  border-slate-200
-                                  text-black
-                                  text-[11px]
-                                  font-medium
-                                "
-                                    >
-                                      {item}
-                                    </span>
-                                  ))}
+                                  <p className="text-[10px] text-slate-500">
+                                    {selectedMilestone.length} milestone(s)
+                                  </p>
+                                </div>
+
+                                {/* Body */}
+                                <div className="p-2.5">
+                                  <div className="grid grid grid-cols-1 gap-y-1 max-h-28 overflow-y-auto">
+
+                                    {selectedMilestone.map((item, index) => (
+                                      <div
+                                        key={index}
+                                        className="flex items-center gap-2 py-0.5"
+                                      >
+                                        {/* <span className="mt-1.5 h-2 w-2 rounded-full bg-emerald-500 shrink-0"></span> */}
+
+                                        <span
+                                          className="text-[11px] leading-4 text-slate-700 break-words"
+                                          title={item}
+                                        >
+                                          {item}
+                                        </span>
+                                      </div>
+                                    ))}
+
+                                  </div>
                                 </div>
 
                                 {/* Arrow */}
                                 <div
                                   className="
-                              absolute
-                              left-4
-                              -bottom-1.5
-                              w-3
-                              h-3
-                              bg-white
-                              border-r
-                              border-b
-                              border-slate-200
-                              rotate-45
-                            "
+        absolute
+        right-6
+        -bottom-2
+        h-4
+        w-4
+        rotate-45
+        border-r
+        border-b
+        border-slate-200
+        bg-white
+      "
                                 />
                               </div>
                             </div>
-                          )}
+                          </div>
                         </div>
                       )}
 
-                      {/* Task */}
-                      {selectedTask && selectedTask !== "All_Tasks" && (
-                        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("task")}`}>
-                          <span className="opacity-60 text-[10px] uppercase tracking-wider">Task:</span>
-                          <span className="font-semibold">{selectedTask}</span>
-                        </div>
-                      )}
-
-                      {/* Sub Task */}
-                      {selectedSubTask && selectedSubTask !== "All Subtasks" && (
-                        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("subtask")}`}>
-                          <span className="opacity-60 text-[10px] uppercase tracking-wider">Sub Task:</span>
-                          <span className="font-semibold">{selectedSubTask}</span>
-                        </div>
-                      )}
-
-                      {/* Activity */}
-                      {selectedActivity && selectedActivity !== "All Activities" && (
-                        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getChipColor("activity")}`}>
-                          <span className="opacity-60 text-[10px] uppercase tracking-wider">Activity:</span>
-                          <span className="font-semibold">{selectedActivity}</span>
-                        </div>
-                      )}
-
-                      {/* Status */}
-                      {selectedStatus && (
-                        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium ${getStatusColorClasses(selectedStatus)}`}>
-                          <span className="opacity-60 text-[10px] uppercase tracking-wider">Status:</span>
-                          <span className="font-semibold">{selectedStatus}</span>
-                        </div>
-                      )}
                     </div>
-                  ) : (
-                    <div className="flex items-center justify-center py-2">
-                      <Filter size={16} className="text-slate-300 mr-2" />
-                      <span className="text-sm text-slate-400">No filters applied - all tasks will be included</span>
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
+
+                {/* Task */}
+                {selectedTask && selectedTask !== "All_Tasks" && (
+                <div className="flex items-center px-4 py-1.5 border-b border-slate-100 min-h-[36px]">
+                    <span className="w-24 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      Task
+                    </span>
+
+                    <span className="flex-1 text-sm font-medium text-slate-800 truncate">
+                      {selectedTask}
+                    </span>
+                  </div>
+                )}
+{/* Sub Task */}
+{selectedSubTask && selectedSubTask !== "All Subtasks" && (
+ <div className="flex items-center px-4 py-1.5 border-b border-slate-100 min-h-[36px]">
+    <span className="w-24 text-xs font-semibold uppercase tracking-wide text-slate-500">
+      Sub Task
+    </span>
+
+    <span className="flex-1 text-sm font-medium text-slate-800 truncate">
+      {selectedSubTask}
+    </span>
+  </div>
+)}
+                {/* Activity */}
+                {selectedActivity && selectedActivity !== "All Activities" && (
+                  <div className="flex items-center px-4 py-1.5 border-b border-slate-100 min-h-[36px]">
+                    <span className="w-24 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      Activity
+                    </span>
+
+                    <span className="flex-1 text-sm font-medium text-slate-800 truncate">
+                      {selectedActivity}
+                    </span>
+                  </div>
+                )}
+
+                {/* Status */}
+                {selectedStatus && (
+                  <div className="flex items-center px-4 py-3">
+                    <span className="w-24 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      Status
+                    </span>
+
+                    <span className="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                      {selectedStatus}
+                    </span>
+                  </div>
+                )}
+
               </div>
-            </div>
-
-            {/* Footer */}
-            <div className="px-6 py-4 border-t flex justify-end gap-3 shrink-0 bg-slate-50/50">
-              <button
-                onClick={onClose}
-                className="px-5 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-medium hover:bg-slate-50 transition-all cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={onGenerate}
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#7C5CFA] to-[#6D4AFF] text-white text-sm font-medium hover:opacity-95 transition-all shadow-md flex items-center gap-2 cursor-pointer"
-              >
-                <FileText size={16} />
-                Generate Report
-              </button>
-            </div>
+            ) : (
+              <div className="rounded-xl border border-slate-200 bg-slate-50 py-6 flex items-center justify-center">
+                <span className="text-sm text-slate-400">
+                  No filters applied - all tasks will be included
+                </span>
+              </div>
+            )}
           </div>
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 py-4 border-t flex justify-end gap-3 shrink-0 bg-slate-50/50">
+          <button
+            onClick={onClose}
+            className="px-5 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 text-sm font-medium hover:bg-slate-50 transition-all cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onGenerate}
+            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#7C5CFA] to-[#6D4AFF] text-white text-sm font-medium hover:opacity-95 transition-all shadow-md flex items-center gap-2 cursor-pointer"
+          >
+            <FileText size={16} />
+            Generate Report
+          </button>
         </div>
       </div>
     </div>
+
+
   );
 }

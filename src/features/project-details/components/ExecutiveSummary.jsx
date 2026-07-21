@@ -153,9 +153,20 @@ export default function ExecutiveSummary({
     (activity) => activity.executionStatus === "In Progress",
   ).length;
 
-  const notStartedActivities = activities.filter(
-    (activity) => activity.executionStatus === "Not Started",
-  ).length;
+ const today = new Date().toISOString().split("T")[0];
+
+const notStartedActivities = activities.filter((activity) => {
+  // Already completed or in progress should not be counted
+  if (activity.executionStatus !== "Not Started") {
+    return false;
+  }
+
+  // Count only activities whose planned start date has not yet arrived
+  return (
+    activity.plannedStartDate &&
+    activity.plannedStartDate >= today
+  );
+}).length;
 
   const overallProgress =
     totalActivities > 0
