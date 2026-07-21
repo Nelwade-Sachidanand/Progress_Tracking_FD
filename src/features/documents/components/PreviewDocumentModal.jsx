@@ -76,6 +76,7 @@ export default function PreviewDocumentModal({
             sm:px-6
             py-4
             border-b
+            border-[#CDD7E3]
             bg-slate-50
           "
         >
@@ -110,64 +111,78 @@ export default function PreviewDocumentModal({
         {/* Table */}
 
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-blue-50 border-b border-blue-100">
-              <tr>
-                <th className="px-5 py-3 text-left text-sm font-semibold text-blue-700">
+          <table className="w-full table-fixed">
+            <thead>
+              <tr className="border-b border-[#CDD7E3] bg-blue-100">
+                <th className="w-[40%] px-4 py-4 text-left text-base font-semibold text-slate-600">
                   File Name
                 </th>
 
-                <th className="px-5 py-3 text-left text-sm font-semibold text-blue-700">
+                <th className="w-[20%] px-4 py-4 text-left text-base font-semibold text-slate-600">
                   Uploaded By
                 </th>
 
-                <th className="px-5 py-3 text-left text-sm font-semibold text-blue-700">
+                <th className="w-[25%] px-4 py-4 text-left text-base font-semibold text-slate-600 whitespace-nowrap">
                   Upload Date
                 </th>
 
-                <th className="px-5 py-3 text-center text-sm font-semibold text-blue-700">
+                <th className="w-[15%] px-4 py-4 text-center text-base font-semibold text-slate-600">
                   Action
                 </th>
               </tr>
             </thead>
 
             <tbody>
-              <tr className="border-b hover:bg-slate-50">
-                <td className="px-5 py-4 font-medium text-slate-800 break-all">
-                  {selectedDocument.fileName}
+              <tr className="border-b border-[#CDD7E3]">
+                <td className="px-4 py-3">
+                  <span
+                    className="block truncate text-sm font-medium text-slate-700"
+                    title={selectedDocument.fileName}
+                  >
+                    {selectedDocument.fileName}
+                  </span>
                 </td>
 
-                <td className="px-5 py-4">
-                  {selectedDocument.uploadedBy || "-"}
+                <td className="px-4 py-3">
+                  <span
+                    className="block truncate text-sm text-slate-700"
+                    title={selectedDocument.uploadedBy}
+                  >
+                    {selectedDocument.uploadedBy || "-"}
+                  </span>
                 </td>
 
-                <td className="px-5 py-4 whitespace-nowrap">
-                  {selectedDocument.uploadedDate || "-"}
+                <td className="px-4 py-3">
+                  <span className="whitespace-nowrap text-sm text-slate-700">
+                    {selectedDocument.uploadedDate || "-"}
+                  </span>
                 </td>
 
-                <td className="px-5 py-4 text-center">
-                  <button
-                    onClick={() => handleDownload(selectedDocument.documentId)}
-                    disabled={!selectedDocument.documentId}
-                    className="
-                      w-9
-                      h-9
-                      rounded-lg
-                      bg-blue-50
-                      hover:bg-blue-100
-                      text-blue-600
+                <td className="px-4 py-3">
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() => handleDownload(selectedDocument.documentId)}
+                      disabled={!selectedDocument.documentId}
+                      title="Download"
+                      className="
                       flex
+                      h-8
+                      w-8
                       items-center
                       justify-center
-                      mx-auto
+                      rounded-lg
+                      bg-blue-50
+                      text-blue-600
+                      transition
+                      hover:bg-blue-100
                       disabled:opacity-40
                       disabled:cursor-not-allowed
                       cursor-pointer
                     "
-                    title="Download"
-                  >
-                    <Download size={17} />
-                  </button>
+                    >
+                      <Download size={15} />
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -180,14 +195,20 @@ export default function PreviewDocumentModal({
           <button
             onClick={onClose}
             className="
-              px-5
-              py-2
+              h-10
               rounded-lg
               border
               border-slate-300
               bg-white
+              px-5
+              text-sm
+              font-medium
+              text-slate-700
+              transition-all
+              duration-200
               hover:bg-slate-100
               cursor-pointer
+              hover:text-red-700
             "
           >
             Close

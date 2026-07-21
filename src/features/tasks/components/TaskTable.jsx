@@ -1,5 +1,5 @@
 import { MessageSquare, Pencil } from "lucide-react";
-export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
+export default function TaskTable({ tasks = [], currentPage, recordsPerPage, onEdit, onDelete, onRemark }) {
   const getStatusColor = (status) => {
     switch (status) {
       case "Completed":
@@ -74,14 +74,14 @@ export default function TaskTable({ tasks = [], onEdit, onDelete, onRemark }) {
                 <tr
                   key={`${task.activity}-${index}`}
                   className="
-          border-b
-          border-[#CDD7E3]
-        "
+                  border-b
+                  border-[#CDD7E3]
+                "
                 >
                   {/* Sr */}
                   <td className="px-5 py-2">
                     <span className="text-sm font-medium text-slate-700">
-                      {index + 1}
+                      {(currentPage - 1) * recordsPerPage + index + 1}
                     </span>
                   </td>
 

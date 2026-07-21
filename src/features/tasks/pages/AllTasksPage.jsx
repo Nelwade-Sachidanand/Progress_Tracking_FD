@@ -391,6 +391,8 @@ export default function AllTasksPage() {
 
       <TaskTable
         tasks={paginatedTasks}
+        currentPage={safeCurrentPage}
+        recordsPerPage={ITEMS_PER_PAGE}
         onEdit={(task) =>
           navigate("/edit-task", {
             state: { task },

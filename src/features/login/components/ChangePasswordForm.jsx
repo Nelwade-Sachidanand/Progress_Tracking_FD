@@ -1,4 +1,4 @@
-import { Eye, EyeOff, KeyRound, Lock } from "lucide-react";
+import { Eye, EyeOff, KeyRound, Lock, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import useChangePassword from "../hooks/useChangePassword";
@@ -78,7 +78,7 @@ export default function ChangePasswordForm() {
                 });
             }
         } catch (error) {
-            
+
         } finally {
             setSubmitting(false);
         }
@@ -88,20 +88,34 @@ export default function ChangePasswordForm() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
             <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl">
                 <div className="border-b px-6 py-5">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-                            <KeyRound className="h-6 w-6 text-blue-600" />
+                    <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
+                                <KeyRound className="h-6 w-6 text-blue-600" />
+                            </div>
+
+                            <div>
+                                <h2 className="text-xl font-bold text-slate-800">
+                                    Change Password
+                                </h2>
+
+                                <p className="text-sm text-slate-500">
+                                    You are using a temporary password.
+                                </p>
+                            </div>
                         </div>
 
-                        <div>
-                            <h2 className="text-xl font-bold text-slate-800">
-                                Change Password
-                            </h2>
-
-                            <p className="text-sm text-slate-500">
-                                You are using a temporary password.
-                            </p>
-                        </div>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                sessionStorage.clear();
+                                navigate("/", { replace: true });
+                            }}
+                            className="rounded-lg p-2 text-slate-500 transition hover:bg-red-50 hover:text-red-700 cursor-pointer"
+                            aria-label="Close"
+                        >
+                            <X className="h-5 w-5" />
+                        </button>
                     </div>
                 </div>
 

@@ -249,27 +249,27 @@ export default function Documents() {
 
       <div className="flex items-center justify-between w-full">
 
-        <div className="w-full flex justify-end">
+        <div className="w-full flex justify-end mt-[-10px]">
 
           <div className="
-    flex items-center gap-2
-    bg-[#EEF2FF]
-    px-3 py-1.5
-    rounded-xl
-    border border-[#E2E8F0]
-    text-xs
-  ">
-    <span className="text-xs sm:text-sm font-semibold text-[#2563EB] truncate max-w-[100px] sm:max-w-[150px] md:max-w-[200px]">
-      Active Project:
-    </span>
+            flex items-center gap-2
+            bg-[#EEF2FF]
+            px-3 py-1.5
+            rounded-xl
+            border border-[#E2E8F0]
+            text-xs
+          ">
+            <span className="text-xs sm:text-sm font-semibold text-[#2563EB] truncate max-w-[100px] sm:max-w-[150px] md:max-w-[200px]">
+              Active Project:
+            </span>
 
-    <span className="text-xs sm:text-sm font-semibold text-[#2563EB] truncate max-w-[100px] sm:max-w-[150px] md:max-w-[200px]">
-      {selectedProject?.projectName || "No Project Selected"}
-    </span>
-  </div>
+            <span className="text-xs sm:text-sm font-semibold text-[#2563EB] truncate max-w-[100px] sm:max-w-[150px] md:max-w-[200px]">
+              {selectedProject?.projectName || "No Project Selected"}
+            </span>
+          </div>
 
-</div>
-</div>
+        </div>
+      </div>
 
       {/* Filters */}
       <DocumentFilters

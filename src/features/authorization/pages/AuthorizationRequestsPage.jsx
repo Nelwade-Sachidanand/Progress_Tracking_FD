@@ -4,8 +4,11 @@ import AuthorizationRequestModal from "../components/AuthorizationRequestModal";
 import AuthorizationSummaryCards from "../components/AuthorizationSummaryCards";
 import AuthorizationTable from "../components/AuthorizationTable";
 import { useAuthRequests } from "../hooks/useAuthRequests";
+import { useLocation } from "react-router-dom";
 const AuthorizationRequestsPage = () => {
   const [selectedRequest, setSelectedRequest] = useState(null);
+
+  const location = useLocation();
 
   const {
     auths,
@@ -14,6 +17,7 @@ const AuthorizationRequestsPage = () => {
     rejectRequest,
     rollbackRequest,
     allAuths,
+    getAuthRequestById,
     approveSelectedRequests,
     rejectSelectedRequests,
   } = useAuthRequests();
@@ -22,6 +26,23 @@ const AuthorizationRequestsPage = () => {
   const [requestType, setRequestType] = useState("");
   const [status, setStatus] = useState("");
   const [requestedBy, setRequestedBy] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const requestId = params.get("requestId");
+
+    if (!requestId) return;
+
+    const loadRequest = async () => {
+      const request = await getAuthRequestById(requestId);
+
+      if (request) {
+        setSelectedRequest(request);
+      }
+    };
+
+    loadRequest();
+  }, [location.search]);
 
   const handleApprove = async (requestId) => {
     await approveRequest(requestId);
@@ -134,6 +155,7 @@ const AuthorizationRequestsPage = () => {
         <div className="overflow-x-auto mt-[-25px]">
           <AuthorizationTable
             logs={paginatedLogs}
+            allLogs={sortedLogs}
             loading={loading}
             onView={setSelectedRequest}
             approveSelectedRequests={approveSelectedRequests}

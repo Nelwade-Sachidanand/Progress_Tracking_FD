@@ -16,6 +16,12 @@ const UserFilters = ({
 }) => {
   const navigate = useNavigate();
 
+  const getBankShortName = (bankName) => {
+    const match = bankName.match(/\(([^)]+)\)/);
+
+    return match ? match[1] : bankName;
+  };
+
   return (
     <div
       className="
@@ -80,7 +86,7 @@ const UserFilters = ({
           onChange={setBankFilter}
           icon={Building2}
           options={banks.map((bank) => ({
-            label: bank,
+            label: getBankShortName(bank),
             value: bank,
           }))}
         />
