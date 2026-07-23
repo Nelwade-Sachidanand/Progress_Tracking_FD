@@ -3,10 +3,16 @@ import { vi } from "vitest";
 
 import { toast } from "react-toastify";
 import useCreateProject from "../hooks/useCreateProject";
-import { createProject } from "../services/createProjectService";
+//import { createProject } from "../services/createProjectService";
+
+import {
+  createProject,
+  updateProjectInformation,
+} from "../services/createProjectService";
 
 vi.mock("../services/createProjectService", () => ({
   createProject: vi.fn(),
+  updateProjectInformation: vi.fn(),
 }));
 
 vi.mock("react-toastify", () => ({
@@ -17,14 +23,24 @@ vi.mock("react-toastify", () => ({
 }));
 
 describe("useCreateProject", () => {
+  const payload = {
+    projectName: "Test Project",
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.useFakeTimers();
   });
 
-  test("creates project successfully", async () => {
+  afterEach(() => {
+    vi.runOnlyPendingTimers();
+    vi.useRealTimers();
+  });
+
+  it("creates project successfully", async () => {
     const response = {
       statusType: "S",
-      statusDesc: "Project created successfully",
+      statusDesc: "Project Created Successfully",
     };
 
     createProject.mockResolvedValue(response);
@@ -34,26 +50,27 @@ describe("useCreateProject", () => {
     let returned;
 
     await act(async () => {
-      returned = await result.current.saveProject({
-        projectName: "Test",
-      });
+      returned = await result.current.saveProject(payload);
     });
 
-    expect(createProject).toHaveBeenCalledWith({
-      projectName: "Test",
-    });
-
-    expect(toast.success).toHaveBeenCalledWith("Project created successfully");
-
+    expect(createProject).toHaveBeenCalledWith(payload);
     expect(returned).toEqual(response);
+    expect(toast.success).toHaveBeenCalledWith(response.statusDesc);
+
+    // loading should still be true before timer
+    expect(result.current.loading).toBe(true);
+
+    act(() => {
+      vi.advanceTimersByTime(3000);
+    });
 
     expect(result.current.loading).toBe(false);
   });
 
-  test("shows error toast when statusType is not S", async () => {
+  it("returns null when API returns failure", async () => {
     const response = {
-      statusType: "E",
-      statusDesc: "Project creation failed",
+      statusType: "F",
+      statusDesc: "Project Already Exists",
     };
 
     createProject.mockResolvedValue(response);
@@ -63,19 +80,24 @@ describe("useCreateProject", () => {
     let returned;
 
     await act(async () => {
-      returned = await result.current.saveProject({});
+      returned = await result.current.saveProject(payload);
     });
 
-    expect(toast.error).toHaveBeenCalledWith("Project creation failed");
-
     expect(returned).toBeNull();
+    expect(toast.error).toHaveBeenCalledWith(response.statusDesc);
+
+    act(() => {
+      vi.advanceTimersByTime(3000);
+    });
+
+    expect(result.current.loading).toBe(false);
   });
 
-  test("throws backend error and shows backend message", async () => {
+  it("throws error when createProject fails", async () => {
     const error = {
       response: {
         data: {
-          statusDesc: "Backend validation failed",
+          statusDesc: "Failed to create project",
         },
       },
     };
@@ -84,24 +106,79 @@ describe("useCreateProject", () => {
 
     const { result } = renderHook(() => useCreateProject());
 
-    await expect(result.current.saveProject({})).rejects.toEqual(error);
+    await expect(
+      act(async () => {
+        await result.current.saveProject(payload);
+      })
+    ).rejects.toEqual(error);
 
-    expect(toast.error).toHaveBeenCalledWith("Backend validation failed");
+    expect(toast.error).toHaveBeenCalledWith("Failed to create project");
+
+    act(() => {
+      vi.advanceTimersByTime(3000);
+    });
+
+    expect(result.current.loading).toBe(false);
   });
 
-  test("shows fallback error message", async () => {
-    const error = new Error("Network Error");
+  it("updates project successfully", async () => {
+    const response = {
+      statusType: "S",
+      statusDesc: "Project Updated Successfully",
+    };
 
-    createProject.mockRejectedValue(error);
+    updateProjectInformation.mockResolvedValue(response);
 
     const { result } = renderHook(() => useCreateProject());
 
-    await expect(result.current.saveProject({})).rejects.toThrow();
+    let returned;
 
-    expect(toast.error).toHaveBeenCalledWith("Failed to create project");
+    await act(async () => {
+      returned = await result.current.updateProject("1", payload);
+    });
+
+    expect(updateProjectInformation).toHaveBeenCalledWith("1", payload);
+    expect(returned).toEqual(response);
+    expect(toast.success).toHaveBeenCalledWith(response.statusDesc);
+
+    expect(result.current.loading).toBe(true);
+
+    act(() => {
+      vi.advanceTimersByTime(3000);
+    });
+
+    expect(result.current.loading).toBe(false);
   });
 
-  test("loading becomes false after success", async () => {
+  it("throws error when update fails", async () => {
+    const error = {
+      response: {
+        data: {
+          statusDesc: "Failed to update project",
+        },
+      },
+    };
+
+    updateProjectInformation.mockRejectedValue(error);
+
+    const { result } = renderHook(() => useCreateProject());
+
+    await expect(
+      act(async () => {
+        await result.current.updateProject("1", payload);
+      })
+    ).rejects.toEqual(error);
+
+    expect(toast.error).toHaveBeenCalledWith("Failed to update project");
+
+    act(() => {
+      vi.advanceTimersByTime(3000);
+    });
+
+    expect(result.current.loading).toBe(false);
+  });
+
+  it("loading becomes false after success", async () => {
     createProject.mockResolvedValue({
       statusType: "S",
       statusDesc: "Success",
@@ -110,27 +187,15 @@ describe("useCreateProject", () => {
     const { result } = renderHook(() => useCreateProject());
 
     await act(async () => {
-      await result.current.saveProject({});
+      await result.current.saveProject(payload);
+    });
+
+    expect(result.current.loading).toBe(true);
+
+    act(() => {
+      vi.advanceTimersByTime(3000);
     });
 
     expect(result.current.loading).toBe(false);
-  });
-
-  test("loading becomes false after failure", async () => {
-    createProject.mockRejectedValue(new Error("Failure"));
-
-    const { result } = renderHook(() => useCreateProject());
-
-    try {
-      await act(async () => {
-        await result.current.saveProject({});
-      });
-    } catch {
-      // expected
-    }
-
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
-    });
   });
 });

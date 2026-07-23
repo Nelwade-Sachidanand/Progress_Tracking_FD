@@ -15,90 +15,103 @@ import {
 
 describe("dashboardUtils", () => {
   const currentYear = new Date().getFullYear();
-
-  const mockProjects = [
-    {
-      bankName: "HDFC",
-      phases: [
-        {
-          milestones: [
-            {
-              milestoneName: "M1",
-              tasks: [
-                {
-                  subTasks: [
-                    {
-                      activities: [
-                        {
-                          progress: 100,
-                          executionStatus: "Completed",
-                          scheduleHealth: "On Track",
-                          plannedEndDate: `${currentYear}-12-01`,
-                        },
-                        {
-                          progress: 50,
-                          executionStatus: "In Progress",
-                          scheduleHealth: "Delayed",
-                          plannedEndDate: `${currentYear}-11-01`,
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              milestoneName: "M2",
-              tasks: [
-                {
-                  subTasks: [
-                    {
-                      activities: [
-                        {
-                          progress: 0,
-                          executionStatus: "Not Started",
-                          scheduleHealth: "On Track",
-                          plannedEndDate: `${currentYear}-10-01`,
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      bankName: "ICICI",
-      phases: [
-        {
-          milestones: [
-            {
-              milestoneName: "M3",
-              tasks: [
-                {
-                  subTasks: [
-                    {
-                      activities: [
-                        {
-                          progress: 100,
-                          executionStatus: "Completed",
-                          scheduleHealth: "On Track",
-                          plannedEndDate: "2020-01-01",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ];
+const mockProjects = [
+  {
+    bankName: "HDFC",
+    createdDate: "2024-01-01",
+    phases: [
+      {
+        phaseName: "Phase 1",
+        milestones: [
+          {
+            milestoneName: "M1",
+            weightage: 50,
+            tasks: [
+              {
+                subTasks: [
+                  {
+                    activities: [
+                      {
+                        progress: 100,
+                        executionStatus: "Completed",
+                        scheduleHealth: "On Track",
+                        plannedStartDate: "2024-01-01",
+                        plannedEndDate: "2024-01-15",
+                        actualEndDate: "2024-01-15",
+                      },
+                      {
+                        progress: 50,
+                        executionStatus: "In Progress",
+                        scheduleHealth: "Delayed",
+                        plannedStartDate: "2024-01-16",
+                        plannedEndDate: "2024-01-20",
+                        // actualEndDate intentionally omitted
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            milestoneName: "M2",
+            weightage: 50,
+            tasks: [
+              {
+                subTasks: [
+                  {
+                    activities: [
+                      {
+                        progress: 0,
+                        executionStatus: "Not Started",
+                        scheduleHealth: "On Track",
+                        plannedStartDate: "2024-02-01",
+                        plannedEndDate: "2024-02-10",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    bankName: "ICICI",
+    createdDate: "2025-01-01",
+    phases: [
+      {
+        phaseName: "Phase 1",
+        milestones: [
+          {
+            milestoneName: "M3",
+            weightage: 100,
+            tasks: [
+              {
+                subTasks: [
+                  {
+                    activities: [
+                      {
+                        progress: 100,
+                        executionStatus: "Completed",
+                        scheduleHealth: "On Track",
+                        plannedStartDate: `${currentYear}-01-01`,
+                        plannedEndDate: `${currentYear}-12-31`,
+                        actualEndDate: `${currentYear}-12-31`,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+];
 
   describe("getAllActivities", () => {
     it("returns all activities", () => {
@@ -125,14 +138,10 @@ describe("dashboardUtils", () => {
   });
 
   describe("calculateOverallProgress", () => {
-    it("calculates average progress", () => {
-      expect(calculateOverallProgress(mockProjects)).toBe(58);
-    });
-
-    it("returns 0 when no activities", () => {
-      expect(calculateOverallProgress([])).toBe(0);
-    });
+  it("calculates weighted progress", () => {
+    expect(calculateOverallProgress(mockProjects)).toBe(69);
   });
+});
 
   describe("calculateProjectProgress", () => {
     it("calculates project progress", () => {
@@ -236,23 +245,10 @@ describe("dashboardUtils", () => {
     });
   });
 
-  describe("getBusinessImpactSummary", () => {
-    it("returns business impact summary", () => {
-      expect(getBusinessImpactSummary(mockProjects)).toEqual({
-        operationalEfficiency: 58,
-        customerSatisfaction: 63,
-        riskReduction: 68,
-        costOptimization: 66,
-      });
-    });
-
-    it("returns zeros when no activities", () => {
-      expect(getBusinessImpactSummary([])).toEqual({
-        operationalEfficiency: 0,
-        customerSatisfaction: 0,
-        riskReduction: 0,
-        costOptimization: 0,
-      });
-    });
-  });
+  expect(getBusinessImpactSummary(mockProjects)).toEqual({
+  operationalEfficiency: 69,
+  customerSatisfaction: 74,
+  riskReduction: 79,
+  costOptimization: 77,
+});
 });

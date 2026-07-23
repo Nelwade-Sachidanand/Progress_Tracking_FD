@@ -1,242 +1,220 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import "@testing-library/jest-dom";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import ProjectNavigation from "../components/ProjectNavigation";
+import { toast } from "react-toastify";
 
+
+const mockNavigate = vi.fn();
 const mockSaveProject = vi.fn();
+const mockUpdateProject = vi.fn();
+const mockToastSuccess = vi.fn();
+
+vi.mock("react-router-dom", () => ({
+  useNavigate: () => mockNavigate,
+}));
 
 vi.mock("../hooks/useCreateProject", () => ({
   default: () => ({
     saveProject: mockSaveProject,
+    updateProject: mockUpdateProject,
     loading: false,
   }),
 }));
 
 vi.mock("../utils/projectMapper", () => ({
-  mapProjectPayload: vi.fn(),
+  mapProjectPayload: vi.fn((data) => data),
 }));
 
-import ProjectNavigation from "../components/ProjectNavigation";
-import { mapProjectPayload } from "../utils/projectMapper";
+vi.mock("react-toastify", () => ({
+  toast: {
+    success: vi.fn(),
+  },
+}));
 
 describe("ProjectNavigation", () => {
-  const mockSetCurrentStep = vi.fn();
-  const mockResetForm = vi.fn();
-  const mockSetSelectedProjectId = vi.fn();
-  const mockLoadProjectInformation = vi.fn();
-
   const defaultProps = {
-    currentStep: 1,
-    setCurrentStep: mockSetCurrentStep,
-    formData: {
-      projectName: "Test Project",
-    },
-    resetForm: mockResetForm,
-    setSelectedProjectId: mockSetSelectedProjectId,
-    loadProjectInformation: mockLoadProjectInformation,
+    currentStep: 0,
+    setCurrentStep: vi.fn(),
+    formData: { projectName: "Test Project" },
+    resetForm: vi.fn(),
+    setSelectedProjectId: vi.fn(),
+    setSelectedInfoId: vi.fn(),
+    disabled: false,
+    isView: false,
+    isEdit: false,
+    selectedInfoId: "123",
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
-
-    mockLoadProjectInformation.mockResolvedValue(undefined);
+    sessionStorage.clear();
   });
 
-  test("renders navigation buttons", () => {
+  it("renders buttons", () => {
+    render(<ProjectNavigation {...defaultProps} />);
+
+    expect(screen.getByRole("button", { name: /previous/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /save draft/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /next/i })).toBeInTheDocument();
+  });
+
+  it("disables previous button on first step", () => {
     render(<ProjectNavigation {...defaultProps} />);
 
     expect(
-      screen.getByRole("button", {
-        name: /previous/i,
-      }),
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByRole("button", {
-        name: /save draft/i,
-      }),
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByRole("button", {
-        name: /next/i,
-      }),
-    ).toBeInTheDocument();
-  });
-
-  test("previous button disabled on first step", () => {
-    render(<ProjectNavigation {...defaultProps} currentStep={0} />);
-
-    expect(
-      screen.getByRole("button", {
-        name: /previous/i,
-      }),
+      screen.getByRole("button", { name: /previous/i })
     ).toBeDisabled();
   });
 
-  test("calls setCurrentStep when previous clicked", () => {
+  it("moves to previous step", () => {
+    render(
+      <ProjectNavigation
+        {...defaultProps}
+        currentStep={2}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /previous/i }));
+
+    expect(defaultProps.setCurrentStep).toHaveBeenCalled();
+  });
+
+  it("moves to next step", () => {
     render(<ProjectNavigation {...defaultProps} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /next/i }));
+
+    expect(defaultProps.setCurrentStep).toHaveBeenCalled();
+  });
+
+  it("saves draft", () => {
+    render(<ProjectNavigation {...defaultProps} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /save draft/i }));
+
+    expect(
+      JSON.parse(sessionStorage.getItem("projectDraft"))
+    ).toEqual(defaultProps.formData);
+
+    expect(toast.success).toHaveBeenCalledWith(
+  "Draft Saved Successfully"
+);
+  });
+
+  it("disables save draft when disabled prop is true", () => {
+    render(
+      <ProjectNavigation
+        {...defaultProps}
+        disabled
+      />
+    );
+
+    expect(
+      screen.getByRole("button", { name: /save draft/i })
+    ).toBeDisabled();
+  });
+
+  it("creates project successfully", async () => {
+    mockSaveProject.mockResolvedValue({
+      statusType: "S",
+    });
+
+    render(
+      <ProjectNavigation
+        {...defaultProps}
+        currentStep={5}
+      />
+    );
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: /previous/i,
-      }),
+        name: /create project/i,
+      })
     );
 
-    expect(mockSetCurrentStep).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(mockSaveProject).toHaveBeenCalled();
+      expect(mockNavigate).toHaveBeenCalledWith("/projects");
+    });
+
+    expect(defaultProps.resetForm).toHaveBeenCalled();
+    expect(defaultProps.setSelectedProjectId).toHaveBeenCalledWith("");
+    expect(defaultProps.setSelectedInfoId).toHaveBeenCalledWith("");
+    expect(defaultProps.setCurrentStep).toHaveBeenCalledWith(0);
   });
 
-  test("previous callback prevents negative value", () => {
-    render(<ProjectNavigation {...defaultProps} />);
+  it("updates project successfully", async () => {
+    mockUpdateProject.mockResolvedValue({
+      statusType: "S",
+    });
+
+    render(
+      <ProjectNavigation
+        {...defaultProps}
+        currentStep={5}
+        isEdit
+      />
+    );
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: /previous/i,
-      }),
+        name: /update project/i,
+      })
     );
 
-    const callback = mockSetCurrentStep.mock.calls[0][0];
-
-    expect(callback(0)).toBe(0);
-    expect(callback(3)).toBe(2);
+    await waitFor(() => {
+      expect(mockUpdateProject).toHaveBeenCalledWith(
+        "123",
+        defaultProps.formData
+      );
+    });
   });
 
-  test("calls setCurrentStep when next clicked", () => {
-    render(<ProjectNavigation {...defaultProps} />);
+  it("shows view project button in view mode", () => {
+    render(
+      <ProjectNavigation
+        {...defaultProps}
+        currentStep={5}
+        isView
+      />
+    );
 
-    fireEvent.click(
+    expect(
       screen.getByRole("button", {
-        name: /next/i,
-      }),
-    );
-
-    expect(mockSetCurrentStep).toHaveBeenCalledTimes(1);
+        name: /view project/i,
+      })
+    ).toBeDisabled();
   });
 
-  test("next callback prevents exceeding max step", () => {
-    render(<ProjectNavigation {...defaultProps} />);
-
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: /next/i,
-      }),
+  it("shows create project button on last step", () => {
+    render(
+      <ProjectNavigation
+        {...defaultProps}
+        currentStep={5}
+      />
     );
-
-    const callback = mockSetCurrentStep.mock.calls[0][0];
-
-    expect(callback(5)).toBe(5);
-    expect(callback(2)).toBe(3);
-  });
-
-  test("shows create project button on last step", () => {
-    render(<ProjectNavigation {...defaultProps} currentStep={5} />);
 
     expect(
       screen.getByRole("button", {
         name: /create project/i,
-      }),
+      })
     ).toBeInTheDocument();
   });
 
-  test("calls mapProjectPayload before save", async () => {
-    mapProjectPayload.mockReturnValue({
-      mapped: true,
-    });
-
-    mockSaveProject.mockResolvedValue({
-      statusType: "S",
-    });
-
-    render(<ProjectNavigation {...defaultProps} currentStep={5} />);
-
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: /create project/i,
-      }),
+  it("shows update project button when editing", () => {
+    render(
+      <ProjectNavigation
+        {...defaultProps}
+        currentStep={5}
+        isEdit
+      />
     );
-
-    await waitFor(() => {
-      expect(mapProjectPayload).toHaveBeenCalledWith(defaultProps.formData);
-    });
-  });
-
-  test("calls saveProject with mapped payload", async () => {
-    mapProjectPayload.mockReturnValue({
-      mapped: true,
-    });
-
-    mockSaveProject.mockResolvedValue({
-      statusType: "S",
-    });
-
-    render(<ProjectNavigation {...defaultProps} currentStep={5} />);
-
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: /create project/i,
-      }),
-    );
-
-    await waitFor(() => {
-      expect(mockSaveProject).toHaveBeenCalledWith({
-        mapped: true,
-      });
-    });
-  });
-
-  test("calls resetForm on successful project creation", async () => {
-    mapProjectPayload.mockReturnValue({
-      mapped: true,
-    });
-
-    mockSaveProject.mockResolvedValue({
-      statusType: "S",
-    });
-
-    render(<ProjectNavigation {...defaultProps} currentStep={5} />);
-
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: /create project/i,
-      }),
-    );
-
-    await waitFor(() => {
-      expect(mockResetForm).toHaveBeenCalledTimes(1);
-      expect(mockSetSelectedProjectId).toHaveBeenCalledWith("");
-      expect(mockLoadProjectInformation).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  test("does not resetForm on failed project creation", async () => {
-    mapProjectPayload.mockReturnValue({
-      mapped: true,
-    });
-
-    mockSaveProject.mockResolvedValue({
-      statusType: "E",
-    });
-
-    render(<ProjectNavigation {...defaultProps} currentStep={5} />);
-
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: /create project/i,
-      }),
-    );
-
-    await waitFor(() => {
-      expect(mockResetForm).not.toHaveBeenCalled();
-      expect(mockSetSelectedProjectId).not.toHaveBeenCalled();
-      expect(mockLoadProjectInformation).not.toHaveBeenCalled();
-    });
-  });
-
-  test("save draft button renders", () => {
-    render(<ProjectNavigation {...defaultProps} />);
 
     expect(
       screen.getByRole("button", {
-        name: /save draft/i,
-      }),
+        name: /update project/i,
+      })
     ).toBeInTheDocument();
   });
 });

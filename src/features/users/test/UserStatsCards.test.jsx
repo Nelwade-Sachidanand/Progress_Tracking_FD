@@ -3,113 +3,130 @@ import { describe, expect, it } from "vitest";
 import UserStatsCards from "../components/UserStatsCards";
 
 describe("UserStatsCards", () => {
-  const mockUsers = [
+  const users = [
     {
       id: 1,
-      active: true,
+      fullname: "Admin",
       role: "ADMIN",
+      status: true,
     },
     {
       id: 2,
-      active: true,
+      fullname: "Super Admin",
       role: "SUPER_ADMIN",
+      status: true,
     },
     {
       id: 3,
-      active: true,
-      role: "IMPLEMENTATION_USER",
+      fullname: "Implementation",
+      role: "IMPLEMENTATION USER",
+      status: true,
     },
     {
       id: 4,
-      active: false,
+      fullname: "Management",
+      role: "MANAGEMENT USER",
+      status: false,
+    },
+    {
+      id: 5,
+      fullname: "Bank User",
       role: "USER",
+      status: false,
     },
   ];
 
-  it("renders all stat card titles", () => {
-    render(<UserStatsCards users={mockUsers} />);
+  it("renders all statistic titles", () => {
+    render(<UserStatsCards users={users} />);
 
     expect(screen.getByText("Total Users")).toBeInTheDocument();
-
     expect(screen.getByText("Active Users")).toBeInTheDocument();
-
     expect(screen.getByText("Administrators")).toBeInTheDocument();
-
-    expect(screen.getByText("Implementation User")).toBeInTheDocument();
+    expect(screen.getByText("Implementation Users")).toBeInTheDocument();
+    expect(screen.getByText("Management Users")).toBeInTheDocument();
   });
 
-  it("calculates total users correctly", () => {
-    render(<UserStatsCards users={mockUsers} />);
+  it("shows correct statistics", () => {
+    render(<UserStatsCards users={users} />);
 
-    expect(screen.getByText("4")).toBeInTheDocument();
+    expect(screen.getByText("5")).toBeInTheDocument(); // Total Users
+    expect(screen.getByText("3")).toBeInTheDocument(); // Active Users
+    expect(screen.getByText("2")).toBeInTheDocument(); // Administrators
+    expect(screen.getAllByText("1")).toHaveLength(2); // Implementation + Management
   });
 
-  it("calculates active users correctly", () => {
-    render(<UserStatsCards users={mockUsers} />);
+  it("renders zero values when users list is empty", () => {
+    render(<UserStatsCards users={[]} />);
 
-    expect(screen.getByText("3")).toBeInTheDocument();
+    expect(screen.getAllByText("0")).toHaveLength(5);
   });
 
-  it("calculates administrators correctly", () => {
-    render(<UserStatsCards users={mockUsers} />);
-
-    expect(screen.getByText("2")).toBeInTheDocument();
-  });
-
-  it("calculates implementation users correctly", () => {
-    render(<UserStatsCards users={mockUsers} />);
+  it("counts only active users", () => {
+    render(
+      <UserStatsCards
+        users={[
+          { role: "USER", status: true },
+          { role: "USER", status: false },
+          { role: "USER", status: false },
+        ]}
+      />
+    );
 
     expect(screen.getByText("1")).toBeInTheDocument();
   });
 
-  it("renders all four cards", () => {
-    render(<UserStatsCards users={mockUsers} />);
-
-    expect(
-      screen.getAllByText(
-        /Total Users|Active Users|Administrators|Implementation User/,
-      ),
-    ).toHaveLength(4);
-  });
-
-  it("shows zero values when users array is empty", () => {
-    render(<UserStatsCards users={[]} />);
-
-    const zeros = screen.getAllByText("0");
-
-    expect(zeros).toHaveLength(4);
-  });
-
-  it("handles undefined users prop", () => {
-    render(<UserStatsCards />);
-
-    const zeros = screen.getAllByText("0");
-
-    expect(zeros).toHaveLength(4);
-  });
-
-  it("counts only ADMIN and SUPER_ADMIN as administrators", () => {
-    const users = [
-      { active: true, role: "ADMIN" },
-      { active: true, role: "SUPER_ADMIN" },
-      { active: true, role: "USER" },
-      { active: true, role: "IMPLEMENTATION_USER" },
-    ];
-
-    render(<UserStatsCards users={users} />);
+  it("counts ADMIN and SUPER_ADMIN together", () => {
+    render(
+      <UserStatsCards
+        users={[
+          { role: "ADMIN", status: true },
+          { role: "SUPER_ADMIN", status: true },
+          { role: "USER", status: true },
+        ]}
+      />
+    );
 
     expect(screen.getByText("2")).toBeInTheDocument();
   });
 
-  it("counts only IMPLEMENTATION_USER users", () => {
-    const users = [
-      { active: true, role: "IMPLEMENTATION_USER" },
-      { active: true, role: "IMPLEMENTATION_USER" },
-      { active: true, role: "USER" },
-    ];
+  it("counts implementation users", () => {
+    render(
+      <UserStatsCards
+        users={[
+          { role: "IMPLEMENTATION USER", status: true },
+          { role: "IMPLEMENTATION USER", status: false },
+          { role: "USER", status: true },
+        ]}
+      />
+    );
 
+    expect(screen.getByText("Implementation Users")).toBeInTheDocument();
+        expect(screen.getAllByText("2").length).toBeGreaterThan(0);
+  });
+
+it("counts management users", () => {
+  render(
+    <UserStatsCards
+      users={[
+        { role: "MANAGEMENT USER", status: true },
+        { role: "MANAGEMENT USER", status: false },
+        { role: "USER", status: true },
+      ]}
+    />
+  );
+
+  const card = screen
+    .getByText("Management Users")
+    .closest("div");
+
+  expect(card).toBeInTheDocument();
+ expect(screen.getAllByText("2").length).toBeGreaterThan(0);
+});
+
+  it("renders five statistic cards", () => {
     render(<UserStatsCards users={users} />);
 
-    expect(screen.getByText("2")).toBeInTheDocument();
+    expect(screen.getAllByText(/Users|Administrators/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Total Users|Active Users|Administrators|Implementation Users|Management Users/)).toHaveLength(5);
   });
 });

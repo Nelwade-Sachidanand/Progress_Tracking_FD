@@ -1,10 +1,17 @@
-import { act, renderHook, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-
-import { useMilestone } from "../hooks/useMilestone";
-
+import { renderHook, act } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { toast } from "react-toastify";
+import { useMilestone } from "../hooks/useMilestone";
 import { updateMilestoneWeightages } from "../services/milestoneService";
+import { useProjects } from "../../../context/ProjectContext";
+
+vi.mock("../services/milestoneService", () => ({
+  updateMilestoneWeightages: vi.fn(),
+}));
+
+vi.mock("../../../context/ProjectContext", () => ({
+  useProjects: vi.fn(),
+}));
 
 vi.mock("react-toastify", () => ({
   toast: {
@@ -13,24 +20,27 @@ vi.mock("react-toastify", () => ({
   },
 }));
 
-vi.mock("../services/milestoneService", () => ({
-  updateMilestoneWeightages: vi.fn(),
-}));
-
 describe("useMilestone", () => {
-  const payload = {
-    projectId: "P1",
-    milestones: [
-      {
-        phaseName: "Planning",
-        milestoneName: "Requirement",
-        weightage: 100,
-      },
-    ],
-  };
+  const fetchProjects = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.useFakeTimers();
+
+    sessionStorage.setItem(
+      "user",
+      JSON.stringify({
+        id: 101,
+      })
+    );
+
+    useProjects.mockReturnValue({
+      fetchProjects,
+    });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it("returns loading initially false", () => {
@@ -40,33 +50,49 @@ describe("useMilestone", () => {
   });
 
   it("updates weightages successfully", async () => {
-    updateMilestoneWeightages.mockResolvedValue({
+    const payload = [
+      {
+        milestoneId: 1,
+        weightage: 50,
+      },
+    ];
+
+    const response = {
       statusType: "S",
       statusDesc: "Updated Successfully",
-    });
+    };
+
+    updateMilestoneWeightages.mockResolvedValue(response);
 
     const { result } = renderHook(() => useMilestone());
 
-    let response;
+    let res;
 
     await act(async () => {
-      response = await result.current.updateWeightages(payload);
+      res = await result.current.updateWeightages(payload);
     });
 
     expect(updateMilestoneWeightages).toHaveBeenCalledWith(payload);
 
-    expect(response).toEqual({
-      statusType: "S",
-      statusDesc: "Updated Successfully",
+    expect(fetchProjects).toHaveBeenCalledWith(101);
+
+    expect(toast.success).toHaveBeenCalledWith(
+      "Updated Successfully"
+    );
+
+    expect(res).toEqual(response);
+
+    act(() => {
+      vi.runAllTimers();
     });
 
-    expect(toast.success).toHaveBeenCalledWith("Updated Successfully");
+    expect(result.current.loading).toBe(false);
   });
 
   it("shows error toast for failed response", async () => {
     updateMilestoneWeightages.mockResolvedValue({
-      statusType: "F",
-      statusDesc: "Update Failed",
+      statusType: "E",
+      statusDesc: "Validation Failed",
     });
 
     const { result } = renderHook(() => useMilestone());
@@ -74,12 +100,16 @@ describe("useMilestone", () => {
     let response;
 
     await act(async () => {
-      response = await result.current.updateWeightages(payload);
+      response = await result.current.updateWeightages([]);
     });
 
     expect(response).toBeNull();
 
-    expect(toast.error).toHaveBeenCalledWith("Update Failed");
+    expect(fetchProjects).not.toHaveBeenCalled();
+
+    expect(toast.error).toHaveBeenCalledWith(
+      "Validation Failed"
+    );
   });
 
   it("throws error when api rejects", async () => {
@@ -95,38 +125,45 @@ describe("useMilestone", () => {
 
     const { result } = renderHook(() => useMilestone());
 
-    await expect(result.current.updateWeightages(payload)).rejects.toEqual(
-      error,
-    );
+    await expect(
+      result.current.updateWeightages([])
+    ).rejects.toEqual(error);
 
-    expect(toast.error).toHaveBeenCalledWith("Server Error");
+    expect(toast.error).toHaveBeenCalledWith(
+      "Server Error"
+    );
   });
 
   it("shows default error message when response missing", async () => {
-    updateMilestoneWeightages.mockRejectedValue(new Error());
+    const error = new Error("Network");
+
+    updateMilestoneWeightages.mockRejectedValue(error);
 
     const { result } = renderHook(() => useMilestone());
 
-    await expect(result.current.updateWeightages(payload)).rejects.toThrow();
+    await expect(
+      result.current.updateWeightages([])
+    ).rejects.toThrow();
 
     expect(toast.error).toHaveBeenCalledWith(
-      "Failed to update milestone weightages",
+      "Failed to update milestone weightages"
     );
   });
 
   it("sets loading true while request is running", async () => {
     let resolvePromise;
 
-    updateMilestoneWeightages.mockReturnValue(
-      new Promise((resolve) => {
-        resolvePromise = resolve;
-      }),
+    updateMilestoneWeightages.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolvePromise = resolve;
+        })
     );
 
     const { result } = renderHook(() => useMilestone());
 
     act(() => {
-      result.current.updateWeightages(payload);
+      result.current.updateWeightages([]);
     });
 
     expect(result.current.loading).toBe(true);
@@ -138,9 +175,11 @@ describe("useMilestone", () => {
       });
     });
 
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
+    act(() => {
+      vi.runAllTimers();
     });
+
+    expect(result.current.loading).toBe(false);
   });
 
   it("calls api once", async () => {
@@ -152,13 +191,20 @@ describe("useMilestone", () => {
     const { result } = renderHook(() => useMilestone());
 
     await act(async () => {
-      await result.current.updateWeightages(payload);
+      await result.current.updateWeightages([]);
     });
 
     expect(updateMilestoneWeightages).toHaveBeenCalledTimes(1);
   });
 
   it("passes payload unchanged", async () => {
+    const payload = [
+      {
+        id: 1,
+        weightage: 60,
+      },
+    ];
+
     updateMilestoneWeightages.mockResolvedValue({
       statusType: "S",
       statusDesc: "Success",
@@ -170,7 +216,7 @@ describe("useMilestone", () => {
       await result.current.updateWeightages(payload);
     });
 
-    expect(updateMilestoneWeightages.mock.calls[0][0]).toEqual(payload);
+    expect(updateMilestoneWeightages).toHaveBeenCalledWith(payload);
   });
 
   it("loading becomes false after success", async () => {
@@ -182,22 +228,27 @@ describe("useMilestone", () => {
     const { result } = renderHook(() => useMilestone());
 
     await act(async () => {
-      await result.current.updateWeightages(payload);
+      await result.current.updateWeightages([]);
+    });
+
+    act(() => {
+      vi.runAllTimers();
     });
 
     expect(result.current.loading).toBe(false);
   });
 
   it("loading becomes false after failure", async () => {
-    updateMilestoneWeightages.mockResolvedValue({
-      statusType: "F",
-      statusDesc: "Failed",
-    });
+    updateMilestoneWeightages.mockRejectedValue(new Error("Failed"));
 
     const { result } = renderHook(() => useMilestone());
 
-    await act(async () => {
-      await result.current.updateWeightages(payload);
+    await expect(
+      result.current.updateWeightages([])
+    ).rejects.toThrow();
+
+    act(() => {
+      vi.runAllTimers();
     });
 
     expect(result.current.loading).toBe(false);

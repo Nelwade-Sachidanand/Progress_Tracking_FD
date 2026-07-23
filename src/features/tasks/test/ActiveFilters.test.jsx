@@ -5,169 +5,234 @@ import { describe, expect, it, vi } from "vitest";
 import ActiveFilters from "../components/ActiveFilters";
 
 describe("ActiveFilters", () => {
-  const clearFilters = vi.fn();
+  const defaultProps = {
+    milestones: [
+      { value: "m1", label: "Milestone 1" },
+      { value: "m2", label: "Milestone 2" },
+    ],
+
+    selectedPhase: "",
+    selectedMilestone: [],
+    selectedTask: "",
+    selectedSubTask: "",
+    selectedActivity: "",
+    selectedStatus: "",
+
+    setSelectedPhase: vi.fn(),
+    setSelectedMilestone: vi.fn(),
+    setSelectedTask: vi.fn(),
+    setSelectedSubTask: vi.fn(),
+    setSelectedActivity: vi.fn(),
+    setSelectedStatus: vi.fn(),
+
+    clearFilters: vi.fn(),
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   it("renders nothing when no filters are selected", () => {
-    const { container } = render(
-      <ActiveFilters
-        selectedMilestone={[]}
-        selectedTask="All Tasks"
-        selectedStatus="All Status"
-        clearFilters={clearFilters}
-      />,
-    );
+    const { container } = render(<ActiveFilters {...defaultProps} />);
 
     expect(container.firstChild).toBeNull();
   });
 
-  it("renders milestone filter", () => {
+  it("renders phase filter", () => {
     render(
       <ActiveFilters
-        selectedMilestone={["Milestone 1"]}
-        selectedTask="All Tasks"
-        selectedStatus="All Status"
-        clearFilters={clearFilters}
-      />,
+        {...defaultProps}
+        selectedPhase="Phase 1"
+      />
     );
 
-    expect(screen.getByText("Milestone: Milestone 1")).toBeInTheDocument();
+    expect(
+      screen.getByText("Phase: Phase 1")
+    ).toBeInTheDocument();
   });
 
-  it("renders multiple milestones", () => {
+  it("renders milestone filters", () => {
     render(
       <ActiveFilters
-        selectedMilestone={["Milestone 1", "Milestone 2"]}
-        selectedTask="All Tasks"
-        selectedStatus="All Status"
-        clearFilters={clearFilters}
-      />,
+        {...defaultProps}
+        selectedMilestone={["m1", "m2"]}
+      />
     );
 
-    // ✅ FIX: each milestone is rendered separately
-    expect(screen.getByText("Milestone: Milestone 1")).toBeInTheDocument();
-    expect(screen.getByText("Milestone: Milestone 2")).toBeInTheDocument();
+    expect(
+      screen.getByText("Milestone: Milestone 1")
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText("Milestone: Milestone 2")
+    ).toBeInTheDocument();
   });
 
   it("renders task filter", () => {
     render(
       <ActiveFilters
-        selectedMilestone={[]}
+        {...defaultProps}
         selectedTask="Task A"
-        selectedStatus="All Status"
-        clearFilters={clearFilters}
-      />,
+      />
     );
 
-    expect(screen.getByText("Task: Task A")).toBeInTheDocument();
+    expect(
+      screen.getByText("Task: Task A")
+    ).toBeInTheDocument();
+  });
+
+  it("renders sub task filter", () => {
+    render(
+      <ActiveFilters
+        {...defaultProps}
+        selectedSubTask="Sub Task A"
+      />
+    );
+
+    expect(
+      screen.getByText("Sub Task: Sub Task A")
+    ).toBeInTheDocument();
+  });
+
+  it("renders activity filter", () => {
+    render(
+      <ActiveFilters
+        {...defaultProps}
+        selectedActivity="Activity A"
+      />
+    );
+
+    expect(
+      screen.getByText("Activity: Activity A")
+    ).toBeInTheDocument();
   });
 
   it("renders status filter", () => {
     render(
       <ActiveFilters
-        selectedMilestone={[]}
-        selectedTask="All Tasks"
+        {...defaultProps}
         selectedStatus="Completed"
-        clearFilters={clearFilters}
-      />,
-    );
-
-    expect(screen.getByText("Status: Completed")).toBeInTheDocument();
-  });
-
-  it("renders all filters together", () => {
-    render(
-      <ActiveFilters
-        selectedMilestone={["Milestone 1"]}
-        selectedTask="Task A"
-        selectedStatus="Completed"
-        clearFilters={clearFilters}
-      />,
-    );
-
-    expect(screen.getByText("Milestone: Milestone 1")).toBeInTheDocument();
-    expect(screen.getByText("Task: Task A")).toBeInTheDocument();
-    expect(screen.getByText("Status: Completed")).toBeInTheDocument();
-  });
-
-  it("renders active filters label", () => {
-    render(
-      <ActiveFilters
-        selectedMilestone={["Milestone 1"]}
-        selectedTask="Task A"
-        selectedStatus="Completed"
-        clearFilters={clearFilters}
-      />,
-    );
-
-    expect(screen.getByText("Active Filters:")).toBeInTheDocument();
-  });
-
-  it("calls clearFilters when button clicked", () => {
-    render(
-      <ActiveFilters
-        selectedMilestone={["Milestone 1"]}
-        selectedTask="Task A"
-        selectedStatus="Completed"
-        clearFilters={clearFilters}
-      />,
-    );
-
-    fireEvent.click(screen.getByRole("button", { name: /clear all filters/i }));
-
-    expect(clearFilters).toHaveBeenCalledTimes(1);
-  });
-
-  it("does not render task filter when task is All Tasks", () => {
-    render(
-      <ActiveFilters
-        selectedMilestone={["Milestone 1"]}
-        selectedTask="All Tasks"
-        selectedStatus="Completed"
-        clearFilters={clearFilters}
-      />,
-    );
-
-    expect(screen.queryByText(/Task:/)).not.toBeInTheDocument();
-  });
-
-  it("does not render status filter when status is All Status", () => {
-    render(
-      <ActiveFilters
-        selectedMilestone={["Milestone 1"]}
-        selectedTask="Task A"
-        selectedStatus="All Status"
-        clearFilters={clearFilters}
-      />,
-    );
-
-    expect(screen.queryByText(/Status:/)).not.toBeInTheDocument();
-  });
-
-  it("handles undefined milestone array", () => {
-    render(
-      <ActiveFilters
-        selectedMilestone={undefined}
-        selectedTask="Task A"
-        selectedStatus="Completed"
-        clearFilters={clearFilters}
-      />,
-    );
-
-    expect(screen.getByText("Task: Task A")).toBeInTheDocument();
-  });
-
-  it("renders clear button", () => {
-    render(
-      <ActiveFilters
-        selectedMilestone={["Milestone 1"]}
-        selectedTask="Task A"
-        selectedStatus="Completed"
-        clearFilters={clearFilters}
-      />,
+      />
     );
 
     expect(
-      screen.getByRole("button", { name: "Clear All Filters" }),
+      screen.getByText("Status: Completed")
+    ).toBeInTheDocument();
+  });
+
+  it("calls clearFilters when Clear All Filters is clicked", () => {
+    render(
+      <ActiveFilters
+        {...defaultProps}
+        selectedPhase="Phase 1"
+      />
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /clear all filters/i,
+      })
+    );
+
+    expect(defaultProps.clearFilters).toHaveBeenCalled();
+  });
+
+  it("clears phase filter", () => {
+    render(
+      <ActiveFilters
+        {...defaultProps}
+        selectedPhase="Phase 1"
+      />
+    );
+
+    fireEvent.click(screen.getAllByRole("button")[0]);
+
+    expect(defaultProps.setSelectedPhase).toHaveBeenCalledWith("");
+  });
+
+  it("clears task filter", () => {
+    render(
+      <ActiveFilters
+        {...defaultProps}
+        selectedTask="Task A"
+      />
+    );
+
+    fireEvent.click(screen.getAllByRole("button")[0]);
+
+    expect(defaultProps.setSelectedTask).toHaveBeenCalledWith("");
+  });
+
+  it("clears status filter", () => {
+    render(
+      <ActiveFilters
+        {...defaultProps}
+        selectedStatus="Completed"
+      />
+    );
+
+    fireEvent.click(screen.getAllByRole("button")[0]);
+
+    expect(defaultProps.setSelectedStatus).toHaveBeenCalledWith("");
+  });
+
+  it("clears sub task filter", () => {
+    render(
+      <ActiveFilters
+        {...defaultProps}
+        selectedSubTask="Sub Task A"
+      />
+    );
+
+    fireEvent.click(screen.getAllByRole("button")[0]);
+
+    expect(defaultProps.setSelectedSubTask).toHaveBeenCalledWith("");
+  });
+
+  it("clears activity filter", () => {
+    render(
+      <ActiveFilters
+        {...defaultProps}
+        selectedActivity="Activity A"
+      />
+    );
+
+    fireEvent.click(screen.getAllByRole("button")[0]);
+
+    expect(defaultProps.setSelectedActivity).toHaveBeenCalledWith("");
+  });
+
+  it("removes milestone filter", () => {
+    render(
+      <ActiveFilters
+        {...defaultProps}
+        selectedMilestone={["m1"]}
+      />
+    );
+
+    fireEvent.click(screen.getAllByRole("button")[0]);
+
+    expect(defaultProps.setSelectedMilestone).toHaveBeenCalled();
+  });
+
+  it("renders multiple filters together", () => {
+    render(
+      <ActiveFilters
+        {...defaultProps}
+        selectedPhase="Phase 1"
+        selectedTask="Task A"
+        selectedStatus="Completed"
+      />
+    );
+
+    expect(screen.getByText("Phase: Phase 1")).toBeInTheDocument();
+    expect(screen.getByText("Task: Task A")).toBeInTheDocument();
+    expect(screen.getByText("Status: Completed")).toBeInTheDocument();
+
+    expect(
+      screen.getByRole("button", {
+        name: /clear all filters/i,
+      })
     ).toBeInTheDocument();
   });
 });

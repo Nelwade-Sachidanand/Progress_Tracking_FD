@@ -19,6 +19,8 @@ vi.mock("../routes/PublicRoute", () => ({
   default: () => <div>Public Route</div>,
 }));
 
+
+
 // ------------------ Mock Pages ------------------
 vi.mock("../../features/login/pages/LoginPage", () => ({
   default: () => <div>Login Page</div>,
@@ -68,6 +70,10 @@ vi.mock("../../features/create-project/pages/CreateProjectPage", () => ({
   default: () => <div>Create Project</div>,
 }));
 
+vi.mock("../../features/projects/pages/ProjectsPage", () => ({
+  default: () => <div>Projects Page</div>,
+}));
+
 vi.mock("../../components/pages/UploadExcel", () => ({
   default: () => <div>Upload Excel</div>,
 }));
@@ -102,6 +108,15 @@ describe("AppRoutes", () => {
     renderRoute("/project-details");
     expect(screen.getByText("Protected Route")).toBeInTheDocument();
   });
+it("supports edit project route", () => {
+  renderRoute("/projects/edit/1");
+  expect(screen.getByText("Protected Route")).toBeInTheDocument();
+});
+
+it("supports view project route", () => {
+  renderRoute("/projects/view/1");
+  expect(screen.getByText("Protected Route")).toBeInTheDocument();
+});
 
   it("renders tasks wrapper", () => {
     renderRoute("/tasks");
@@ -143,11 +158,16 @@ describe("AppRoutes", () => {
     expect(screen.getByText("Protected Route")).toBeInTheDocument();
   });
 
-  it("renders create project wrapper", () => {
-    renderRoute("/create-project");
-    expect(screen.getByText("Protected Route")).toBeInTheDocument();
-  });
+ 
+it("renders create project wrapper", () => {
+  renderRoute("/projects/create");
+  expect(screen.getByText("Protected Route")).toBeInTheDocument();
+});
 
+it("supports create project route", () => {
+  renderRoute("/projects/create");
+  expect(screen.getByText("Protected Route")).toBeInTheDocument();
+});
   it("renders upload excel wrapper", () => {
     renderRoute("/upload-excel");
     expect(screen.getByText("Protected Route")).toBeInTheDocument();
@@ -213,10 +233,15 @@ describe("AppRoutes", () => {
     expect(screen.getByText("Protected Route")).toBeInTheDocument();
   });
 
-  it("supports create project route", () => {
-    renderRoute("/create-project");
-    expect(screen.getByText("Protected Route")).toBeInTheDocument();
-  });
+ it("renders create project wrapper", () => {
+  renderRoute("/projects/create");
+  expect(screen.getByText("Protected Route")).toBeInTheDocument();
+});
+
+it("supports create project route", () => {
+  renderRoute("/projects/create");
+  expect(screen.getByText("Protected Route")).toBeInTheDocument();
+});
 
   it("supports upload excel route", () => {
     renderRoute("/upload-excel");

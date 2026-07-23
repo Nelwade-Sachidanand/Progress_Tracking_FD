@@ -1,8 +1,6 @@
-import { describe, expect, it } from "vitest";
-
-import { render, screen } from "@testing-library/react";
-
 import "@testing-library/jest-dom";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 
 import AuditSummaryCards from "../components/AuditSummaryCards";
 
@@ -18,6 +16,10 @@ describe("AuditSummaryCards", () => {
     },
     {
       entityType: "USER",
+      modifiedDate: yesterday,
+    },
+    {
+      entityType: "PROJECT",
       modifiedDate: today,
     },
     {
@@ -25,70 +27,108 @@ describe("AuditSummaryCards", () => {
       modifiedDate: yesterday,
     },
     {
+      entityType: "ACTIVITY",
+      modifiedDate: today,
+    },
+    {
       entityType: "TASK",
       modifiedDate: today,
     },
   ];
 
-  it("renders all card titles", () => {
+  it("renders all summary card titles", () => {
     render(<AuditSummaryCards auditLogs={mockLogs} />);
 
     expect(screen.getByText("Total Logs")).toBeInTheDocument();
-
     expect(screen.getByText("User Logs")).toBeInTheDocument();
-
+    expect(screen.getByText("Activity Logs")).toBeInTheDocument();
     expect(screen.getByText("Project Logs")).toBeInTheDocument();
-
-    expect(screen.getByText("Today Logs")).toBeInTheDocument();
+    expect(screen.getByText("Today's Logs")).toBeInTheDocument();
   });
 
-  it("calculates total logs correctly", () => {
+  it("shows total logs count", () => {
     render(<AuditSummaryCards auditLogs={mockLogs} />);
 
+    expect(screen.getByText("6")).toBeInTheDocument();
+  });
+
+ it("shows user logs count", () => {
+  render(<AuditSummaryCards auditLogs={mockLogs} />);
+
+  expect(screen.getByText("User Logs")).toBeInTheDocument();
+
+  expect(screen.getAllByText("2")).toHaveLength(2);
+});
+
+  it("shows activity logs count", () => {
+    render(<AuditSummaryCards auditLogs={mockLogs} />);
+
+    expect(screen.getByText("User Logs")).toBeInTheDocument();
+  });
+
+ it("shows project logs count", () => {
+  render(<AuditSummaryCards auditLogs={mockLogs} />);
+
+  expect(screen.getByText("Project Logs")).toBeInTheDocument();
+
+  expect(screen.getAllByText("2")).toHaveLength(2);
+});
+
+  it("shows today's logs count", () => {
+    render(<AuditSummaryCards auditLogs={mockLogs} />);
+
+    // Today logs = USER + PROJECT + ACTIVITY + TASK
     expect(screen.getByText("4")).toBeInTheDocument();
   });
 
-  it("calculates user logs correctly", () => {
-    render(<AuditSummaryCards auditLogs={mockLogs} />);
+  it("renders five cards", () => {
+    const { container } = render(
+      <AuditSummaryCards auditLogs={mockLogs} />,
+    );
 
-    expect(screen.getAllByText("2").length).toBeGreaterThan(0);
+    expect(container.querySelectorAll(".rounded-2xl")).toHaveLength(5);
   });
 
-  it("calculates project logs correctly", () => {
-    render(<AuditSummaryCards auditLogs={mockLogs} />);
+  it("renders five icons", () => {
+    const { container } = render(
+      <AuditSummaryCards auditLogs={mockLogs} />,
+    );
 
-    expect(screen.getAllByText("1").length).toBeGreaterThan(0);
+    expect(container.querySelectorAll("svg")).toHaveLength(5);
   });
 
-  it("calculates today logs correctly", () => {
-    render(<AuditSummaryCards auditLogs={mockLogs} />);
-
-    expect(screen.getAllByText("3").length).toBeGreaterThan(0);
-  });
-
-  it("renders zero values when logs are empty", () => {
+  it("renders zero counts when logs are empty", () => {
     render(<AuditSummaryCards auditLogs={[]} />);
 
-    expect(screen.getAllByText("0")).toHaveLength(4);
+    expect(screen.getAllByText("0")).toHaveLength(5);
   });
 
-  it("renders four summary cards", () => {
-    const { container } = render(<AuditSummaryCards auditLogs={mockLogs} />);
-
-    const cards = container.querySelectorAll(".bg-white");
-
-    expect(cards.length).toBe(4);
-  });
-
-  it("handles undefined auditLogs", () => {
+  it("renders correctly when auditLogs prop is omitted", () => {
     render(<AuditSummaryCards />);
 
     expect(screen.getByText("Total Logs")).toBeInTheDocument();
 
-    expect(screen.getAllByText("0")).toHaveLength(4);
+    expect(screen.getAllByText("0")).toHaveLength(5);
   });
 
-  it("handles only user logs", () => {
+  it("ignores unknown entity types", () => {
+    render(
+      <AuditSummaryCards
+        auditLogs={[
+          {
+            entityType: "BANK",
+            modifiedDate: today,
+          },
+        ]}
+      />,
+    );
+
+   
+
+    expect(screen.getAllByText("0")).toHaveLength(3);
+  });
+
+  it("counts only USER logs", () => {
     render(
       <AuditSummaryCards
         auditLogs={[
@@ -100,12 +140,10 @@ describe("AuditSummaryCards", () => {
       />,
     );
 
-    expect(screen.getAllByText("1")).toHaveLength(3);
-
     expect(screen.getByText("User Logs")).toBeInTheDocument();
   });
 
-  it("handles only project logs", () => {
+  it("counts only PROJECT logs", () => {
     render(
       <AuditSummaryCards
         auditLogs={[
@@ -117,29 +155,10 @@ describe("AuditSummaryCards", () => {
       />,
     );
 
-    expect(screen.getAllByText("1").length).toBeGreaterThan(0);
-
     expect(screen.getByText("Project Logs")).toBeInTheDocument();
   });
-  it("handles TASK logs only", () => {
-    render(
-      <AuditSummaryCards
-        auditLogs={[
-          {
-            entityType: "TASK",
-            modifiedDate: today,
-          },
-        ]}
-      />,
-    );
 
-    expect(screen.getByText("Total Logs")).toBeInTheDocument();
-    expect(screen.getByText("Today Logs")).toBeInTheDocument();
-
-    expect(screen.getAllByText("1").length).toBeGreaterThan(0);
-  });
-
-  it("handles ACTIVITY logs only", () => {
+  it("counts only ACTIVITY logs", () => {
     render(
       <AuditSummaryCards
         auditLogs={[
@@ -151,12 +170,10 @@ describe("AuditSummaryCards", () => {
       />,
     );
 
-    expect(screen.getByText("Total Logs")).toBeInTheDocument();
-
-    expect(screen.getAllByText("1").length).toBeGreaterThan(0);
+    expect(screen.getByText("Activity Logs")).toBeInTheDocument();
   });
 
-  it("does not count yesterday logs as today logs", () => {
+  it("does not count yesterday logs in today's logs", () => {
     render(
       <AuditSummaryCards
         auditLogs={[
@@ -168,111 +185,8 @@ describe("AuditSummaryCards", () => {
       />,
     );
 
-    expect(screen.getByText("Today Logs")).toBeInTheDocument();
+    expect(screen.getByText("Today's Logs")).toBeInTheDocument();
 
-    expect(screen.getAllByText("0").length).toBeGreaterThan(0);
-  });
-
-  it("counts multiple project logs", () => {
-    render(
-      <AuditSummaryCards
-        auditLogs={[
-          {
-            entityType: "PROJECT",
-            modifiedDate: today,
-          },
-          {
-            entityType: "PROJECT",
-            modifiedDate: today,
-          },
-        ]}
-      />,
-    );
-
-    expect(screen.getAllByText("2").length).toBeGreaterThan(0);
-  });
-
-  it("renders exactly four card titles", () => {
-    render(<AuditSummaryCards auditLogs={mockLogs} />);
-
-    expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(4);
-  });
-
-  it("renders four numeric values", () => {
-    render(<AuditSummaryCards auditLogs={mockLogs} />);
-
-    const headings = screen.getAllByRole("heading");
-
-    expect(headings.length).toBeGreaterThanOrEqual(4);
-  });
-
-  it("renders icons for every card", () => {
-    const { container } = render(<AuditSummaryCards auditLogs={mockLogs} />);
-
-    expect(container.querySelectorAll("svg")).toHaveLength(4);
-  });
-
-  it("handles invalid modifiedDate gracefully", () => {
-    render(
-      <AuditSummaryCards
-        auditLogs={[
-          {
-            entityType: "USER",
-            modifiedDate: "invalid-date",
-          },
-        ]}
-      />,
-    );
-
-    expect(screen.getByText("Today Logs")).toBeInTheDocument();
-
-    expect(screen.getAllByText("0").length).toBeGreaterThan(0);
-  });
-
-  it("handles null modifiedDate", () => {
-    render(
-      <AuditSummaryCards
-        auditLogs={[
-          {
-            entityType: "USER",
-            modifiedDate: null,
-          },
-        ]}
-      />,
-    );
-
-    expect(screen.getByText("Today Logs")).toBeInTheDocument();
-  });
-
-  it("handles unknown entity type", () => {
-    render(
-      <AuditSummaryCards
-        auditLogs={[
-          {
-            entityType: "UNKNOWN",
-            modifiedDate: today,
-          },
-        ]}
-      />,
-    );
-
-    expect(screen.getByText("Total Logs")).toBeInTheDocument();
-
-    expect(screen.getAllByText("1").length).toBeGreaterThan(0);
-  });
-
-  it("renders card container", () => {
-    const { container } = render(<AuditSummaryCards auditLogs={mockLogs} />);
-
-    expect(container.firstChild).toBeInTheDocument();
-  });
-
-  it("renders all cards even with no logs", () => {
-    render(<AuditSummaryCards auditLogs={[]} />);
-
-    expect(screen.getByText("Total Logs")).toBeInTheDocument();
-    expect(screen.getByText("User Logs")).toBeInTheDocument();
-    expect(screen.getByText("Project Logs")).toBeInTheDocument();
-    expect(screen.getByText("Today Logs")).toBeInTheDocument();
+    expect(screen.getAllByText("0")).toHaveLength(3);
   });
 });

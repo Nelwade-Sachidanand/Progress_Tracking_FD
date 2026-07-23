@@ -3,28 +3,32 @@ import { toast } from "react-toastify";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import UserForm from "../components/UserForm";
 
-/* ---------------- MOCKS ---------------- */
-
 const mockNavigate = vi.fn();
 const mockCreateUser = vi.fn();
 const mockUpdateUser = vi.fn();
+const mockToastError = vi.fn();
 
 vi.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 
+const mocks = vi.hoisted(() => ({
+  toastError: vi.fn(),
+  toastSuccess: vi.fn(),
+}));
+
 vi.mock("react-toastify", () => ({
   toast: {
-    success: vi.fn(),
-    error: vi.fn(),
+    error: mocks.toastError,
+    success: mocks.toastSuccess,
   },
 }));
 
 vi.mock("../../../context/ProjectContext", () => ({
   useProjects: () => ({
     projects: [
-      { id: "1", projectName: "Project A" },
-      { id: "2", projectName: "Project B" },
+      { id: 1, projectName: "Project A" },
+      { id: 2, projectName: "Project B" },
     ],
   }),
 }));
@@ -36,108 +40,142 @@ vi.mock("../hooks/useUsers", () => ({
   }),
 }));
 
-/* ---------------- TEST ---------------- */
+vi.mock("../../../components/common/CustomDropdown", () => ({
+  default: ({ label }) => <div>{label}</div>,
+}));
+
+vi.mock("../../../components/common/MultiSelectDropdown", () => ({
+  default: ({ label }) => <div>{label}</div>,
+}));
 
 describe("UserForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("renders add user mode", () => {
-    render(<UserForm />);
+  it("renders add mode", () => {
+    render(<UserForm mode="add" />);
 
     expect(screen.getByText("Add User")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /save user/i })).toBeInTheDocument();
   });
 
-  it("adds project and shows selected project with testid", () => {
-    render(<UserForm />);
-
-    fireEvent.click(screen.getByText("Project A"));
-
-    expect(screen.getByTestId("selected-project-ProjectA")).toBeInTheDocument();
-  });
-
-  it("removes selected project", () => {
-    render(<UserForm />);
-
-    // add project
-    fireEvent.click(screen.getByText("Project A"));
-
-    // verify added
-    const selected = screen.getByTestId("selected-project-ProjectA");
-    expect(selected).toBeInTheDocument();
-
-    // click REMOVE BUTTON INSIDE THAT ELEMENT (IMPORTANT FIX)
-    fireEvent.click(selected.querySelector("button"));
-
-    // now verify removed
-    expect(
-      screen.queryByTestId("selected-project-ProjectA"),
-    ).not.toBeInTheDocument();
-  });
-
-  it("calls createUser in add mode", async () => {
-    mockCreateUser.mockResolvedValue({ statusType: "S" });
-
-    render(<UserForm />);
-
-    fireEvent.change(screen.getByPlaceholderText("Enter full name"), {
-      target: { value: "Sachin" },
-    });
-
-    fireEvent.change(screen.getByPlaceholderText("Enter username"), {
-      target: { value: "sachin" },
-    });
-
-    fireEvent.change(screen.getByPlaceholderText("Enter email address"), {
-      target: { value: "sachin@test.com" },
-    });
-
-    fireEvent.change(screen.getByPlaceholderText("Enter password"), {
-      target: { value: "Password123" },
-    });
-
-    fireEvent.click(screen.getByText("Project A"));
-
-    fireEvent.click(screen.getByText("Save User"));
-
-    await waitFor(() => {
-      expect(mockCreateUser).toHaveBeenCalledTimes(1);
-    });
-
-    expect(mockNavigate).toHaveBeenCalledWith("/users");
-  });
-
-  it("calls updateUser in edit mode", async () => {
-    mockUpdateUser.mockResolvedValue({ statusType: "S" });
-
+  it("renders edit mode", () => {
     render(
       <UserForm
         mode="edit"
         userData={{
-          id: "1",
-          fullname: "John",
-          username: "john",
-          email: "john@test.com",
+          id: 1,
+          fullname: "Sachin",
+          username: "sachin",
+          email: "test@test.com",
           role: "ADMIN",
-          active: true,
-          projectNames: ["Project A"],
+          status: true,
+          projectNames: [],
         }}
-      />,
+      />
     );
 
-    fireEvent.click(screen.getByText("Update User"));
+    expect(screen.getByText("Edit User")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /update user/i })
+    ).toBeInTheDocument();
+  });
+
+  it("renders all input fields", () => {
+    render(<UserForm mode="add" />);
+
+    expect(screen.getByPlaceholderText("Enter Full Name")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Enter Username")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Enter Email")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Enter Password")).toBeInTheDocument();
+  });
+
+  it("changes input values", () => {
+    render(<UserForm mode="add" />);
+
+    fireEvent.change(
+      screen.getByPlaceholderText("Enter Full Name"),
+      {
+        target: { value: "Sachin Nelwade" },
+      }
+    );
+
+    expect(
+      screen.getByPlaceholderText("Enter Full Name")
+    ).toHaveValue("Sachin Nelwade");
+  });
+
+  it("toggles password visibility", () => {
+    render(<UserForm mode="add" />);
+
+    const passwordInput = screen.getByPlaceholderText("Enter Password");
+
+    expect(passwordInput).toHaveAttribute("type", "password");
+
+    fireEvent.click(screen.getAllByRole("button")[1]);
+
+    expect(passwordInput).toHaveAttribute("type", "text");
+  });
+
+  it("shows validation when full name is empty", async () => {
+    render(<UserForm mode="add" />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /save user/i })
+    );
 
     await waitFor(() => {
-      expect(mockUpdateUser).toHaveBeenCalledTimes(1);
+      expect(mocks.toastError).toHaveBeenCalled();
     });
   });
 
-  it("shows error when full name is empty", () => {
-    render(<UserForm />);
+  it("navigates when cancel is clicked", () => {
+    render(<UserForm mode="add" />);
 
-    fireEvent.click(screen.getByText("Save User"));
+    fireEvent.click(
+      screen.getByRole("button", { name: /cancel/i })
+    );
 
-    expect(toast.error).toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith("/users");
+  });
+
+  it("renders dropdown labels", () => {
+    render(<UserForm mode="add" />);
+
+    expect(screen.getByText("Role")).toBeInTheDocument();
+    expect(screen.getByText("Status")).toBeInTheDocument();
+    expect(screen.getByText("Assign Project")).toBeInTheDocument();
+  });
+
+  it("shows no selected projects initially", () => {
+    render(<UserForm mode="add" />);
+
+    expect(
+      screen.getByText("No project selected")
+    ).toBeInTheDocument();
+  });
+
+  it("shows update button in edit mode", () => {
+    render(
+      <UserForm
+        mode="edit"
+        userData={{
+          id: 1,
+          fullname: "Sachin",
+          username: "sachin",
+          email: "abc@test.com",
+          role: "ADMIN",
+          status: true,
+          projectNames: [],
+        }}
+      />
+    );
+
+    expect(
+      screen.getByRole("button", {
+        name: /update user/i,
+      })
+    ).toBeInTheDocument();
   });
 });

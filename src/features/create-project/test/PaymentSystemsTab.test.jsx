@@ -154,9 +154,11 @@ describe("PaymentSystemsTab", () => {
   test("renders info box", () => {
     renderComponent();
 
-    expect(
-      screen.getByText(/currently integrated with CBS and NPCI ecosystem/i),
-    ).toBeInTheDocument();
+   expect(
+  screen.getByText(
+    /enable only the payment systems and npci products that are currently integrated with the cbs environment/i
+  )
+).toBeInTheDocument();
   });
 
   test("handles empty data", () => {

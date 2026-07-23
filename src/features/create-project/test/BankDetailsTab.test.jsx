@@ -1,255 +1,267 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { vi } from "vitest";
+
 import BankDetailsTab from "../components/tabs/BankDetailsTab";
 
-vi.mock("react-router-dom", () => ({
-  useNavigate: () => vi.fn(),
+import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+
+import { toast } from "react-toastify";
+
+// Mock toast
+vi.mock("react-toastify", () => ({
+  toast: {
+    error: vi.fn(),
+  },
 }));
 
+// Mock CustomDropdown
+vi.mock("../../../../components/common/CustomDropdown", () => ({
+  default: ({ label, value, onChange, disabled }) => (
+    <div>
+      <label>{label}</label>
+      <select
+        data-testid="bankType"
+        value={value}
+        disabled={disabled}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        <option value="">Select Type</option>
+        <option value="UCB">UCB</option>
+        <option value="Private">Private</option>
+      </select>
+    </div>
+  ),
+}));
 
+// Mock NumberInput
+vi.mock("../../../../components/common/NumberInput", () => ({
+  default: ({ name, value, onChange, disabled, placeholder }) => (
+    <input
+      type="number"
+      name={name}
+      value={value || ""}
+      disabled={disabled}
+      placeholder={placeholder}
+      onChange={onChange}
+    />
+  ),
+}));
 
 describe("BankDetailsTab", () => {
-  const mockUpdateRootFields = vi.fn();
+  const updateRootFields = vi.fn();
 
-  const mockData = {
-    projectName: "Project A",
-    bankName: "HDFC",
-    projectManager: "Sachin",
-    salesPerson: "John",
-    headOfficeAddress: "Mumbai",
-    headOfficeContactNo: "9876543210",
-    noOfBranches: 20,
-    bankType: "Private",
+  const defaultProps = {
+    data: {
+      bankName: "",
+      projectName: "",
+      projectManager: "",
+      salesPerson: "",
+      headOfficeContactNo: "",
+      bankType: "",
+      noOfBranches: "",
+      headOfficeAddress: "",
+    },
+    updateRootFields,
+    disabled: false,
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  test("renders component", () => {
-    render(
-      <BankDetailsTab
-        data={mockData}
-        updateRootFields={mockUpdateRootFields}
-      />,
-    );
+  it("renders all fields", () => {
+    render(<BankDetailsTab {...defaultProps} />);
 
     expect(screen.getByText("Project Information")).toBeInTheDocument();
-
+    expect(screen.getByPlaceholderText("Enter Bank Name")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Enter Project Name")).toBeInTheDocument();
     expect(
-      screen.getByText("Fill bank and project details"),
+      screen.getByPlaceholderText("Enter Project Manager")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Enter Sales Person")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Enter Contact Number")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Enter Head Office Address")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Enter number of branches")
     ).toBeInTheDocument();
   });
 
- 
-    
+  it("updates bank name", () => {
+    render(<BankDetailsTab {...defaultProps} />);
 
-  test("renders note section", () => {
-    render(
-      <BankDetailsTab
-        data={mockData}
-        updateRootFields={mockUpdateRootFields}
-      />,
-    );
+    fireEvent.change(screen.getByPlaceholderText("Enter Bank Name"), {
+      target: { name: "bankName", value: "ABC Bank" },
+    });
 
-    expect(screen.getByText("Note")).toBeInTheDocument();
-
-    expect(screen.getByText(/save the project as draft/i)).toBeInTheDocument();
+    expect(updateRootFields).toHaveBeenCalledWith({
+      bankName: "ABC Bank",
+    });
   });
 
-  test("renders initial values", () => {
-    render(
-      <BankDetailsTab
-        data={mockData}
-        updateRootFields={mockUpdateRootFields}
-      />,
-    );
+  it("updates project name", () => {
+    render(<BankDetailsTab {...defaultProps} />);
 
-    expect(screen.getByDisplayValue("Project A")).toBeInTheDocument();
+    fireEvent.change(screen.getByPlaceholderText("Enter Project Name"), {
+      target: { name: "projectName", value: "CBS" },
+    });
 
-    expect(screen.getByDisplayValue("HDFC")).toBeInTheDocument();
-
-    expect(screen.getByDisplayValue("Sachin")).toBeInTheDocument();
+    expect(updateRootFields).toHaveBeenCalledWith({
+      projectName: "CBS",
+    });
   });
 
-  test("updates project name", () => {
-    render(
-      <BankDetailsTab
-        data={mockData}
-        updateRootFields={mockUpdateRootFields}
-      />,
-    );
+  it("updates project manager", () => {
+    render(<BankDetailsTab {...defaultProps} />);
 
-    fireEvent.change(screen.getByPlaceholderText("Enter project name"), {
+    fireEvent.change(screen.getByPlaceholderText("Enter Project Manager"), {
+      target: { name: "projectManager", value: "Sachin" },
+    });
+
+    expect(updateRootFields).toHaveBeenCalledWith({
+      projectManager: "Sachin",
+    });
+  });
+
+  it("updates sales person", () => {
+    render(<BankDetailsTab {...defaultProps} />);
+
+    fireEvent.change(screen.getByPlaceholderText("Enter Sales Person"), {
+      target: { name: "salesPerson", value: "John" },
+    });
+
+    expect(updateRootFields).toHaveBeenCalledWith({
+      salesPerson: "John",
+    });
+  });
+
+  it("updates contact number", () => {
+    render(<BankDetailsTab {...defaultProps} />);
+
+    fireEvent.change(screen.getByPlaceholderText("Enter Contact Number"), {
       target: {
-        name: "projectName",
-        value: "New Project",
+        name: "headOfficeContactNo",
+        value: "9876543210",
       },
     });
 
-    expect(mockUpdateRootFields).toHaveBeenCalledWith({
-      projectName: "New Project",
+    expect(updateRootFields).toHaveBeenCalledWith({
+      headOfficeContactNo: "9876543210",
     });
   });
 
-  test("updates bank name", () => {
-    render(
-      <BankDetailsTab
-        data={mockData}
-        updateRootFields={mockUpdateRootFields}
-      />,
-    );
+  it("does not allow alphabets in contact number", () => {
+    render(<BankDetailsTab {...defaultProps} />);
 
-    fireEvent.change(screen.getByPlaceholderText("Enter bank name"), {
+    fireEvent.change(screen.getByPlaceholderText("Enter Contact Number"), {
       target: {
-        name: "bankName",
-        value: "SBI",
+        name: "headOfficeContactNo",
+        value: "abc",
       },
     });
 
-    expect(mockUpdateRootFields).toHaveBeenCalledWith({
-      bankName: "SBI",
+    expect(updateRootFields).not.toHaveBeenCalled();
+  });
+
+  it("shows toast when contact exceeds 10 digits", () => {
+    render(<BankDetailsTab {...defaultProps} />);
+
+    fireEvent.change(screen.getByPlaceholderText("Enter Contact Number"), {
+      target: {
+        name: "headOfficeContactNo",
+        value: "12345678901",
+      },
+    });
+
+    expect(toast.error).toHaveBeenCalledWith(
+      "Contact number cannot exceed 10 digits"
+    );
+    expect(updateRootFields).not.toHaveBeenCalled();
+  });
+
+ it("updates bank type", () => {
+  render(<BankDetailsTab {...defaultProps} />);
+
+  // Open dropdown
+  fireEvent.click(screen.getByRole("button", { name: /select type/i }));
+
+  // Click option
+  fireEvent.click(screen.getByRole("button", { name: "Ucb" }));
+
+  expect(updateRootFields).toHaveBeenCalledWith({
+    bankType: "UCB",
+  });
+});
+
+  it("updates number of branches", () => {
+    render(<BankDetailsTab {...defaultProps} />);
+
+    fireEvent.change(
+      screen.getByPlaceholderText("Enter number of branches"),
+      {
+        target: {
+          name: "noOfBranches",
+          value: "25",
+        },
+      }
+    );
+
+    expect(updateRootFields).toHaveBeenCalledWith({
+      noOfBranches: "25",
     });
   });
 
-  test("updates project manager", () => {
-    render(
-      <BankDetailsTab
-        data={mockData}
-        updateRootFields={mockUpdateRootFields}
-      />,
+  it("updates head office address", () => {
+    render(<BankDetailsTab {...defaultProps} />);
+
+    fireEvent.change(
+      screen.getByPlaceholderText("Enter Head Office Address"),
+      {
+        target: {
+          name: "headOfficeAddress",
+          value: "Pune",
+        },
+      }
     );
 
-    fireEvent.change(screen.getByPlaceholderText("Enter project manager"), {
-      target: {
-        name: "projectManager",
-        value: "Manager",
-      },
-    });
-
-    expect(mockUpdateRootFields).toHaveBeenCalledWith({
-      projectManager: "Manager",
-    });
-  });
-
-  test("updates sales person", () => {
-    render(
-      <BankDetailsTab
-        data={mockData}
-        updateRootFields={mockUpdateRootFields}
-      />,
-    );
-
-    fireEvent.change(screen.getByPlaceholderText("Enter sales person"), {
-      target: {
-        name: "salesPerson",
-        value: "Sales",
-      },
-    });
-
-    expect(mockUpdateRootFields).toHaveBeenCalledWith({
-      salesPerson: "Sales",
-    });
-  });
-
-  test("updates address", () => {
-    render(
-      <BankDetailsTab
-        data={mockData}
-        updateRootFields={mockUpdateRootFields}
-      />,
-    );
-
-    fireEvent.change(screen.getByPlaceholderText("Enter head office address"), {
-      target: {
-        name: "headOfficeAddress",
-        value: "Pune",
-      },
-    });
-
-    expect(mockUpdateRootFields).toHaveBeenCalledWith({
+    expect(updateRootFields).toHaveBeenCalledWith({
       headOfficeAddress: "Pune",
     });
   });
 
-  test("updates contact number", () => {
-    render(
-      <BankDetailsTab
-        data={mockData}
-        updateRootFields={mockUpdateRootFields}
-      />,
-    );
+  it("disables all inputs when disabled is true", () => {
+    render(<BankDetailsTab {...defaultProps} disabled />);
 
-    fireEvent.change(screen.getByPlaceholderText("Enter contact no"), {
-      target: {
-        name: "headOfficeContactNo",
-        value: "9999999999",
-      },
-    });
+    expect(
+      screen.getByPlaceholderText("Enter Bank Name")
+    ).toBeDisabled();
 
-    expect(mockUpdateRootFields).toHaveBeenCalledWith({
-      headOfficeContactNo: "9999999999",
-    });
+    expect(
+      screen.getByPlaceholderText("Enter Project Name")
+    ).toBeDisabled();
+
+    expect(
+      screen.getByPlaceholderText("Enter Contact Number")
+    ).toBeDisabled();
+
+    expect(
+      screen.getByPlaceholderText("Enter Head Office Address")
+    ).toBeDisabled();
+
+   expect(screen.getByRole("button", { name: /select type/i })).toBeDisabled();
   });
 
-  test("updates branches", () => {
-    render(
-      <BankDetailsTab
-        data={mockData}
-        updateRootFields={mockUpdateRootFields}
-      />,
-    );
+  it("renders draft note", () => {
+    render(<BankDetailsTab {...defaultProps} />);
 
-    fireEvent.change(screen.getByPlaceholderText("Enter branches"), {
-      target: {
-        name: "noOfBranches",
-        value: "50",
-      },
-    });
-
-    expect(mockUpdateRootFields).toHaveBeenCalledWith({
-      noOfBranches: "50",
-    });
-  });
-
-  test("updates bank type", () => {
-    render(
-      <BankDetailsTab
-        data={mockData}
-        updateRootFields={mockUpdateRootFields}
-      />,
-    );
-
-    fireEvent.change(screen.getByRole("combobox"), {
-      target: {
-        name: "bankType",
-        value: "UCB",
-      },
-    });
-
-    expect(mockUpdateRootFields).toHaveBeenCalledWith({
-      bankType: "UCB",
-    });
-  });
-
-  test("renders all dropdown options", () => {
-    render(
-      <BankDetailsTab data={{}} updateRootFields={mockUpdateRootFields} />,
-    );
-
-    expect(screen.getByText("UCB")).toBeInTheDocument();
-    expect(screen.getByText("Co-Operative")).toBeInTheDocument();
-    expect(screen.getByText("Private")).toBeInTheDocument();
-    expect(screen.getByText("Nationalized")).toBeInTheDocument();
-  });
-
-  test("renders empty values safely", () => {
-    render(
-      <BankDetailsTab data={{}} updateRootFields={mockUpdateRootFields} />,
-    );
-
-    expect(screen.getByPlaceholderText("Enter project name")).toHaveValue("");
-
-    expect(screen.getByPlaceholderText("Enter bank name")).toHaveValue("");
+    expect(
+      screen.getByText(
+        /This Project Can Be Saved as a Draft at Any Stage/i
+      )
+    ).toBeInTheDocument();
   });
 });

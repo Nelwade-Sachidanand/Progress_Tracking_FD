@@ -1,185 +1,207 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { vi } from "vitest";
+
 import CBSBusinessDetailsTab from "../components/tabs/CBSBusinessDetailsTab";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 
+// Mock NumberInput
+vi.mock("../../../../components/common/NumberInput", () => ({
+  default: ({ name, value, onChange, disabled, className }) => (
+    <input
+      type="number"
+      name={name}
+      value={value ?? ""}
+      onChange={onChange}
+      disabled={disabled}
+      className={className}
+    />
+  ),
+}));
 
 describe("CBSBusinessDetailsTab", () => {
-  const mockUpdateSection = vi.fn();
+  const updateSection = vi.fn();
 
-  const mockProps = {
+  const defaultProps = {
     cbsInformation: {
-      previousCBSVendor: "TCS",
-      previousVendorPeriod: "2018-2022",
-      existingCBSVendor: "Infosys",
-      cbsSince: "2024-01",
+      previousCBSVendor: "",
+      previousVendorPeriod: "",
+      existingCBSVendor: "",
+      cbsSince: "",
     },
     businessStatistics: {
-      totalActiveCustomers: "1000",
-      totalAccounts: "2000",
-      totalUsers: "300",
-      concurrentUsers: "100",
-      accountsPerYear: "500",
-      dailyTransactions: "10000",
-      digitalTransactions: "8000",
-      upiTransactions: "5000",
-      businessMix: "Retail",
-      customerOnboarding: "50",
-      loanIssues: "10",
+      totalActiveCustomers: "",
+      totalAccounts: "",
+      totalUsers: "",
+      concurrentUsers: "",
+      accountsPerYear: "",
+      dailyTransactions: "",
+      digitalTransactions: "",
+      upiTransactions: "",
+      businessMix: "",
+      customerOnboarding: "",
+      loanIssues: "",
     },
-    updateSection: mockUpdateSection,
+    updateSection,
+    disabled: false,
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  test("renders headings", () => {
-    render(<CBSBusinessDetailsTab {...mockProps} />);
+  it("renders component", () => {
+    render(<CBSBusinessDetailsTab {...defaultProps} />);
 
     expect(screen.getByText("CBS & Business Details")).toBeInTheDocument();
-
     expect(screen.getByText("CBS Information")).toBeInTheDocument();
-
     expect(screen.getByText("Business Statistics")).toBeInTheDocument();
   });
 
- 
+  it("updates previous CBS vendor", () => {
+    render(<CBSBusinessDetailsTab {...defaultProps} />);
 
-  test("renders initial values", () => {
-    render(<CBSBusinessDetailsTab {...mockProps} />);
-
-    expect(screen.getByDisplayValue("TCS")).toBeInTheDocument();
-
-    expect(screen.getByDisplayValue("Infosys")).toBeInTheDocument();
-
-    expect(screen.getByDisplayValue("1000")).toBeInTheDocument();
-  });
-
-  test("updates previous CBS vendor", () => {
-    render(<CBSBusinessDetailsTab {...mockProps} />);
-
-    fireEvent.change(screen.getByPlaceholderText("Vendor Name"), {
-      target: {
-        name: "previousCBSVendor",
-        value: "Oracle",
-      },
-    });
-
-    expect(mockUpdateSection).toHaveBeenCalledWith("cbsInformation", {
-      previousCBSVendor: "Oracle",
-    });
-  });
-
-  test("updates previous vendor period", () => {
-    render(<CBSBusinessDetailsTab {...mockProps} />);
-
-    fireEvent.change(screen.getByPlaceholderText("e.g. 2016-2022"), {
-      target: {
-        name: "previousVendorPeriod",
-        value: "2020-2025",
-      },
-    });
-
-    expect(mockUpdateSection).toHaveBeenCalledWith("cbsInformation", {
-      previousVendorPeriod: "2020-2025",
-    });
-  });
-
-  test("updates existing CBS vendor", () => {
-    render(<CBSBusinessDetailsTab {...mockProps} />);
-
-    fireEvent.change(screen.getByPlaceholderText("Current Vendor"), {
-      target: {
-        name: "existingCBSVendor",
-        value: "Finacle",
-      },
-    });
-
-    expect(mockUpdateSection).toHaveBeenCalledWith("cbsInformation", {
-      existingCBSVendor: "Finacle",
-    });
-  });
-
-  test("updates cbs since", () => {
-    render(<CBSBusinessDetailsTab {...mockProps} />);
-
-    fireEvent.change(screen.getByDisplayValue("2024-01"), {
-      target: {
-        name: "cbsSince",
-        value: "2025-01",
-      },
-    });
-
-    expect(mockUpdateSection).toHaveBeenCalledWith("cbsInformation", {
-      cbsSince: "2025-01",
-    });
-  });
-
-  test("updates total active customers", () => {
-    render(<CBSBusinessDetailsTab {...mockProps} />);
-
-    fireEvent.change(screen.getByDisplayValue("1000"), {
-      target: {
-        name: "totalActiveCustomers",
-        value: "1500",
-      },
-    });
-
-    expect(mockUpdateSection).toHaveBeenCalledWith("businessStatistics", {
-      totalActiveCustomers: "1500",
-    });
-  });
-
-  test("updates daily transactions", () => {
-    render(<CBSBusinessDetailsTab {...mockProps} />);
-
-    fireEvent.change(screen.getByDisplayValue("10000"), {
-      target: {
-        name: "dailyTransactions",
-        value: "15000",
-      },
-    });
-
-    expect(mockUpdateSection).toHaveBeenCalledWith("businessStatistics", {
-      dailyTransactions: "15000",
-    });
-  });
-
-  test("updates loan issues", () => {
-    render(<CBSBusinessDetailsTab {...mockProps} />);
-
-    fireEvent.change(screen.getByDisplayValue("10"), {
-      target: {
-        name: "loanIssues",
-        value: "20",
-      },
-    });
-
-    expect(mockUpdateSection).toHaveBeenCalledWith("businessStatistics", {
-      loanIssues: "20",
-    });
-  });
-
-  test("renders note text", () => {
-    render(<CBSBusinessDetailsTab {...mockProps} />);
-
-    expect(
-      screen.getByText(/Enter current CBS and business statistics/i),
-    ).toBeInTheDocument();
-  });
-
-  test("handles empty props safely", () => {
-    render(
-      <CBSBusinessDetailsTab
-        cbsInformation={{}}
-        businessStatistics={{}}
-        updateSection={mockUpdateSection}
-      />,
+    fireEvent.change(
+      screen.getByPlaceholderText("Enter Previous Vendor"),
+      {
+        target: {
+          name: "previousCBSVendor",
+          value: "Finacle",
+        },
+      }
     );
 
-    expect(screen.getByPlaceholderText("Vendor Name")).toHaveValue("");
+    expect(updateSection).toHaveBeenCalledWith("cbsInformation", {
+      previousCBSVendor: "Finacle",
+    });
+  });
 
-    expect(screen.getByPlaceholderText("Current Vendor")).toHaveValue("");
+  it("updates previous vendor period", () => {
+    render(<CBSBusinessDetailsTab {...defaultProps} />);
+
+    fireEvent.change(
+      screen.getByPlaceholderText("Example: 2016 - 2022"),
+      {
+        target: {
+          name: "previousVendorPeriod",
+          value: "2018 - 2024",
+        },
+      }
+    );
+
+    expect(updateSection).toHaveBeenCalledWith("cbsInformation", {
+      previousVendorPeriod: "2018 - 2024",
+    });
+  });
+
+  it("updates existing CBS vendor", () => {
+    render(<CBSBusinessDetailsTab {...defaultProps} />);
+
+    fireEvent.change(
+      screen.getByPlaceholderText("Enter Existing Vendor"),
+      {
+        target: {
+          name: "existingCBSVendor",
+          value: "FinOne",
+        },
+      }
+    );
+
+    expect(updateSection).toHaveBeenCalledWith("cbsInformation", {
+      existingCBSVendor: "FinOne",
+    });
+  });
+
+  it("updates CBS since", () => {
+    render(<CBSBusinessDetailsTab {...defaultProps} />);
+
+    fireEvent.change(
+  document.querySelector('input[name="cbsSince"]'),
+  {
+    target: {
+      value: "2024-01",
+    },
+  }
+);
+
+expect(updateSection).toHaveBeenCalledWith("cbsInformation", {
+  cbsSince: "2024-01",
+});
+  });
+
+  it("updates total active customers", () => {
+  render(<CBSBusinessDetailsTab {...defaultProps} />);
+
+  fireEvent.change(
+    document.querySelector('input[name="totalActiveCustomers"]'),
+    {
+      target: {
+        value: "1000",
+      },
+    }
+  );
+
+  expect(updateSection).toHaveBeenCalledWith("businessStatistics", {
+    totalActiveCustomers: "1000",
+  });
+});
+
+ it("updates total accounts", () => {
+  render(<CBSBusinessDetailsTab {...defaultProps} />);
+
+  fireEvent.change(
+    document.querySelector('input[name="totalAccounts"]'),
+    {
+      target: {
+        value: "2500",
+      },
+    }
+  );
+
+  expect(updateSection).toHaveBeenCalledWith("businessStatistics", {
+    totalAccounts: "2500",
+  });
+});
+
+ it("updates daily transactions", () => {
+  render(<CBSBusinessDetailsTab {...defaultProps} />);
+
+  fireEvent.change(
+    document.querySelector('input[name="dailyTransactions"]'),
+    {
+      target: {
+        value: "5000",
+      },
+    }
+  );
+
+  expect(updateSection).toHaveBeenCalledWith("businessStatistics", {
+    dailyTransactions: "5000",
+  });
+});
+
+  it("disables all inputs", () => {
+    render(<CBSBusinessDetailsTab {...defaultProps} disabled />);
+
+    expect(
+      screen.getByPlaceholderText("Enter Previous Vendor")
+    ).toBeDisabled();
+
+    expect(
+      screen.getByPlaceholderText("Example: 2016 - 2022")
+    ).toBeDisabled();
+
+    expect(
+      screen.getByPlaceholderText("Enter Existing Vendor")
+    ).toBeDisabled();
+  });
+
+  it("renders information message", () => {
+    render(<CBSBusinessDetailsTab {...defaultProps} />);
+
+    expect(
+      screen.getByText(
+        /Enter Current CBS Information And Business Statistics/i
+      )
+    ).toBeInTheDocument();
   });
 });

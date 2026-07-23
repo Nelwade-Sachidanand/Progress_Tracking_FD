@@ -26,7 +26,7 @@ describe("AddTaskPage", () => {
   test("renders page heading", () => {
     render(<AddTaskPage />);
 
-    expect(screen.getByText("Add Task")).toBeInTheDocument();
+    expect(screen.getByText("Add Activity")).toBeInTheDocument();
   });
 
   test("renders page description", () => {
@@ -40,13 +40,13 @@ describe("AddTaskPage", () => {
   test("renders selected project label", () => {
     render(<AddTaskPage />);
 
-    expect(screen.getByText("Selected Project")).toBeInTheDocument();
+    expect(screen.getByText("Project:")).toBeInTheDocument();
   });
 
   test("shows selected project from session storage", () => {
     render(<AddTaskPage />);
 
-    expect(screen.getByText("Implementation Dashboard")).toBeInTheDocument();
+expect(screen.getByText(/Implementation Dashboard/i)).toBeInTheDocument();
   });
 
   test("shows default project when session storage is empty", () => {
@@ -54,7 +54,7 @@ describe("AddTaskPage", () => {
 
     render(<AddTaskPage />);
 
-    expect(screen.getByText("No Project Selected")).toBeInTheDocument();
+    expect(screen.getByText(/No Project Selected/i)).toBeInTheDocument();
   });
 
   test("renders AddTaskForm", () => {
@@ -95,7 +95,7 @@ describe("AddTaskPage", () => {
   test("AddTaskForm is rendered below project information", () => {
     render(<AddTaskPage />);
 
-    const project = screen.getByText("Implementation Dashboard");
+    const project = screen.getByText(/Implementation Dashboard/i);
 
     const form = screen.getByTestId("add-task-form");
 

@@ -4,162 +4,169 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import BankSelector from "../components/BankSelector";
 
+
+
+const mockDropdown = vi.fn();
+
+vi.mock("../../../components/common/CustomDropdown", () => ({
+  default: (props) => {
+    mockDropdown(props);
+
+    return (
+      <select
+        data-testid="custom-dropdown"
+        value={props.value}
+        onChange={(e) => props.onChange(e.target.value)}
+      >
+        <option value="">{props.placeholder}</option>
+
+        {props.options.map((option) => (
+          <option
+            key={option.value}
+            value={option.value}
+          >
+            {option.label}
+          </option>
+        ))}
+      </select>
+    );
+  },
+}));
+
 describe("BankSelector", () => {
   const setSelectedBank = vi.fn();
 
-  const banks = ["HDFC Bank", "ICICI Bank", "Axis Bank"];
-
-  const defaultProps = {
-    banks,
-    selectedBank: "",
-    setSelectedBank,
-  };
+  const banks = [
+    "State Bank of India (SBI)",
+    "HDFC Bank (HDFC)",
+    "ICICI Bank",
+  ];
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("renders label", () => {
-    render(<BankSelector {...defaultProps} />);
+    render(
+      <BankSelector
+        banks={banks}
+        selectedBank=""
+        setSelectedBank={setSelectedBank}
+      />
+    );
 
-    expect(screen.getByText("Select Bank :")).toBeInTheDocument();
+    expect(
+      screen.getByText("Select Bank :")
+    ).toBeInTheDocument();
   });
 
-  it("shows placeholder initially", () => {
-    render(<BankSelector {...defaultProps} />);
+  it("renders dropdown", () => {
+    render(
+      <BankSelector
+        banks={banks}
+        selectedBank=""
+        setSelectedBank={setSelectedBank}
+      />
+    );
 
-    expect(screen.getByText("Select Bank")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("custom-dropdown")
+    ).toBeInTheDocument();
   });
 
-  it("shows selected bank", () => {
-    render(<BankSelector {...defaultProps} selectedBank="HDFC Bank" />);
+  it("passes placeholder to dropdown", () => {
+    render(
+      <BankSelector
+        banks={banks}
+        selectedBank=""
+        setSelectedBank={setSelectedBank}
+      />
+    );
 
-    expect(screen.getByText("HDFC Bank")).toBeInTheDocument();
+    expect(mockDropdown).toHaveBeenCalled();
+
+    expect(mockDropdown.mock.calls[0][0].placeholder).toBe(
+      "Select Bank"
+    );
   });
 
-  it("opens dropdown on click", () => {
-    render(<BankSelector {...defaultProps} />);
+  it("creates bank options with short names", () => {
+    render(
+      <BankSelector
+        banks={banks}
+        selectedBank=""
+        setSelectedBank={setSelectedBank}
+      />
+    );
 
-    fireEvent.click(screen.getByRole("button"));
-
+    expect(screen.getByText("SBI")).toBeInTheDocument();
+    expect(screen.getByText("HDFC")).toBeInTheDocument();
     expect(screen.getByText("ICICI Bank")).toBeInTheDocument();
-
-    expect(screen.getByText("Axis Bank")).toBeInTheDocument();
   });
 
-  it("closes dropdown when button clicked again", () => {
-    render(<BankSelector {...defaultProps} />);
+  it("passes selected value", () => {
+    render(
+      <BankSelector
+        banks={banks}
+        selectedBank="HDFC Bank (HDFC)"
+        setSelectedBank={setSelectedBank}
+      />
+    );
 
-    const button = screen.getByRole("button");
-
-    fireEvent.click(button);
-
-    expect(screen.getByText("ICICI Bank")).toBeInTheDocument();
-
-    fireEvent.click(button);
-
-    expect(screen.queryByText("ICICI Bank")).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId("custom-dropdown")
+    ).toHaveValue("HDFC Bank (HDFC)");
   });
 
-  it("selects bank", () => {
-    render(<BankSelector {...defaultProps} />);
+  it("calls setSelectedBank on change", () => {
+    render(
+      <BankSelector
+        banks={banks}
+        selectedBank=""
+        setSelectedBank={setSelectedBank}
+      />
+    );
 
-    fireEvent.click(screen.getByRole("button"));
+    fireEvent.change(
+      screen.getByTestId("custom-dropdown"),
+      {
+        target: {
+          value: "State Bank of India (SBI)",
+        },
+      }
+    );
 
-    fireEvent.click(screen.getByText("Axis Bank"));
-
-    expect(setSelectedBank).toHaveBeenCalledWith("Axis Bank");
+    expect(setSelectedBank).toHaveBeenCalledWith(
+      "State Bank of India (SBI)"
+    );
   });
 
-  it("closes dropdown after selecting bank", () => {
-    render(<BankSelector {...defaultProps} />);
+  it("renders empty options when banks array is empty", () => {
+    render(
+      <BankSelector
+        banks={[]}
+        selectedBank=""
+        setSelectedBank={setSelectedBank}
+      />
+    );
 
-    fireEvent.click(screen.getByRole("button"));
+    const options = screen.getAllByRole("option");
 
-    fireEvent.click(screen.getByText("HDFC Bank"));
-
-    expect(screen.queryByText("ICICI Bank")).not.toBeInTheDocument();
+    // Only placeholder
+    expect(options).toHaveLength(1);
   });
 
-  it("renders all banks", () => {
-    render(<BankSelector {...defaultProps} />);
+  it("passes correct number of options", () => {
+    render(
+      <BankSelector
+        banks={banks}
+        selectedBank=""
+        setSelectedBank={setSelectedBank}
+      />
+    );
 
-    fireEvent.click(screen.getByRole("button"));
+    const props = mockDropdown.mock.calls[0][0];
 
-    expect(screen.getByText("HDFC Bank")).toBeInTheDocument();
-
-    expect(screen.getByText("ICICI Bank")).toBeInTheDocument();
-
-    expect(screen.getByText("Axis Bank")).toBeInTheDocument();
-  });
-
-  it("handles empty banks array", () => {
-    render(<BankSelector {...defaultProps} banks={[]} />);
-
-    fireEvent.click(screen.getByRole("button"));
-
-    expect(screen.queryByText("HDFC Bank")).not.toBeInTheDocument();
-  });
-
-  it("closes dropdown on outside click", () => {
-    render(<BankSelector {...defaultProps} />);
-
-    fireEvent.click(screen.getByRole("button"));
-
-    expect(screen.getByText("Axis Bank")).toBeInTheDocument();
-
-    fireEvent.mouseDown(document);
-
-    expect(screen.queryByText("Axis Bank")).not.toBeInTheDocument();
-  });
-
-  it("button exists", () => {
-    render(<BankSelector {...defaultProps} />);
-
-    expect(screen.getByRole("button")).toBeInTheDocument();
-  });
-
-  it("dropdown is hidden initially", () => {
-    render(<BankSelector {...defaultProps} />);
-
-    expect(screen.queryByText("Axis Bank")).not.toBeInTheDocument();
-  });
-
-  it("selected bank is shown in title attribute", () => {
-    render(<BankSelector {...defaultProps} selectedBank="ICICI Bank" />);
-
-    expect(screen.getByTitle("ICICI Bank")).toBeInTheDocument();
-  });
-
-  it("renders one main button initially", () => {
-    render(<BankSelector {...defaultProps} />);
-
-    expect(screen.getAllByRole("button")).toHaveLength(1);
-  });
-
-  it("renders bank buttons when opened", () => {
-    render(<BankSelector {...defaultProps} />);
-
-    fireEvent.click(screen.getByRole("button"));
-
-    expect(screen.getAllByRole("button")).toHaveLength(4);
-  });
-
-  it("supports multiple open close operations", () => {
-    render(<BankSelector {...defaultProps} />);
-
-    const button = screen.getByRole("button");
-
-    fireEvent.click(button);
-    fireEvent.click(button);
-    fireEvent.click(button);
-
-    expect(screen.getByText("Axis Bank")).toBeInTheDocument();
-  });
-
-  it("matches snapshot", () => {
-    const { container } = render(<BankSelector {...defaultProps} />);
-
-    expect(container).toMatchSnapshot();
+    expect(props.options).toHaveLength(3);
   });
 });

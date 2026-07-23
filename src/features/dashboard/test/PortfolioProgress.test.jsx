@@ -10,11 +10,11 @@ describe("PortfolioProgress", () => {
     delayedMilestones: 2,
   };
 
-  it("renders overall portfolio progress title", () => {
-    render(<PortfolioProgress data={mockData} />);
+  it("renders overall progress title", () => {
+  render(<PortfolioProgress data={mockData} />);
 
-    expect(screen.getByText("Overall Portfolio Progress")).toBeInTheDocument();
-  });
+  expect(screen.getByText("Overall Progress")).toBeInTheDocument();
+});
 
   it("renders overall progress percentage", () => {
     render(<PortfolioProgress data={mockData} />);

@@ -3,21 +3,82 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import TaskFilters from "../components/TaskFilters";
+vi.mock("../../../components/common/CustomDropdown", () => ({
+  default: ({
+    label,
+    value,
+    onChange,
+    options,
+    placeholder,
+  }) => (
+    <div>
+      <label>{label}</label>
+      <select
+        data-testid={label}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        <option value="">{placeholder}</option>
+        {options.map((option) => (
+          <option
+            key={option.value}
+            value={option.value}
+          >
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  ),
+}));
+
+vi.mock("../../../components/common/MultiSelectDropdown", () => ({
+  default: ({
+    label,
+    selected,
+    onChange,
+  }) => (
+    <div>
+      <label>{label}</label>
+      <button
+        data-testid="milestone-dropdown"
+        onClick={() => onChange(["Milestone 1"])}
+      >
+        {selected.join(",")}
+      </button>
+    </div>
+  ),
+}));
+
+vi.mock("../../../components/common/SearchInput", () => ({
+  default: ({
+    value,
+    onChange,
+    placeholder,
+  }) => (
+    <input
+      data-testid="search-input"
+      value={value}
+      placeholder={placeholder}
+      onChange={onChange}
+    />
+  ),
+}));
 
 describe("TaskFilters", () => {
   const props = {
     phases: ["Phase 1", "Phase 2"],
     milestones: ["Milestone 1", "Milestone 2"],
-    tasks: ["Task 1", "Task 2"],
-    subTasks: ["SubTask 1"],
+    tasks: ["Task 1"],
+    subTasks: ["Sub Task 1"],
     activities: ["Activity 1"],
 
-    selectedPhase: "All Phases",
+    selectedPhase: "",
     selectedMilestone: [],
-    selectedTask: "All Tasks",
-    selectedSubTask: "All Sub Tasks",
-    selectedActivity: "All Activities",
-    selectedStatus: "All Status",
+    selectedTask: "",
+    selectedSubTask: "",
+    selectedActivity: "",
+    selectedStatus: "",
     searchTerm: "",
 
     setSelectedPhase: vi.fn(),
@@ -27,8 +88,6 @@ describe("TaskFilters", () => {
     setSelectedActivity: vi.fn(),
     setSelectedStatus: vi.fn(),
     setSearchTerm: vi.fn(),
-
-    handleMilestoneChange: vi.fn(),
   };
 
   beforeEach(() => {
@@ -38,68 +97,70 @@ describe("TaskFilters", () => {
   it("renders all filters", () => {
     render(<TaskFilters {...props} />);
 
-    expect(screen.getByDisplayValue("All Phases")).toBeInTheDocument();
-
-    expect(screen.getByDisplayValue("All Tasks")).toBeInTheDocument();
-
-    expect(screen.getByDisplayValue("All Sub Tasks")).toBeInTheDocument();
-
-    expect(screen.getByDisplayValue("All Activities")).toBeInTheDocument();
-
-    expect(screen.getByDisplayValue("All Status")).toBeInTheDocument();
+    expect(screen.getByTestId("Phase")).toBeInTheDocument();
+    expect(screen.getByTestId("Task")).toBeInTheDocument();
+    expect(screen.getByTestId("Sub Task")).toBeInTheDocument();
+    expect(screen.getByTestId("Activity")).toBeInTheDocument();
+    expect(screen.getByTestId("Status")).toBeInTheDocument();
+    expect(screen.getByTestId("milestone-dropdown")).toBeInTheDocument();
+    expect(screen.getByTestId("search-input")).toBeInTheDocument();
   });
 
   it("changes phase", () => {
     render(<TaskFilters {...props} />);
 
-    const selects = screen.getAllByRole("combobox");
-
-    fireEvent.change(selects[0], {
-      target: {
-        value: "Phase 1",
-      },
+    fireEvent.change(screen.getByTestId("Phase"), {
+      target: { value: "Phase 1" },
     });
 
     expect(props.setSelectedPhase).toHaveBeenCalledWith("Phase 1");
+    expect(props.setSelectedMilestone).toHaveBeenCalledWith([]);
+    expect(props.setSelectedTask).toHaveBeenCalledWith("");
+    expect(props.setSelectedSubTask).toHaveBeenCalledWith("");
+    expect(props.setSelectedActivity).toHaveBeenCalledWith("");
+  });
+
+  it("changes milestone", () => {
+    render(<TaskFilters {...props} />);
+
+    fireEvent.click(screen.getByTestId("milestone-dropdown"));
+
+    expect(props.setSelectedMilestone).toHaveBeenCalledWith([
+      "Milestone 1",
+    ]);
+    expect(props.setSelectedTask).toHaveBeenCalledWith("");
+    expect(props.setSelectedSubTask).toHaveBeenCalledWith("");
+    expect(props.setSelectedActivity).toHaveBeenCalledWith("");
   });
 
   it("changes task", () => {
     render(<TaskFilters {...props} />);
 
-    const selects = screen.getAllByRole("combobox");
-
-    fireEvent.change(selects[1], {
-      target: {
-        value: "Task 1",
-      },
+    fireEvent.change(screen.getByTestId("Task"), {
+      target: { value: "Task 1" },
     });
 
     expect(props.setSelectedTask).toHaveBeenCalledWith("Task 1");
+    expect(props.setSelectedSubTask).toHaveBeenCalledWith("");
+    expect(props.setSelectedActivity).toHaveBeenCalledWith("");
   });
 
   it("changes sub task", () => {
     render(<TaskFilters {...props} />);
 
-    const selects = screen.getAllByRole("combobox");
-
-    fireEvent.change(selects[2], {
-      target: {
-        value: "SubTask 1",
-      },
+    fireEvent.change(screen.getByTestId("Sub Task"), {
+      target: { value: "Sub Task 1" },
     });
 
-    expect(props.setSelectedSubTask).toHaveBeenCalledWith("SubTask 1");
+    expect(props.setSelectedSubTask).toHaveBeenCalledWith("Sub Task 1");
+    expect(props.setSelectedActivity).toHaveBeenCalledWith("");
   });
 
   it("changes activity", () => {
     render(<TaskFilters {...props} />);
 
-    const selects = screen.getAllByRole("combobox");
-
-    fireEvent.change(selects[3], {
-      target: {
-        value: "Activity 1",
-      },
+    fireEvent.change(screen.getByTestId("Activity"), {
+      target: { value: "Activity 1" },
     });
 
     expect(props.setSelectedActivity).toHaveBeenCalledWith("Activity 1");
@@ -108,80 +169,28 @@ describe("TaskFilters", () => {
   it("changes status", () => {
     render(<TaskFilters {...props} />);
 
-    const selects = screen.getAllByRole("combobox");
-
-    fireEvent.change(selects[4], {
-      target: {
-        value: "Completed",
-      },
+    fireEvent.change(screen.getByTestId("Status"), {
+      target: { value: "Completed" },
     });
 
     expect(props.setSelectedStatus).toHaveBeenCalledWith("Completed");
   });
 
-  it("changes search text", () => {
+  it("updates search term", () => {
     render(<TaskFilters {...props} />);
 
-    const input = screen.getByPlaceholderText(
-      "Search activity, task, milestone...",
-    );
-
-    fireEvent.change(input, {
-      target: {
-        value: "test activity",
-      },
+    fireEvent.change(screen.getByTestId("search-input"), {
+      target: { value: "Login" },
     });
 
-    expect(props.setSearchTerm).toHaveBeenCalledWith("test activity");
+    expect(props.setSearchTerm).toHaveBeenCalledWith("Login");
   });
 
-  it("opens milestone dropdown", () => {
+  it("renders search placeholder", () => {
     render(<TaskFilters {...props} />);
 
-    fireEvent.click(screen.getByText("Select Milestones"));
-
-    expect(screen.getByText("Milestone 1")).toBeInTheDocument();
-
-    expect(screen.getByText("Milestone 2")).toBeInTheDocument();
-  });
-
-  it("calls handleMilestoneChange when milestone selected", () => {
-    render(<TaskFilters {...props} />);
-
-    fireEvent.click(screen.getByText("Select Milestones"));
-
-    const checkbox = screen.getAllByRole("checkbox")[0];
-
-    fireEvent.click(checkbox);
-
-    expect(props.handleMilestoneChange).toHaveBeenCalledWith("Milestone 1");
-  });
-
-  it("clears milestones", () => {
-    render(<TaskFilters {...props} selectedMilestone={["Milestone 1"]} />);
-
-    fireEvent.click(screen.getByText("Milestones (1)"));
-
-    fireEvent.click(screen.getByText("Clear"));
-
-    expect(props.setSelectedMilestone).toHaveBeenCalledWith([]);
-  });
-
-  it("shows selected milestone count", () => {
-    render(<TaskFilters {...props} selectedMilestone={["M1", "M2"]} />);
-
-    expect(screen.getByText("Milestones (2)")).toBeInTheDocument();
-  });
-
-  it("closes milestone dropdown when clicking outside", () => {
-    render(<TaskFilters {...props} />);
-
-    fireEvent.click(screen.getByText("Select Milestones"));
-
-    expect(screen.getByText("Milestone 1")).toBeInTheDocument();
-
-    fireEvent.mouseDown(document);
-
-    expect(screen.queryByText("Milestone 1")).not.toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Search Tasks...")
+    ).toBeInTheDocument();
   });
 });

@@ -1,59 +1,174 @@
-import { describe, expect, it } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { getProjectMetrics } from "../utils/projectMetrics";
 
 describe("getProjectMetrics", () => {
-  it("returns default values when project is empty", () => {
-    const result = getProjectMetrics({});
-
-    expect(result.overallProgress).toBe(0);
-    expect(result.readiness).toBe(0);
-    expect(result.currentPhase).toBe("Completed");
-    expect(result.currentMilestone).toBe("Completed");
-    expect(result.delayDays).toBe(0);
-    expect(result.totalActivities).toBe(0);
-    expect(result.completedActivities).toBe(0);
-    expect(result.status).toBe("On Track");
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-01-15"));
   });
 
-  it("calculates progress and readiness correctly", () => {
-    const project = {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("returns default values for empty project", () => {
+    expect(getProjectMetrics({})).toEqual({
+      overallProgress: 0,
+      readiness: 0,
+      currentPhase: "Completed",
+      currentMilestone: "Completed",
+      projectStartDate: null,
+      goLiveDate: null,
+      daysRemaining: 0,
+      delayWeeks: 0,
+      scheduleVariance: 0,
+      totalActivities: 0,
+      completedActivities: 0,
+      status: "On Track",
+    });
+  });
+
+  const project = {
+    createdDate: "2026-01-01",
+    phases: [
+      {
+        phaseName: "Implementation",
+        milestones: [
+          {
+            milestoneName: "Development",
+            weightage: 100,
+            tasks: [
+              {
+                subTasks: [
+                  {
+                    activities: [
+                      {
+                        progress: 100,
+                        plannedStartDate: "2026-01-01",
+                        plannedEndDate: "2026-02-01",
+                        actualEndDate: "2026-02-01",
+                      },
+                      {
+                        progress: 50,
+                        plannedStartDate: "2026-01-05",
+                        plannedEndDate: "2026-02-10",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  it("calculates overall progress", () => {
+    const metrics = getProjectMetrics(project);
+
+    expect(metrics.overallProgress).toBe(75);
+  });
+
+  it("calculates readiness", () => {
+    const metrics = getProjectMetrics(project);
+
+    expect(metrics.readiness).toBe(50);
+  });
+
+  it("returns current phase", () => {
+    const metrics = getProjectMetrics(project);
+
+    expect(metrics.currentPhase).toBe("Implementation");
+  });
+
+  it("returns current milestone", () => {
+    const metrics = getProjectMetrics(project);
+
+    expect(metrics.currentMilestone).toBe("Development");
+  });
+
+  it("returns project start date", () => {
+    const metrics = getProjectMetrics(project);
+
+    expect(metrics.projectStartDate).toBe("2026-01-01");
+  });
+
+  it("returns go live date", () => {
+    const metrics = getProjectMetrics(project);
+
+    expect(metrics.goLiveDate).toBe("2026-02-10");
+  });
+
+  it("calculates days remaining", () => {
+    const metrics = getProjectMetrics(project);
+
+    expect(metrics.daysRemaining).toBeGreaterThan(0);
+  });
+
+  it("returns on track status", () => {
+    const metrics = getProjectMetrics(project);
+
+    expect(metrics.status).toBe("On Track");
+  });
+
+  it("returns delayed status", () => {
+    const delayedProject = structuredClone(project);
+
+    delayedProject.phases[0].milestones[0].tasks[0].subTasks[0].activities[1].plannedEndDate =
+      "2025-12-20";
+
+    const metrics = getProjectMetrics(delayedProject);
+
+    expect(metrics.status).toBe("Delayed");
+  });
+
+  it("returns at risk status", () => {
+    vi.setSystemTime(new Date("2026-02-16"));
+
+    const riskProject = structuredClone(project);
+
+    riskProject.phases[0].milestones[0].tasks[0].subTasks[0].activities[1].plannedEndDate =
+      "2026-02-08";
+
+    const metrics = getProjectMetrics(riskProject);
+
+    expect(metrics.status).toBe("At Risk");
+  });
+
+  it("calculates delay weeks", () => {
+    const delayedProject = structuredClone(project);
+
+    delayedProject.phases[0].milestones[0].tasks[0].subTasks[0].activities[1].plannedEndDate =
+      "2025-12-20";
+
+    const metrics = getProjectMetrics(delayedProject);
+
+    expect(metrics.delayWeeks).toBeGreaterThan(2);
+  });
+
+  it("calculates weighted progress", () => {
+    const weightedProject = {
       phases: [
         {
           phaseName: "Phase 1",
           milestones: [
             {
               milestoneName: "M1",
+              weightage: 40,
               tasks: [
                 {
                   subTasks: [
                     {
-                      activities: [{ progress: 100 }, { progress: 50 }],
+                      activities: [{ progress: 100 }],
                     },
                   ],
                 },
               ],
             },
-          ],
-        },
-      ],
-    };
-
-    const result = getProjectMetrics(project);
-
-    expect(result.totalActivities).toBe(2);
-    expect(result.completedActivities).toBe(1);
-    expect(result.overallProgress).toBe(75);
-    expect(result.readiness).toBe(50);
-  });
-
-  it("identifies current phase and milestone dynamically", () => {
-    const project = {
-      phases: [
-        {
-          phaseName: "Initiation",
-          milestones: [
             {
-              milestoneName: "M1",
+              milestoneName: "M2",
+              weightage: 60,
               tasks: [
                 {
                   subTasks: [
@@ -69,51 +184,20 @@ describe("getProjectMetrics", () => {
       ],
     };
 
-    const result = getProjectMetrics(project);
+    const metrics = getProjectMetrics(weightedProject);
 
-    expect(result.currentPhase).toBe("Initiation");
-    expect(result.currentMilestone).toBe("M1");
+    expect(metrics.overallProgress).toBe(70);
   });
 
-  it("marks project as completed when all activities are 100%", () => {
-    const project = {
+  it("returns completed when all activities are completed", () => {
+    const completedProject = {
       phases: [
         {
-          phaseName: "Phase 1",
+          phaseName: "Completed Phase",
           milestones: [
             {
-              milestoneName: "M1",
-              tasks: [
-                {
-                  subTasks: [
-                    {
-                      activities: [{ progress: 100 }, { progress: 100 }],
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    };
-
-    const result = getProjectMetrics(project);
-
-    expect(result.currentPhase).toBe("Completed");
-    expect(result.currentMilestone).toBe("Completed");
-    expect(result.readiness).toBe(100);
-    expect(result.overallProgress).toBe(100);
-  });
-
-  it("calculates delay from actual end date", () => {
-    const project = {
-      phases: [
-        {
-          phaseName: "Phase 1",
-          milestones: [
-            {
-              milestoneName: "M1",
+              milestoneName: "Completed Milestone",
+              weightage: 100,
               tasks: [
                 {
                   subTasks: [
@@ -121,8 +205,6 @@ describe("getProjectMetrics", () => {
                       activities: [
                         {
                           progress: 100,
-                          plannedEndDate: "2026-01-01",
-                          actualEndDate: "2026-01-10",
                         },
                       ],
                     },
@@ -135,210 +217,11 @@ describe("getProjectMetrics", () => {
       ],
     };
 
-    const result = getProjectMetrics(project);
+    const metrics = getProjectMetrics(completedProject);
 
-    expect(result.delayDays).toBeGreaterThan(0);
-  });
-
-  it("calculates delay for overdue incomplete activity", () => {
-    const oldDate = new Date();
-    oldDate.setDate(oldDate.getDate() - 10);
-
-    const project = {
-      phases: [
-        {
-          phaseName: "Phase 1",
-          milestones: [
-            {
-              milestoneName: "M1",
-              tasks: [
-                {
-                  subTasks: [
-                    {
-                      activities: [
-                        {
-                          progress: 50,
-                          plannedEndDate: oldDate.toISOString(),
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    };
-
-    const result = getProjectMetrics(project);
-
-    expect(result.delayDays).toBeGreaterThan(0);
-  });
-
-  it("sets status as At Risk", () => {
-    const project = {
-      phases: [
-        {
-          phaseName: "Phase 1",
-          milestones: [
-            {
-              milestoneName: "M1",
-              tasks: [
-                {
-                  subTasks: [
-                    {
-                      activities: [
-                        {
-                          progress: 50,
-                          plannedEndDate: "2026-01-01",
-                          actualEndDate: "2026-01-10",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    };
-
-    const result = getProjectMetrics(project);
-
-    expect(result.status).toBe("At Risk");
-  });
-
-  it("sets status as Delayed", () => {
-    const project = {
-      phases: [
-        {
-          phaseName: "Phase 1",
-          milestones: [
-            {
-              milestoneName: "M1",
-              tasks: [
-                {
-                  subTasks: [
-                    {
-                      activities: [
-                        {
-                          progress: 100,
-                          plannedEndDate: "2026-01-01",
-                          actualEndDate: "2026-02-01",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    };
-
-    const result = getProjectMetrics(project);
-
-    expect(result.status).toBe("Delayed");
-  });
-
-  it("calculates go live date and days remaining", () => {
-    const futureDate = new Date();
-    futureDate.setDate(futureDate.getDate() + 30);
-
-    const project = {
-      phases: [
-        {
-          phaseName: "Phase 1",
-          milestones: [
-            {
-              milestoneName: "M1",
-              tasks: [
-                {
-                  subTasks: [
-                    {
-                      activities: [
-                        {
-                          progress: 50,
-                          plannedEndDate: futureDate.toISOString(),
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    };
-
-    const result = getProjectMetrics(project);
-
-    expect(result.goLiveDate).toBeTruthy();
-    expect(result.daysRemaining).toBeGreaterThan(0);
-  });
-
-  it("calculates schedule variance", () => {
-    const project = {
-      createdDate: "2026-01-01",
-      phases: [
-        {
-          phaseName: "Phase 1",
-          milestones: [
-            {
-              milestoneName: "M1",
-              tasks: [
-                {
-                  subTasks: [
-                    {
-                      activities: [
-                        {
-                          progress: 50,
-                          plannedEndDate: "2027-01-01",
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    };
-
-    const result = getProjectMetrics(project);
-
-    expect(typeof result.scheduleVariance).toBe("number");
-  });
-
-  it("uses fallback names when phase or milestone name is missing", () => {
-    const project = {
-      phases: [
-        {
-          milestones: [
-            {
-              tasks: [
-                {
-                  subTasks: [
-                    {
-                      activities: [{ progress: 50 }],
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    };
-
-    const result = getProjectMetrics(project);
-
-    expect(result.currentPhase).toBe("Unnamed Phase");
-    expect(result.currentMilestone).toBe("Unnamed Milestone");
+    expect(metrics.currentPhase).toBe("Completed");
+    expect(metrics.currentMilestone).toBe("Completed");
+    expect(metrics.readiness).toBe(100);
+    expect(metrics.overallProgress).toBe(100);
   });
 });

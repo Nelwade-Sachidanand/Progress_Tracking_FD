@@ -3,16 +3,10 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import TaskTable from "../components/TaskTable";
 
-const mockUser = {
-  role: "ADMIN",
-};
-
-beforeEach(() => {
-  sessionStorage.clear();
-  sessionStorage.setItem("user", JSON.stringify(mockUser));
-});
-
 describe("TaskTable", () => {
+  const onEdit = vi.fn();
+  const onRemark = vi.fn();
+
   const mockTasks = [
     {
       activity: "Login Development",
@@ -25,8 +19,8 @@ describe("TaskTable", () => {
       status: "In Progress",
     },
     {
-      activity: "Deployment",
-      task: "Release",
+      activity: "Dashboard",
+      task: "UI",
       phase: "Phase 2",
       milestone: "Milestone B",
       startDate: "2026-02-01",
@@ -36,75 +30,177 @@ describe("TaskTable", () => {
     },
   ];
 
+  beforeEach(() => {
+    vi.clearAllMocks();
+
+    sessionStorage.setItem(
+      "user",
+      JSON.stringify({
+        role: "ADMIN",
+      })
+    );
+  });
+
   it("renders all table headers", () => {
-    render(<TaskTable tasks={mockTasks} />);
-
-    expect(screen.getByText("ACTIVITY / TASK")).toBeInTheDocument();
-    expect(screen.getByText("PHASE")).toBeInTheDocument();
-    expect(screen.getByText("MILESTONE")).toBeInTheDocument();
-    expect(screen.getByText("START DATE")).toBeInTheDocument();
-    expect(screen.getByText("END DATE")).toBeInTheDocument();
-    expect(screen.getByText("PROGRESS")).toBeInTheDocument();
-    expect(screen.getByText("STATUS")).toBeInTheDocument();
-    expect(screen.getByText("ACTIONS")).toBeInTheDocument(); // now works
-    expect(screen.getByText("REMARK")).toBeInTheDocument();
-  });
-
-  it("calls onEdit when edit button clicked", () => {
-    const onEdit = vi.fn();
-
-    render(<TaskTable tasks={mockTasks} onEdit={onEdit} />);
-
-    const editBtn = screen
-      .getAllByRole("button")
-      .find((b) => b.querySelector("svg"));
-
-    fireEvent.click(editBtn);
-
-    expect(onEdit).toHaveBeenCalledTimes(1);
-    expect(onEdit).toHaveBeenCalledWith(mockTasks[0]);
-  });
-
-  it("calls onRemark when remark button clicked", () => {
-    const onRemark = vi.fn();
-
-    const { container } = render(
-      <TaskTable tasks={mockTasks} onRemark={onRemark} />,
+    render(
+      <TaskTable
+        tasks={mockTasks}
+        currentPage={1}
+        recordsPerPage={10}
+      />
     );
 
-    const rows = container.querySelectorAll("tbody tr");
-
-    const firstRow = rows[0];
-
-    // remark button is last button in row (after edit)
-    const remarkBtn = firstRow.querySelectorAll("button")[1];
-
-    fireEvent.click(remarkBtn);
-
-    expect(onRemark).toHaveBeenCalledTimes(1);
-    expect(onRemark).toHaveBeenCalledWith(mockTasks[0]);
+    expect(screen.getByText("Sr. No.")).toBeInTheDocument();
+    expect(screen.getByText("Activity / Task")).toBeInTheDocument();
+    expect(screen.getByText("Phase / Milestone")).toBeInTheDocument();
+    expect(screen.getByText("Date")).toBeInTheDocument();
+    expect(screen.getByText("Progress")).toBeInTheDocument();
+    expect(screen.getByText("Status")).toBeInTheDocument();
+    expect(screen.getByText("Edit")).toBeInTheDocument();
+    expect(screen.getByText("Remark")).toBeInTheDocument();
   });
 
-  it("shows row numbers", () => {
-    render(<TaskTable tasks={mockTasks} />);
+  it("renders task data", () => {
+    render(
+      <TaskTable
+        tasks={mockTasks}
+        currentPage={1}
+        recordsPerPage={10}
+      />
+    );
+
+    expect(screen.getByText("Login Development")).toBeInTheDocument();
+    expect(screen.getByText("Authentication")).toBeInTheDocument();
+    expect(screen.getByText("Phase 1")).toBeInTheDocument();
+    expect(screen.getByText("Milestone A")).toBeInTheDocument();
+
+    expect(screen.getByText("Dashboard")).toBeInTheDocument();
+    expect(screen.getByText("UI")).toBeInTheDocument();
+  });
+
+  it("renders row numbers", () => {
+    render(
+      <TaskTable
+        tasks={mockTasks}
+        currentPage={1}
+        recordsPerPage={10}
+      />
+    );
 
     expect(screen.getByText("1")).toBeInTheDocument();
     expect(screen.getByText("2")).toBeInTheDocument();
   });
 
-  it("shows empty state when tasks list is empty", () => {
-    render(<TaskTable tasks={[]} />);
+  it("formats dates correctly", () => {
+    render(
+      <TaskTable
+        tasks={mockTasks}
+        currentPage={1}
+        recordsPerPage={10}
+      />
+    );
+
+    expect(screen.getByText("01-01-2026")).toBeInTheDocument();
+    expect(screen.getByText("15-01-2026")).toBeInTheDocument();
+  });
+
+  it("renders progress values", () => {
+    render(
+      <TaskTable
+        tasks={mockTasks}
+        currentPage={1}
+        recordsPerPage={10}
+      />
+    );
+
+    expect(screen.getByText("75%")).toBeInTheDocument();
+    expect(screen.getByText("100%")).toBeInTheDocument();
+  });
+
+  it("renders statuses", () => {
+    render(
+      <TaskTable
+        tasks={mockTasks}
+        currentPage={1}
+        recordsPerPage={10}
+      />
+    );
+
+    expect(screen.getByText("In Progress")).toBeInTheDocument();
+    expect(screen.getByText("Completed")).toBeInTheDocument();
+  });
+
+  it("calls onEdit when edit button clicked", () => {
+    render(
+      <TaskTable
+        tasks={mockTasks}
+        currentPage={1}
+        recordsPerPage={10}
+        onEdit={onEdit}
+      />
+    );
+
+    fireEvent.click(screen.getAllByTitle("Edit")[0]);
+
+    expect(onEdit).toHaveBeenCalledWith(mockTasks[0]);
+  });
+
+  it("calls onRemark when remark button clicked", () => {
+    render(
+      <TaskTable
+        tasks={mockTasks}
+        currentPage={1}
+        recordsPerPage={10}
+        onRemark={onRemark}
+      />
+    );
+
+    fireEvent.click(screen.getAllByTitle("Remark")[0]);
+
+    expect(onRemark).toHaveBeenCalledWith(mockTasks[0]);
+  });
+
+  it("shows 'No Tasks Found' when tasks are empty", () => {
+    render(
+      <TaskTable
+        tasks={[]}
+        currentPage={1}
+        recordsPerPage={10}
+      />
+    );
 
     expect(screen.getByText("No Tasks Found")).toBeInTheDocument();
   });
 
-  it("does not crash when handlers are not provided", () => {
-    render(<TaskTable tasks={mockTasks} />);
+  it("does not show Edit column for USER role", () => {
+    sessionStorage.setItem(
+      "user",
+      JSON.stringify({
+        role: "USER",
+      })
+    );
 
-    const buttons = screen.getAllByRole("button");
+    render(
+      <TaskTable
+        tasks={mockTasks}
+        currentPage={1}
+        recordsPerPage={10}
+      />
+    );
 
-    fireEvent.click(buttons[0]);
+    expect(screen.queryByText("Edit")).not.toBeInTheDocument();
+  });
 
-    expect(true).toBe(true);
+  it("calculates serial number correctly for page 2", () => {
+    render(
+      <TaskTable
+        tasks={mockTasks}
+        currentPage={2}
+        recordsPerPage={10}
+      />
+    );
+
+    expect(screen.getByText("11")).toBeInTheDocument();
+    expect(screen.getByText("12")).toBeInTheDocument();
   });
 });

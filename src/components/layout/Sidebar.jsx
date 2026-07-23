@@ -62,11 +62,11 @@ export default function Sidebar() {
               icon: LayoutDashboard,
               path: "/dashboard",
             },
-            {
-              name: "Banks",
-              icon: Building2,
-              path: "/banks",
-            },
+            // {
+            //   name: "Banks",
+            //   icon: Building2,
+            //   path: "/bank-details",
+            // },
             // {
             //   name: "Products",
             //   icon: Package,

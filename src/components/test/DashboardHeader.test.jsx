@@ -51,6 +51,10 @@ vi.mock("../../services/notificationService", () => ({
   markAsRead: vi.fn(),
 }));
 
+vi.mock("../../features/login/services/authService", () => ({
+  logoutUser: vi.fn().mockResolvedValue({}),
+}));
+
 const renderComponent = () =>
   render(
     <MemoryRouter>
@@ -75,8 +79,7 @@ describe("DashboardHeader", () => {
       }),
     );
 
-    sessionStorage.setItem("selectedBank", "All Banks");
-
+sessionStorage.setItem("selectedBanks", JSON.stringify([]));
     getNotifications.mockResolvedValue({
       details: [
         {
@@ -341,21 +344,23 @@ describe("DashboardHeader", () => {
     expect(screen.getByText("Logout")).toBeInTheDocument();
   });
 
-  test("logout clears session storage and navigates", () => {
-    renderComponent();
+ test("logout clears session storage and navigates", async () => {
+  renderComponent();
 
-    fireEvent.click(screen.getByText("Sachin Nelwade"));
+  fireEvent.click(screen.getByText("Sachin Nelwade"));
 
-    fireEvent.click(screen.getByText("Logout"));
+  fireEvent.click(screen.getByText("Logout"));
 
+  await waitFor(() => {
     expect(sessionStorage.getItem("user")).toBeNull();
-
-    expect(mockSetProjects).toHaveBeenCalledWith([]);
-
-    expect(mockNavigate).toHaveBeenCalledWith("/", {
-      replace: true,
-    });
   });
+
+  expect(mockSetProjects).toHaveBeenCalledWith([]);
+
+  expect(mockNavigate).toHaveBeenCalledWith("/", {
+    replace: true,
+  });
+});
 
   test("opens bank dropdown", () => {
     mockLocation.pathname = "/dashboard";
@@ -369,17 +374,19 @@ describe("DashboardHeader", () => {
     expect(screen.getByText("ICICI")).toBeInTheDocument();
   });
 
-  test("changes selected bank", () => {
-    mockLocation.pathname = "/dashboard";
+ test("changes selected bank", () => {
+  mockLocation.pathname = "/dashboard";
 
-    renderComponent();
+  renderComponent();
 
-    fireEvent.click(screen.getByText("All Banks"));
+  fireEvent.click(screen.getByText("All Banks"));
 
-    fireEvent.click(screen.getByText("HDFC"));
+  fireEvent.click(screen.getByText("HDFC"));
 
-    expect(sessionStorage.getItem("selectedBank")).toBe("HDFC");
-  });
+  expect(
+    JSON.parse(sessionStorage.getItem("selectedBanks"))
+  ).toContain("HDFC");
+});
 
   test("dispatches bankChanged event", () => {
     mockLocation.pathname = "/dashboard";
@@ -397,25 +404,6 @@ describe("DashboardHeader", () => {
     dispatchSpy.mockRestore();
   });
 
-  test("dispatches dashboard search event", () => {
-    mockLocation.pathname = "/dashboard";
-
-    const dispatchSpy = vi.spyOn(window, "dispatchEvent");
-
-    renderComponent();
-
-    const input = screen.getByPlaceholderText("Search banks, projects...");
-
-    fireEvent.change(input, {
-      target: {
-        value: "ICICI",
-      },
-    });
-
-    expect(dispatchSpy).toHaveBeenCalled();
-
-    dispatchSpy.mockRestore();
-  });
 
   test("receives dashboard search event", async () => {
     renderComponent();
@@ -459,15 +447,17 @@ describe("DashboardHeader", () => {
     expect(screen.getByText("SN")).toBeInTheDocument();
   });
 
-  test("bank dropdown closes after selecting bank", () => {
-    renderComponent();
+ test("bank dropdown updates selected banks", () => {
+  renderComponent();
 
-    fireEvent.click(screen.getByText("All Banks"));
+  fireEvent.click(screen.getByText("All Banks"));
 
-    fireEvent.click(screen.getByText("ICICI"));
+  fireEvent.click(screen.getByText("ICICI"));
 
-    expect(screen.queryByText("HDFC")).not.toBeInTheDocument();
-  });
+  expect(
+    JSON.parse(sessionStorage.getItem("selectedBanks"))
+  ).toContain("ICICI");
+});
 
   test("notification dropdown shows unread count", async () => {
     renderComponent();

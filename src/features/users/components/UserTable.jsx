@@ -22,26 +22,44 @@ const formatValue = (value = "") => {
     .join(" ");
 };
 
+// const getRoleStyle = (role) => {
+//   switch (role) {
+//     case "ADMIN":
+//       return "bg-purple-100 text-purple-600";
+
+//     case "USER":
+//       return "bg-blue-100 text-blue-600";
+
+//     case "IMPLEMENTATION USER":
+//       return "bg-pink-100 text-pink-700";
+
+//     case "MANAGEMENT USER":
+//     case "MANAGER":
+//       return "bg-orange-100 text-orange-600";
+
+//     default:
+//       return "bg-slate-100 text-slate-600";
+//   }
+// };
 const getRoleStyle = (role) => {
   switch (role) {
     case "ADMIN":
-      return "bg-purple-100 text-purple-600";
+      return "text-purple-600";
 
     case "USER":
-      return "bg-blue-100 text-blue-600";
+      return "text-blue-600";
 
     case "IMPLEMENTATION USER":
-      return "bg-pink-100 text-pink-700";
+      return "text-pink-600";
 
     case "MANAGEMENT USER":
     case "MANAGER":
-      return "bg-orange-100 text-orange-600";
+      return "text-orange-600";
 
     default:
-      return "bg-slate-100 text-slate-600";
+      return "text-slate-600";
   }
 };
-
 const UserTable = ({ users = [], loading, onDelete, onResetPassword, currentPage, totalPages, totalRecords, onPageChange }) => {
   const navigate = useNavigate();
 

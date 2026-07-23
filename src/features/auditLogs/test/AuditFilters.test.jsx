@@ -4,13 +4,66 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import AuditFilters from "../components/AuditFilters";
 
+// -------------------- Mock Components --------------------
+
+vi.mock("../../../components/common/SearchInput", () => ({
+  default: ({ value, onChange, placeholder }) => (
+    <input
+      data-testid="search-input"
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+    />
+  ),
+}));
+
+vi.mock("../../../components/common/DateInput", () => ({
+  default: ({ value, onChange }) => (
+    <input
+      data-testid="date-input"
+      type="date"
+      value={value}
+      onChange={onChange}
+    />
+  ),
+}));
+
+vi.mock("../../../components/common/CustomDropdown", () => ({
+  default: ({
+    value,
+    onChange,
+    placeholder,
+    options,
+  }) => (
+    <select
+      data-testid={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    >
+      <option value="">{placeholder}</option>
+
+      {options.map((option) => (
+        <option
+          key={option.value}
+          value={option.value}
+        >
+          {option.label}
+        </option>
+      ))}
+    </select>
+  ),
+}));
+
+// -------------------- Tests --------------------
+
 describe("AuditFilters", () => {
   const setSearchTerm = vi.fn();
   const setEntityType = vi.fn();
   const setActionType = vi.fn();
   const setSelectedDate = vi.fn();
+  const clearFilters = vi.fn();
 
-  const mockLogs = [
+  const logs = [
     {
       entityType: "USER",
       actionType: "CREATE_USER",
@@ -42,7 +95,7 @@ describe("AuditFilters", () => {
   ];
 
   const defaultProps = {
-    logs: mockLogs,
+    logs,
     searchTerm: "",
     setSearchTerm,
     entityType: "",
@@ -51,6 +104,7 @@ describe("AuditFilters", () => {
     setActionType,
     selectedDate: "",
     setSelectedDate,
+    clearFilters,
   };
 
   beforeEach(() => {
@@ -61,303 +115,254 @@ describe("AuditFilters", () => {
     render(<AuditFilters {...defaultProps} />);
 
     expect(
-      screen.getByPlaceholderText("Search entity name, user..."),
-    ).toBeInTheDocument();
-  });
-
-  it("renders entity type dropdown", () => {
-    render(<AuditFilters {...defaultProps} />);
-
-    expect(
-      screen.getByRole("option", {
-        name: "All Entity Types",
-      }),
-    ).toBeInTheDocument();
-  });
-
-  it("renders action type dropdown", () => {
-    render(<AuditFilters {...defaultProps} />);
-
-    expect(
-      screen.getByRole("option", {
-        name: "All Actions",
-      }),
+      screen.getByPlaceholderText(
+        "Search Entity Name or User..."
+      )
     ).toBeInTheDocument();
   });
 
   it("renders date input", () => {
     render(<AuditFilters {...defaultProps} />);
 
-    const dateInput = document.querySelector('input[type="date"]');
-
-    expect(dateInput).toBeInTheDocument();
+    expect(
+      screen.getByTestId("date-input")
+    ).toBeInTheDocument();
   });
 
-  it("calls setSearchTerm when search changes", () => {
+  it("renders entity dropdown", () => {
+    render(<AuditFilters {...defaultProps} />);
+
+    expect(
+      screen.getByTestId("All Entity Types")
+    ).toBeInTheDocument();
+  });
+
+  it("renders action dropdown", () => {
+    render(<AuditFilters {...defaultProps} />);
+
+    expect(
+      screen.getByTestId("All Actions")
+    ).toBeInTheDocument();
+  });
+
+  it("renders clear filters button", () => {
+    render(<AuditFilters {...defaultProps} />);
+
+    expect(
+      screen.getByRole("button", {
+        name: /clear filters/i,
+      })
+    ).toBeInTheDocument();
+  });
+
+  it("updates search value", () => {
     render(<AuditFilters {...defaultProps} />);
 
     fireEvent.change(
-      screen.getByPlaceholderText("Search entity name, user..."),
+      screen.getByPlaceholderText(
+        "Search Entity Name or User..."
+      ),
       {
         target: {
           value: "Sachin",
         },
-      },
+      }
     );
 
     expect(setSearchTerm).toHaveBeenCalledWith("Sachin");
   });
 
-  it("calls setEntityType when entity type changes", () => {
+  it("updates entity type", () => {
     render(<AuditFilters {...defaultProps} />);
 
-    const selects = screen.getAllByRole("combobox");
-
-    fireEvent.change(selects[0], {
-      target: {
-        value: "USER",
-      },
-    });
+    fireEvent.change(
+      screen.getByTestId("All Entity Types"),
+      {
+        target: {
+          value: "USER",
+        },
+      }
+    );
 
     expect(setEntityType).toHaveBeenCalledWith("USER");
   });
 
-  it("calls setActionType when action type changes", () => {
+  it("updates action type", () => {
     render(<AuditFilters {...defaultProps} />);
 
-    const selects = screen.getAllByRole("combobox");
-
-    fireEvent.change(selects[1], {
-      target: {
-        value: "CREATE_USER",
-      },
-    });
-
-    expect(setActionType).toHaveBeenCalledWith("CREATE_USER");
-  });
-
-  it("calls setSelectedDate when date changes", () => {
-    render(<AuditFilters {...defaultProps} />);
-
-    const dateInput = document.querySelector('input[type="date"]');
-
-    fireEvent.change(dateInput, {
-      target: {
-        value: "2026-06-20",
-      },
-    });
-
-    expect(setSelectedDate).toHaveBeenCalledWith("2026-06-20");
-  });
-
-  it("shows selected values", () => {
-    render(
-      <AuditFilters
-        {...defaultProps}
-        searchTerm="Sachin"
-        entityType="USER"
-        actionType="CREATE_USER"
-        selectedDate="2026-06-20"
-      />,
+    fireEvent.change(
+      screen.getByTestId("All Actions"),
+      {
+        target: {
+          value: "CREATE_USER",
+        },
+      }
     );
 
-    expect(screen.getByDisplayValue("Sachin")).toBeInTheDocument();
-
-    // Displayed label, not option value
-    expect(screen.getByDisplayValue("User")).toBeInTheDocument();
-
-    expect(screen.getByDisplayValue("Create_User")).toBeInTheDocument();
-
-    expect(document.querySelector('input[type="date"]')).toHaveValue(
-      "2026-06-20",
+    expect(setActionType).toHaveBeenCalledWith(
+      "CREATE_USER"
     );
   });
 
-  it("contains all entity type options", () => {
+  it("updates selected date", () => {
+    render(<AuditFilters {...defaultProps} />);
+
+    fireEvent.change(
+      screen.getByTestId("date-input"),
+      {
+        target: {
+          value: "2026-06-20",
+        },
+      }
+    );
+
+    expect(setSelectedDate).toHaveBeenCalledWith(
+      "2026-06-20"
+    );
+  });
+
+  it("calls clearFilters", () => {
+    render(<AuditFilters {...defaultProps} />);
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /clear filters/i,
+      })
+    );
+
+    expect(clearFilters).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders formatted entity options", () => {
     render(<AuditFilters {...defaultProps} />);
 
     expect(
       screen.getByRole("option", {
         name: "User",
-      }),
+      })
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
         name: "Project",
-      }),
+      })
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
         name: "Task",
-      }),
+      })
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
         name: "Activity",
-      }),
+      })
     ).toBeInTheDocument();
   });
 
-  it("contains all action type options", () => {
+  it("renders formatted action options", () => {
     render(<AuditFilters {...defaultProps} />);
 
     expect(
       screen.getByRole("option", {
-        name: "Create_User",
-      }),
+        name: "Create User",
+      })
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
-        name: "Update_User",
-      }),
+        name: "Update User",
+      })
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
-        name: "Delete_User",
-      }),
+        name: "Delete User",
+      })
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
-        name: "Create_Project",
-      }),
+        name: "Create Project",
+      })
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
-        name: "Update_Project",
-      }),
+        name: "Update Project",
+      })
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
-        name: "Delete_Project",
-      }),
+        name: "Delete Project",
+      })
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("option", {
-        name: "Export_Excel",
-      }),
+        name: "Export Excel",
+      })
     ).toBeInTheDocument();
   });
 
-  it("renders with initial search value", () => {
-    render(<AuditFilters {...defaultProps} searchTerm="John" />);
-
-    expect(screen.getByDisplayValue("John")).toBeInTheDocument();
-  });
-
-  it("renders selected entity type", () => {
-    render(<AuditFilters {...defaultProps} entityType="PROJECT" />);
-
-    const selects = screen.getAllByRole("combobox");
-
-    expect(selects[0]).toHaveValue("PROJECT");
-  });
-
-  it("renders selected action type", () => {
-    render(<AuditFilters {...defaultProps} actionType="DELETE_PROJECT" />);
-
-    const selects = screen.getAllByRole("combobox");
-
-    expect(selects[1]).toHaveValue("DELETE_PROJECT");
-  });
-
-  it("renders selected date", () => {
-    render(<AuditFilters {...defaultProps} selectedDate="2026-01-10" />);
-
-    expect(document.querySelector('input[type="date"]')).toHaveValue(
-      "2026-01-10",
-    );
-  });
-
-  it("allows clearing search text", () => {
-    render(<AuditFilters {...defaultProps} searchTerm="Sachin" />);
-
-    fireEvent.change(
-      screen.getByPlaceholderText("Search entity name, user..."),
-      {
-        target: {
-          value: "",
-        },
-      },
-    );
-
-    expect(setSearchTerm).toHaveBeenCalledWith("");
-  });
-
-  it("allows clearing entity type", () => {
-    render(<AuditFilters {...defaultProps} entityType="USER" />);
-
-    const selects = screen.getAllByRole("combobox");
-
-    fireEvent.change(selects[0], {
-      target: {
-        value: "",
-      },
-    });
-
-    expect(setEntityType).toHaveBeenCalledWith("");
-  });
-
-  it("allows clearing action type", () => {
-    render(<AuditFilters {...defaultProps} actionType="CREATE_USER" />);
-
-    const selects = screen.getAllByRole("combobox");
-
-    fireEvent.change(selects[1], {
-      target: {
-        value: "",
-      },
-    });
-
-    expect(setActionType).toHaveBeenCalledWith("");
-  });
-  it("allows clearing selected date", () => {
-    render(<AuditFilters {...defaultProps} selectedDate="2026-06-20" />);
-
-    const input = document.querySelector('input[type="date"]');
-
-    fireEvent.change(input, {
-      target: {
-        value: "",
-      },
-    });
-
-    expect(setSelectedDate).toHaveBeenCalledWith("");
-  });
-
-  it("renders exactly two select boxes", () => {
-    render(<AuditFilters {...defaultProps} />);
-
-    expect(screen.getAllByRole("combobox")).toHaveLength(2);
-  });
-
-  it("renders exactly one search input", () => {
+  it("renders unique entity types only", () => {
     render(<AuditFilters {...defaultProps} />);
 
     expect(
-      screen.getAllByPlaceholderText("Search entity name, user..."),
+      screen.getAllByRole("option", {
+        name: "Project",
+      })
+    ).toHaveLength(1);
+
+    expect(
+      screen.getAllByRole("option", {
+        name: "User",
+      })
     ).toHaveLength(1);
   });
 
-  it("renders one date input", () => {
-    render(<AuditFilters {...defaultProps} />);
+  it("renders correctly with empty logs", () => {
+    render(
+      <AuditFilters
+        {...defaultProps}
+        logs={[]}
+      />
+    );
 
-    expect(document.querySelectorAll('input[type="date"]')).toHaveLength(1);
+    expect(
+      screen.getByPlaceholderText(
+        "Search Entity Name or User..."
+      )
+    ).toBeInTheDocument();
   });
 
-  it("contains Search icon", () => {
-    const { container } = render(<AuditFilters {...defaultProps} />);
+ it("renders selected values", () => {
+  render(
+    <AuditFilters
+      {...defaultProps}
+      searchTerm="Sachin"
+      entityType="USER"
+      actionType="CREATE_USER"
+      selectedDate="2026-06-20"
+    />
+  );
 
-    expect(container.querySelector("svg")).toBeInTheDocument();
-  });
+  expect(screen.getByDisplayValue("Sachin")).toBeInTheDocument();
+
+  expect(
+    screen.getByTestId("All Entity Types")
+  ).toHaveValue("USER");
+
+  expect(
+    screen.getByTestId("All Actions")
+  ).toHaveValue("CREATE_USER");
+
+  expect(screen.getByTestId("date-input")).toHaveValue(
+    "2026-06-20"
+  );
+});
 
   it("does not call handlers on initial render", () => {
     render(<AuditFilters {...defaultProps} />);
@@ -366,5 +371,6 @@ describe("AuditFilters", () => {
     expect(setEntityType).not.toHaveBeenCalled();
     expect(setActionType).not.toHaveBeenCalled();
     expect(setSelectedDate).not.toHaveBeenCalled();
+    expect(clearFilters).not.toHaveBeenCalled();
   });
 });

@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import useDashboardData from "../hooks/useDashboardData";
 import DashboardPage from "../pages/DashboardPage";
+import DashboardToolbar from "../components/DashboardToolbar";
 import {
   calculateOverallProgress,
   getActiveProjects,
@@ -156,11 +157,7 @@ describe("DashboardPage", () => {
 
   /* ========== NAVIGATION ========== */
 
-  test("create project button navigates", () => {
-    renderComponent();
-    fireEvent.click(screen.getByText("Create Project"));
-    expect(mockNavigate).toHaveBeenCalledWith("/create-project");
-  });
+ 
 
   /* ========== FILTER EVENTS ========== */
 

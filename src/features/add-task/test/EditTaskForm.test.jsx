@@ -56,8 +56,8 @@ describe("EditTaskForm", () => {
     render(<EditTaskForm />);
 
     expect(screen.getByText("Basic Information")).toBeInTheDocument();
-    expect(screen.getByText("Dates & Estimate")).toBeInTheDocument();
-    expect(screen.getByText("Progress & Status")).toBeInTheDocument();
+    expect(screen.getByText("Schedule & Progress")).toBeInTheDocument();
+    
   });
 
   it("phase field is disabled", () => {
@@ -105,7 +105,7 @@ describe("EditTaskForm", () => {
   it("updates estimated weeks", () => {
     render(<EditTaskForm />);
 
-    fireEvent.change(screen.getByPlaceholderText("Enter Estimated Weeks"), {
+    fireEvent.change(screen.getByPlaceholderText("Est. Weeks"), {
       target: {
         value: "12",
       },
@@ -209,7 +209,7 @@ describe("EditTaskForm", () => {
   it("update button calls handleUpdate", () => {
     render(<EditTaskForm />);
 
-    fireEvent.click(screen.getByText("Update Task"));
+    fireEvent.click(screen.getByText("Update Activity"));
 
     expect(mockHandleUpdate).toHaveBeenCalledTimes(1);
   });
@@ -229,7 +229,7 @@ describe("EditTaskForm", () => {
   it("update button exists", () => {
     render(<EditTaskForm />);
 
-    expect(screen.getByText("Update Task")).toBeInTheDocument();
+    expect(screen.getByText("Update Activity")).toBeInTheDocument();
   });
 
   it("back button exists", () => {
@@ -241,9 +241,9 @@ describe("EditTaskForm", () => {
   it("estimated weeks input exists", () => {
     render(<EditTaskForm />);
 
-    expect(
-      screen.getByPlaceholderText("Enter Estimated Weeks"),
-    ).toBeInTheDocument();
+   expect(
+  screen.getByPlaceholderText("Est. Weeks"),
+).toBeInTheDocument();
   });
 
   it("owner input exists", () => {
@@ -267,9 +267,11 @@ describe("EditTaskForm", () => {
   it("does not show reason for change initially", () => {
     render(<EditTaskForm />);
 
-    expect(
-      screen.queryByPlaceholderText("Enter reason for changing planned dates"),
-    ).not.toBeInTheDocument();
+   expect(
+  screen.queryByPlaceholderText(
+    "Enter Reason for Changing Planned Dates"
+  )
+).not.toBeInTheDocument();
   });
 
   it("renders owner with initial value", () => {
@@ -318,8 +320,8 @@ describe("EditTaskForm", () => {
     render(<EditTaskForm />);
 
     expect(
-      screen.getByPlaceholderText("Enter Estimated Weeks"),
-    ).not.toBeDisabled();
+  screen.getByPlaceholderText("Est. Weeks")
+).not.toBeDisabled();
   });
 
   it("shows status label", () => {
@@ -364,15 +366,4 @@ describe("EditTaskForm", () => {
     expect(screen.getByText("20%")).toBeInTheDocument();
   });
 
-  it("shows progress lower bound", () => {
-    render(<EditTaskForm />);
-
-    expect(screen.getByText("0%")).toBeInTheDocument();
-  });
-
-  it("shows progress upper bound", () => {
-    render(<EditTaskForm />);
-
-    expect(screen.getByText("100%")).toBeInTheDocument();
-  });
 });

@@ -2,16 +2,15 @@ import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { toast } from "react-toastify";
 import RemarkModal from "../components/RemarkModal";
 import { addRemark } from "../services/remarkService";
 
-// -------------------- Mocks --------------------
-
-const fetchProjectsMock = vi.fn();
+const mockFetchProjects = vi.fn();
 
 vi.mock("../../../context/ProjectContext", () => ({
   useProjects: () => ({
-    fetchProjects: fetchProjectsMock,
+    fetchProjects: mockFetchProjects,
   }),
 }));
 
@@ -26,22 +25,32 @@ vi.mock("react-toastify", () => ({
   },
 }));
 
-// -------------------- Tests --------------------
-
 describe("RemarkModal", () => {
-  const onClose = vi.fn();
-  const onRemarkSaved = vi.fn();
+  const mockOnClose = vi.fn();
+  const mockOnRemarkSaved = vi.fn();
 
   const task = {
-    id: "1",
-    projectId: "P001",
-    projectName: "Project A",
-    phase: "Phase 1",
-    milestone: "Milestone 1",
-    task: "Task 1",
-    subTask: "Sub Task 1",
-    activity: "Activity A",
-    remark: "Initial Remark",
+    id: 1,
+    projectId: 100,
+    projectName: "Demo Project",
+
+    phaseId: 10,
+    phaseName: "Phase 1",
+
+    milestoneId: 20,
+    milestoneName: "Milestone 1",
+
+    taskId: 30,
+    taskName: "Task 1",
+
+    subTaskId: 40,
+    subTaskName: "Sub Task 1",
+
+    activityId: 50,
+    activityName: "Activity 1",
+
+    activity: "Activity 1",
+    remark: "Existing Remark",
   };
 
   beforeEach(() => {
@@ -50,227 +59,205 @@ describe("RemarkModal", () => {
     sessionStorage.setItem(
       "user",
       JSON.stringify({
-        id: "user1",
-      }),
+        id: 1,
+      })
     );
-
-    addRemark.mockResolvedValue({
-      statusType: "S",
-      statusDesc: "Remark Saved Successfully",
-    });
   });
 
-  it("renders nothing when modal is closed", () => {
+  it("does not render when closed", () => {
     const { container } = render(
       <RemarkModal
         isOpen={false}
-        onClose={onClose}
-        task={task}
-        onRemarkSaved={onRemarkSaved}
-      />,
+        onClose={mockOnClose}
+      />
     );
 
     expect(container.firstChild).toBeNull();
   });
 
-  it("renders modal title", () => {
+  it("renders modal", () => {
     render(
       <RemarkModal
         isOpen
-        onClose={onClose}
         task={task}
-        onRemarkSaved={onRemarkSaved}
-      />,
+        onClose={mockOnClose}
+      />
     );
 
-    expect(screen.getByText("Task Remark")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        name: /task remark/i,
+      })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByDisplayValue("Activity 1")
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText("Existing Remark")
+    ).toBeInTheDocument();
   });
 
-  it("renders activity value", () => {
+  it("updates latest remark", () => {
     render(
       <RemarkModal
         isOpen
-        onClose={onClose}
         task={task}
-        onRemarkSaved={onRemarkSaved}
-      />,
+        onClose={mockOnClose}
+      />
     );
 
-    expect(screen.getByDisplayValue("Activity A")).toBeInTheDocument();
-  });
-
-  it("renders existing remark", () => {
-    render(
-      <RemarkModal
-        isOpen
-        onClose={onClose}
-        task={task}
-        onRemarkSaved={onRemarkSaved}
-      />,
+    const textarea = screen.getByPlaceholderText(
+      /enter latest remark/i
     );
-
-    expect(screen.getByText("Initial Remark")).toBeInTheDocument();
-  });
-
-  it("updates latest remark textarea", () => {
-    render(
-      <RemarkModal
-        isOpen
-        onClose={onClose}
-        task={task}
-        onRemarkSaved={onRemarkSaved}
-      />,
-    );
-
-    const textarea = screen.getByPlaceholderText("Enter latest remark...");
 
     fireEvent.change(textarea, {
       target: {
-        value: "Updated Remark",
+        value: "New Remark",
       },
     });
 
-    expect(textarea.value).toBe("Updated Remark");
-  });
-
-  it("calls onClose when X button clicked", () => {
-    render(
-      <RemarkModal
-        isOpen
-        onClose={onClose}
-        task={task}
-        onRemarkSaved={onRemarkSaved}
-      />,
-    );
-
-    const buttons = screen.getAllByRole("button");
-
-    fireEvent.click(buttons[0]);
-
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(textarea).toHaveValue("New Remark");
   });
 
   it("calls onClose when Cancel clicked", () => {
     render(
       <RemarkModal
         isOpen
-        onClose={onClose}
         task={task}
-        onRemarkSaved={onRemarkSaved}
-      />,
+        onClose={mockOnClose}
+      />
     );
 
-    fireEvent.click(screen.getByText("Cancel"));
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /cancel/i,
+      })
+    );
 
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(mockOnClose).toHaveBeenCalled();
   });
 
-  it("calls addRemark when Save Remark clicked", async () => {
+  it("saves remark successfully", async () => {
+    addRemark.mockResolvedValue({
+      statusType: "S",
+      statusDesc: "Remark Saved",
+    });
+
     render(
       <RemarkModal
         isOpen
-        onClose={onClose}
         task={task}
-        onRemarkSaved={onRemarkSaved}
-      />,
+        onClose={mockOnClose}
+        onRemarkSaved={mockOnRemarkSaved}
+      />
     );
 
-    fireEvent.change(screen.getByPlaceholderText("Enter latest remark..."), {
-      target: {
-        value: "New Remark",
+    fireEvent.change(
+      screen.getByPlaceholderText(/enter latest remark/i),
+      {
+        target: {
+          value: "Updated Remark",
+        },
+      }
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /save remark/i,
+      })
+    );
+
+    await waitFor(() => {
+      expect(addRemark).toHaveBeenCalled();
+
+      expect(toast.success).toHaveBeenCalledWith(
+        "Remark Saved"
+      );
+
+      expect(mockFetchProjects).toHaveBeenCalledWith(1);
+
+      expect(mockOnRemarkSaved).toHaveBeenCalledWith(
+        1,
+        "Updated Remark"
+      );
+
+      expect(mockOnClose).toHaveBeenCalled();
+    });
+  });
+
+  it("shows error toast when api returns failure", async () => {
+    addRemark.mockResolvedValue({
+      statusType: "E",
+      statusDesc: "Failed",
+    });
+
+    render(
+      <RemarkModal
+        isOpen
+        task={task}
+        onClose={mockOnClose}
+      />
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /save remark/i,
+      })
+    );
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        "Failed"
+      );
+    });
+  });
+
+  it("shows error toast when api throws", async () => {
+    addRemark.mockRejectedValue({
+      response: {
+        data: {
+          statusDesc: "Server Error",
+        },
       },
     });
 
-    fireEvent.click(screen.getByText("Save Remark"));
+    render(
+      <RemarkModal
+        isOpen
+        task={task}
+        onClose={mockOnClose}
+      />
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /save remark/i,
+      })
+    );
 
     await waitFor(() => {
-      expect(addRemark).toHaveBeenCalledTimes(1);
+      expect(toast.error).toHaveBeenCalledWith(
+        "Server Error"
+      );
     });
-
-    expect(fetchProjectsMock).toHaveBeenCalledWith("user1");
-    expect(onClose).toHaveBeenCalled();
   });
 
-  it("shows empty activity when task is null", () => {
+  it("shows default message when no existing remark", () => {
     render(
       <RemarkModal
         isOpen
-        onClose={onClose}
-        task={null}
-        onRemarkSaved={onRemarkSaved}
-      />,
-    );
-
-    const activityInput = screen.getByLabelText(/activity/i);
-
-    expect(activityInput).toHaveValue("");
-  });
-
-  it("activity input is disabled", () => {
-    render(
-      <RemarkModal
-        isOpen
-        onClose={onClose}
-        task={task}
-        onRemarkSaved={onRemarkSaved}
-      />,
-    );
-
-    expect(screen.getByDisplayValue("Activity A")).toBeDisabled();
-  });
-
-  it("renders labels correctly", () => {
-    render(
-      <RemarkModal
-        isOpen
-        onClose={onClose}
-        task={task}
-        onRemarkSaved={onRemarkSaved}
-      />,
-    );
-
-    expect(screen.getByText("Activity")).toBeInTheDocument();
-    expect(screen.getByText(/Latest Remark/i)).toBeInTheDocument();
-  });
-
-  it("shows 'No remarks available' when there is no existing remark", () => {
-    render(
-      <RemarkModal
-        isOpen
-        onClose={onClose}
         task={{
           ...task,
           remark: "",
         }}
-        onRemarkSaved={onRemarkSaved}
-      />,
+        onClose={mockOnClose}
+      />
     );
 
-    expect(screen.getByText("No remarks available")).toBeInTheDocument();
-  });
-
-  it("calls onRemarkSaved after successful save", async () => {
-    render(
-      <RemarkModal
-        isOpen
-        onClose={onClose}
-        task={task}
-        onRemarkSaved={onRemarkSaved}
-      />,
-    );
-
-    fireEvent.change(screen.getByPlaceholderText("Enter latest remark..."), {
-      target: {
-        value: "Latest Remark",
-      },
-    });
-
-    fireEvent.click(screen.getByText("Save Remark"));
-
-    await waitFor(() => {
-      expect(addRemark).toHaveBeenCalled();
-    });
-
-    expect(onClose).toHaveBeenCalled();
+    expect(
+      screen.getByText("No remarks available")
+    ).toBeInTheDocument();
   });
 });

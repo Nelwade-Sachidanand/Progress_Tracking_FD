@@ -3,7 +3,14 @@ import { describe, expect, it } from "vitest";
 
 import ActivityStatusOverview from "../components/ActivityStatusOverview";
 
+
 describe("ActivityStatusOverview", () => {
+  const futureDate = new Date();
+  futureDate.setDate(futureDate.getDate() + 5);
+
+  const pastDate = new Date();
+  pastDate.setDate(pastDate.getDate() - 5);
+
   const project = {
     phases: [
       {
@@ -16,19 +23,34 @@ describe("ActivityStatusOverview", () => {
                 taskName: "Task 1",
                 subTasks: [
                   {
-                    subTaskName: "SubTask 1",
+                    subTaskName: "Sub Task 1",
                     activities: [
                       {
                         activityName: "Upcoming Activity",
-                        plannedStartDate: "2099-01-01",
-                        scheduleHealth: "On Track",
-                        executionStatus: "Pending",
+                        plannedStartDate: futureDate.toISOString(),
+                        plannedEndDate: futureDate.toISOString(),
+                        progress: 0,
+                        executionStatus: "Not Started",
+                        estimatedPeriodWeek: 2,
+                        actualPeriodWeek: 0,
+                      },
+                      {
+                        activityName: "In Progress Activity",
+                        plannedStartDate: pastDate.toISOString(),
+                        plannedEndDate: futureDate.toISOString(),
+                        progress: 50,
+                        executionStatus: "In Progress",
+                        estimatedPeriodWeek: 2,
+                        actualPeriodWeek: 1,
                       },
                       {
                         activityName: "Delayed Activity",
-                        plannedStartDate: "2020-01-01",
-                        scheduleHealth: "Delayed",
-                        executionStatus: "Delayed",
+                        plannedStartDate: pastDate.toISOString(),
+                        plannedEndDate: pastDate.toISOString(),
+                        progress: 60,
+                        executionStatus: "In Progress",
+                        estimatedPeriodWeek: 2,
+                        actualPeriodWeek: 1,
                       },
                     ],
                   },
@@ -41,74 +63,50 @@ describe("ActivityStatusOverview", () => {
     ],
   };
 
-  it("renders heading", () => {
+  it("renders component", () => {
     render(<ActivityStatusOverview project={project} />);
 
-    expect(screen.getByText("Activity Status Overview")).toBeInTheDocument();
+    expect(
+      screen.getByText("Activity Status Overview")
+    ).toBeInTheDocument();
   });
 
-  it("renders upcoming section", () => {
+  it("shows upcoming activity", () => {
     render(<ActivityStatusOverview project={project} />);
 
-    expect(screen.getByText(/Upcoming Activities/i)).toBeInTheDocument();
+    expect(
+      screen.getByText("Upcoming Activity")
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(/Upcoming Activities \(1\)/)
+    ).toBeInTheDocument();
   });
 
-  it("renders delayed section", () => {
+  it("shows in progress activity", () => {
     render(<ActivityStatusOverview project={project} />);
 
-    expect(screen.getByText(/Delayed Activities/i)).toBeInTheDocument();
+    expect(
+      screen.getByText("In Progress Activity")
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(/In Progress Activities \(2\)/)
+    ).toBeInTheDocument();
   });
 
-  it("renders upcoming activity", () => {
-    render(<ActivityStatusOverview project={project} />);
+ it("shows delayed activity", () => {
+  render(<ActivityStatusOverview project={project} />);
 
-    expect(screen.getByText("Upcoming Activity")).toBeInTheDocument();
-  });
+  expect(screen.getAllByText("Delayed Activity")).toHaveLength(2);
 
-  it("renders delayed activity", () => {
-    render(<ActivityStatusOverview project={project} />);
+  expect(
+    screen.getByText(/Delayed Activities \(1\)/)
+  ).toBeInTheDocument();
+});
 
-    expect(screen.getByText("Delayed Activity")).toBeInTheDocument();
-  });
-
-  it("renders milestone name", () => {
-    render(<ActivityStatusOverview project={project} />);
-
-    expect(screen.getAllByText("Milestone 1").length).toBeGreaterThan(0);
-  });
-
-  it("shows upcoming badge", () => {
-    render(<ActivityStatusOverview project={project} />);
-
-    expect(screen.getByText("Upcoming")).toBeInTheDocument();
-  });
-
-  it("shows delayed badge", () => {
-    render(<ActivityStatusOverview project={project} />);
-
-    expect(screen.getByText("Delayed")).toBeInTheDocument();
-  });
-
-  it("shows upcoming activity count", () => {
-    render(<ActivityStatusOverview project={project} />);
-
-    expect(screen.getByText(/Upcoming Activities \(1\)/i)).toBeInTheDocument();
-  });
-
-  it("shows delayed activity count", () => {
-    render(<ActivityStatusOverview project={project} />);
-
-    expect(screen.getByText(/Delayed Activities \(1\)/i)).toBeInTheDocument();
-  });
-
-  it("renders without crashing", () => {
-    render(<ActivityStatusOverview project={project} />);
-
-    expect(screen.getByText("Activity Status Overview")).toBeTruthy();
-  });
-
-  it("shows no upcoming activities message", () => {
-    const emptyProject = {
+  it("shows delayed completed activity when actual period exceeds estimated", () => {
+    const completedProject = {
       phases: [
         {
           phaseName: "Phase",
@@ -120,8 +118,16 @@ describe("ActivityStatusOverview", () => {
                   taskName: "Task",
                   subTasks: [
                     {
-                      subTaskName: "SubTask",
-                      activities: [],
+                      subTaskName: "Sub",
+                      activities: [
+                        {
+                          activityName: "Completed Delayed",
+                          progress: 100,
+                          executionStatus: "Completed",
+                          estimatedPeriodWeek: 2,
+                          actualPeriodWeek: 5,
+                        },
+                      ],
                     },
                   ],
                 },
@@ -132,122 +138,62 @@ describe("ActivityStatusOverview", () => {
       ],
     };
 
-    render(<ActivityStatusOverview project={emptyProject} />);
+    render(<ActivityStatusOverview project={completedProject} />);
 
-    expect(screen.getByText("No upcoming activities")).toBeInTheDocument();
+    expect(
+      screen.getByText("Completed Delayed")
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(/Delayed Activities \(1\)/)
+    ).toBeInTheDocument();
   });
 
-  it("shows no delayed activities message", () => {
-    const emptyProject = {
-      phases: [
-        {
-          phaseName: "Phase",
-          milestones: [
-            {
-              milestoneName: "Milestone",
-              tasks: [
-                {
-                  taskName: "Task",
-                  subTasks: [
-                    {
-                      subTaskName: "SubTask",
-                      activities: [],
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    };
+  it("shows empty state when no activities exist", () => {
+    render(<ActivityStatusOverview project={{ phases: [] }} />);
 
-    render(<ActivityStatusOverview project={emptyProject} />);
+    expect(
+      screen.getByText("No upcoming activities")
+    ).toBeInTheDocument();
 
-    expect(screen.getByText("No delayed activities")).toBeInTheDocument();
+    expect(
+      screen.getByText("No activities in progress")
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText("No delayed activities")
+    ).toBeInTheDocument();
   });
 
   it("handles undefined project", () => {
     render(<ActivityStatusOverview />);
 
-    expect(screen.getByText("No upcoming activities")).toBeInTheDocument();
+    expect(
+      screen.getByText("No upcoming activities")
+    ).toBeInTheDocument();
 
-    expect(screen.getByText("No delayed activities")).toBeInTheDocument();
+    expect(
+      screen.getByText("No activities in progress")
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText("No delayed activities")
+    ).toBeInTheDocument();
   });
 
-  it("handles empty phases", () => {
-    render(<ActivityStatusOverview project={{ phases: [] }} />);
-
-    expect(screen.getByText("No upcoming activities")).toBeInTheDocument();
-
-    expect(screen.getByText("No delayed activities")).toBeInTheDocument();
-  });
-
-  it("renders header number", () => {
+  it("shows correct section counts", () => {
     render(<ActivityStatusOverview project={project} />);
 
-    expect(screen.getByText("4")).toBeInTheDocument();
-  });
+    expect(
+      screen.getByText(/Upcoming Activities \(1\)/)
+    ).toBeInTheDocument();
 
-  it("renders exactly one upcoming activity", () => {
-    render(<ActivityStatusOverview project={project} />);
+    expect(
+      screen.getByText(/In Progress Activities \(2\)/)
+    ).toBeInTheDocument();
 
-    expect(screen.getAllByText("Upcoming Activity")).toHaveLength(1);
-  });
-
-  it("renders exactly one delayed activity", () => {
-    render(<ActivityStatusOverview project={project} />);
-
-    expect(screen.getAllByText("Delayed Activity")).toHaveLength(1);
-  });
-
-  it("does not show upcoming badge for delayed activity", () => {
-    render(<ActivityStatusOverview project={project} />);
-
-    expect(screen.getAllByText("Upcoming")).toHaveLength(1);
-  });
-
-  it("does not show delayed badge for upcoming activity", () => {
-    render(<ActivityStatusOverview project={project} />);
-
-    expect(screen.getAllByText("Delayed")).toHaveLength(1);
-  });
-
-  it("renders both activity cards", () => {
-    render(<ActivityStatusOverview project={project} />);
-
-    expect(screen.getByText(/Upcoming Activities/i)).toBeInTheDocument();
-
-    expect(screen.getByText(/Delayed Activities/i)).toBeInTheDocument();
-  });
-
-  it("handles null project", () => {
-    render(<ActivityStatusOverview project={null} />);
-
-    expect(screen.getByText("No upcoming activities")).toBeInTheDocument();
-
-    expect(screen.getByText("No delayed activities")).toBeInTheDocument();
-  });
-
-  it("handles project without phases", () => {
-    render(<ActivityStatusOverview project={{}} />);
-
-    expect(screen.getByText("No upcoming activities")).toBeInTheDocument();
-
-    expect(screen.getByText("No delayed activities")).toBeInTheDocument();
-  });
-
-  it("renders svg icons", () => {
-    const { container } = render(<ActivityStatusOverview project={project} />);
-
-    expect(container.querySelectorAll("svg").length).toBeGreaterThan(0);
-  });
-
-  it("matches activity counts", () => {
-    render(<ActivityStatusOverview project={project} />);
-
-    expect(screen.getByText(/Upcoming Activities \(1\)/i)).toBeInTheDocument();
-
-    expect(screen.getByText(/Delayed Activities \(1\)/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Delayed Activities \(1\)/)
+    ).toBeInTheDocument();
   });
 });

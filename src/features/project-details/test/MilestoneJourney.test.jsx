@@ -1,26 +1,46 @@
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import "@testing-library/jest-dom";
+import {
+  render,
+  screen,
+  fireEvent,
+} from "@testing-library/react";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import MilestoneJourney from "../Components/MilestoneJourney";
+
+
+beforeEach(() => {
+  class ResizeObserverMock {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+
+  global.ResizeObserver = ResizeObserverMock;
+
+  HTMLElement.prototype.getBoundingClientRect = vi.fn(() => ({
+    width: 1000,
+    height: 400,
+    top: 100,
+    left: 100,
+    right: 1100,
+    bottom: 500,
+  }));
+});
 
 describe("MilestoneJourney", () => {
   const project = {
     phases: [
       {
-        phaseName: "Phase 1",
         milestones: [
           {
-            milestoneName: "Requirement",
+            milestoneName: "M1 - Planning",
             tasks: [
               {
                 subTasks: [
                   {
                     activities: [
-                      {
-                        executionStatus: "Completed",
-                      },
-                      {
-                        executionStatus: "Completed",
-                      },
+                      { progress: 100 },
+                      { progress: 100 },
                     ],
                   },
                 ],
@@ -28,18 +48,14 @@ describe("MilestoneJourney", () => {
             ],
           },
           {
-            milestoneName: "Development",
+            milestoneName: "M2 - Development",
             tasks: [
               {
                 subTasks: [
                   {
                     activities: [
-                      {
-                        executionStatus: "Completed",
-                      },
-                      {
-                        executionStatus: "In Progress",
-                      },
+                      { progress: 50 },
+                      { progress: 0 },
                     ],
                   },
                 ],
@@ -47,15 +63,13 @@ describe("MilestoneJourney", () => {
             ],
           },
           {
-            milestoneName: "Testing",
+            milestoneName: "M3 - Testing",
             tasks: [
               {
                 subTasks: [
                   {
                     activities: [
-                      {
-                        executionStatus: "Pending",
-                      },
+                      { progress: 0 },
                     ],
                   },
                 ],
@@ -67,7 +81,7 @@ describe("MilestoneJourney", () => {
     ],
   };
 
-  it("renders heading", () => {
+  it("renders title", () => {
     render(<MilestoneJourney project={project} />);
 
     expect(
@@ -75,115 +89,83 @@ describe("MilestoneJourney", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders milestone names", () => {
-    render(<MilestoneJourney project={project} />);
+  it("renders svg", () => {
+    const { container } = render(
+      <MilestoneJourney project={project} />
+    );
 
-    expect(
-      screen.getByText("Requirement")
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByText("Development")
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByText("Testing")
-    ).toBeInTheDocument();
+    expect(container.querySelector("svg")).toBeInTheDocument();
   });
 
-  it("shows completed milestone", () => {
+  it("shows milestone names", () => {
+    render(<MilestoneJourney project={project} />);
+
+    expect(screen.getByText("M1")).toBeInTheDocument();
+    expect(screen.getByText("M2")).toBeInTheDocument();
+    expect(screen.getByText("M3")).toBeInTheDocument();
+  });
+
+  it("shows percentages", () => {
     render(<MilestoneJourney project={project} />);
 
     expect(screen.getByText("100%")).toBeInTheDocument();
-
-    expect(
-      screen.getByText("Completed")
-    ).toBeInTheDocument();
-  });
-
-  it("shows in progress milestone", () => {
-    render(<MilestoneJourney project={project} />);
-
-    expect(screen.getByText("50%")).toBeInTheDocument();
-
-    expect(
-      screen.getByText("In Progress")
-    ).toBeInTheDocument();
-  });
-
-  it("shows not started milestone", () => {
-    render(<MilestoneJourney project={project} />);
-
+    expect(screen.getByText("25%")).toBeInTheDocument();
     expect(screen.getByText("0%")).toBeInTheDocument();
+  });
+
+  it("shows statuses", () => {
+    render(<MilestoneJourney project={project} />);
+
+    expect(screen.getByText("Completed")).toBeInTheDocument();
+
+    expect(screen.getByText("In Progress")).toBeInTheDocument();
+
+    expect(screen.getByText("Not Started")).toBeInTheDocument();
+  });
+
+  it("shows tooltip on hover", () => {
+    const { container } = render(
+      <MilestoneJourney project={project} />
+    );
+
+    const circles = container.querySelectorAll("g");
+
+    fireEvent.mouseEnter(circles[0]);
 
     expect(
-      screen.getByText("Not Started")
+      screen.getByText("M1 - Planning")
     ).toBeInTheDocument();
   });
 
-  it("renders correctly with empty project", () => {
+  it("hides tooltip on mouse leave", () => {
+    const { container } = render(
+      <MilestoneJourney project={project} />
+    );
+
+    const circles = container.querySelectorAll("g");
+
+    fireEvent.mouseEnter(circles[0]);
+
+    fireEvent.mouseLeave(circles[0]);
+
+    expect(
+      screen.queryByText("M1 - Planning")
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders empty project", () => {
     render(<MilestoneJourney project={{ phases: [] }} />);
 
     expect(
       screen.getByText("Milestone Journey")
     ).toBeInTheDocument();
   });
-it("renders when project has no phases", () => {
-  render(<MilestoneJourney project={{ phases: [] }} />);
 
-  expect(
-    screen.getByText("Milestone Journey")
-  ).toBeInTheDocument();
-});
-
-  it("renders correctly when milestone has no activities", () => {
-    const emptyProject = {
-      phases: [
-        {
-          milestones: [
-            {
-              milestoneName: "Deployment",
-              tasks: [],
-            },
-          ],
-        },
-      ],
-    };
-
-    render(<MilestoneJourney project={emptyProject} />);
+  it("renders undefined project", () => {
+    render(<MilestoneJourney />);
 
     expect(
-      screen.getByText("Deployment")
-    ).toBeInTheDocument();
-
-    expect(screen.getByText("0%")).toBeInTheDocument();
-
-    expect(
-      screen.getByText("Not Started")
-    ).toBeInTheDocument();
-  });
-
-  it("renders all milestone percentages", () => {
-    render(<MilestoneJourney project={project} />);
-
-    expect(screen.getByText("100%")).toBeInTheDocument();
-    expect(screen.getByText("50%")).toBeInTheDocument();
-    expect(screen.getByText("0%")).toBeInTheDocument();
-  });
-
-  it("renders milestone title attribute", () => {
-    render(<MilestoneJourney project={project} />);
-
-    expect(
-      screen.getByTitle("Requirement")
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByTitle("Development")
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByTitle("Testing")
+      screen.getByText("Milestone Journey")
     ).toBeInTheDocument();
   });
 });

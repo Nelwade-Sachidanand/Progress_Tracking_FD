@@ -2,19 +2,31 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 import InfrastructureTab from "../components/tabs/InfrastructureTab";
+//import TableDropdown from "../../../../components/common/TableDropdown";
 
-/* ---------------- MOCK BackButton (IMPORTANT FIX) ---------------- */
-vi.mock("../components/BackButton", () => ({
-  default: () => <div data-testid="back-button">Back</div>,
+// Mock TableDropdown
+vi.mock("../../../components/common/TableDropdown", () => ({
+  default: ({ value, onChange, disabled }) => (
+    <select
+      data-testid="server-dropdown"
+      value={value}
+      disabled={disabled}
+      onChange={(e) => onChange(e.target.value)}
+    >
+      <option value="">Select</option>
+      <option value="DB Server">DB Server</option>
+      <option value="App Server">App Server</option>
+    </select>
+  ),
 }));
 
 describe("InfrastructureTab", () => {
-  const mockUpdateSection = vi.fn();
-  const mockUpdateArraySection = vi.fn();
+  const updateSection = vi.fn();
+  const updateArraySection = vi.fn();
 
   const infrastructure = {
-    currentLicenseType: "Enterprise",
-    currentDCVendor: "TCS",
+    currentLicenseType: "Finacle",
+    currentDCVendor: "IBM",
     currentDatabase: "Oracle",
     databaseVersion: "19c",
   };
@@ -24,121 +36,130 @@ describe("InfrastructureTab", () => {
       serverType: "DB Server",
       units: "2",
       diskSpaceGb: "500",
-      ramGb: "64",
-      cores: "16",
+      ramGb: "32",
+      cores: "8",
     },
   ];
-
-  const renderComponent = (
-    infra = infrastructure,
-    hardware = hardwareDetails,
-  ) =>
-    render(
-      <MemoryRouter>
-        <InfrastructureTab
-          infrastructure={infra}
-          hardwareDetails={hardware}
-          updateSection={mockUpdateSection}
-          updateArraySection={mockUpdateArraySection}
-        />
-      </MemoryRouter>,
-    );
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  test("renders headings", () => {
-    renderComponent();
+  it("renders infrastructure fields", () => {
+    render(
+      <InfrastructureTab
+        infrastructure={infrastructure}
+        hardwareDetails={hardwareDetails}
+        updateSection={updateSection}
+        updateArraySection={updateArraySection}
+      />
+    );
 
-    expect(screen.getByText("Existing CBS Infrastructure")).toBeInTheDocument();
-    expect(screen.getByText("Infrastructure Details")).toBeInTheDocument();
-    expect(screen.getByText("Server Configuration")).toBeInTheDocument();
-  });
-
-  test("renders initial values", () => {
-    renderComponent();
-
-    expect(screen.getByDisplayValue("Enterprise")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("TCS")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Finacle")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("IBM")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Oracle")).toBeInTheDocument();
     expect(screen.getByDisplayValue("19c")).toBeInTheDocument();
   });
 
-  test("updates current license", () => {
-    renderComponent();
+  it("updates infrastructure field", () => {
+    render(
+      <InfrastructureTab
+        infrastructure={infrastructure}
+        hardwareDetails={hardwareDetails}
+        updateSection={updateSection}
+        updateArraySection={updateArraySection}
+      />
+    );
 
-    fireEvent.change(screen.getByPlaceholderText("License Type"), {
+    fireEvent.change(screen.getByPlaceholderText("Enter License Type"), {
       target: {
         name: "currentLicenseType",
-        value: "Premium",
+        value: "Flexcube",
       },
     });
 
-    expect(mockUpdateSection).toHaveBeenCalled();
+    expect(updateSection).toHaveBeenCalledWith("infrastructure", {
+      ...infrastructure,
+      currentLicenseType: "Flexcube",
+    });
   });
 
-  test("updates current dc vendor", () => {
-    renderComponent();
+  it("renders server row", () => {
+    render(
+      <InfrastructureTab
+        infrastructure={infrastructure}
+        hardwareDetails={hardwareDetails}
+        updateSection={updateSection}
+        updateArraySection={updateArraySection}
+      />
+    );
 
-    fireEvent.change(screen.getByPlaceholderText("Vendor Name"), {
-      target: {
-        name: "currentDCVendor",
-        value: "Infosys",
-      },
-    });
-
-    expect(mockUpdateSection).toHaveBeenCalled();
+    expect(screen.getByDisplayValue("2")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("500")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("32")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("8")).toBeInTheDocument();
   });
 
-  /* ---------------- FIXED TEST (CURRENT DATABASE) ---------------- */
-  test("updates current database", () => {
-    renderComponent();
+  it("adds server row", () => {
+    render(
+      <InfrastructureTab
+        infrastructure={infrastructure}
+        hardwareDetails={hardwareDetails}
+        updateSection={updateSection}
+        updateArraySection={updateArraySection}
+      />
+    );
 
-    const input = screen.getByDisplayValue("Oracle");
+    fireEvent.click(screen.getByRole("button", { name: /add server/i }));
 
-    fireEvent.change(input, {
-      target: {
-        name: "currentDatabase",
-        value: "SQL",
-      },
-    });
-
-    expect(mockUpdateSection).toHaveBeenCalledWith(
-      "infrastructure",
-      expect.objectContaining({
-        currentDatabase: "SQL",
-      }),
+    expect(updateArraySection).toHaveBeenCalledWith(
+      "hardwareDetails",
+      expect.arrayContaining([
+        hardwareDetails[0],
+        {
+          serverType: "",
+          units: "",
+          diskSpaceGb: "",
+          ramGb: "",
+          cores: "",
+        },
+      ])
     );
   });
 
-  test("updates database version", () => {
-    renderComponent();
+  it("updates server type", () => {
+    render(
+      <InfrastructureTab
+        infrastructure={infrastructure}
+        hardwareDetails={hardwareDetails}
+        updateSection={updateSection}
+        updateArraySection={updateArraySection}
+      />
+    );
 
-    fireEvent.change(screen.getByPlaceholderText("Version"), {
-      target: {
-        name: "databaseVersion",
-        value: "8.0",
-      },
-    });
-
-    expect(mockUpdateSection).toHaveBeenCalled();
-  });
-
-  test("changes server type", () => {
-    renderComponent();
-
-    fireEvent.change(screen.getByDisplayValue("DB Server"), {
+    fireEvent.change(screen.getByTestId("server-dropdown"), {
       target: {
         value: "App Server",
       },
     });
 
-    expect(mockUpdateArraySection).toHaveBeenCalled();
+    expect(updateArraySection).toHaveBeenCalledWith("hardwareDetails", [
+      {
+        ...hardwareDetails[0],
+        serverType: "App Server",
+      },
+    ]);
   });
 
-  test("changes units", () => {
-    renderComponent();
+  it("updates units", () => {
+    render(
+      <InfrastructureTab
+        infrastructure={infrastructure}
+        hardwareDetails={hardwareDetails}
+        updateSection={updateSection}
+        updateArraySection={updateArraySection}
+      />
+    );
 
     fireEvent.change(screen.getByDisplayValue("2"), {
       target: {
@@ -146,96 +167,126 @@ describe("InfrastructureTab", () => {
       },
     });
 
-    expect(mockUpdateArraySection).toHaveBeenCalled();
-  });
-
-  test("changes disk space", () => {
-    renderComponent();
-
-    fireEvent.change(screen.getByDisplayValue("500"), {
-      target: {
-        value: "1000",
+    expect(updateArraySection).toHaveBeenCalledWith("hardwareDetails", [
+      {
+        ...hardwareDetails[0],
+        units: "5",
       },
-    });
-
-    expect(mockUpdateArraySection).toHaveBeenCalled();
+    ]);
   });
 
-  test("changes ram", () => {
-    renderComponent();
+  it("removes server row", () => {
+    render(
+      <InfrastructureTab
+        infrastructure={infrastructure}
+        hardwareDetails={hardwareDetails}
+        updateSection={updateSection}
+        updateArraySection={updateArraySection}
+      />
+    );
 
-    fireEvent.change(screen.getByDisplayValue("64"), {
-      target: {
-        value: "128",
-      },
-    });
+    const addButton = screen.getByRole("button", {
+  name: /add server/i,
+});
 
-    expect(mockUpdateArraySection).toHaveBeenCalled();
+const buttons = screen.getAllByRole("button");
+const deleteButton = buttons.find(btn => btn !== addButton);
+
+fireEvent.click(deleteButton);
+
+expect(updateArraySection).toHaveBeenCalledWith(
+  "hardwareDetails",
+  []
+);
+
   });
 
-  test("changes cores", () => {
-    renderComponent();
-
-    fireEvent.change(screen.getByDisplayValue("16"), {
-      target: {
-        value: "32",
-      },
-    });
-
-    expect(mockUpdateArraySection).toHaveBeenCalled();
-  });
-
-  test("adds server row", () => {
-    renderComponent();
-
-    fireEvent.click(screen.getByRole("button", { name: /add server/i }));
-
-    expect(mockUpdateArraySection).toHaveBeenCalled();
-  });
-
-  test("removes server row", () => {
-    renderComponent();
-
-    const buttons = screen.getAllByRole("button");
-    fireEvent.click(buttons[1]);
-
-    expect(mockUpdateArraySection).toHaveBeenCalled();
-  });
-
-  test("renders note text", () => {
-    renderComponent();
+  it("disables inputs", () => {
+    render(
+      <InfrastructureTab
+        infrastructure={infrastructure}
+        hardwareDetails={hardwareDetails}
+        updateSection={updateSection}
+        updateArraySection={updateArraySection}
+        disabled
+      />
+    );
 
     expect(
-      screen.getByText(/Add all production, DR and supporting servers/i),
-    ).toBeInTheDocument();
+      screen.getByPlaceholderText("Enter License Type")
+    ).toBeDisabled();
+
+    expect(
+      screen.getByRole("button", { name: /add server/i })
+    ).toBeDisabled();
+  });
+  it("disables add server button when all server types are selected", () => {
+  const allServers = [
+    "DB Server",
+    "App Server",
+    "Web Server",
+    "ATM / POS Server",
+    "RTGS / NEFT Server",
+    "UPI Server",
+    "SMS / E-mail Server",
+    "Any Other",
+  ].map(type => ({
+    serverType: type,
+    units: "",
+    diskSpaceGb: "",
+    ramGb: "",
+    cores: "",
+  }));
+
+  render(
+    <InfrastructureTab
+      infrastructure={infrastructure}
+      hardwareDetails={allServers}
+      updateSection={updateSection}
+      updateArraySection={updateArraySection}
+    />
+  );
+
+  expect(
+    screen.getByRole("button", { name: /add server/i })
+  ).toBeDisabled();
+});
+it("disables server dropdown", () => {
+  render(
+    <InfrastructureTab
+      infrastructure={infrastructure}
+      hardwareDetails={hardwareDetails}
+      updateSection={updateSection}
+      updateArraySection={updateArraySection}
+      disabled
+    />
+  );
+
+  expect(screen.getByTestId("server-dropdown")).toBeDisabled();
+});
+it("updates current database", () => {
+  render(
+    <InfrastructureTab
+      infrastructure={infrastructure}
+      hardwareDetails={hardwareDetails}
+      updateSection={updateSection}
+      updateArraySection={updateArraySection}
+    />
+  );
+
+  fireEvent.change(screen.getByTestId("current-database"), {
+    target: {
+      name: "currentDatabase",
+      value: "SQL Server",
+    },
   });
 
-  test("handles empty state", () => {
-    renderComponent({}, []);
-
-    expect(screen.getByPlaceholderText("License Type")).toHaveValue("");
-  });
-
-  test("disables add server when all server types selected", () => {
-    const allServers = [
-      "DB Server",
-      "App Server",
-      "Web Server",
-      "ATM / POS Server",
-      "RTGS / NEFT Server",
-      "UPI Server",
-      "SMS / E-mail Server",
-      "Any Other",
-    ].map((type) => ({
-      serverType: type,
-      units: "",
-      diskSpaceGb: "",
-      ramGb: "",
-      cores: "",
-    }));
-
-    renderComponent(infrastructure, allServers);
-
-    expect(screen.getByRole("button", { name: /add server/i })).toBeDisabled();
-  });
+  expect(updateSection).toHaveBeenCalledWith(
+    "infrastructure",
+    {
+      ...infrastructure,
+      currentDatabase: "SQL Server",
+    }
+  );
+});
 });

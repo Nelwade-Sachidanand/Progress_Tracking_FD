@@ -69,11 +69,13 @@ describe("documentService", () => {
       data: response,
     });
 
-    const result = await getAllDocuments();
+    const projectId = "1";
 
-    expect(apiClient.get).toHaveBeenCalledWith(
-      "/documents/getAll"
-    );
+const result = await getAllDocuments(projectId);
+
+expect(apiClient.get).toHaveBeenCalledWith(
+  "/documents/getAll/1"
+);
 
     expect(result).toEqual(response);
   });

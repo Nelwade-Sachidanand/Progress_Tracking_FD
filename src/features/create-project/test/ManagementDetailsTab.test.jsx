@@ -167,9 +167,9 @@ describe("ManagementDetailsTab", () => {
   test("renders info text", () => {
     renderComponent();
 
-    expect(
-      screen.getByText(/project coordination and management approvals/i),
-    ).toBeInTheDocument();
+expect(
+  screen.getByText(/enter key management contacts of the bank/i)
+).toBeInTheDocument();
   });
 
   test("handles empty data safely", () => {

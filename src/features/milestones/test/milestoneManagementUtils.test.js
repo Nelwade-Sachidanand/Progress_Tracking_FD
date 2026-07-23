@@ -1,37 +1,49 @@
-import { describe, expect, it } from "vitest";
+import { describe, it, expect } from "vitest";
+import { getMilestoneManagementData } from "../utils/milestoneManagementUtils";
 
-import {
-  getBanks,
-  getMilestoneManagementData,
-} from "../utils/milestoneManagementUtils";
-
-describe("milestoneManagementUtils", () => {
+describe("getMilestoneManagementData", () => {
   const projects = [
     {
       id: "P1",
-      projectName: "Project A",
+      projectName: "Project One",
       bankName: "HDFC",
       phases: [
         {
+          phaseId: "PH1",
           phaseName: "Phase 1",
           milestones: [
             {
-              milestoneName: "Requirement",
-              weightage: 20,
+              milestoneId: "M1",
+              milestoneName: "Milestone 1",
+              weightage: 40,
               tasks: [
                 {
                   subTasks: [
                     {
-                      activities: [{ progress: 100 }, { progress: 50 }],
+                      activities: [
+                        { progress: 50 },
+                        { progress: 100 },
+                      ],
                     },
                   ],
                 },
               ],
             },
             {
-              milestoneName: "Development",
-              weightage: 30,
-              tasks: [],
+              milestoneId: "M2",
+              milestoneName: "Milestone 2",
+              weightage: 60,
+              tasks: [
+                {
+                  subTasks: [
+                    {
+                      activities: [
+                        { progress: 20 },
+                      ],
+                    },
+                  ],
+                },
+              ],
             },
           ],
         },
@@ -39,20 +51,24 @@ describe("milestoneManagementUtils", () => {
     },
     {
       id: "P2",
-      projectName: "Project B",
-      bankName: "ICICI",
+      projectName: "Project Two",
+      bankName: "SBI",
       phases: [
         {
+          phaseId: "PH2",
           phaseName: "Phase 2",
           milestones: [
             {
-              milestoneName: "Testing",
-              weightage: 50,
+              milestoneId: "M3",
+              milestoneName: "Milestone 3",
+              weightage: 100,
               tasks: [
                 {
                   subTasks: [
                     {
-                      activities: [{ progress: 100 }],
+                      activities: [
+                        { progress: 80 },
+                      ],
                     },
                   ],
                 },
@@ -64,172 +80,267 @@ describe("milestoneManagementUtils", () => {
     },
   ];
 
-  describe("getBanks", () => {
-    it("returns unique bank names", () => {
-      expect(getBanks(projects)).toEqual(["HDFC", "ICICI"]);
-    });
+  it("returns milestones for selected project", () => {
+    const result = getMilestoneManagementData("P1", projects);
 
-    it("returns empty array for empty projects", () => {
-      expect(getBanks([])).toEqual([]);
-    });
+    expect(result).toHaveLength(2);
 
-    it("removes duplicate bank names", () => {
-      const duplicateProjects = [
-        ...projects,
-        {
-          id: "P3",
-          bankName: "HDFC",
-        },
-      ];
-
-      expect(getBanks(duplicateProjects)).toEqual(["HDFC", "ICICI"]);
-    });
-
-    it("returns single bank", () => {
-      expect(
-        getBanks([
-          {
-            bankName: "Axis",
-          },
-        ]),
-      ).toEqual(["Axis"]);
-    });
+    expect(result[0].projectId).toBe("P1");
+    expect(result[0].projectName).toBe("Project One");
+    expect(result[0].bankName).toBe("HDFC");
   });
 
-  describe("getMilestoneManagementData", () => {
-    it("returns milestones for selected bank", () => {
-      const result = getMilestoneManagementData("HDFC", projects);
+  it("returns all milestones when selectedProjectId is empty", () => {
+    const result = getMilestoneManagementData("", projects);
 
-      expect(result).toHaveLength(2);
-    });
+    expect(result).toHaveLength(3);
+  });
 
-    it("returns correct project id", () => {
-      const result = getMilestoneManagementData("HDFC", projects);
+  it("calculates average progress correctly", () => {
+    const result = getMilestoneManagementData("P1", projects);
 
-      expect(result[0].projectId).toBe("P1");
-    });
+    expect(result[0].progress).toBe(75); // (50+100)/2
+    expect(result[1].progress).toBe(20);
+  });
 
-    it("returns milestone name", () => {
-      const result = getMilestoneManagementData("HDFC", projects);
+  it("returns zero progress when no activities exist", () => {
+    const data = [
+      {
+        id: "P1",
+        phases: [
+          {
+            phaseId: "PH1",
+            phaseName: "Phase",
+            milestones: [
+              {
+                milestoneId: "M1",
+                milestoneName: "M1",
+                tasks: [],
+              },
+            ],
+          },
+        ],
+      },
+    ];
 
-      expect(result[0].milestoneName).toBe("Requirement");
-    });
+    const result = getMilestoneManagementData("P1", data);
 
-    it("returns phase name", () => {
-      const result = getMilestoneManagementData("HDFC", projects);
+    expect(result[0].progress).toBe(0);
+  });
 
-      expect(result[0].phaseName).toBe("Phase 1");
-    });
+  it("uses empty string when weightage is null", () => {
+    const data = [
+      {
+        id: "P1",
+        projectName: "Project",
+        bankName: "Bank",
+        phases: [
+          {
+            phaseId: "PH1",
+            phaseName: "Phase",
+            milestones: [
+              {
+                milestoneId: "M1",
+                milestoneName: "Milestone",
+                weightage: null,
+                tasks: [],
+              },
+            ],
+          },
+        ],
+      },
+    ];
 
-    it("returns project name", () => {
-      const result = getMilestoneManagementData("HDFC", projects);
+    const result = getMilestoneManagementData("P1", data);
 
-      expect(result[0].projectName).toBe("Project A");
-    });
+    expect(result[0].weightage).toBe("");
+  });
 
-    it("returns bank name", () => {
-      const result = getMilestoneManagementData("HDFC", projects);
+  it("creates correct id", () => {
+    const result = getMilestoneManagementData("P1", projects);
 
-      expect(result[0].bankName).toBe("HDFC");
-    });
+    expect(result[0].id).toBe("P1-M1");
+  });
 
-    it("calculates average progress", () => {
-      const result = getMilestoneManagementData("HDFC", projects);
+  it("returns empty array when project not found", () => {
+    const result = getMilestoneManagementData("XYZ", projects);
 
-      expect(result[0].progress).toBe(75);
-    });
+    expect(result).toEqual([]);
+  });
 
-    it("returns zero progress when no activities", () => {
-      const result = getMilestoneManagementData("HDFC", projects);
+  it("handles undefined phases", () => {
+    const data = [
+      {
+        id: "P1",
+      },
+    ];
 
-      expect(result[1].progress).toBe(0);
-    });
+    const result = getMilestoneManagementData("P1", data);
 
-    it("returns correct weightage", () => {
-      const result = getMilestoneManagementData("HDFC", projects);
+    expect(result).toEqual([]);
+  });
 
-      expect(result[0].weightage).toBe(20);
-    });
+  it("handles undefined milestones", () => {
+    const data = [
+      {
+        id: "P1",
+        phases: [
+          {
+            phaseId: "PH1",
+          },
+        ],
+      },
+    ];
 
-    it("returns empty weightage when undefined", () => {
-      const data = [
-        {
-          id: "P1",
-          projectName: "Project",
-          bankName: "HDFC",
-          phases: [
-            {
-              phaseName: "Phase",
-              milestones: [
-                {
-                  milestoneName: "Milestone",
-                  tasks: [],
-                },
-              ],
-            },
-          ],
-        },
-      ];
+    const result = getMilestoneManagementData("P1", data);
 
-      const result = getMilestoneManagementData("HDFC", data);
+    expect(result).toEqual([]);
+  });
 
-      expect(result[0].weightage).toBe("");
-    });
+  it("handles undefined tasks", () => {
+    const data = [
+      {
+        id: "P1",
+        phases: [
+          {
+            phaseId: "PH1",
+            phaseName: "Phase",
+            milestones: [
+              {
+                milestoneId: "M1",
+                milestoneName: "Milestone",
+              },
+            ],
+          },
+        ],
+      },
+    ];
 
-    it("returns empty array when bank not found", () => {
-      expect(getMilestoneManagementData("SBI", projects)).toEqual([]);
-    });
+    const result = getMilestoneManagementData("P1", data);
 
-    it("returns all milestones for matching bank", () => {
-      const result = getMilestoneManagementData("ICICI", projects);
+    expect(result[0].progress).toBe(0);
+  });
 
-      expect(result).toHaveLength(1);
-    });
+  it("handles undefined subTasks", () => {
+    const data = [
+      {
+        id: "P1",
+        phases: [
+          {
+            phaseId: "PH1",
+            phaseName: "Phase",
+            milestones: [
+              {
+                milestoneId: "M1",
+                milestoneName: "Milestone",
+                tasks: [{}],
+              },
+            ],
+          },
+        ],
+      },
+    ];
 
-    it("creates unique milestone id", () => {
-      const result = getMilestoneManagementData("ICICI", projects);
+    const result = getMilestoneManagementData("P1", data);
 
-      expect(result[0].id).toBe("Project B-Testing");
-    });
+    expect(result[0].progress).toBe(0);
+  });
 
-    it("handles empty project list", () => {
-      expect(getMilestoneManagementData("HDFC", [])).toEqual([]);
-    });
+  it("handles undefined activities", () => {
+    const data = [
+      {
+        id: "P1",
+        phases: [
+          {
+            phaseId: "PH1",
+            phaseName: "Phase",
+            milestones: [
+              {
+                milestoneId: "M1",
+                milestoneName: "Milestone",
+                tasks: [
+                  {
+                    subTasks: [{}],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ];
 
-    it("handles project without phases", () => {
-      const result = getMilestoneManagementData("HDFC", [
-        {
-          bankName: "HDFC",
-          phases: [],
-        },
-      ]);
+    const result = getMilestoneManagementData("P1", data);
 
-      expect(result).toEqual([]);
-    });
+    expect(result[0].progress).toBe(0);
+  });
 
-    it("handles milestone without tasks", () => {
-      const data = [
-        {
-          id: "1",
-          projectName: "Demo",
-          bankName: "HDFC",
-          phases: [
-            {
-              phaseName: "Phase",
-              milestones: [
-                {
-                  milestoneName: "M1",
-                  weightage: 40,
-                },
-              ],
-            },
-          ],
-        },
-      ];
+  it("treats missing activity progress as zero", () => {
+    const data = [
+      {
+        id: "P1",
+        phases: [
+          {
+            phaseId: "PH1",
+            phaseName: "Phase",
+            milestones: [
+              {
+                milestoneId: "M1",
+                milestoneName: "Milestone",
+                tasks: [
+                  {
+                    subTasks: [
+                      {
+                        activities: [{}, {}],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ];
 
-      const result = getMilestoneManagementData("HDFC", data);
+    const result = getMilestoneManagementData("P1", data);
 
-      expect(result[0].progress).toBe(0);
-    });
+    expect(result[0].progress).toBe(0);
+  });
+
+  it("rounds average progress", () => {
+    const data = [
+      {
+        id: "P1",
+        phases: [
+          {
+            phaseId: "PH1",
+            phaseName: "Phase",
+            milestones: [
+              {
+                milestoneId: "M1",
+                milestoneName: "Milestone",
+                tasks: [
+                  {
+                    subTasks: [
+                      {
+                        activities: [
+                          { progress: 20 },
+                          { progress: 21 },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ];
+
+    const result = getMilestoneManagementData("P1", data);
+
+    expect(result[0].progress).toBe(21);
   });
 });

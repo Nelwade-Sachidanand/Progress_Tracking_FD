@@ -26,7 +26,7 @@ describe("EditTaskPage", () => {
   test("renders page heading", () => {
     render(<EditTaskPage />);
 
-    expect(screen.getByText("Edit Task")).toBeInTheDocument();
+expect(screen.getByText("Edit Activity")).toBeInTheDocument();
   });
 
   test("renders page description", () => {
@@ -38,13 +38,15 @@ describe("EditTaskPage", () => {
   test("renders selected project label", () => {
     render(<EditTaskPage />);
 
-    expect(screen.getByText("Selected Project")).toBeInTheDocument();
+   expect(screen.getByText("Project:")).toBeInTheDocument();
   });
 
   test("shows selected project from sessionStorage", () => {
     render(<EditTaskPage />);
 
-    expect(screen.getByText("Implementation Dashboard")).toBeInTheDocument();
+   expect(
+  screen.getByText(/Active Project:\s*Implementation Dashboard/i)
+).toBeInTheDocument();
   });
 
   test("shows default project when sessionStorage is empty", () => {
@@ -52,7 +54,9 @@ describe("EditTaskPage", () => {
 
     render(<EditTaskPage />);
 
-    expect(screen.getByText("No Project Selected")).toBeInTheDocument();
+    expect(
+  screen.getByText(/Active Project:\s*No Project Selected/i)
+).toBeInTheDocument();
   });
 
   test("renders EditTaskForm", () => {
@@ -93,7 +97,7 @@ describe("EditTaskPage", () => {
   test("EditTaskForm is rendered below project information", () => {
     render(<EditTaskPage />);
 
-    const project = screen.getByText("Implementation Dashboard");
+    const project = screen.getByText(/Implementation Dashboard/i);
 
     const form = screen.getByTestId("edit-task-form");
 
@@ -105,12 +109,12 @@ describe("EditTaskPage", () => {
   test("renders project name only once", () => {
     render(<EditTaskPage />);
 
-    expect(screen.getAllByText("Implementation Dashboard")).toHaveLength(1);
+    expect(screen.getByText(/Implementation Dashboard/i)).toBeInTheDocument();
   });
 
   test("renders selected project section", () => {
     render(<EditTaskPage />);
 
-    expect(screen.getByText("Selected Project")).toBeVisible();
+    expect(screen.getByText("Project:")).toBeVisible();
   });
 });

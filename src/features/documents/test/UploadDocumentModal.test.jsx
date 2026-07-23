@@ -200,7 +200,7 @@ describe("UploadDocumentModal", () => {
     await waitFor(() => {
       expect(uploadDocument).toHaveBeenCalledTimes(1);
       expect(toast.success).toHaveBeenCalledWith(
-        "Document uploaded successfully 🎉"
+        "Document uploaded successfully"
       );
       expect(onClose).toHaveBeenCalled();
       expect(onSuccess).toHaveBeenCalled();

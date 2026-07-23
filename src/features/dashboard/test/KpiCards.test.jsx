@@ -44,21 +44,25 @@ describe("KpiCards", () => {
     expect(screen.getByText("3")).toBeInTheDocument();
   });
 
-  it("renders all subtitles", () => {
-    render(<KpiCards data={mockData} />);
+ it("does not render subtitles", () => {
+  render(<KpiCards data={mockData} />);
 
-    expect(screen.getByText("Active")).toBeInTheDocument();
+  expect(screen.queryByText("Active")).not.toBeInTheDocument();
 
-    expect(screen.getByText("Across All Products")).toBeInTheDocument();
+  expect(
+    screen.queryByText("Across All Products")
+  ).not.toBeInTheDocument();
 
-    expect(screen.getByText("Portfolio Progress")).toBeInTheDocument();
+  expect(
+    screen.queryByText("Portfolio Progress")
+  ).not.toBeInTheDocument();
 
-    expect(screen.getByText("Upcoming")).toBeInTheDocument();
+  expect(screen.queryByText("Upcoming")).not.toBeInTheDocument();
 
-    expect(screen.getByText("Healthy")).toBeInTheDocument();
+  expect(screen.queryByText("Healthy")).not.toBeInTheDocument();
 
-    expect(screen.getByText("Attention")).toBeInTheDocument();
-  });
+  expect(screen.queryByText("Attention")).not.toBeInTheDocument();
+});
 
   it("renders six KPI cards", () => {
     const { container } = render(<KpiCards data={mockData} />);

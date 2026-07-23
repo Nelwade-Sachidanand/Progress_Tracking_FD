@@ -6,242 +6,230 @@ import "@testing-library/jest-dom";
 
 import AuthorizationTable from "../components/AuthorizationTable";
 
+vi.mock("../../../components/layout/Pagination", () => ({
+  default: ({ currentPage }) => (
+    <div data-testid="pagination">
+      Pagination {currentPage}
+    </div>
+  ),
+}));
+
+const logs = [
+  {
+    id: 1,
+    requestSource: "CREATE_ACTIVITY",
+    requestedBy: "john_doe",
+    newActivityName: "Activity One",
+    requestedAt: "2026-01-01",
+    status: "PENDING",
+  },
+  {
+    id: 2,
+    requestSource: "UPDATE_ACTIVITY",
+    requestedBy: "admin_user",
+    newActivityName: "Activity Two",
+    requestedAt: "2026-01-02",
+    status: "APPROVED",
+  },
+];
+
 describe("AuthorizationTable", () => {
   const onView = vi.fn();
   const approveSelectedRequests = vi.fn();
   const rejectSelectedRequests = vi.fn();
-
-  const mockLogs = Array.from({ length: 15 }, (_, index) => ({
-    id: index + 1,
-    requestSource: index % 2 === 0 ? "CREATE_ACTIVITY" : "UPDATE_ACTIVITY",
-    requestedBy: "Sachin",
-    activityName: `Activity ${index + 1}`,
-    requestedAt: "2026-06-20T10:00:00.000Z",
-    status:
-      index % 3 === 0 ? "PENDING" : index % 3 === 1 ? "APPROVED" : "REJECTED",
-  }));
+  const onPageChange = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("renders loading state", () => {
-    render(<AuthorizationTable logs={[]} loading={true} />);
-
-    expect(screen.getByText("Loading requests...")).toBeInTheDocument();
-  });
-
-  it("renders table headers", () => {
-    render(<AuthorizationTable logs={mockLogs} loading={false} />);
-
-    expect(screen.getByText("Sr No.")).toBeInTheDocument();
-
-    expect(screen.getByText("Request Type")).toBeInTheDocument();
-
-    expect(screen.getByText("Requested By")).toBeInTheDocument();
-
-    expect(screen.getByText("Status")).toBeInTheDocument();
-  });
-
-  it("renders first page records", () => {
-    render(<AuthorizationTable logs={mockLogs} loading={false} />);
-
-    expect(screen.getByText("Activity 1")).toBeInTheDocument();
-
-    expect(screen.getByText("Activity 10")).toBeInTheDocument();
-
-    expect(screen.queryByText("Activity 11")).not.toBeInTheDocument();
-  });
-
-  it("renders empty state", () => {
-    render(<AuthorizationTable logs={[]} loading={false} />);
-
-    expect(screen.getByText("No requests found")).toBeInTheDocument();
-  });
-
-  it("calls onView", () => {
+  const renderComponent = (props = {}) =>
     render(
-      <AuthorizationTable logs={mockLogs} loading={false} onView={onView} />,
+      <AuthorizationTable
+        logs={logs}
+        allLogs={logs}
+        loading={false}
+        currentPage={1}
+        totalPages={1}
+        totalRecords={2}
+        onView={onView}
+        approveSelectedRequests={approveSelectedRequests}
+        rejectSelectedRequests={rejectSelectedRequests}
+        onPageChange={onPageChange}
+        {...props}
+      />
     );
 
-    const buttons = screen.getAllByRole("button");
+  it("renders table headers", () => {
+    renderComponent();
 
-    fireEvent.click(buttons[2]);
-
-    expect(onView).toHaveBeenCalled();
+    expect(screen.getByText("Request Type")).toBeInTheDocument();
+    expect(screen.getByText("Requested By")).toBeInTheDocument();
+    expect(screen.getByText("Status")).toBeInTheDocument();
+    expect(screen.getByText("Actions")).toBeInTheDocument();
   });
 
-  it("selects a row", () => {
-    render(<AuthorizationTable logs={mockLogs} loading={false} />);
+  it("shows loading state", () => {
+    renderComponent({ loading: true });
+
+    expect(
+      screen.getByText(/loading requests/i)
+    ).toBeInTheDocument();
+  });
+
+  it("shows empty state", () => {
+    renderComponent({
+      logs: [],
+      allLogs: [],
+    });
+
+    expect(
+      screen.getByText(/no requests found/i)
+    ).toBeInTheDocument();
+  });
+
+  it("renders request data", () => {
+    renderComponent();
+
+    expect(screen.getByText(/activity one/i)).toBeInTheDocument();
+    expect(screen.getByText(/activity two/i)).toBeInTheDocument();
+  });
+
+  it("calls onView when eye button clicked", () => {
+    renderComponent();
+
+    fireEvent.click(
+      screen.getAllByTitle("View Request")[0]
+    );
+
+    expect(onView).toHaveBeenCalledWith(logs[0]);
+  });
+
+  it("selects pending row", () => {
+    renderComponent();
 
     const checkboxes = screen.getAllByRole("checkbox");
 
     fireEvent.click(checkboxes[1]);
 
-    expect(screen.getByText("1 Requests Selected")).toBeInTheDocument();
+    expect(
+      screen.getByText(/1 Requests Selected/i)
+    ).toBeInTheDocument();
   });
 
-  it("selects all rows", () => {
-    render(<AuthorizationTable logs={mockLogs} loading={false} />);
+  it("selects all pending rows", () => {
+    renderComponent();
 
-    const checkboxes = screen.getAllByRole("checkbox");
+    fireEvent.click(screen.getAllByRole("checkbox")[0]);
 
-    fireEvent.click(checkboxes[0]);
-
-    expect(screen.getByText("10 Requests Selected")).toBeInTheDocument();
+    expect(
+      screen.getByText(/1 Requests Selected/i)
+    ).toBeInTheDocument();
   });
 
   it("opens approve modal", () => {
-    render(<AuthorizationTable logs={mockLogs} loading={false} />);
+    renderComponent();
 
-    const checkboxes = screen.getAllByRole("checkbox");
+    fireEvent.click(screen.getAllByRole("checkbox")[1]);
 
-    fireEvent.click(checkboxes[1]);
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /approve selected/i,
+      })
+    );
 
-    fireEvent.click(screen.getByText("Approve Selected"));
-
-    expect(screen.getByText("Approve Requests")).toBeInTheDocument();
+    expect(
+      screen.getByText(/approve requests/i)
+    ).toBeInTheDocument();
   });
 
   it("approves selected requests", async () => {
     approveSelectedRequests.mockResolvedValue();
 
-    render(
-      <AuthorizationTable
-        logs={mockLogs}
-        loading={false}
-        approveSelectedRequests={approveSelectedRequests}
-      />,
-    );
+    renderComponent();
 
-    const checkboxes = screen.getAllByRole("checkbox");
-
-    fireEvent.click(checkboxes[1]);
-
-    fireEvent.click(screen.getByText("Approve Selected"));
+    fireEvent.click(screen.getAllByRole("checkbox")[1]);
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Approve",
-      }),
+        name: /approve selected/i,
+      })
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /^approve$/i,
+      })
     );
 
     await waitFor(() => {
-      expect(approveSelectedRequests).toHaveBeenCalled();
+      expect(approveSelectedRequests).toHaveBeenCalledWith([1]);
     });
   });
 
   it("opens reject modal", () => {
-    render(<AuthorizationTable logs={mockLogs} loading={false} />);
+    renderComponent();
 
-    const checkboxes = screen.getAllByRole("checkbox");
+    fireEvent.click(screen.getAllByRole("checkbox")[1]);
 
-    fireEvent.click(checkboxes[1]);
-
-    fireEvent.click(screen.getByText("Reject Selected"));
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /reject selected/i,
+      })
+    );
 
     expect(
-      screen.getByPlaceholderText("Enter rejection reason..."),
+      screen.getByPlaceholderText(/enter rejection reason/i)
     ).toBeInTheDocument();
   });
 
-  it("enables continue button after entering reason", () => {
-    render(<AuthorizationTable logs={mockLogs} loading={false} />);
-
-    const checkboxes = screen.getAllByRole("checkbox");
-
-    fireEvent.click(checkboxes[1]);
-
-    fireEvent.click(screen.getByText("Reject Selected"));
-
-    const textarea = screen.getByPlaceholderText("Enter rejection reason...");
-
-    fireEvent.change(textarea, {
-      target: {
-        value: "Invalid",
-      },
-    });
-
-    expect(
-      screen.getByRole("button", {
-        name: "Continue",
-      }),
-    ).not.toBeDisabled();
-  });
-
-  it("opens reject confirmation modal", () => {
-    render(<AuthorizationTable logs={mockLogs} loading={false} />);
-
-    const checkboxes = screen.getAllByRole("checkbox");
-
-    fireEvent.click(checkboxes[1]);
-
-    fireEvent.click(screen.getByText("Reject Selected"));
-
-    fireEvent.change(screen.getByPlaceholderText("Enter rejection reason..."), {
-      target: {
-        value: "Invalid Data",
-      },
-    });
-
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: "Continue",
-      }),
-    );
-
-    expect(screen.getByText("Confirm Rejection")).toBeInTheDocument();
-  });
-
-  it("rejects selected requests", async () => {
+  it("rejects selected request", async () => {
     rejectSelectedRequests.mockResolvedValue();
 
-    render(
-      <AuthorizationTable
-        logs={mockLogs}
-        loading={false}
-        rejectSelectedRequests={rejectSelectedRequests}
-      />,
-    );
+    renderComponent();
 
-    const checkboxes = screen.getAllByRole("checkbox");
-
-    fireEvent.click(checkboxes[1]);
-
-    fireEvent.click(screen.getByText("Reject Selected"));
-
-    fireEvent.change(screen.getByPlaceholderText("Enter rejection reason..."), {
-      target: {
-        value: "Reason",
-      },
-    });
+    fireEvent.click(screen.getAllByRole("checkbox")[1]);
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Continue",
-      }),
+        name: /reject selected/i,
+      })
+    );
+
+    fireEvent.change(
+      screen.getByPlaceholderText(/enter rejection reason/i),
+      {
+        target: {
+          value: "Invalid request",
+        },
+      }
     );
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Confirm Reject",
-      }),
+        name: /continue/i,
+      })
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /confirm reject/i,
+      })
     );
 
     await waitFor(() => {
-      expect(rejectSelectedRequests).toHaveBeenCalled();
+      expect(rejectSelectedRequests).toHaveBeenCalledWith(
+        [1],
+        "Invalid request"
+      );
     });
   });
 
-  it("handles next page", () => {
-    render(<AuthorizationTable logs={mockLogs} loading={false} />);
+  it("renders pagination", () => {
+    renderComponent();
 
-    const buttons = screen.getAllByRole("button");
-
-    const nextButton = buttons[buttons.length - 1];
-
-    fireEvent.click(nextButton);
-
-    expect(screen.getByText("Activity 11")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("pagination")
+    ).toBeInTheDocument();
   });
 });

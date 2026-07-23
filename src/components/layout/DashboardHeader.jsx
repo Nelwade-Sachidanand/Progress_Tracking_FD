@@ -418,8 +418,11 @@ const DashboardHeader = ({
       titleClass: "text-[26px]",
       subtitleClass: "text-[12px]",
     },
+    
+  
   };
 
+  
   let currentPage;
 
   if (location.pathname.startsWith("/projects/edit")) {

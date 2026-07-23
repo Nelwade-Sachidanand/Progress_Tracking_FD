@@ -113,7 +113,7 @@ describe("UploadExcel", () => {
     });
 
     expect(toast.error).toHaveBeenCalledWith(
-      "Only Excel files (.xlsx or .xls) are allowed.",
+      "Only Excel Files (.xlsx or .xls) Are Allowed.",
     );
   });
 
@@ -127,7 +127,7 @@ describe("UploadExcel", () => {
     });
 
     expect(toast.error).toHaveBeenCalledWith(
-      "File size should not exceed 10 MB.",
+      "File size Should Not Exceed 10 MB.",
     );
   });
 
@@ -166,7 +166,9 @@ describe("UploadExcel", () => {
       expect(mockUploadExcel).toHaveBeenCalledWith(validFile);
     });
 
-    expect(toast.success).toHaveBeenCalledWith("Excel uploaded successfully.");
+    expect(toast.success).toHaveBeenCalledWith(
+      "Excel Uploaded Successfully.",
+    );
   });
 
   it("shows backend failure message", async () => {
@@ -214,7 +216,9 @@ describe("UploadExcel", () => {
     );
 
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith("Failed to upload Excel.");
+      expect(toast.error).toHaveBeenCalledWith(
+        "Failed to Upload Excel.",
+      );
     });
   });
 
@@ -237,7 +241,7 @@ describe("UploadExcel", () => {
 
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith(
-        "Something went wrong while uploading.",
+        "Something Went Wrong While Uploading.",
       );
     });
   });

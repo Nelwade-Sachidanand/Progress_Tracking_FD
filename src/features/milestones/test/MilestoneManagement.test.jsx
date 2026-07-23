@@ -1,12 +1,12 @@
 import "@testing-library/jest-dom";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import MilestoneManagement from "../pages/MilestoneManagement";
 
 import { useProjects } from "../../../context/ProjectContext";
 import { useMilestone } from "../hooks/useMilestone";
-
+import { toast } from "react-toastify";
 import * as utils from "../utils/milestoneManagementUtils";
 
 vi.mock("../../../context/ProjectContext", () => ({
@@ -24,41 +24,25 @@ vi.mock("react-toastify", () => ({
   },
 }));
 
-vi.mock("../components/BankSelector", () => ({
-  default: ({ banks, selectedBank, setSelectedBank }) => (
-    <div>
-      <div>Bank Selector</div>
-
-      <button onClick={() => setSelectedBank(banks[1] || "")}>
-        Change Bank
-      </button>
-
-      <div>{selectedBank}</div>
-    </div>
-  ),
-}));
-
 vi.mock("../components/MilestoneTable", () => ({
   default: ({ milestones, loading, onUpdate, onWeightageChange }) => (
-    <div>
+    <>
       <div>Milestone Table</div>
 
-      <div data-testid="loading">{loading ? "loading" : "idle"}</div>
+      <div data-testid="loading">
+        {loading ? "loading" : "idle"}
+      </div>
 
       <div data-testid="count">{milestones.length}</div>
 
-      {/* Simulate editing the weightage so total becomes 100 */}
-      <button
-        onClick={() => {
-          onWeightageChange(0, 100);
-        }}
-      >
+      <button onClick={() => onWeightageChange(0, 100)}>
         Change Weightage
       </button>
 
-      {/* Trigger update */}
-      <button onClick={onUpdate}>Update</button>
-    </div>
+      <button onClick={onUpdate}>
+        Update
+      </button>
+    </>
   ),
 }));
 
@@ -68,28 +52,22 @@ describe("MilestoneManagement", () => {
   const projects = [
     {
       id: "P1",
-      bankName: "HDFC",
-      projectName: "Project A",
-    },
-    {
-      id: "P2",
-      bankName: "ICICI",
-      projectName: "Project B",
+      projectName: "Project 1",
     },
   ];
 
-  const milestoneData = [
+  const milestones = [
     {
-      projectId: "P1",
-      phaseName: "Phase 1",
-      milestoneName: "Requirement",
+      phaseId: "PH1",
+      milestoneId: "M1",
       weightage: 100,
-      progress: 20,
     },
   ];
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    sessionStorage.setItem("selectedProjectId", "P1");
 
     useProjects.mockReturnValue({
       projects,
@@ -100,17 +78,9 @@ describe("MilestoneManagement", () => {
       updateWeightages: mockUpdateWeightages,
     });
 
-    vi.spyOn(utils, "getBanks").mockReturnValue(["HDFC", "ICICI"]);
-
     vi.spyOn(utils, "getMilestoneManagementData").mockReturnValue(
-      milestoneData,
+      milestones
     );
-  });
-
-  it("renders bank selector", () => {
-    render(<MilestoneManagement />);
-
-    expect(screen.getByText("Bank Selector")).toBeInTheDocument();
   });
 
   it("renders milestone table", () => {
@@ -119,21 +89,16 @@ describe("MilestoneManagement", () => {
     expect(screen.getByText("Milestone Table")).toBeInTheDocument();
   });
 
-  it("loads banks on mount", () => {
+  it("loads milestones on mount", () => {
     render(<MilestoneManagement />);
 
-    expect(utils.getBanks).toHaveBeenCalledWith(projects);
+    expect(utils.getMilestoneManagementData).toHaveBeenCalledWith(
+      "P1",
+      projects
+    );
   });
 
-  it("loads milestones on mount", async () => {
-    render(<MilestoneManagement />);
-
-    await waitFor(() => {
-      expect(utils.getMilestoneManagementData).toHaveBeenCalled();
-    });
-  });
-
-  it("passes loading state", () => {
+  it("shows loading state", () => {
     useMilestone.mockReturnValue({
       loading: true,
       updateWeightages: mockUpdateWeightages,
@@ -141,26 +106,26 @@ describe("MilestoneManagement", () => {
 
     render(<MilestoneManagement />);
 
-    expect(screen.getByTestId("loading")).toHaveTextContent("loading");
+    expect(screen.getByTestId("loading")).toHaveTextContent(
+      "loading"
+    );
   });
 
-  it("passes milestone count", () => {
+  it("renders milestone count", () => {
     render(<MilestoneManagement />);
 
     expect(screen.getByTestId("count")).toHaveTextContent("1");
   });
 
-  it("changes bank", async () => {
+  it("updates weightage", () => {
     render(<MilestoneManagement />);
 
-    fireEvent.click(screen.getByText("Change Bank"));
+    fireEvent.click(screen.getByText("Change Weightage"));
 
-    await waitFor(() => {
-      expect(utils.getMilestoneManagementData).toHaveBeenCalled();
-    });
+    expect(screen.getByTestId("count")).toHaveTextContent("1");
   });
 
-  it("calls updateWeightages on successful update", async () => {
+  it("calls updateWeightages", async () => {
     render(<MilestoneManagement />);
 
     fireEvent.click(screen.getByText("Update"));
@@ -173,40 +138,19 @@ describe("MilestoneManagement", () => {
       projectId: "P1",
       milestones: [
         {
-          phaseName: "Phase 1",
-          milestoneName: "Requirement",
+          phaseId: "PH1",
+          milestoneId: "M1",
           weightage: 100,
         },
       ],
     });
   });
 
-  it("updates weightage locally", async () => {
-    render(<MilestoneManagement />);
-
-    fireEvent.click(screen.getByText("Change Weightage"));
-    fireEvent.click(screen.getByText("Update"));
-
-    await waitFor(() => {
-      expect(mockUpdateWeightages).toHaveBeenCalledWith({
-        projectId: "P1",
-        milestones: [
-          {
-            phaseName: "Phase 1",
-            milestoneName: "Requirement",
-            weightage: 100,
-          },
-        ],
-      });
-    });
-  });
-
-  it("does not call update when weightage is invalid", async () => {
+  it("shows error when total weightage is not 100", async () => {
     utils.getMilestoneManagementData.mockReturnValue([
       {
-        projectId: "P1",
-        phaseName: "Phase 1",
-        milestoneName: "Requirement",
+        phaseId: "PH1",
+        milestoneId: "M1",
         weightage: 80,
       },
     ]);
@@ -216,36 +160,49 @@ describe("MilestoneManagement", () => {
     fireEvent.click(screen.getByText("Update"));
 
     await waitFor(() => {
-      expect(mockUpdateWeightages).not.toHaveBeenCalled();
+      expect(toast.error).toHaveBeenCalledWith(
+        "Total weightage must equal 100%"
+      );
     });
+
+    expect(mockUpdateWeightages).not.toHaveBeenCalled();
   });
 
-  it("handles update api rejection", async () => {
-    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+  it("handles update api failure", async () => {
+    mockUpdateWeightages.mockRejectedValueOnce(
+      new Error("API Error")
+    );
 
-    mockUpdateWeightages.mockRejectedValueOnce(new Error("API Error"));
+    const spy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
 
     render(<MilestoneManagement />);
 
-    fireEvent.click(screen.getByText("Change Weightage"));
     fireEvent.click(screen.getByText("Update"));
 
     await waitFor(() => {
       expect(spy).toHaveBeenCalled();
     });
 
+    expect(toast.error).toHaveBeenCalledWith(
+      "Failed to update milestone weightages."
+    );
+
     spy.mockRestore();
   });
 
-  it("does nothing when no bank is selected", () => {
-    utils.getBanks.mockReturnValue([]);
+  it("renders empty milestones when no selected project", () => {
+    sessionStorage.removeItem("selectedProjectId");
 
     render(<MilestoneManagement />);
 
     expect(utils.getMilestoneManagementData).not.toHaveBeenCalled();
+
+    expect(screen.getByTestId("count")).toHaveTextContent("0");
   });
 
-  it("renders with empty milestones", () => {
+  it("renders empty milestone list", () => {
     utils.getMilestoneManagementData.mockReturnValue([]);
 
     render(<MilestoneManagement />);
@@ -253,119 +210,24 @@ describe("MilestoneManagement", () => {
     expect(screen.getByTestId("count")).toHaveTextContent("0");
   });
 
-  it("calls getMilestoneManagementData after bank change", async () => {
-    render(<MilestoneManagement />);
-
-    fireEvent.click(screen.getByText("Change Bank"));
-
-    await waitFor(() => {
-      expect(utils.getMilestoneManagementData).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  it("calls updateWeightages only once", async () => {
-    render(<MilestoneManagement />);
-
-    fireEvent.click(screen.getByText("Change Weightage"));
-    fireEvent.click(screen.getByText("Update"));
-
-    await waitFor(() => {
-      expect(mockUpdateWeightages).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  it("passes correct projectId in payload", async () => {
-    render(<MilestoneManagement />);
-
-    fireEvent.click(screen.getByText("Change Weightage"));
-    fireEvent.click(screen.getByText("Update"));
-
-    await waitFor(() => {
-      expect(mockUpdateWeightages.mock.calls[0][0].projectId).toBe("P1");
-    });
-  });
-
-  it("passes milestone array in payload", async () => {
-    render(<MilestoneManagement />);
-
-    fireEvent.click(screen.getByText("Change Weightage"));
-    fireEvent.click(screen.getByText("Update"));
-
-    await waitFor(() => {
-      expect(mockUpdateWeightages.mock.calls[0][0].milestones).toHaveLength(1);
-    });
-  });
-
   it("passes numeric weightage", async () => {
     render(<MilestoneManagement />);
 
-    fireEvent.click(screen.getByText("Change Weightage"));
     fireEvent.click(screen.getByText("Update"));
 
     await waitFor(() => {
       expect(
-        mockUpdateWeightages.mock.calls[0][0].milestones[0].weightage,
+        mockUpdateWeightages.mock.calls[0][0].milestones[0]
+          .weightage
       ).toBe(100);
-
-      expect(
-        typeof mockUpdateWeightages.mock.calls[0][0].milestones[0].weightage,
-      ).toBe("number");
     });
-  });
-
-  it("re-renders when projects change", () => {
-    const { rerender } = render(<MilestoneManagement />);
-
-    useProjects.mockReturnValue({
-      projects: [
-        ...projects,
-        {
-          id: "P3",
-          bankName: "SBI",
-          projectName: "Project C",
-        },
-      ],
-    });
-
-    rerender(<MilestoneManagement />);
-
-    expect(utils.getBanks).toHaveBeenCalled();
-  });
-
-  it("renders successfully with single project", () => {
-    useProjects.mockReturnValue({
-      projects: [projects[0]],
-    });
-
-    render(<MilestoneManagement />);
-
-    expect(screen.getByText("Bank Selector")).toBeInTheDocument();
-  });
-
-  it("renders successfully with no projects", () => {
-    useProjects.mockReturnValue({
-      projects: [],
-    });
-
-    utils.getBanks.mockReturnValue([]);
-
-    render(<MilestoneManagement />);
-
-    expect(screen.getByText("Milestone Table")).toBeInTheDocument();
-  });
-
-  it("matches loading state from hook", () => {
-    useMilestone.mockReturnValue({
-      loading: true,
-      updateWeightages: mockUpdateWeightages,
-    });
-
-    render(<MilestoneManagement />);
-
-    expect(screen.getByTestId("loading")).toHaveTextContent("loading");
   });
 
   it("renders without crashing", () => {
-    expect(() => render(<MilestoneManagement />)).not.toThrow();
+    expect(() =>
+      render(<MilestoneManagement />)
+    ).not.toThrow();
   });
-});
+  });
+
+

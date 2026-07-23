@@ -135,14 +135,12 @@ describe("apiClient", () => {
     const response = await responseErrorInterceptor(error);
 
     expect(axios.post).toHaveBeenCalledWith(
-      "http://localhost:8080/user/refresh",
-      null,
-      {
-        params: {
-          refreshToken: "refresh-token",
-        },
-      },
-    );
+  "http://localhost:8080/user/refresh",
+  {},
+  {
+    withCredentials: true,
+  }
+);
 
     expect(sessionStorage.getItem("accessToken")).toBe("new-access-token");
 

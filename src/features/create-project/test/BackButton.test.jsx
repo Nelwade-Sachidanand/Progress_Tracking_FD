@@ -1,7 +1,8 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
 import BackButton from "../components/tabs/BackButton";
 
+// Mock react-router-dom
 const mockNavigate = vi.fn();
 
 vi.mock("react-router-dom", () => ({
@@ -13,63 +14,41 @@ describe("BackButton", () => {
     vi.clearAllMocks();
   });
 
-  test("renders with default label", () => {
+  it("renders default label", () => {
     render(<BackButton />);
 
-    expect(
-      screen.getByRole("button", {
-        name: /back to dashboard/i,
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button")).toBeInTheDocument();
+    expect(screen.getByText("Back to Projects")).toBeInTheDocument();
   });
 
-  test("renders custom label", () => {
+  it("renders custom label", () => {
     render(<BackButton label="Go Back" />);
 
-    expect(
-      screen.getByRole("button", {
-        name: /go back/i,
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Go Back")).toBeInTheDocument();
   });
 
-  test("navigates to default path when clicked", () => {
-    render(<BackButton />);
-
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: /back to dashboard/i,
-      }),
-    );
-
-    expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
-  });
-
-  test("navigates to custom path when clicked", () => {
-    render(<BackButton path="/projects" />);
-
-    fireEvent.click(screen.getByRole("button"));
-
-    expect(mockNavigate).toHaveBeenCalledWith("/projects");
-  });
-
-  test("calls navigate exactly once on click", () => {
+  it("navigates to default path when clicked", () => {
     render(<BackButton />);
 
     fireEvent.click(screen.getByRole("button"));
 
     expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith("/projects");
   });
 
-  test("button has type button", () => {
-    render(<BackButton />);
+  it("navigates to custom path when clicked", () => {
+    render(<BackButton path="/dashboard" />);
 
-    expect(screen.getByRole("button")).toHaveAttribute("type", "button");
+    fireEvent.click(screen.getByRole("button"));
+
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
   });
 
-  test("renders arrow icon", () => {
+  it("renders arrow icon", () => {
     const { container } = render(<BackButton />);
 
+    // lucide-react icons render an SVG
     expect(container.querySelector("svg")).toBeInTheDocument();
   });
 });

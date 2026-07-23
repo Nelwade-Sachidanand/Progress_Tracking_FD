@@ -39,13 +39,13 @@ describe("useIdleLogout", () => {
 
     expect(sessionStorage.getItem("accessToken")).toBeNull();
 
-    expect(mockNavigate).toHaveBeenCalledWith("/", {
-      replace: true,
-      state: {
-        showSessionModal: true,
-        message: "Session expired due to inactivity. Please login again.",
-      },
-    });
+   expect(mockNavigate).toHaveBeenCalledWith("/", {
+  replace: true,
+  state: {
+    showSessionModal: true,
+    message: "Session Expired Due to Inactivity. Please Login Again.",
+  },
+});
   });
 
   it("resets timer on mousemove", () => {

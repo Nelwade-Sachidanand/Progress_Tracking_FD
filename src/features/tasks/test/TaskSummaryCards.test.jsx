@@ -6,86 +6,106 @@ import TaskSummaryCards from "../components/TaskSummaryCards";
 
 describe("TaskSummaryCards", () => {
   const defaultProps = {
-    total: 100,
-    completed: 65,
-    delayed: 15,
-    notStarted: 20,
+    total: 25,
+    completed: 10,
+    delayed: 2,
+    notStarted: 5,
+    inProgress: 10,
   };
 
-  it("renders all card titles", () => {
+  it("renders all summary cards", () => {
     render(<TaskSummaryCards {...defaultProps} />);
 
     expect(screen.getByText("Total Tasks")).toBeInTheDocument();
-
     expect(screen.getByText("Completed")).toBeInTheDocument();
-
-    expect(screen.getByText("Delayed")).toBeInTheDocument();
-
+    expect(screen.getByText("In Progress")).toBeInTheDocument();
     expect(screen.getByText("Not Started")).toBeInTheDocument();
   });
 
-  it("renders all values", () => {
+  it("renders correct values", () => {
     render(<TaskSummaryCards {...defaultProps} />);
 
-    expect(screen.getByText("100")).toBeInTheDocument();
+expect(screen.getByText("25")).toBeInTheDocument();
+expect(screen.getAllByText("10")).toHaveLength(2);
+expect(screen.getByText("5")).toBeInTheDocument();
 
-    expect(screen.getByText("65")).toBeInTheDocument();
-
-    expect(screen.getByText("15")).toBeInTheDocument();
-
-    expect(screen.getByText("20")).toBeInTheDocument();
+    // value 10 appears twice (Completed & In Progress)
+    expect(screen.getAllByText("10")).toHaveLength(2);
   });
 
-  it("renders all subtitles", () => {
-    render(<TaskSummaryCards {...defaultProps} />);
+  it("renders four cards", () => {
+    const { container } = render(
+      <TaskSummaryCards {...defaultProps} />
+    );
 
-    expect(screen.getByText("All tasks")).toBeInTheDocument();
+    const cards = container.querySelectorAll(
+      ".rounded-2xl"
+    );
 
-    expect(screen.getByText("Completed tasks")).toBeInTheDocument();
-
-    expect(screen.getByText("Delayed tasks")).toBeInTheDocument();
-
-    expect(screen.getByText("Pending tasks")).toBeInTheDocument();
+    expect(cards).toHaveLength(4);
   });
 
-  it("renders zero values correctly", () => {
+  it("renders zero values", () => {
     render(
-      <TaskSummaryCards total={0} completed={0} delayed={0} notStarted={0} />,
+      <TaskSummaryCards
+        total={0}
+        completed={0}
+        delayed={0}
+        notStarted={0}
+        inProgress={0}
+      />
     );
 
     expect(screen.getAllByText("0")).toHaveLength(4);
   });
 
-  it("renders four summary cards", () => {
-    const { container } = render(<TaskSummaryCards {...defaultProps} />);
-
-    const cards = container.querySelectorAll(".rounded-2xl");
-
-    expect(cards.length).toBe(4);
-  });
-
-  it("renders without crashing when values are undefined", () => {
+  it("renders large values", () => {
     render(
       <TaskSummaryCards
-        total={undefined}
-        completed={undefined}
-        delayed={undefined}
-        notStarted={undefined}
-      />,
+        total={1000}
+        completed={900}
+        delayed={50}
+        notStarted={20}
+        inProgress={80}
+      />
     );
 
+    expect(screen.getByText("1000")).toBeInTheDocument();
+    expect(screen.getByText("900")).toBeInTheDocument();
+    expect(screen.getByText("80")).toBeInTheDocument();
+    expect(screen.getByText("20")).toBeInTheDocument();
+  });
+
+  it("renders icons", () => {
+    const { container } = render(
+      <TaskSummaryCards {...defaultProps} />
+    );
+
+    // lucide icons render svg elements
+    const icons = container.querySelectorAll("svg");
+
+    expect(icons).toHaveLength(4);
+  });
+
+  it("renders with undefined props", () => {
+    render(<TaskSummaryCards />);
+
     expect(screen.getByText("Total Tasks")).toBeInTheDocument();
+    expect(screen.getByText("Completed")).toBeInTheDocument();
+    expect(screen.getByText("In Progress")).toBeInTheDocument();
+    expect(screen.getByText("Not Started")).toBeInTheDocument();
   });
 
-  it("renders correct number of subtitles", () => {
-    render(<TaskSummaryCards {...defaultProps} />);
+  it("matches card titles with values", () => {
+  render(<TaskSummaryCards {...defaultProps} />);
 
-    expect(screen.getByText("All tasks")).toBeInTheDocument();
+  expect(screen.getByText("Total Tasks")).toBeInTheDocument();
+  expect(screen.getByText("Completed")).toBeInTheDocument();
+  expect(screen.getByText("In Progress")).toBeInTheDocument();
+  expect(screen.getByText("Not Started")).toBeInTheDocument();
 
-    expect(screen.getByText("Completed tasks")).toBeInTheDocument();
-
-    expect(screen.getByText("Delayed tasks")).toBeInTheDocument();
-
-    expect(screen.getByText("Pending tasks")).toBeInTheDocument();
-  });
+  expect(screen.getByText("25")).toBeInTheDocument();
+  expect(screen.getAllByText("10")).toHaveLength(2);
+  expect(screen.getByText("5")).toBeInTheDocument();
+});
 });

@@ -36,17 +36,13 @@ describe("Sidebar", () => {
     expect(screen.getByAltText("Logo")).toBeInTheDocument();
   });
 
-  test("renders portfolio section", () => {
+  test("renders project management section", () => {
     renderSidebar();
-
-    expect(screen.getByText("PORTFOLIO")).toBeInTheDocument();
+expect(screen.getByText("PROJECT MANAGEMENT")).toBeInTheDocument();
   });
 
-  test("renders monitoring section", () => {
-    renderSidebar();
 
-    expect(screen.getByText("MONITORING")).toBeInTheDocument();
-  });
+ 
 
   test("renders administration section", () => {
     renderSidebar();
@@ -60,17 +56,7 @@ describe("Sidebar", () => {
     expect(screen.getByText("Dashboard")).toBeInTheDocument();
   });
 
-  test("renders banks menu", () => {
-    renderSidebar();
-
-    expect(screen.getByText("Banks / Clients")).toBeInTheDocument();
-  });
-
-  test("renders products menu", () => {
-    renderSidebar();
-
-    expect(screen.getByText("Products")).toBeInTheDocument();
-  });
+  
 
   test("renders projects menu", () => {
     renderSidebar();
@@ -96,23 +82,7 @@ describe("Sidebar", () => {
     expect(screen.getByText("Tasks")).toBeInTheDocument();
   });
 
-  test("renders issues menu", () => {
-    renderSidebar();
-
-    expect(screen.getByText("Issues")).toBeInTheDocument();
-  });
-
-  test("renders risks menu", () => {
-    renderSidebar();
-
-    expect(screen.getByText("Risks")).toBeInTheDocument();
-  });
-
-  test("renders reports menu", () => {
-    renderSidebar();
-
-    expect(screen.getByText("Reports")).toBeInTheDocument();
-  });
+ 
 
   test("renders documents menu", () => {
     renderSidebar();
@@ -126,11 +96,6 @@ describe("Sidebar", () => {
     expect(screen.getByText("Users")).toBeInTheDocument();
   });
 
-  test("renders settings menu", () => {
-    renderSidebar();
-
-    expect(screen.getByText("Settings")).toBeInTheDocument();
-  });
 
   test("renders audit logs menu", () => {
     renderSidebar();
@@ -144,11 +109,7 @@ describe("Sidebar", () => {
     expect(screen.getByText("Authorization")).toBeInTheDocument();
   });
 
-  test("renders help section", () => {
-    renderSidebar();
 
-    expect(screen.getByText("Help & Support")).toBeInTheDocument();
-  });
 
   test("dashboard link exists", () => {
     renderSidebar();
@@ -180,15 +141,7 @@ describe("Sidebar", () => {
     ).toHaveAttribute("href", "/upload-excel");
   });
 
-  test("reports link exists", () => {
-    renderSidebar();
 
-    expect(
-      screen.getByRole("link", {
-        name: /Reports/i,
-      }),
-    ).toHaveAttribute("href", "/reports");
-  });
   test("USER role shows project details dashboard", () => {
     sessionStorage.setItem(
       "user",
@@ -216,7 +169,7 @@ describe("Sidebar", () => {
 
     renderSidebar();
 
-    expect(screen.queryByText("MONITORING")).not.toBeInTheDocument();
+expect(screen.getByText("PROJECT MANAGEMENT")).toBeInTheDocument();
   });
 
   test("USER role does not show administration section", () => {
@@ -269,8 +222,7 @@ describe("Sidebar", () => {
     );
 
     renderSidebar();
-
-    expect(screen.getByText("MONITORING")).toBeInTheDocument();
+expect(screen.getByText("PROJECT MANAGEMENT")).toBeInTheDocument();
   });
 
   test("MANAGEMENT USER does not show administration", () => {
@@ -321,8 +273,7 @@ describe("Sidebar", () => {
     );
 
     renderSidebar();
-
-    expect(screen.getByText("MONITORING")).toBeInTheDocument();
+expect(screen.getByText("PROJECT MANAGEMENT")).toBeInTheDocument();
   });
 
   test("IMPLEMENTATION USER does not show administration section", () => {
@@ -350,11 +301,7 @@ describe("Sidebar", () => {
     expect(screen.getByText("Authorization")).toBeInTheDocument();
   });
 
-  test("ADMIN sees Settings", () => {
-    renderSidebar();
-
-    expect(screen.getByText("Settings")).toBeInTheDocument();
-  });
+ 
 
   test("default role hides administration", () => {
     sessionStorage.clear();
@@ -369,15 +316,16 @@ describe("Sidebar", () => {
 
     renderSidebar();
 
-    expect(screen.queryByText("MONITORING")).not.toBeInTheDocument();
+expect(screen.getByText("PROJECT MANAGEMENT")).toBeInTheDocument();
   });
 
-  test("default role still renders portfolio", () => {
+  test("default role still renders project management", () => {
     sessionStorage.clear();
 
     renderSidebar();
 
-    expect(screen.getByText("PORTFOLIO")).toBeInTheDocument();
+    expect(screen.getByText("PROJECT MANAGEMENT")).toBeInTheDocument();
+
   });
 
   test("default role does not render Upload Excel", () => {
@@ -469,11 +417,7 @@ describe("Sidebar", () => {
     expect(screen.getByAltText("Logo")).toBeVisible();
   });
 
-  test("help section is always visible", () => {
-    renderSidebar();
-
-    expect(screen.getByText("Help & Support")).toBeVisible();
-  });
+  
 
   test("sidebar contains multiple navigation links", () => {
     renderSidebar();
@@ -529,9 +473,8 @@ describe("Sidebar", () => {
   test("all navigation groups render correctly for admin", () => {
     renderSidebar();
 
-    expect(screen.getByText("PORTFOLIO")).toBeInTheDocument();
 
-    expect(screen.getByText("MONITORING")).toBeInTheDocument();
+expect(screen.getByText("PROJECT MANAGEMENT")).toBeInTheDocument();
 
     expect(screen.getByText("ADMINISTRATION")).toBeInTheDocument();
   });
@@ -544,11 +487,5 @@ describe("Sidebar", () => {
     expect(screen.getByAltText("Logo")).toBeInTheDocument();
   });
 
-  test("sidebar renders Help section without user session", () => {
-    sessionStorage.clear();
 
-    renderSidebar();
-
-    expect(screen.getByText("Help & Support")).toBeInTheDocument();
-  });
 });

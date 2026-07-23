@@ -93,7 +93,6 @@ const AppRoutes = () => {
           <Route path="/users/edit" element={<EditUserPage />} />
 
           <Route path="/projects" element={<ProjectsPage />} />
-
           <Route path="/projects/create" element={<CreateProjectPage />} />
           <Route path="/projects/edit/:id" element={<CreateProjectPage />} />
           <Route path="/projects/view/:id" element={<CreateProjectPage />} />
@@ -105,7 +104,7 @@ const AppRoutes = () => {
             path="/authorization"
             element={<AuthorizationRequestsPage />}
           />
-          
+
         </Route>
       </Route>
     </Routes>

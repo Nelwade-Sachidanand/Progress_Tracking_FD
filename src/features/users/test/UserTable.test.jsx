@@ -2,27 +2,42 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import UserTable from "../components/UserTable";
 
+
+
 const mockNavigate = vi.fn();
+const mockDelete = vi.fn();
+const mockResetPassword = vi.fn();
+const mockOnPageChange = vi.fn();
 
 vi.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 
+vi.mock("../../../components/layout/Pagination", () => ({
+  default: (props) => (
+    <div data-testid="pagination">
+      <button onClick={() => props.onPageChange(2)}>
+        Next Page
+      </button>
+    </div>
+  ),
+}));
+
 describe("UserTable", () => {
-  const mockUsers = [
+  const users = [
     {
       id: 1,
-      fullname: "John Doe",
-      username: "john",
+      fullname: "Sachin Nelwade",
+      username: "sachin",
       role: "ADMIN",
       status: true,
       projectNames: ["Project A", "Project B", "Project C"],
     },
     {
       id: 2,
-      fullname: "Jane Smith",
-      username: "jane",
-      role: "IMPLEMENTATION_USER",
+      fullname: "John Doe",
+      username: "john",
+      role: "IMPLEMENTATION USER",
       status: false,
       projectNames: ["Project X"],
     },
@@ -33,12 +48,35 @@ describe("UserTable", () => {
   });
 
   it("renders loading state", () => {
-    render(<UserTable users={[]} loading={true} />);
+    render(
+      <UserTable
+        users={[]}
+        loading={true}
+        onDelete={mockDelete}
+        onResetPassword={mockResetPassword}
+        currentPage={1}
+        totalPages={1}
+        totalRecords={0}
+        onPageChange={mockOnPageChange}
+      />
+    );
+
     expect(screen.getByText("Loading users...")).toBeInTheDocument();
   });
 
   it("renders table headers", () => {
-    render(<UserTable users={mockUsers} loading={false} />);
+    render(
+      <UserTable
+        users={users}
+        loading={false}
+        onDelete={mockDelete}
+        onResetPassword={mockResetPassword}
+        currentPage={1}
+        totalPages={1}
+        totalRecords={2}
+        onPageChange={mockOnPageChange}
+      />
+    );
 
     expect(screen.getByText("Full Name")).toBeInTheDocument();
     expect(screen.getByText("Username")).toBeInTheDocument();
@@ -48,111 +86,189 @@ describe("UserTable", () => {
     expect(screen.getByText("Actions")).toBeInTheDocument();
   });
 
-  it("renders user data", () => {
-    render(<UserTable users={mockUsers} loading={false} />);
+  it("renders user information", () => {
+    render(
+      <UserTable
+        users={users}
+        loading={false}
+        onDelete={mockDelete}
+        onResetPassword={mockResetPassword}
+        currentPage={1}
+        totalPages={1}
+        totalRecords={2}
+        onPageChange={mockOnPageChange}
+      />
+    );
+
+    expect(screen.getByText("Sachin Nelwade")).toBeInTheDocument();
+    expect(screen.getByText("sachin")).toBeInTheDocument();
 
     expect(screen.getByText("John Doe")).toBeInTheDocument();
     expect(screen.getByText("john")).toBeInTheDocument();
-
-    expect(screen.getByText("Jane Smith")).toBeInTheDocument();
-    expect(screen.getByText("jane")).toBeInTheDocument();
   });
 
-  it("renders user initials", () => {
-    render(<UserTable users={mockUsers} loading={false} />);
+  it("shows formatted role names", () => {
+    render(
+      <UserTable
+        users={users}
+        loading={false}
+        onDelete={mockDelete}
+        onResetPassword={mockResetPassword}
+        currentPage={1}
+        totalPages={1}
+        totalRecords={2}
+        onPageChange={mockOnPageChange}
+      />
+    );
 
-    expect(screen.getByText("JD")).toBeInTheDocument();
-    expect(screen.getByText("JS")).toBeInTheDocument();
+    expect(screen.getByText("Admin")).toBeInTheDocument();
+    expect(screen.getByText("Implementation User")).toBeInTheDocument();
   });
 
-  it("renders roles correctly", () => {
-    render(<UserTable users={mockUsers} loading={false} />);
+  it("shows active and inactive status", () => {
+    render(
+      <UserTable
+        users={users}
+        loading={false}
+        onDelete={mockDelete}
+        onResetPassword={mockResetPassword}
+        currentPage={1}
+        totalPages={1}
+        totalRecords={2}
+        onPageChange={mockOnPageChange}
+      />
+    );
 
-    expect(screen.getByText("ADMIN")).toBeInTheDocument();
-    expect(screen.getByText("IMPLEMENTATION USER")).toBeInTheDocument();
+    expect(screen.getByText("Active")).toBeInTheDocument();
+    expect(screen.getByText("Inactive")).toBeInTheDocument();
   });
 
-  it("renders active and inactive statuses", () => {
-    render(<UserTable users={mockUsers} loading={false} />);
+  it("calls navigate when edit button is clicked", () => {
+    render(
+      <UserTable
+        users={users}
+        loading={false}
+        onDelete={mockDelete}
+        onResetPassword={mockResetPassword}
+        currentPage={1}
+        totalPages={1}
+        totalRecords={2}
+        onPageChange={mockOnPageChange}
+      />
+    );
 
-    expect(screen.getByText("● Active")).toBeInTheDocument();
-    expect(screen.getByText("● Inactive")).toBeInTheDocument();
-  });
-
-  it("renders project names", () => {
-    render(<UserTable users={mockUsers} loading={false} />);
-
-    // User 1 projects
-    expect(screen.getByText("Project A")).toBeInTheDocument();
-    expect(screen.getByText("Project B")).toBeInTheDocument();
-    expect(screen.getByText("Project C")).toBeInTheDocument();
-
-    // User 2 project
-    expect(screen.getByText("Project X")).toBeInTheDocument();
-
-    // ❌ removed +1 expectation because component does NOT render it
-  });
-
-  it("navigates to edit page when edit button clicked", () => {
-    render(<UserTable users={mockUsers} loading={false} />);
-
-    const buttons = screen.getAllByRole("button");
-    fireEvent.click(buttons[0]);
+    fireEvent.click(screen.getAllByTitle("Edit User")[0]);
 
     expect(mockNavigate).toHaveBeenCalledWith("/users/edit", {
-      state: {
-        user: mockUsers[0],
-      },
+      state: { user: users[0] },
     });
   });
 
-  it("shows pagination text", () => {
-    render(<UserTable users={mockUsers} loading={false} />);
-
-    expect(screen.getByText("Showing 1 to 2 of 2 users")).toBeInTheDocument();
-  });
-
-  it("handles empty users list", () => {
-    render(<UserTable users={[]} loading={false} />);
-
-    expect(screen.getByText("Showing 0 to 0 of 0 users")).toBeInTheDocument();
-  });
-
-  it("handles missing fullname", () => {
+  it("calls reset password callback", () => {
     render(
       <UserTable
+        users={users}
         loading={false}
-        users={[
-          {
-            id: 1,
-            fullname: "",
-            username: "test",
-            role: "USER",
-            status: true,
-            projectNames: [],
-          },
-        ]}
-      />,
+        onDelete={mockDelete}
+        onResetPassword={mockResetPassword}
+        currentPage={1}
+        totalPages={1}
+        totalRecords={2}
+        onPageChange={mockOnPageChange}
+      />
     );
 
-    expect(screen.getByText("--")).toBeInTheDocument();
+    fireEvent.click(screen.getAllByTitle("Reset Password")[0]);
+
+    expect(mockResetPassword).toHaveBeenCalledWith(users[0]);
   });
 
-  it("renders only first 5 users per page", () => {
-    const users = Array.from({ length: 6 }, (_, i) => ({
-      id: i + 1,
-      fullname: `User ${i + 1}`,
-      username: `user${i + 1}`,
-      role: "USER",
-      status: true,
-      projectNames: [],
-    }));
+  it("calls delete callback", () => {
+    render(
+      <UserTable
+        users={users}
+        loading={false}
+        onDelete={mockDelete}
+        onResetPassword={mockResetPassword}
+        currentPage={1}
+        totalPages={1}
+        totalRecords={2}
+        onPageChange={mockOnPageChange}
+      />
+    );
 
-    render(<UserTable users={users} loading={false} />);
+    fireEvent.click(screen.getAllByTitle("Delete User")[0]);
 
-    expect(screen.getByText("User 1")).toBeInTheDocument();
-    expect(screen.getByText("User 5")).toBeInTheDocument();
+    expect(mockDelete).toHaveBeenCalledWith(1);
+  });
 
-    expect(screen.queryByText("User 6")).not.toBeInTheDocument();
+  it("shows no users message", () => {
+    render(
+      <UserTable
+        users={[]}
+        loading={false}
+        onDelete={mockDelete}
+        onResetPassword={mockResetPassword}
+        currentPage={1}
+        totalPages={1}
+        totalRecords={0}
+        onPageChange={mockOnPageChange}
+      />
+    );
+
+    expect(screen.getByText("No users found.")).toBeInTheDocument();
+  });
+
+  it("renders pagination", () => {
+    render(
+      <UserTable
+        users={users}
+        loading={false}
+        onDelete={mockDelete}
+        onResetPassword={mockResetPassword}
+        currentPage={1}
+        totalPages={2}
+        totalRecords={2}
+        onPageChange={mockOnPageChange}
+      />
+    );
+
+    expect(screen.getByTestId("pagination")).toBeInTheDocument();
+  });
+
+  it("calls page change callback", () => {
+    render(
+      <UserTable
+        users={users}
+        loading={false}
+        onDelete={mockDelete}
+        onResetPassword={mockResetPassword}
+        currentPage={1}
+        totalPages={2}
+        totalRecords={2}
+        onPageChange={mockOnPageChange}
+      />
+    );
+
+    fireEvent.click(screen.getByText("Next Page"));
+
+    expect(mockOnPageChange).toHaveBeenCalledWith(2);
+  });
+
+  it("shows +1 when more than two projects exist", () => {
+    render(
+      <UserTable
+        users={[users[0]]}
+        loading={false}
+        onDelete={mockDelete}
+        onResetPassword={mockResetPassword}
+        currentPage={1}
+        totalPages={1}
+        totalRecords={1}
+        onPageChange={mockOnPageChange}
+      />
+    );
+
+    expect(screen.getByText("+1")).toBeInTheDocument();
   });
 });

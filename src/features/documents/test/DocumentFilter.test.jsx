@@ -1,102 +1,186 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import DocumentFilters from "../components/DocumentFilters";
-const mockProps = {
-  phases: ["Phase 1"],
-  milestones: ["M1", "M2"],
-  tasks: ["Task1"],
-  subTasks: ["Sub1"],
-  activities: ["Act1"],
 
-  selectedPhase: "All Phases",
-  selectedMilestone: [],
-  selectedTask: "All Tasks",
-  selectedSubTask: "All Sub Tasks",
-  selectedActivity: "All Activities",
-  selectedStatus: "All Status",
-  searchTerm: "",
 
-  setSelectedStatus: vi.fn(),
-  setSearchTerm: vi.fn(),
-  setSelectedActivity: vi.fn(),
+/* -------------------- Mock Components -------------------- */
 
-  handlePhaseChange: vi.fn(),
-  handleMilestoneChange: vi.fn(),
-  handleTaskChange: vi.fn(),
-  handleSubTaskChange: vi.fn(),
+vi.mock("../../../components/common/CustomDropdown", () => ({
+  default: ({ label, value, onChange, options }) => (
+    <div>
+      <label>{label}</label>
+      <select
+        data-testid={label}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        <option value="">Select</option>
+        {options?.map((option) => (
+          <option
+            key={option.value ?? option}
+            value={option.value ?? option}
+          >
+            {option.label ?? option}
+          </option>
+        ))}
+      </select>
+    </div>
+  ),
+}));
 
-  onExportExcel: vi.fn(),
-  clearFilters: vi.fn(),
-};
+vi.mock("../../../components/common/MultiSelectDropdown", () => ({
+  default: ({ label, onChange }) => (
+    <button
+      data-testid="milestone-dropdown"
+      onClick={() => onChange(["Milestone 1"])}
+    >
+      {label}
+    </button>
+  ),
+}));
+
+vi.mock("../../../components/common/SearchInput", () => ({
+  default: ({ value, onChange }) => (
+    <input
+      data-testid="search-input"
+      value={value}
+      onChange={onChange}
+    />
+  ),
+}));
 
 describe("DocumentFilters", () => {
-  it("renders all filter fields", () => {
-    render(<DocumentFilters {...mockProps} />);
+  const defaultProps = {
+    phases: [
+      { label: "Phase 1", value: "Phase 1" },
+      { label: "Phase 2", value: "Phase 2" },
+    ],
+    milestones: [
+      { label: "Milestone 1", value: "Milestone 1" },
+    ],
+    tasks: [
+      { label: "Task 1", value: "Task 1" },
+    ],
+    subTasks: [
+      { label: "SubTask 1", value: "SubTask 1" },
+    ],
+    activities: [
+      { label: "Activity 1", value: "Activity 1" },
+    ],
 
-    expect(screen.getByText("Phase")).toBeInTheDocument();
-    expect(screen.getByText("Milestone")).toBeInTheDocument();
-    expect(screen.getByText("Task")).toBeInTheDocument();
-    expect(screen.getByText("Sub Task")).toBeInTheDocument();
-    expect(screen.getByText("Activity")).toBeInTheDocument();
-    expect(screen.getByText("Upload Status")).toBeInTheDocument();
-    expect(screen.getByText("Search")).toBeInTheDocument();
+    selectedPhase: "",
+    selectedMilestone: [],
+    selectedTask: "",
+    selectedSubTask: "",
+    selectedActivity: "",
+    selectedStatus: "",
+    searchTerm: "",
+
+    setSelectedMilestone: vi.fn(),
+    setSelectedStatus: vi.fn(),
+    setSearchTerm: vi.fn(),
+    setSelectedActivity: vi.fn(),
+
+    handlePhaseChange: vi.fn(),
+    handleMilestoneChange: vi.fn(),
+    handleTaskChange: vi.fn(),
+    handleSubTaskChange: vi.fn(),
+
+    onExportExcel: vi.fn(),
+    clearFilters: vi.fn(),
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  it("calls phase change handler", () => {
-    render(<DocumentFilters {...mockProps} />);
+  it("renders all filters", () => {
+    render(<DocumentFilters {...defaultProps} />);
 
-    fireEvent.change(screen.getByDisplayValue("All Phases"), {
+    expect(screen.getByTestId("Phase")).toBeInTheDocument();
+    expect(screen.getByTestId("Task")).toBeInTheDocument();
+    expect(screen.getByTestId("Sub Task")).toBeInTheDocument();
+    expect(screen.getByTestId("Activity")).toBeInTheDocument();
+    expect(screen.getByTestId("Upload Status")).toBeInTheDocument();
+    expect(screen.getByTestId("search-input")).toBeInTheDocument();
+    expect(screen.getByText("Clear Filters")).toBeInTheDocument();
+  });
+
+  it("calls handlePhaseChange", () => {
+    render(<DocumentFilters {...defaultProps} />);
+
+    fireEvent.change(screen.getByTestId("Phase"), {
       target: { value: "Phase 1" },
     });
 
-    expect(mockProps.handlePhaseChange).toHaveBeenCalledWith("Phase 1");
+    expect(defaultProps.handlePhaseChange).toHaveBeenCalledWith("Phase 1");
   });
 
-  it("calls task change handler", () => {
-    render(<DocumentFilters {...mockProps} />);
+  it("calls handleTaskChange", () => {
+    render(<DocumentFilters {...defaultProps} />);
 
-    fireEvent.change(screen.getByDisplayValue("All Tasks"), {
-      target: { value: "Task1" },
+    fireEvent.change(screen.getByTestId("Task"), {
+      target: { value: "Task 1" },
     });
 
-    expect(mockProps.handleTaskChange).toHaveBeenCalledWith("Task1");
+    expect(defaultProps.handleTaskChange).toHaveBeenCalledWith("Task 1");
   });
 
-  it("calls sub task change handler", () => {
-    render(<DocumentFilters {...mockProps} />);
+  it("calls handleSubTaskChange", () => {
+    render(<DocumentFilters {...defaultProps} />);
 
-    fireEvent.change(screen.getByDisplayValue("All Sub Tasks"), {
-      target: { value: "Sub1" },
+    fireEvent.change(screen.getByTestId("Sub Task"), {
+      target: { value: "SubTask 1" },
     });
 
-    expect(mockProps.handleSubTaskChange).toHaveBeenCalledWith("Sub1");
+    expect(defaultProps.handleSubTaskChange).toHaveBeenCalledWith("SubTask 1");
   });
 
-  it("calls activity change handler", () => {
-    render(<DocumentFilters {...mockProps} />);
+  it("calls setSelectedActivity", () => {
+    render(<DocumentFilters {...defaultProps} />);
 
-    fireEvent.change(screen.getByDisplayValue("All Activities"), {
-      target: { value: "Act1" },
+    fireEvent.change(screen.getByTestId("Activity"), {
+      target: { value: "Activity 1" },
     });
 
-    expect(mockProps.setSelectedActivity).toHaveBeenCalledWith("Act1");
+    expect(defaultProps.setSelectedActivity).toHaveBeenCalledWith("Activity 1");
   });
 
-  it("calls status change handler", () => {
-    render(<DocumentFilters {...mockProps} />);
+  it("calls setSelectedStatus", () => {
+    render(<DocumentFilters {...defaultProps} />);
 
-    fireEvent.change(screen.getByDisplayValue("All Status"), {
+    fireEvent.change(screen.getByTestId("Upload Status"), {
       target: { value: "Uploaded" },
     });
 
-    expect(mockProps.setSelectedStatus).toHaveBeenCalledWith("Uploaded");
+    expect(defaultProps.setSelectedStatus).toHaveBeenCalledWith("Uploaded");
   });
 
-  it("clears filters when clear button clicked", () => {
-    render(<DocumentFilters {...mockProps} />);
+  it("calls setSelectedMilestone", () => {
+    render(<DocumentFilters {...defaultProps} />);
+
+    fireEvent.click(screen.getByTestId("milestone-dropdown"));
+
+    expect(defaultProps.setSelectedMilestone).toHaveBeenCalledWith([
+      "Milestone 1",
+    ]);
+  });
+
+  it("updates search text", () => {
+    render(<DocumentFilters {...defaultProps} />);
+
+    fireEvent.change(screen.getByTestId("search-input"), {
+      target: { value: "abc" },
+    });
+
+    expect(defaultProps.setSearchTerm).toHaveBeenCalledWith("abc");
+  });
+
+  it("calls clearFilters", () => {
+    render(<DocumentFilters {...defaultProps} />);
 
     fireEvent.click(screen.getByText("Clear Filters"));
 
-    expect(mockProps.clearFilters).toHaveBeenCalled();
+    expect(defaultProps.clearFilters).toHaveBeenCalledTimes(1);
   });
 });

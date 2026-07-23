@@ -2,102 +2,168 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import UserFilters from "../components/UserFilters";
 
-describe("UserFilters", () => {
-  const setSearchTerm = vi.fn();
-  const setRoleFilter = vi.fn();
+const mockNavigate = vi.fn();
 
+vi.mock("react-router-dom", () => ({
+  useNavigate: () => mockNavigate,
+}));
+
+vi.mock("../../../components/common/CustomDropdown", () => ({
+  default: ({
+    label,
+    value,
+    onChange,
+    options,
+  }) => (
+    <div>
+      <label>{label}</label>
+      <select
+        data-testid={label}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        <option value="">All</option>
+        {options.map((option) => (
+          <option
+            key={option.value}
+            value={option.value}
+          >
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  ),
+}));
+
+vi.mock("../../../components/common/SearchInput", () => ({
+  default: ({
+    value,
+    onChange,
+    placeholder,
+  }) => (
+    <input
+      data-testid="search-input"
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+    />
+  ),
+}));
+
+describe("UserFilters", () => {
   const defaultProps = {
     searchTerm: "",
-    setSearchTerm,
+    setSearchTerm: vi.fn(),
     roleFilter: "",
-    setRoleFilter,
+    setRoleFilter: vi.fn(),
+    statusFilter: "",
+    setStatusFilter: vi.fn(),
+    bankFilter: "",
+    setBankFilter: vi.fn(),
+    banks: [
+      "State Bank of India (SBI)",
+      "Punjab National Bank (PNB)",
+    ],
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("renders search input", () => {
+  it("renders all filters", () => {
     render(<UserFilters {...defaultProps} />);
 
+    expect(screen.getByText("Role")).toBeInTheDocument();
+    expect(screen.getByText("Status")).toBeInTheDocument();
+    expect(screen.getByText("Bank")).toBeInTheDocument();
+    expect(screen.getByTestId("search-input")).toBeInTheDocument();
     expect(
-      screen.getByPlaceholderText("Search by name or username..."),
+      screen.getByRole("button", { name: /add user/i })
     ).toBeInTheDocument();
   });
 
-  it("renders role dropdown", () => {
+  it("calls setSearchTerm when typing", () => {
     render(<UserFilters {...defaultProps} />);
 
-    expect(screen.getByRole("combobox")).toBeInTheDocument();
-    expect(screen.getByText("All Roles")).toBeInTheDocument();
-  });
-
-  it("shows provided search value", () => {
-    render(<UserFilters {...defaultProps} searchTerm="sachin" />);
-
-    expect(screen.getByDisplayValue("sachin")).toBeInTheDocument();
-  });
-
-  it("calls setSearchTerm on typing", () => {
-    render(<UserFilters {...defaultProps} />);
-
-    fireEvent.change(
-      screen.getByPlaceholderText("Search by name or username..."),
-      {
-        target: { value: "john" },
-      },
-    );
-
-    expect(setSearchTerm).toHaveBeenCalledTimes(1);
-    expect(setSearchTerm).toHaveBeenCalledWith("john");
-  });
-
-  it("shows selected role", () => {
-    render(<UserFilters {...defaultProps} roleFilter="ADMIN" />);
-
-    expect(screen.getByDisplayValue("Admin")).toBeInTheDocument();
-  });
-
-  it("calls setRoleFilter when role changes", () => {
-    render(<UserFilters {...defaultProps} />);
-
-    fireEvent.change(screen.getByRole("combobox"), {
-      target: { value: "MANAGEMENT USER" },
+    fireEvent.change(screen.getByTestId("search-input"), {
+      target: { value: "Sachin" },
     });
 
-    expect(setRoleFilter).toHaveBeenCalledTimes(1);
-    expect(setRoleFilter).toHaveBeenCalledWith("MANAGEMENT USER");
+    expect(defaultProps.setSearchTerm).toHaveBeenCalled();
   });
 
-  it("renders all role options", () => {
+  it("calls setRoleFilter", () => {
+    render(<UserFilters {...defaultProps} />);
+
+    fireEvent.change(screen.getByTestId("Role"), {
+      target: { value: "ADMIN" },
+    });
+
+    expect(defaultProps.setRoleFilter).toHaveBeenCalledWith(
+      "ADMIN"
+    );
+  });
+
+  it("calls setStatusFilter", () => {
+    render(<UserFilters {...defaultProps} />);
+
+    fireEvent.change(screen.getByTestId("Status"), {
+      target: { value: "true" },
+    });
+
+    expect(defaultProps.setStatusFilter).toHaveBeenCalledWith(
+      "true"
+    );
+  });
+
+  it("calls setBankFilter", () => {
+    render(<UserFilters {...defaultProps} />);
+
+    fireEvent.change(screen.getByTestId("Bank"), {
+      target: {
+        value: "State Bank of India (SBI)",
+      },
+    });
+
+    expect(defaultProps.setBankFilter).toHaveBeenCalledWith(
+      "State Bank of India (SBI)"
+    );
+  });
+
+  it("shows bank short names", () => {
+    render(<UserFilters {...defaultProps} />);
+
+    expect(screen.getByText("SBI")).toBeInTheDocument();
+    expect(screen.getByText("PNB")).toBeInTheDocument();
+  });
+
+  it("navigates to add user page", () => {
+    render(<UserFilters {...defaultProps} />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /add user/i })
+    );
+
+    expect(mockNavigate).toHaveBeenCalledWith("/users/add");
+  });
+
+  it("renders with empty banks", () => {
+    render(
+      <UserFilters
+        {...defaultProps}
+        banks={[]}
+      />
+    );
+
+    expect(screen.getByText("Bank")).toBeInTheDocument();
+  });
+
+  it("renders placeholder text", () => {
     render(<UserFilters {...defaultProps} />);
 
     expect(
-      screen.getByRole("option", { name: "All Roles" }),
+      screen.getByPlaceholderText("Search Users...")
     ).toBeInTheDocument();
-    expect(screen.getByRole("option", { name: "Admin" })).toBeInTheDocument();
-    expect(
-      screen.getByRole("option", { name: "Bank User" }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("option", { name: "Manager" })).toBeInTheDocument();
-    expect(
-      screen.getByRole("option", { name: "Implementation User" }),
-    ).toBeInTheDocument();
-  });
-
-  it("handles empty search value", () => {
-    render(<UserFilters {...defaultProps} />);
-
-    const input = screen.getByPlaceholderText("Search by name or username...");
-
-    expect(input.value).toBe("");
-  });
-
-  it("handles empty role filter", () => {
-    render(<UserFilters {...defaultProps} />);
-
-    const select = screen.getByRole("combobox");
-
-    expect(select.value).toBe("");
   });
 });
